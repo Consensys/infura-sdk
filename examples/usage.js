@@ -73,7 +73,7 @@ console.log('nft:get', getNft);
         import { Nft } from '@consensys-sdk/common'
         import { GasEstimation, Token } from '@consensys-sdk/common'
 
-    this way user imports modules as required while keeping code base reasonably high.
+    this way user imports modules as required while keeping code base reasonably low.
     Downside of this approach is that it takes more time to develop but certainly improves quality and extendibility of the SDK. 
 
 */ 
