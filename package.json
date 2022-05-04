@@ -1,0 +1,23 @@
+{
+  "name": "consensys-sdk",
+  "version": "1.0.0",
+  "description": "Consensys SDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConsenSys/nft-sdk.git"
+  },
+  "author": "Consensys Inc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ConsenSys/nft-sdk/issues"
+  },
+  "homepage": "https://github.com/ConsenSys/nft-sdk#readme",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "web3": "^1.7.3"
+  }
+}
