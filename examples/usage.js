@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /*
     Pseudo flow on the User side.
     Whole point is for end users to configure and use SDK as clean as possible.
@@ -37,7 +39,7 @@ const client = new ConsensysClient({
 /* 
     5. Developer create and configure instance of the NFT Client to unlock NFT module
 */
-const nftClient = client.nft({
+const nftClient = client.nft({ // follows 721 and 1155 standard
     nftTemplate: 'template1',
     baseUri: '/'
 })
@@ -76,4 +78,28 @@ console.log('nft:get', getNft);
     this way user imports modules as required while keeping code base reasonably low.
     Downside of this approach is that it takes more time to develop but certainly improves quality and extendibility of the SDK. 
 
-*/ 
+*/
+
+
+/*
+S
+MVP READ
+
+- Retrieve all NFTs owned by an address
+-- getAllNfts(accountNumber) => { nftContractAddress, tokenId }
+
+- Retrieve metadata attributes
+-- getMetaAttr(nftContractAddress, tokenId) => { nftUri, nftMetadata }
+
+- Retrieve all ERC20 owned by an address
+-- getAllErc20(accountNumber) => { erc20ContractAddress, balance }
+
+- Retrieve ERC20 metadata attributes
+- getErc20MetaAttr(tokenId) => { symbol, name, contractAddress }
+
+MVP WRITE
+- Deploy a collection
+- Mint a collectible
+- Burn a collectible
+
+*/
