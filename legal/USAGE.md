@@ -30,21 +30,24 @@ import ConsensysClient from 'consensys-sdk'
 ```sh
 const PUBLIC_KEY = process.env.PUBLIC_KEY
 const PRIVATE_KEY = process.env.PRIVATE_KEY
-const INFURA_API_KEY = process.env.INFURA_API_KEY
+const API_KEY = process.env.INFURA_API_KEY
 ```
 
 4. Developer create & configue instance of the Consensys Client 
 
 ```sh
-const client = new ConsensysClient({
-    key: PUBLIC_KEY,
-    infuraKey: INFURA_API_KEY,
-})
+const client = new ConsensysClient(API_KEY)
 ```
 5. Developer create and configure instance of the NFT Client to unlock NFT module
 
+const account = client.externallyOwnedAccount(PRIVATE_KEY)
+// new ExternallyOwnedAccount(keyPrivate);
+account will hold ExternallyOwnedAccount data
+
+
+
 ```sh
-const nftClient = client.nft({ // follows 721 and 1155 standard
+const nftClient = client.nft({
     nftTemplate: 'template1',
     baseUri: '/'
 })

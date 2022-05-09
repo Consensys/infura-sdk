@@ -16,8 +16,7 @@ consensysClient.authenticate({
     key: '321'
 });
 
-
-
+consensysClient.nft.mint();
 
 
 export default consensysClient;
