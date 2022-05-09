@@ -4,20 +4,10 @@
  * MIT Licensed
  */
 
-/* eslint-disable */ 
+import { ExternallyOwnedAccount } from './lib/NFT/externallyOwnedAccount.js';
 
-import { Client } from './lib/consensysClient.js';
+export * from './lib/NFT/externallyOwnedAccount.js';
 
-
-const consensysClient = new Client();
-
-consensysClient.authenticate({
-    accountAddress: '123', 
-    key: '321'
-});
-
-
-
-
-
-export default consensysClient;
+export default {
+  ExternallyOwnedAccount,
+};
