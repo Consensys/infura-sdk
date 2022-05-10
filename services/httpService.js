@@ -4,21 +4,18 @@
  * MIT Licensed
  */
 
-/* eslint-disable */ 
+/* eslint-disable */
 
-import axios from "axios";
+import axios from 'axios';
 
 export default class HttpService {
+  constructor() {}
 
-    constructor() {}
-    
-    get(uri) {
-        return axios.get(uri);
-    }
+  get(uri) {
+    return axios.get(uri);
+  }
 
-    post(uri, params) {
-        return axios.post(uri, params);
-    }
-
+  post(uri, params) {
+    return axios.post(uri, params);
+  }
 }
-

@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "Consensys SDK",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "prettier:format": "prettier -- write \"*.js\" ",
     "prettier:check": "prettier",
     "lint": "eslint --fix"
@@ -22,14 +21,17 @@
   "homepage": "https://github.com/ConsenSys/nft-sdk#readme",
   "dependencies": {
     "axios": "^0.27.2",
-    "dotenv": "^16.0.0",
-    "web3": "^1.7.3"
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
+    "babel-jest": "^28.1.0",
     "eslint": "^8.14.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "ethers": "^5.6.5",
+    "jest": "^28.1.0",
     "prettier": "^2.6.2"
   }
 }
