@@ -3,6 +3,8 @@ import { config as loadEnv } from 'dotenv';
 loadEnv();
 
 describe('ExternallyOwnedAccount', () => {
+  jest.setTimeout(120 * 1000);
+
   it('should throw when args are missing (privateKey)', async () => {
     expect(() => {
       new ExternallyOwnedAccount({
@@ -33,14 +35,13 @@ describe('ExternallyOwnedAccount', () => {
     }).toThrow('[ExternallyOwnedAccount.constructor] rpcUrl is missing!');
   });
 
-  it.skip('should create smart contract', async () => {
+  it('should create smart contract', async () => {
     const externallyOwnedAccount = new ExternallyOwnedAccount({
       privateKey: process.env.PRIVATE_KEY,
-      apiKey: process.env.API_KEY,
+      apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
       rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
     });
     const contract = await externallyOwnedAccount.createSmartContract('name', 'symbol');
-    console.log(contract);
-    expect(contract).not.toBe(null);
+    expect(contract.address).not.toBe(null);
   });
 });
