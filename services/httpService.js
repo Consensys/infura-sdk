@@ -8,14 +8,21 @@
 
 import axios from 'axios';
 
-export default class HttpService {
-  constructor() {}
+export class HttpService {
+  constructor(baseURL, apiKey) {
+    this.instance = axios.create({
+      baseURL: baseURL,
+      headers: {
+        Authorization: `Basic ${apiKey}`,
+      },
+    });
+  }
 
   get(uri) {
-    return axios.get(uri);
+    return this.instance.get(uri);
   }
 
   post(uri, params) {
-    return axios.post(uri, params);
+    return this.instance.post(uri, params);
   }
 }

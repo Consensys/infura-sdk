@@ -1,4 +1,4 @@
-import HttpService from '../services/httpService';
+import { HttpService } from '../services/httpService';
 // Mock Post Endpoint
 const pushHttpService = jest.spyOn(HttpService.prototype, 'post').mockImplementation(() => {});
 
