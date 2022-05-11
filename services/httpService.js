@@ -3,22 +3,16 @@
  * Copyright(c) https://consensys.net/
  * MIT Licensed
  */
+import axios from 'axios';
 
-/* eslint-disable */ 
+export class HttpService {
+  instance = null;
+  _timeout = 1000;
 
-import axios from "axios";
-
-export default class HttpService {
-
-    constructor() {}
-    
-    get(uri) {
-        return axios.get(uri);
-    }
-
-    post(uri, params) {
-        return axios.post(uri, params);
-    }
-
+  constructor(baseURL) {
+    this.instance = axios.create({
+      baseURL: baseURL,
+      //timeout: this._timeout,
+    });
+  }
 }
-
