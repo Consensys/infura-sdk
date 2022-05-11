@@ -1,5 +1,5 @@
 ---
-name: App Test
+name: Unit Test
 
 on:
   push:

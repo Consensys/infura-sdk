@@ -1,5 +1,5 @@
 ---
-name: Run Action Lint
+name: Security
 
 on:
   push:
@@ -9,15 +9,19 @@ on:
   pull_request:
     branches:
       - dev
-    paths:
-      - '.github/**'
 
 jobs:
-  lint:
+  test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - uses: reviewdog/action-actionlint@v1
+
+      - uses: actions/setup-node@v2
         with:
-          reporter: github-check
+          node-version: v18.1.0
+          cache: npm
+
+      - run: |
+          npm ci
+          npm audit
