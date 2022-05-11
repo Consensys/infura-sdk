@@ -13,13 +13,13 @@ const gethHttpService = jest.spyOn(HttpService.prototype, 'get').mockImplementat
 describe('httpService', () => {
   it('should throw when args are missing (baseURL)', async () => {
     expect(() => {
-      const instance = new HttpService(null, APIKEY);
+      new HttpService(null, APIKEY);
     }).toThrow('[httpService.constructor] baseURL is missing!');
   });
 
   it('should throw when args are missing (apiKey)', async () => {
     expect(() => {
-      const instance = new HttpService(BASEURL, null);
+      new HttpService(BASEURL, null);
     }).toThrow('[httpService.constructor] apiKey is missing!');
   });
 
