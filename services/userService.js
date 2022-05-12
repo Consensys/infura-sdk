@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 
-export default class UserService {
+export class UserService {
   constructor() {}
 
   /**

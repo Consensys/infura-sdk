@@ -8,14 +8,24 @@
 
 import axios from 'axios';
 
-export default class HttpService {
-  constructor() {}
+export class HttpService {
+  constructor(baseURL, apiKey) {
+    if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
+    if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');
 
-  get(uri) {
+    this.instance = axios.create({
+      baseURL: baseURL,
+      headers: {
+        Authorization: `Basic ${apiKey}`,
+      },
+    });
+  }
+
+  async get(uri) {
     return axios.get(uri);
   }
 
-  post(uri, params) {
+  async post(uri, params) {
     return axios.post(uri, params);
   }
 }

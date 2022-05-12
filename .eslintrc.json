@@ -27,6 +27,7 @@
         "args": "none",
         "ignoreRestSiblings": true
       }
-    ]
+    ],
+    "import/extensions": ["error", "always", { "ignorePackages": true }]
   }
 }
