@@ -4,6 +4,7 @@ loadEnv();
 
 describe('ExternallyOwnedAccount', () => {
   jest.setTimeout(120 * 1000);
+  let contract;
 
   it('should throw when args are missing (privateKey)', async () => {
     expect(() => {
@@ -42,11 +43,11 @@ describe('ExternallyOwnedAccount', () => {
       rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
       chainId: '4',
     });
-    const contract = await externallyOwnedAccount.createSmartContract('name', 'symbol');
+    contract = await externallyOwnedAccount.createSmartContract('name', 'symbol');
     expect(contract.address).not.toBe(null);
   });
 
-  it.only('should return list of NFTs by address', async () => {
+  it('should return list of NFTs by address', async () => {
     const externallyOwnedAccount = new ExternallyOwnedAccount({
       privateKey: process.env.PRIVATE_KEY,
       apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
@@ -56,5 +57,20 @@ describe('ExternallyOwnedAccount', () => {
     const nfts = await externallyOwnedAccount.getNFTs('0xF69c1883b098d621FC58a42E673C4bF6a6483fFf');
 
     expect(nfts.assets.length).not.toBe(null);
+  });
+
+  it('should mint Nfts inside an existing contract', async () => {
+    const externallyOwnedAccount = new ExternallyOwnedAccount({
+      privateKey: process.env.PRIVATE_KEY,
+      apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
+      rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
+      chainId: '4',
+    });
+    const nfts = await externallyOwnedAccount.mintNft({
+      contractAddress: contract.address,
+      publicAddress: process.env.PUBLIC_ADDRESS,
+      NFTUrl: 'https://infura.io/images/404.png',
+    });
+    expect(nfts.hash).not.toBe(null);
   });
 });
