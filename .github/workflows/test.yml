@@ -35,3 +35,4 @@ jobs:
       - run: |
           npm ci
           npm run test
+          npm run test:rune2e
