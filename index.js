@@ -10,3 +10,8 @@ export * from './lib/NFT/externallyOwnedAccount.js';
 export default {
   ExternallyOwnedAccount,
 };
+
+account = new ExternallyOwnedAccount();
+contract = account.createSmartContract();
+contract.deploy();
+contract.mint();
