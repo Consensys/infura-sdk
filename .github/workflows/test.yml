@@ -13,6 +13,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      SECRET_ID: ${{ secrets.SECRET_ID }}
     strategy:
       matrix:
         node-version:
