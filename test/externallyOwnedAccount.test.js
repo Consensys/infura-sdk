@@ -4,7 +4,9 @@ loadEnv();
 
 describe('ExternallyOwnedAccount', () => {
   jest.setTimeout(120 * 1000);
-  let contract;
+  let contractAbstraction;
+
+  const NFTImage = 'https://infura.io/images/404.png';
 
   it('should throw when args are missing (privateKey)', async () => {
     expect(() => {

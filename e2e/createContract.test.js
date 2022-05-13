@@ -6,9 +6,11 @@ loadEnv();
 describe('Onchain interaction', () => {
   jest.setTimeout(120 * 1000);
   let externallyOwnedAccount;
+  let contractAbstraction;
   let contract;
   let publicAddress;
   let server;
+  const NFTImage = 'https://infura.io/images/404.png';
 
   beforeAll(async () => {
     const options = {
@@ -34,6 +36,7 @@ describe('Onchain interaction', () => {
       const apiKey = Buffer.from(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`).toString(
         'base64',
       );
+
       // call the constructor with Ganache blockchain
       externallyOwnedAccount = new ExternallyOwnedAccount({
         privateKey: PRIV_KEY,
@@ -41,7 +44,7 @@ describe('Onchain interaction', () => {
         rpcUrl: 'http://0.0.0.0:8545',
         chainId: 4,
       });
-      contract = await externallyOwnedAccount.createSmartContract('name', 'symbol');
+      contractAbstraction = await externallyOwnedAccount.createSmartContract('name', 'symbol');
     } catch (error) {
       throw error;
     }
@@ -51,7 +54,12 @@ describe('Onchain interaction', () => {
     await server.close();
   });
 
-  it('should return the contract', () => {
+  it('should return the contract abstraction', () => {
+    expect(contractAbstraction.deploy).not.toBe(null);
+  });
+
+  it('should deploy the contract', async () => {
+    contract = await contractAbstraction.deploy();
     expect(contract.address).not.toBeUndefined();
     expect(contract.address).toContain('0x');
   });
@@ -63,17 +71,18 @@ describe('Onchain interaction', () => {
     expect(symbol).toBe('symbol');
   });
 
+  it('should mint', async () => {
+    const mint = await contractAbstraction.mint(publicAddress, NFTImage);
+    expect(mint.hash).not.toBeUndefined();
+  });
+
   it('should return list of NFTs by address', async () => {
     const nfts = await externallyOwnedAccount.getNFTs('0xF69c1883b098d621FC58a42E673C4bF6a6483fFf');
     expect(nfts.assets.length).not.toBe(null);
   });
 
-  it('should mint Nfts inside an existing contract', async () => {
-    const nfts = await externallyOwnedAccount.mintNft({
-      contractAddress: contract.address,
-      publicAddress,
-      NFTUrl: 'https://infura.io/images/404.png',
-    });
-    expect(nfts.hash).not.toBe(null);
+  it('should get contract', async () => {
+    const currentContract = await externallyOwnedAccount.getContract(contract.address);
+    expect(contract.mintWithTokenURI).not.toBe(null);
   });
 });
