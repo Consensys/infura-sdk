@@ -7,14 +7,11 @@
   "scripts": {
     "test": "jest --testPathPattern=test/",
     "test:e2e": "jest --testPathPattern=e2e/",
-    "test:rune2e": "run-s ganache test:e2e killganache",
     "test:coverage": "jest --coverage --coverageReporters='json-summary'",
     "prettier:format": "prettier -- write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "ganache": "ganache --wallet.accountKeysPath e2e/keys.json &",
-    "killganache": "kill $(ps | grep '[g]anache' | cut -d ' ' -f 1)"
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
