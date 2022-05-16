@@ -3,11 +3,12 @@ import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
 loadEnv();
 
-describe('Onchain interaction', () => {
+describe('E2E Test: Basic NFT', () => {
   jest.setTimeout(120 * 1000);
   let externallyOwnedAccount;
   let contractAbstraction;
   let contract;
+  let owner;
   let publicAddress;
   let server;
   const NFTImage = 'https://infura.io/images/404.png';
@@ -21,16 +22,14 @@ describe('Onchain interaction', () => {
     try {
       server = ganache.server(options);
       await server.listen(8545);
-      console.log('ganache listening ...');
-      // grab the first account
-      const keys = require('./keys.json');
-      const acc = Object.keys(keys.addresses)[0];
-      const PRIV_KEY = keys.private_keys[acc];
-      console.log(PRIV_KEY);
-      console.log(acc);
 
-      // grab the second account for publicAddress
-      publicAddress = Object.keys(keys.addresses)[1];
+      // grab the first account
+      const { addresses: addr, private_keys: pk } = require('./keys.json');
+      owner = Object.keys(addr)[0];
+      const PRIV_KEY = pk[owner];
+
+      // grab the second account as publicAddress
+      publicAddress = Object.keys(addr)[1];
 
       // create the apiKey
       const apiKey = Buffer.from(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`).toString(
@@ -54,24 +53,32 @@ describe('Onchain interaction', () => {
     await server.close();
   });
 
-  it('should return the contract abstraction', () => {
+  it('(Implementation) should return the contract abstraction', () => {
     expect(contractAbstraction.deploy).not.toBe(null);
   });
 
-  it('should deploy the contract', async () => {
+  it('As a Contract Owner I should be able to deploy the contract', async () => {
     contract = await contractAbstraction.deploy();
+    console.log(contract);
     expect(contract.address).not.toBeUndefined();
     expect(contract.address).toContain('0x');
+    expect(contract.deployTransaction.from.toLowerCase()).toBe(owner);
   });
 
-  it('should have a name and a symbol', async () => {
+  it('(Implementation) should get contract', async () => {
+    const currentContract = await externallyOwnedAccount.getContract(contract.address);
+    expect(currentContract.mintWithTokenURI).not.toBe(null);
+  });
+
+  it('As a Contract Owner I should provide the name and symbol of the collection', async () => {
     const name = await contract.name();
     const symbol = await contract.symbol();
     expect(name).toBe('name');
     expect(symbol).toBe('symbol');
   });
 
-  it('should mint', async () => {
+  // As a Contract Owner I shoud set the NFT’s metadata at mint time
+  it('As a Contract Owner I should be able to mint a NFT', async () => {
     const mint = await contractAbstraction.mint(publicAddress, NFTImage);
     expect(mint.hash).not.toBeUndefined();
   });
@@ -79,10 +86,5 @@ describe('Onchain interaction', () => {
   it('should return list of NFTs by address', async () => {
     const nfts = await externallyOwnedAccount.getNFTs('0xF69c1883b098d621FC58a42E673C4bF6a6483fFf');
     expect(nfts.assets.length).not.toBe(null);
-  });
-
-  it('should get contract', async () => {
-    const currentContract = await externallyOwnedAccount.getContract(contract.address);
-    expect(contract.mintWithTokenURI).not.toBe(null);
   });
 });
