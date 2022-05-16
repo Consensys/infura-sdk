@@ -1,0 +1,37 @@
+---
+name: Unit Test
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      SECRET_ID: ${{ secrets.SECRET_ID }}
+    strategy:
+      matrix:
+        node-version:
+          - v18.1.0
+          - v16.13.1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - run: |
+          npm ci
+          npm run test
+          npm run test:e2e

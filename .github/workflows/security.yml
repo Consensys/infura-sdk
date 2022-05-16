@@ -1,0 +1,27 @@
+---
+name: Security
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: v18.1.0
+          cache: npm
+
+      - run: |
+          npm ci
+          npm audit

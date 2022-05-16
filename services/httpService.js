@@ -1,0 +1,31 @@
+/*!
+ * Copyright(c) ConsenSys Software Inc.
+ * Copyright(c) https://consensys.net/
+ * MIT Licensed
+ */
+
+/* eslint-disable */
+
+import axios from 'axios';
+
+export class HttpService {
+  constructor(baseURL, apiKey) {
+    if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
+    if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');
+
+    this.instance = axios.create({
+      baseURL: baseURL,
+      headers: {
+        Authorization: `Basic ${apiKey}`,
+      },
+    });
+  }
+
+  async get(uri) {
+    return axios.get(uri);
+  }
+
+  async post(uri, params) {
+    return axios.post(uri, params);
+  }
+}

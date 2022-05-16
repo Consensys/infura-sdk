@@ -1,0 +1,43 @@
+{
+  "name": "consensys-sdk",
+  "version": "1.0.0",
+  "description": "Consensys SDK",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --testPathPattern=test/",
+    "test:e2e": "jest --testPathPattern=e2e/",
+    "test:coverage": "jest --coverage --coverageReporters='json-summary'",
+    "prettier:format": "prettier -- write \"*.js\" ",
+    "prettier:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConsenSys/nft-sdk.git"
+  },
+  "author": "Consensys Inc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ConsenSys/nft-sdk/issues"
+  },
+  "homepage": "https://github.com/ConsenSys/nft-sdk#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.17.10",
+    "@babel/preset-env": "^7.17.10",
+    "babel-jest": "^28.1.0",
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "ethers": "^5.6.5",
+    "ganache": "^7.0.0",
+    "jest": "^28.1.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2"
+  }
+}
