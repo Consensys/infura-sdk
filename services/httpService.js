@@ -22,10 +22,10 @@ export class HttpService {
   }
 
   async get(uri) {
-    return axios.get(uri);
+    return this.instance.get(uri);
   }
 
   async post(uri, params) {
-    return axios.post(uri, params);
+    return this.instance.post(uri, params);
   }
 }

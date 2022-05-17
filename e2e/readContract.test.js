@@ -35,7 +35,16 @@ describe('E2E Test: Basic NFT (read)', () => {
       const contract = await externallyOwnedAccount.getContractAbstraction(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint']);
+      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol']);
+    });
+  });
+
+  describe('As an account I should be able to get the collection symbol using the contract abstraction', () => {
+    it('should return the collection symbol', async () => {
+      const contract = await externallyOwnedAccount.getContractAbstraction(
+        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+      );
+      expect(await contract.getSymbol()).toEqual('TST');
     });
   });
 });
