@@ -5,6 +5,7 @@
  */
 
 import { ExternallyOwnedAccount } from './lib/NFT/externallyOwnedAccount.js';
+import { TEMPLATES } from './lib/NFT/contracts/templates.js';
 
 export * from './lib/NFT/externallyOwnedAccount.js';
 export default {
