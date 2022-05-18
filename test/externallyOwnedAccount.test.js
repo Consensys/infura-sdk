@@ -4,7 +4,9 @@ loadEnv();
 
 describe('ExternallyOwnedAccount', () => {
   jest.setTimeout(120 * 1000);
-  let contract;
+  let contractAbstraction;
+
+  const NFTImage = 'https://infura.io/images/404.png';
 
   it('should throw when args are missing (privateKey)', async () => {
     expect(() => {
@@ -36,41 +38,15 @@ describe('ExternallyOwnedAccount', () => {
     }).toThrow('[ExternallyOwnedAccount.constructor] rpcUrl is missing!');
   });
 
-  it('should create smart contract', async () => {
-    const externallyOwnedAccount = new ExternallyOwnedAccount({
-      privateKey: process.env.PRIVATE_KEY,
-      apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
-      rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
-      chainId: '4',
-    });
-    contract = await externallyOwnedAccount.createSmartContract('name', 'symbol');
-    expect(contract.address).not.toBe(null);
-  });
-
-  it('should return list of NFTs by address', async () => {
-    const externallyOwnedAccount = new ExternallyOwnedAccount({
-      privateKey: process.env.PRIVATE_KEY,
-      apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
-      rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
-      chainId: '4',
-    });
-    const nfts = await externallyOwnedAccount.getNFTs('0xF69c1883b098d621FC58a42E673C4bF6a6483fFf');
-
-    expect(nfts.assets.length).not.toBe(null);
-  });
-
-  it('should mint Nfts inside an existing contract', async () => {
-    const externallyOwnedAccount = new ExternallyOwnedAccount({
-      privateKey: process.env.PRIVATE_KEY,
-      apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
-      rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
-      chainId: '4',
-    });
-    const nfts = await externallyOwnedAccount.mintNft({
-      contractAddress: contract.address,
-      publicAddress: process.env.PUBLIC_ADDRESS,
-      NFTUrl: 'https://infura.io/images/404.png',
-    });
-    expect(nfts.hash).not.toBe(null);
-  });
+  // Test present in E2E using Ganache instead of rinkeby
+  // it('should create smart contract', async () => {
+  //   const externallyOwnedAccount = new ExternallyOwnedAccount({
+  //     privateKey: process.env.PRIVATE_KEY,
+  //     apiKey: btoa(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`),
+  //     rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
+  //     chainId: '4',
+  //   });
+  //   contract = await externallyOwnedAccount.createSmartContract('name', 'symbol');
+  //   expect(contract.address).not.toBe(null);
+  // });
 });

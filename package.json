@@ -5,13 +5,14 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --testPathPattern=test/",
+    "test:e2e": "jest --testPathPattern=e2e/",
     "test:coverage": "jest --coverage --coverageReporters='json-summary'",
     "prettier:format": "prettier -- write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "check-branch-name": "chmod 755 ./hooks/check-branch-name.sh && sh ./hooks/check-branch-name.sh"
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -35,8 +36,15 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "ethers": "^5.6.5",
+    "ganache": "^7.0.0",
+    "husky": "^7.0.0",
     "jest": "^28.1.0",
+    "lint-staged": "^12.4.1",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.6.2"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }

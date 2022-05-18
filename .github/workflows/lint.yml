@@ -5,10 +5,9 @@ on:
   push:
     branches:
       - main
-      - dev
   pull_request:
     branches:
-      - dev
+      - main
 
 jobs:
   lint:
@@ -22,8 +21,8 @@ jobs:
           node-version: v18.1.0
           cache: npm
 
-      - run: |
-          npm install
+      - name: Install packages
+        run: npm ci
 
       - uses: reviewdog/action-eslint@v1
         with:
