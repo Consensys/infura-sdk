@@ -35,7 +35,7 @@ describe('E2E Test: Basic NFT (read)', () => {
       const contract = await externallyOwnedAccount.getContractAbstraction(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol']);
+      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getNFTs']);
     });
   });
 
@@ -45,6 +45,16 @@ describe('E2E Test: Basic NFT (read)', () => {
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
       expect(await contract.getSymbol()).toEqual('TST');
+    });
+  });
+
+  describe('As contract account I should be able to get the list of nfts that i created', () => {
+    it('should return list of nfts for given contract', async () => {
+      const contract = await externallyOwnedAccount.getContractAbstraction(
+        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+      );
+      const nfts = await contract.getNFTs();
+      expect(nfts.assets.length).not.toBe(null);
     });
   });
 });
