@@ -82,9 +82,4 @@ describe('E2E Test: Basic NFT', () => {
     const mint = await contractAbstraction.mint(publicAddress, NFTImage);
     expect(mint.hash).not.toBeUndefined();
   });
-
-  it('should return list of NFTs by address', async () => {
-    const nfts = await externallyOwnedAccount.getNFTs('0xF69c1883b098d621FC58a42E673C4bF6a6483fFf');
-    expect(nfts.assets.length).not.toBe(null);
-  });
 });
