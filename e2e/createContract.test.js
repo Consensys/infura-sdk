@@ -10,6 +10,7 @@ describe('Onchain interaction', () => {
   let contract;
   let publicAddress;
   let server;
+  let deployTransaction;
   const NFTImage = 'https://infura.io/images/404.png';
 
   beforeAll(async () => {
@@ -60,8 +61,10 @@ describe('Onchain interaction', () => {
 
   it('should deploy the contract', async () => {
     contract = await contractAbstraction.deploy();
+    deployTransaction = await contract.deployTransaction.wait();
     expect(contract.address).not.toBeUndefined();
     expect(contract.address).toContain('0x');
+    expect(deployTransaction.confirmations).toBeGreaterThanOrEqual(1);
   });
 
   it('should have a name and a symbol', async () => {
