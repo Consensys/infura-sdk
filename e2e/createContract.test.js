@@ -76,7 +76,11 @@ describe('Onchain interaction', () => {
 
   it('should mint', async () => {
     const mint = await contractAbstraction.mint(publicAddress, NFTImage);
+    const mintdata = await mint.wait();
     expect(mint.hash).not.toBeUndefined();
+    expect(mintdata.confirmations).toBeGreaterThanOrEqual(1);
+    const owner = await contract.ownerOf(0);
+    expect(owner.toLowerCase()).toBe(publicAddress.toLowerCase());
   });
 
   it('should return list of NFTs by address', async () => {
@@ -86,6 +90,6 @@ describe('Onchain interaction', () => {
 
   it('should get contract', async () => {
     const currentContract = await externallyOwnedAccount.getContract(contract.address);
-    expect(contract.mintWithTokenURI).not.toBe(null);
+    expect(currentContract.mintWithTokenURI).not.toBe(null);
   });
 });
