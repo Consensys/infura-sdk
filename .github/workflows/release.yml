@@ -8,7 +8,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: khan/pull-request-comment-trigger@v1.1.0
@@ -18,37 +18,20 @@ jobs:
           reaction: rocket
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - uses: actions/checkout@v3
-        if: steps.check.outputs.triggered == 'true'
-      - uses: actions/setup-node@v3
-        if: steps.check.outputs.triggered == 'true'
-        with:
-          node-version: v18.1.0
-          cache: npm
-      - name: Install packages
-        if: steps.check.outputs.triggered == 'true'
-        run: npm ci --ignore-scripts
-      - name: Run unit tests
-        if: steps.check.outputs.triggered == 'true'
-        run: npm test
-      - name: Run E2E tests
-        if: steps.check.outputs.triggered == 'true'
-        run: npm test:e2e
-  
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v2
+        if: steps.check.outputs.triggered == 'true'
 
       - uses: actions/setup-node@v2
+        if: steps.check.outputs.triggered == 'true'
         with:
           node-version: v18.1.0
           cache: npm
 
       - name: Install packages
+        if: steps.check.outputs.triggered == 'true'
         run: npm ci
       - name: Publish with Verdaccio
+        if: steps.check.outputs.triggered == 'true'
         uses: verdaccio/github-actions/publish@master
         with:
           args: -d
