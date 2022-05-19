@@ -2,16 +2,21 @@
 name: Release
 
 on:
-  issue_comment:                                     
+  pull_request:
+    types: [opened]
+  issue_comment:
     types: [created]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: |
-      (contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/release'))
     steps:
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: '/release'
       - uses: actions/checkout@v3
+        if: steps.check.outputs.triggered == 'true'
       - uses: actions/setup-node@v3
         with:
           node-version: v18.1.0
