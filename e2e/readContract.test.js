@@ -35,7 +35,7 @@ describe('E2E Test: Basic NFT (read)', () => {
       const contract = await externallyOwnedAccount.getContractAbstraction(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol']);
+      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getOwnerOf']);
     });
   });
 
