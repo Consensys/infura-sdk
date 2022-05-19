@@ -77,7 +77,7 @@ describe('ExternallyOwnedAccount', () => {
       const contract = await account.getContractAbstraction(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol']);
+      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getOwnerOf']);
     });
   });
 
@@ -117,6 +117,33 @@ describe('ExternallyOwnedAccount', () => {
       await contract.deploy();
 
       expect(await contract.getSymbol()).toStrictEqual('SYMB');
+    });
+  });
+
+  describe('_getOwnerOf', () => {
+    it('should return public address for TokenId', async () => {
+      const account = new ExternallyOwnedAccount({
+        privateKey: 'privatekey',
+        apiKey: 'apikey',
+        rpcUrl: process.env.RPC_URL,
+      });
+
+      jest.spyOn(ethers.utils, 'isAddress').mockReturnValueOnce(true);
+
+      jest.spyOn(ExternallyOwnedAccount.prototype, 'getContract').mockImplementationOnce(() => ({
+        name: jest.fn().mockResolvedValue('testName'),
+        symbol: jest.fn().mockResolvedValue('SYMB'),
+      }));
+
+      jest.spyOn(ExternallyOwnedAccount.prototype, '_getOwnerOf').mockImplementationOnce(() => 1);
+
+      const contract = await account.getContractAbstraction(
+        '0x6ce3087DAF88Cd63BAD30f385FF622845BeeFb3A',
+      );
+
+      const ownerOf = await contract.getOwnerOf(1);
+
+      await expect(ownerOf).not.toBe(null);
     });
   });
 
