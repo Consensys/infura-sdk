@@ -77,7 +77,7 @@ describe('Onchain interaction', () => {
   });
 
   it('should return list of NFTs by address', async () => {
-    const nfts = await externallyOwnedAccount.getNFTs('0xF69c1883b098d621FC58a42E673C4bF6a6483fFf');
+    const nfts = await externallyOwnedAccount.getNFTs(publicAddress);
     expect(nfts.assets.length).not.toBe(null);
   });
 
