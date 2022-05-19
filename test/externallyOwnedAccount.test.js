@@ -76,7 +76,7 @@ describe('ExternallyOwnedAccount', () => {
       const contract = await account.getContractAbstraction(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getNFTs']);
+      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getNFTs', 'getName']);
     });
   });
 
@@ -85,12 +85,12 @@ describe('ExternallyOwnedAccount', () => {
       const account = new ExternallyOwnedAccount({
         privateKey: 'privatekey',
         apiKey: 'apikey',
-        rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
+        rpcUrl: process.env.RPC_URL,
       });
 
       const contract = account.createSmartContract('TestContract', 'SYMB');
 
-      await expect(contract.getSymbol(null)).rejects.toThrowError(
+      await expect(contract.getSymbol()).rejects.toThrowError(
         new Error('[Contract.getSymbol] You have to deploy the contract!'),
       );
     });
@@ -109,7 +109,7 @@ describe('ExternallyOwnedAccount', () => {
       const account = new ExternallyOwnedAccount({
         privateKey: 'privatekey',
         apiKey: 'apikey',
-        rpcUrl: 'https://rinkeby.infura.io/v3/86d4a35c8d7b4509983f9f6d0623656f',
+        rpcUrl: process.env.RPC_URL,
       });
 
       const contract = account.createSmartContract('TestContract', 'SYMB');
@@ -145,6 +145,46 @@ describe('ExternallyOwnedAccount', () => {
       expect(nfts.assets.length).not.toBe(null);
     });
   });
+
+  describe('_getName', () => {
+    it('should throw when the contract is not deployed', async () => {
+      const account = new ExternallyOwnedAccount({
+        privateKey: 'privatekey',
+        apiKey: 'apikey',
+        rpcUrl: process.env.RPC_URL,
+      });
+
+      const contract = account.createSmartContract('TestContract', 'SYMB');
+
+      await expect(contract.getName()).rejects.toThrowError(
+        new Error('[Contract.getName] You have to deploy the contract!'),
+      );
+    });
+
+    it('should return the collection name', async () => {
+      jest.spyOn(HttpService.prototype, 'get').mockResolvedValueOnce({
+        data: {
+          name: 'testContract',
+        },
+      });
+
+      jest.spyOn(ethers.ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        address: '0x97ed63533c9f4f50521d78e58caeb94b175f5d35',
+        deployed: jest.fn(),
+      }));
+      const account = new ExternallyOwnedAccount({
+        privateKey: 'privatekey',
+        apiKey: 'apikey',
+        rpcUrl: process.env.RPC_URL,
+      });
+
+      const contract = account.createSmartContract('testContract', 'SYMB');
+      await contract.deploy();
+
+      expect(await contract.getName()).toStrictEqual('testContract');
+    });
+  });
+
   // Test present in E2E using Ganache instead of rinkeby
   // it('should create smart contract', async () => {
   //   const externallyOwnedAccount = new ExternallyOwnedAccount({
