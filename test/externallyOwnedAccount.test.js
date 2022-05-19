@@ -4,7 +4,6 @@ import { ExternallyOwnedAccount } from '../lib/NFT/externallyOwnedAccount';
 import { HttpService } from '../services/httpService';
 
 loadEnv();
-
 jest.mock('ethers');
 
 describe('ExternallyOwnedAccount', () => {
@@ -77,7 +76,7 @@ describe('ExternallyOwnedAccount', () => {
       const contract = await account.getContractAbstraction(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol']);
+      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getNFTs']);
     });
   });
 
@@ -120,6 +119,32 @@ describe('ExternallyOwnedAccount', () => {
     });
   });
 
+  describe('getContractNfts', () => {
+    it('should return the list of nfts for a contract', async () => {
+      const account = new ExternallyOwnedAccount({
+        privateKey: 'privatekey',
+        apiKey: 'apikey',
+        rpcUrl: `https://rinkeby.infura.io/v3/${process.env.PROJECT_ID}`,
+      });
+      jest.spyOn(ethers.utils, 'isAddress').mockReturnValueOnce(true);
+
+      jest.spyOn(ExternallyOwnedAccount.prototype, 'getContract').mockImplementationOnce(() => ({
+        name: jest.fn().mockResolvedValue('testName'),
+        symbol: jest.fn().mockResolvedValue('SYMB'),
+      }));
+
+      jest
+        .spyOn(ExternallyOwnedAccount.prototype, '_getNFTs')
+        .mockImplementationOnce(() => ({ assets: [] }));
+
+      const contract = await account.getContractAbstraction(
+        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+      );
+
+      const nfts = await contract.getNFTs();
+      expect(nfts.assets.length).not.toBe(null);
+    });
+  });
   // Test present in E2E using Ganache instead of rinkeby
   // it('should create smart contract', async () => {
   //   const externallyOwnedAccount = new ExternallyOwnedAccount({
