@@ -2,36 +2,26 @@
 name: Release
 
 on:
-  pull_request:
-    types: [opened]
   issue_comment:
     types: [created]
 
 jobs:
   release:
+    if: |
+      contains(github.event.comment.html_url, '/pull/') &&
+      contains(github.event.comment.body, '#release')
     runs-on: ubuntu-latest
     steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '/release'
-          reaction: rocket
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
       - uses: actions/checkout@v2
-        if: steps.check.outputs.triggered == 'true'
-
       - uses: actions/setup-node@v2
-        if: steps.check.outputs.triggered == 'true'
         with:
           node-version: v18.1.0
           cache: npm
 
       - name: Install packages
-        if: steps.check.outputs.triggered == 'true'
         run: npm ci
+      
       - name: Publish with Verdaccio
-        if: steps.check.outputs.triggered == 'true'
         uses: verdaccio/github-actions/publish@master
         with:
           args: -d
