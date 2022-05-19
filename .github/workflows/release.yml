@@ -6,10 +6,10 @@ on:
     types: [created]
 
 jobs:
-  if: |
-    (contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/release'))
   build:
     runs-on: ubuntu-latest
+    if: |
+      (contains(github.event.comment.html_url, '/pull/') && contains(github.event.comment.body, '/release'))
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
