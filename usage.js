@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 
-import { Auth, NFT, MultiNFT, Utils, Token, DAO, Gas } from '@infura/sdk';
+import { Auth, SDK, TEMPLATE } from '@infura/sdk';
 
 /**
  * Authentication object
@@ -15,54 +15,41 @@ import { Auth, NFT, MultiNFT, Utils, Token, DAO, Gas } from '@infura/sdk';
  */
 
 const account = new Auth({
-  provider: ethers.providers.Web3Provider() || rpcUrl,
-  signer: ethers.Signer() || 'privatekeystringsuperlonguesarace' || '',
-  chainId: 1 | null,
+  privateKey: 'privatekeystringsuperlonguesarace',
   apiKey: 'keytoconnecttoreadAPI',
-  // infuraProjectID: "keytoconnecttoreadAPI", not sure it will be used as it will be present in rpcUrl
-  // infuraProjectSecret: "keytoconnecttoreadAPI", not sure how it will be used
+  rpcUrl: rpcUrl,
   // IPFSProjectID
   // IPFSProjectSecret
 });
 
-// additional methods
-account.getNFTs(); // my NFT
-account.getNFTs(address); // get NFT for provided address
-
 /**
- * NFT - Basic
+ * Read
  */
 
-const myNFTBasic = new NFT({ Auth });
-const BasicContractDeployed = myNFTBasic.deploy({
-  name: 'name',
-  symbol: 'symbol',
-});
-const txReceiptBasic = BasicContractDeployed.mint(address, MetadataURI);
-// contract deployed => we can interact with all contract features, methods, ....
+const BAYC = '0x0272080AB9269C730EF802';
+const contractToRead = SDK(account).read(BAYC);
 
-BasicContractDeployed.name(); // 'name'
-BasicContractDeployed.symbol(); // 'symbol'
-BasicContractDeployed.grant(address, 'role');
-BasicContractDeployed.getOwner(txReceiptBasicMint.tokenID);
+contractToRead.getNFTFromCollection();
+contractToRead.getContractMetadata();
+contractToRead.getAllNFTsWihMetadata();
+contractToRead.getOwnerOf(tokenId);
 
 /**
- * NFT - Multi
+ * WRITE
  */
 
-const myMultiNFT = new MultiNFT({ Auth });
-const MultiContractDeployed = myMultiNFT.deploy({
-  name: 'name',
-  symbol: 'symbol',
-  max_supply: 100,
+const { receipt, address } = SDK(account).deploy({
+  template: TEMPLATE.ERC721Mintable,
+  name: 'Cool Contract',
+  symbol: 'CC',
+  contractURI: 'ipfs://...',
+  royaltyPayee: '0x...',
+  royaltyShare: '5',
 });
 
-const txReceiptMulti = MultiContractDeployed.mint(address, MetadataURI);
-// contract deployed => we can interact with all contract features, methods, ....
+const metadataUri = 'ipfs://...';
+const contractToInteract = SDK(account).interact(address);
 
-MultiContractDeployed.name(); // 'name'
-MultiContractDeployed.symbol(); // 'symbol'
-MultiContractDeployed.maxSupply(); // 100
-MultiContractDeployed.grant(address, 'role');
-MultiContractDeployed.getOwner(txReceipt);
-MultiContractDeployed.getSupply(); // 99
+const tokenId = contractToInteract.mint(to, metadataUri);
+contractToInteract.updateRoyalty('10');
+contractToInteract.transfer(to);
