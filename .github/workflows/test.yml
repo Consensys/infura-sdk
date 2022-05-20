@@ -1,22 +1,17 @@
 ---
-name: Unit Test
+name: Test
 
 on:
   push:
     branches:
       - main
-      - dev
   pull_request:
     branches:
-      - dev
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-      PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      SECRET_ID: ${{ secrets.SECRET_ID }}
     strategy:
       matrix:
         node-version:
@@ -31,7 +26,18 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
 
-      - run: |
-          npm ci
-          npm run test
-          npm run test:e2e
+      - name: Install packages
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+
+      - name: Run e2e tests
+        run: npm run test:e2e
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SECRET_ID: ${{ secrets.SECRET_ID }}
+          RPC_URL: ${{ secrets.RPC_URL }}

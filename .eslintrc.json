@@ -1,7 +1,8 @@
 {
   "env": {
     "node": true,
-    "es2021": true
+    "es2021": true,
+    "jest": true
   },
   "extends": ["airbnb-base"],
   "parserOptions": {
@@ -28,6 +29,8 @@
         "ignoreRestSiblings": true
       }
     ],
-    "import/extensions": ["error", "always", { "ignorePackages": true }]
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never"
+    }]
   }
 }
