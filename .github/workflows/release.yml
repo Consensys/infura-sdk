@@ -2,17 +2,16 @@
 name: Release
 
 on:
-  issue_comment:
-    types: [created]
+  push:
+    tags:
+      - v*.*.*
 
 jobs:
   release:
-    if: |
-      contains(github.event.comment.html_url, '/pull/') &&
-      contains(github.event.comment.body, '#release')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        
       - uses: actions/setup-node@v2
         with:
           node-version: v18.1.0
@@ -20,19 +19,51 @@ jobs:
 
       - name: Install packages
         run: npm ci
+
+      - name: Lint
+        uses: reviewdog/action-eslint@v1
+        with:
+          reporter: github-check
+
+      - name: Unit tests
+        run: npm run test
+        env:
+          RPC_URL: ${{ secrets.RPC_URL }}
+
+      - name: e2e tests
+        run: npm run test:e2e
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SECRET_ID: ${{ secrets.SECRET_ID }}
+          RPC_URL: ${{ secrets.RPC_URL }}
       
-      - name: Publish with Verdaccio
+      - name: Audit
+        run: npm audit
+
+      - name: Publish on Verdaccio
         uses: verdaccio/github-actions/publish@master
         with:
           args: -d
-      # - name: Set up auth for npm publish
-      #   run: npm config set '//registry.npmjs.org/:_authToken' "${NPM_TOKEN}"
+
+      # uncomment to publish publicly
+      # - name: Publish on NPM
+      #   run: |
+      #     echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+      #     npm publish --registry https://registry.npmjs.org/
       #   env:
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Release to npm
-      #   run: npm publish
-      #   env:
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # TODO add documentation update
-      # TODO update version info & git push
-      # TODO add git release?
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # bump version manually (e.g., before creating the tag)
+      # - name: Setup git info
+      #   run: |
+      #     git config --global user.email "johannbich@gmail.com"
+      #     git config --global user.name "kalote"
+
+      # - name: Bump npm version
+      #   run: npm version ${{ github.ref_name }} -m "bump version to %s"
+
+      # - name: Commit version 
+      #   run: |
+      #     git status
+      #     git push
