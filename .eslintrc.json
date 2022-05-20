@@ -29,6 +29,7 @@
         "ignoreRestSiblings": true
       }
     ],
+    "object-curly-newline": "off",
     "import/extensions": ["error", "ignorePackages", {
       "js": "never"
     }]
