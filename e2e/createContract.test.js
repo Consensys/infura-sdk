@@ -13,6 +13,7 @@ describe('E2E Test: Basic NFT', () => {
   let owner;
   let publicAddress;
   let server;
+  let deployTransaction;
   const NFTImage = 'https://infura.io/images/404.png';
 
   beforeAll(async () => {
@@ -59,10 +60,11 @@ describe('E2E Test: Basic NFT', () => {
 
   it('As a Contract Owner I should be able to deploy the contract', async () => {
     contract = await contractAbstraction.deploy();
-
+    deployTransaction = await contract.deployTransaction.wait();
     expect(contract.address).not.toBeUndefined();
     expect(contract.address).toContain('0x');
-    expect(contract.deployTransaction.from.toLowerCase()).toBe(owner);
+    expect(deployTransaction.confirmations).toBeGreaterThanOrEqual(1);
+    expect(deployTransaction.from.toLowerCase()).toBe(owner);
   });
 
   it('(Implementation) should get contract', async () => {
@@ -80,6 +82,20 @@ describe('E2E Test: Basic NFT', () => {
   // As a Contract Owner I shoud set the NFT’s metadata at mint time
   it('As a Contract Owner I should be able to mint a NFT', async () => {
     const mint = await contractAbstraction.mint(publicAddress, NFTImage);
+    const mintdata = await mint.wait();
     expect(mint.hash).not.toBeUndefined();
+    expect(mintdata.confirmations).toBeGreaterThanOrEqual(1);
+    const owner = await contract.ownerOf(0);
+    expect(owner.toLowerCase()).toBe(publicAddress.toLowerCase());
+  });
+
+  it('should return list of NFTs by address', async () => {
+    const nfts = await externallyOwnedAccount.getNFTs(publicAddress);
+    expect(nfts.assets.length).not.toBe(null);
+  });
+
+  it('should get contract', async () => {
+    const currentContract = await externallyOwnedAccount.getContract(contract.address);
+    expect(currentContract.mintWithTokenURI).not.toBe(null);
   });
 });
