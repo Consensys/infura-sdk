@@ -56,6 +56,7 @@ await sdk.getERC20Balance(publicAddress); // mvp
  * WRITE
  * Deploy returns a ERC721Mintable class that you can interact with
  * deploy and getContractFromAddress returns the same type (ERC721Mintable)
+ * ~10 write operations
  */
 
 const contractObject = await sdk.deploy({
@@ -76,9 +77,9 @@ const contractObject2 = await sdk.getContractFromAddress({
 
 const metadataUri = 'ipfs://...';
 const to = '0x655ED967A80';
-const sharePercent = '10';
+const sharePercent = 10;
 
-// event with
+// event txId ? wait until it's done (can be long)
 const event = await contractObject.mint(to, metadataUri);
 await contractObject.setRoyalties(to, share);
 await contractObject.transfer(to);
