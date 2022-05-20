@@ -1,7 +1,7 @@
 {
-  "name": "consensys-sdk",
-  "version": "1.0.0",
-  "description": "Consensys SDK",
+  "name": "@infura/sdk",
+  "version": "0.1.0",
+  "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,19 @@
     "url": "https://github.com/ConsenSys/nft-sdk/issues"
   },
   "homepage": "https://github.com/ConsenSys/nft-sdk#readme",
+  "keywords": [
+    "infura",
+    "sdk",
+    "ethereum",
+    "evm",
+    "blockchain",
+    "smart contracts",
+    "dapps",
+    "solidity",
+    "nft",
+    "web3",
+    "tooling"
+  ],
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.1"
