@@ -4,9 +4,12 @@
  * MIT Licensed
  */
 
-import { ExternallyOwnedAccount } from './lib/NFT/externallyOwnedAccount.js';
+import SDK from './lib/SDK/index';
+import Auth from './lib/Auth/index';
+import { TEMPLATES } from './lib/NFT/constants';
 
-export * from './lib/NFT/externallyOwnedAccount.js';
 export default {
-  ExternallyOwnedAccount,
+  SDK,
+  Auth,
+  TEMPLATES,
 };
