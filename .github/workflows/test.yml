@@ -35,6 +35,8 @@ jobs:
         run: npm run test
         env:
           RPC_URL: ${{ secrets.RPC_URL }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          SECRET_ID: ${{ secrets.SECRET_ID }}
 
       - name: Run e2e tests
         run: npm run test:e2e
