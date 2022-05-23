@@ -9,7 +9,7 @@
 import axios from 'axios';
 
 export class HttpService {
-  constructor(baseURL, apiKey) {
+  constructor(baseURL, apiKey, apiVersion = 1) {
     if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
     if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');
 
@@ -17,12 +17,18 @@ export class HttpService {
       baseURL: baseURL,
       headers: {
         Authorization: `Basic ${apiKey}`,
+        'X-Csi-Version': apiVersion,
       },
     });
   }
 
   async get(uri) {
-    return this.instance.get(uri);
+    try {
+      const response = await this.instance.get(uri);
+      return response;
+    } catch (error) {
+      throw new Error(err).stack;
+    }
   }
 
   async post(uri, params) {
