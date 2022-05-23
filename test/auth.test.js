@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
-import Auth from '../lib/Auth';
+import Auth from '../lib/Auth/Auth';
 
 loadEnv();
 
@@ -54,20 +54,20 @@ describe('Auth', () => {
     ).toThrow('[Auth.constructor] chainId is missing!');
   });
 
+  it('should throw when chainId is not supported', () => {
+    expect(
+      () =>
+        new Auth({
+          privateKey: 'privateKey',
+          projectId: process.env.PROJECT_ID,
+          secretId: process.env.SECRET_ID,
+          rpcUrl: process.env.RPC_URL,
+          chainId: 6,
+        }),
+    ).toThrow('[Auth.constructor] chainId: 6 is not supported!');
+  });
+
   describe('getProvider', () => {
-    it('Should throw and error when this.rpcUrl is null and injectedProvider params is undefined ', () => {
-      const account = new Auth({
-        privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        chainId: 4,
-      });
-
-      expect(() => account.getProvider()).toThrow(
-        '[Auth.getProvider] You need to pass an rpcUrl to the constructor or pass an injected provider to this function!',
-      );
-    });
-
     it("Should return default provider when we don't pass the injectedProvider parameter", () => {
       const account = new Auth({
         privateKey: 'privateKey',
@@ -81,8 +81,10 @@ describe('Auth', () => {
         new ethers.providers.getDefaultProvider(process.env.RPC_URL),
       );
     });
+  });
 
-    it('Should return Web3Provider when we pass the injectedProvider parameter', () => {
+  describe('setInjectedProvider', () => {
+    it("Should throw when we don't pass the injectedProvider parameter", () => {
       const account = new Auth({
         privateKey: 'privateKey',
         projectId: process.env.PROJECT_ID,
@@ -91,24 +93,26 @@ describe('Auth', () => {
         chainId: 4,
       });
 
-      expect(account.getProvider(ethers.providers.Provider)).toStrictEqual(
+      expect(() => account.setInjectedProvider()).toThrow(
+        '[Auth.setInjectedProvider] You need to pass an injected provider to this function!',
+      );
+    });
+    it("Should return default provider when we don't pass the injectedProvider parameter", () => {
+      const account = new Auth({
+        privateKey: 'privateKey',
+        projectId: process.env.PROJECT_ID,
+        secretId: process.env.SECRET_ID,
+        rpcUrl: process.env.RPC_URL,
+        chainId: 4,
+      });
+
+      expect(account.setInjectedProvider(ethers.providers.Provider)).toStrictEqual(
         new ethers.providers.Web3Provider(ethers.providers.Provider),
       );
     });
   });
 
   describe('getSigner', () => {
-    it('should throw when provider has not been set', () => {
-      const account = new Auth({
-        privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
-      });
-      expect(() => account.getSigner()).toThrow('[Auth.getSigner] You need to set a provider');
-    });
-
     it('should return the signer', () => {
       const privateKey = '0xb40c8233a0c61ddf064e83b0cc29522b1e6ac6166965861fbc6cefdecbf53d63';
       const account = new Auth({
