@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
-import { ExternallyOwnedAccount } from '../lib/NFT/externallyOwnedAccount';
+import { ExternallyOwnedAccount } from '../lib/NFT/externallyOwnedAccount.js';
 
 loadEnv();
 

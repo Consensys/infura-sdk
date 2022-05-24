@@ -36,12 +36,12 @@ describe('E2E Test: Basic NFT (write)', () => {
     const contractObject = await sdk.deploy({
       template: TEMPLATES.NFTContractCollection,
       params: {
-        name: 'Cool Contract', // mandatory
-        symbol: 'CC', // optional
-        contractURI: 'ipfs://...', // optional
+        name: 'Cool Contract',
+        symbol: 'CC',
+        contractURI: 'ipfs://...',
       },
     });
 
-    expect(contractObject.address).not.ToBe(null);
+    expect(contractObject).not.toBe(null);
   });
 });
