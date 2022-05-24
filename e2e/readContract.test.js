@@ -1,5 +1,8 @@
 import { config as loadEnv } from 'dotenv';
 import { ExternallyOwnedAccount } from '../lib/NFT/externallyOwnedAccount';
+import { HttpService } from '../services/httpService';
+import Auth from '../lib/Auth';
+import NFT_API_URL from '../lib/NFT/constants';
 
 loadEnv();
 
@@ -55,6 +58,38 @@ describe('E2E Test: Basic NFT (read)', () => {
       );
       const nfts = await contract.getNFTs();
       expect(nfts.assets.length).not.toBe(null);
+    });
+  });
+});
+
+//Use Auth
+describe('E2E Test: Basic NFT (read) Using Auth', () => {
+  jest.setTimeout(120 * 1000);
+  let account;
+  let httpClient;
+
+  beforeAll(async () => {
+    account = new Auth({
+      privateKey: 'PRIV_KEY',
+      projectId: process.env.PROJECT_ID,
+      secretId: process.env.SECRET_ID,
+      chainId: 4,
+      rpcUrl: 'http://0.0.0.0:8545',
+    });
+
+    httpClient = new HttpService(NFT_API_URL, account.getApiAuth());
+  });
+
+  describe('Given a valid Auth, I should be able to get the list of NFTs by address', () => {
+    it('should return list of NFTs by address', async () => {
+      const apiUrl = `${NFT_API_URL}/api/v1/networks/${account.getChainId()}/nfts/collection/0xF69c1883b098d621FC58a42E673C4bF6a6483fFf`;
+
+      try {
+        const { data } = await httpClient.get(apiUrl);
+        expect(data.assets.length).not.toBe(null);
+      } catch (error) {
+        throw new Error(error).stack;
+      }
     });
   });
 });
