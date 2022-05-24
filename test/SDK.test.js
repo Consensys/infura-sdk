@@ -29,11 +29,14 @@ describe('SDK', () => {
     jest.spyOn(account, 'getSigner').mockImplementation(() => ({}));
 
     account.getProvider();
-
-    sdk = new SDK(account);
   });
 
-  it('should return correct template', async () => {
+  it('should create SDK instance', () => {
+    sdk = new SDK(account);
+    expect(sdk).not.toBe(null);
+  });
+
+  it('should return contract', async () => {
     jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
       deploy: () => ({
         address: 'contractAdress',
@@ -58,10 +61,24 @@ describe('SDK', () => {
       }),
     }));
 
-    const t = async () =>
+    const contract = async () =>
       // eslint-disable-next-line implicit-arrow-linebreak
       sdk.deploy({ template: TEMPLATES.NFTContractCollection, params: { name: null } });
 
-    expect(t).rejects.toThrow('Name is mandatory');
+    expect(contract).rejects.toThrow('Name is mandatory.');
+  });
+
+  it('should return error if template is not provided', async () => {
+    jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
+      deploy: () => ({
+        address: 'contractAdress',
+      }),
+    }));
+
+    const contract = async () =>
+      // eslint-disable-next-line implicit-arrow-linebreak
+      sdk.deploy({ template: null, params: { name: null } });
+
+    expect(contract).rejects.toThrow('The template type is mandatory.');
   });
 });
