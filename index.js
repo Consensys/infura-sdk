@@ -4,9 +4,9 @@
  * MIT Licensed
  */
 
-import SDK from './lib/SDK/index';
-import Auth from './lib/Auth/index';
-import { TEMPLATES } from './lib/NFT/constants';
+import SDK from './lib/SDK/index.js';
+import Auth from './lib/Auth/index.js';
+import { TEMPLATES } from './lib/NFT/constants.js';
 
 export default {
   SDK,
