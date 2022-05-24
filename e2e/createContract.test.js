@@ -2,8 +2,12 @@
 import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
 import { ExternallyOwnedAccount } from '../lib/NFT/externallyOwnedAccount';
+import { ethers } from 'ethers';
+import fs from 'fs';
+import Auth from '../lib/Auth';
 
 loadEnv();
+const smartContractArtifact = JSON.parse(fs.readFileSync('ERC721.json'));
 
 describe('E2E Test: Basic NFT', () => {
   jest.setTimeout(120 * 1000);
@@ -14,6 +18,7 @@ describe('E2E Test: Basic NFT', () => {
   let publicAddress;
   let server;
   let deployTransaction;
+  let PRIV_KEY;
   const NFTImage = 'https://infura.io/images/404.png';
 
   beforeAll(async () => {
@@ -30,8 +35,7 @@ describe('E2E Test: Basic NFT', () => {
     // eslint-disable-next-line global-require
     const { addresses: addr, private_keys: pk } = require('./keys.json');
     owner = Object.keys(addr)[0];
-    const PRIV_KEY = pk[owner];
-
+    PRIV_KEY = pk[owner];
     // grab the second account as publicAddress
     publicAddress = Object.keys(addr)[1];
 
@@ -97,5 +101,31 @@ describe('E2E Test: Basic NFT', () => {
   it('should get contract', async () => {
     const currentContract = await externallyOwnedAccount.getContract(contract.address);
     expect(currentContract.mintWithTokenURI).not.toBe(null);
+  });
+
+  it('Given i have a valid Auth object, i should be able to deploy a contract', async () => {
+    console.log(PRIV_KEY);
+    const account = new Auth({
+      privateKey: PRIV_KEY,
+      projectId: process.env.PROJECT_ID,
+      secretId: process.env.SECRET_ID,
+      rpcUrl: 'http://0.0.0.0:8545',
+      chainId: 4,
+    });
+
+    account.getProvider();
+    const factory = new ethers.ContractFactory(
+      smartContractArtifact.abi,
+      smartContractArtifact.bytecode,
+      account.getSigner(),
+    );
+
+    const contract = await factory.deploy(`Name${Math.random()}`, `symbol.random()`);
+    await contract.deployed();
+    deployTransaction = await contract.deployTransaction.wait();
+    expect(contract.address).not.toBeUndefined();
+    expect(contract.address).toContain('0x');
+    expect(deployTransaction.confirmations).toBeGreaterThanOrEqual(1);
+    expect(deployTransaction.from.toLowerCase()).toBe(owner);
   });
 });
