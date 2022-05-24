@@ -48,4 +48,5 @@ node_modules/
 .cache
 
 e2e/keys.json
+e2e/keys2.json
 storage

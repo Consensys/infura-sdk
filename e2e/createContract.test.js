@@ -103,7 +103,7 @@ describe('E2E Test: Basic NFT', () => {
     expect(currentContract.mintWithTokenURI).not.toBe(null);
   });
 
-  it('Given i have a valid Auth object, i should be able to deploy a contract', async () => {
+  it('Given an Auth instance with valid rpcUrl, i should be able to deploy a contract', async () => {
     console.log(PRIV_KEY);
     const account = new Auth({
       privateKey: PRIV_KEY,
@@ -120,7 +120,57 @@ describe('E2E Test: Basic NFT', () => {
       account.getSigner(),
     );
 
-    const contract = await factory.deploy(`Name${Math.random()}`, `symbol.random()`);
+    const contract = await factory.deploy(`Name${Math.random()}`, `symbol${Math.random()}`);
+    await contract.deployed();
+    deployTransaction = await contract.deployTransaction.wait();
+    expect(contract.address).not.toBeUndefined();
+    expect(contract.address).toContain('0x');
+    expect(deployTransaction.confirmations).toBeGreaterThanOrEqual(1);
+    expect(deployTransaction.from.toLowerCase()).toBe(owner);
+  });
+});
+
+describe('E2E Test: Auth test with injected provider', () => {
+  jest.setTimeout(120 * 1000);
+  let deployTransaction;
+  let PRIV_KEY;
+  let ganacheProvider;
+  let owner;
+
+  beforeAll(async () => {
+    const options = {
+      wallet: {
+        accountKeysPath: 'e2e/keys2.json',
+      },
+    };
+
+    //use ganache provider to inject into Auth
+    ganacheProvider = ganache.provider(options);
+    await ganacheProvider.once('connect');
+
+    // grab the first account
+    // eslint-disable-next-line global-require
+    const { addresses: addr, private_keys: pk } = require('./keys2.json');
+    owner = Object.keys(addr)[0];
+    PRIV_KEY = pk[owner];
+  });
+
+  it('Given an Auth instance with valid injected provider and empty rpcUrl, i should be able to deploy a contract', async () => {
+    const account = new Auth({
+      privateKey: PRIV_KEY,
+      projectId: process.env.PROJECT_ID,
+      secretId: process.env.SECRET_ID,
+      chainId: 4,
+    });
+
+    account.getProvider(ganacheProvider);
+    const factory = new ethers.ContractFactory(
+      smartContractArtifact.abi,
+      smartContractArtifact.bytecode,
+      account.getSigner(),
+    );
+
+    const contract = await factory.deploy(`ProviderTestName`, `ProviderTestSymbol`);
     await contract.deployed();
     deployTransaction = await contract.deployTransaction.wait();
     expect(contract.address).not.toBeUndefined();
