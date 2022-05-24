@@ -1,17 +1,15 @@
-// import { config as loadEnv } from 'dotenv';
-
-import NFTContractUnlimited from '../lib/ContractTemplates/nftContractUnlimited.js';
-import { TEMPLATES } from '../lib/NFT/constants.js';
-import ContractFactory from '../lib/NFT/contractFactory.js';
+import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable';
+import { TEMPLATES } from '../lib/NFT/constants';
+import ContractFactory from '../lib/NFT/contractFactory';
 
 describe('ContractFactory', () => {
-  it('should return "nftContractUnlimited" instance', async () => {
-    const template = TEMPLATES.NFTContractCollection;
+  it('should return "ERC721Mintable" instance', async () => {
+    const template = TEMPLATES.ERC721Mintable;
     const signer = '';
 
     const contract = ContractFactory.factory(template, signer);
 
-    expect(contract instanceof NFTContractUnlimited).toBe(true);
+    expect(contract instanceof ERC721Mintable).toBe(true);
   });
 
   it('should return an Error', async () => {

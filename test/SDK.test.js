@@ -1,8 +1,7 @@
-// import { config as loadEnv } from 'dotenv';
-import Auth from '../lib/Auth/index.js';
-import SDK from '../lib/SDK/index.js';
-import ContractFactory from '../lib/NFT/contractFactory.js';
-import { TEMPLATES } from '../lib/NFT/constants.js';
+import Auth from '../lib/Auth/index';
+import SDK from '../lib/SDK/index';
+import ContractFactory from '../lib/NFT/contractFactory';
+import { TEMPLATES } from '../lib/NFT/constants';
 
 let sdk;
 let account;
@@ -44,7 +43,7 @@ describe('SDK', () => {
     }));
 
     const contract = await sdk.deploy({
-      template: TEMPLATES.NFTContractCollection,
+      template: TEMPLATES.ERC721Mintable,
       params: {
         name: 'name',
         symbol: 'symbol',
@@ -63,7 +62,7 @@ describe('SDK', () => {
 
     const contract = async () =>
       // eslint-disable-next-line implicit-arrow-linebreak
-      sdk.deploy({ template: TEMPLATES.NFTContractCollection, params: { name: null } });
+      sdk.deploy({ template: TEMPLATES.ERC721Mintable, params: { name: null } });
 
     expect(contract).rejects.toThrow('Name is mandatory.');
   });

@@ -6,7 +6,7 @@
 
 /* eslint-disable */
 
-import { Client } from './lib/consensysClient.js';
+import { Client } from './lib/consensysClient';
 
 const consensysClient = new Client();
 

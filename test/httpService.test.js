@@ -1,4 +1,4 @@
-import { HttpService } from '../services/httpService.js';
+import { HttpService } from '../services/httpService';
 
 // Constant
 const BASEURL = 'http://base.url.com';

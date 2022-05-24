@@ -1,7 +1,7 @@
 import { config as loadEnv } from 'dotenv';
-import Auth from '../lib/Auth/index.js';
-import SDK from '../lib/SDK/index.js';
-import { TEMPLATES } from '../lib/NFT/constants.js';
+import Auth from '../lib/Auth/index';
+import SDK from '../lib/SDK/index';
+import { TEMPLATES } from '../lib/NFT/constants';
 
 loadEnv();
 let sdk;
@@ -34,11 +34,10 @@ describe('E2E Test: Basic NFT (write)', () => {
 
   it('should return deployed contract', async () => {
     const contractObject = await sdk.deploy({
-      template: TEMPLATES.NFTContractCollection,
+      template: TEMPLATES.ERC721Mintable,
       params: {
         name: 'Cool Contract',
         symbol: 'CC',
-        contractURI: 'ipfs://...',
       },
     });
 

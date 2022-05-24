@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
-import Auth from '../lib/Auth/index.js';
+import Auth from '../lib/Auth/index';
 
 loadEnv();
 
