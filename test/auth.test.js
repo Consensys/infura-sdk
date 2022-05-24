@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
-import Auth from '../lib/Auth';
+import Auth from '../lib/Auth/index.js';
 
 loadEnv();
 
@@ -8,6 +8,7 @@ describe('Auth', () => {
   it('should throw when args are missing (privateKey)', () => {
     expect(
       () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: null,
           projectId: process.env.PROJECT_ID,
@@ -21,6 +22,7 @@ describe('Auth', () => {
   it('should throw when args are missing (projectId)', () => {
     expect(
       () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
           secretId: process.env.SECRET_ID,
@@ -33,6 +35,7 @@ describe('Auth', () => {
   it('should throw when args are missing (secretId)', () => {
     expect(
       () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
           projectId: process.env.PROJECT_ID,
@@ -45,6 +48,7 @@ describe('Auth', () => {
   it('should throw when args are missing (chainId)', () => {
     expect(
       () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
           projectId: process.env.PROJECT_ID,
@@ -78,6 +82,7 @@ describe('Auth', () => {
       });
 
       expect(account.getProvider()).toStrictEqual(
+        // eslint-disable-next-line new-cap
         new ethers.providers.getDefaultProvider(process.env.RPC_URL),
       );
     });
@@ -120,6 +125,7 @@ describe('Auth', () => {
       });
       const provider = account.getProvider();
 
+      // eslint-disable-next-line new-cap
       expect(provider).toStrictEqual(new ethers.providers.getDefaultProvider(process.env.RPC_URL));
       expect(JSON.stringify(account.getSigner())).toStrictEqual(
         JSON.stringify(new ethers.Wallet(privateKey, provider)),
