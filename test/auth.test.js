@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
-import Auth from '../lib/Auth/Auth';
+import Auth from '../lib/Auth/Auth.js';
+import { generateTestPrivateKey } from './__mocks__/utils.js';
 
 loadEnv();
 
@@ -118,9 +119,9 @@ describe('Auth', () => {
 
   describe('getSigner', () => {
     it('should return the signer', () => {
-      const privateKey = '0xb40c8233a0c61ddf064e83b0cc29522b1e6ac6166965861fbc6cefdecbf53d63';
+      const privateKey = generateTestPrivateKey();
       const account = new Auth({
-        privateKey: '0xb40c8233a0c61ddf064e83b0cc29522b1e6ac6166965861fbc6cefdecbf53d63',
+        privateKey,
         projectId: process.env.PROJECT_ID,
         secretId: process.env.SECRET_ID,
         rpcUrl: process.env.RPC_URL,
