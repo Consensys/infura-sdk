@@ -17,17 +17,17 @@ describe('SDK', () => {
         mintWithTokenURI: () => ({}),
       }),
     }));
-
     jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
     jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
   });
+
   it('should create "ERC721Mintable" instance', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     expect(eRC721Mintable).not.toBe(null);
   });
 
-  it('should return an Error if signer not defined ', () => {
+  it('[Deploy] - should return an Error if signer not defined ', () => {
     eRC721Mintable = new ERC721Mintable(null, contractAddress);
 
     const contract = async () => eRC721Mintable.deploy('name', 'symbol');
@@ -35,7 +35,7 @@ describe('SDK', () => {
     expect(contract).rejects.toThrow('Signer instance is required to interact with contract.');
   });
 
-  it('should return an Error if Name is empty', () => {
+  it('[Deploy] - should return an Error if Name is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer, contractAddress);
 
     const contract = async () => eRC721Mintable.deploy({ name: '', symbol: 'sumbol' });
@@ -43,7 +43,7 @@ describe('SDK', () => {
     expect(contract).rejects.toThrow('Name cannot be empty');
   });
 
-  it('should return a contract', async () => {
+  it('[Deploy] - should return a contract', async () => {
     eRC721Mintable = new ERC721Mintable(signer, contractAddress);
 
     await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
@@ -51,7 +51,7 @@ describe('SDK', () => {
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
   });
 
-  it('should return an Error if contract is not deployed', () => {
+  it('[Mint] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const myNFT = async () =>
@@ -61,7 +61,7 @@ describe('SDK', () => {
     );
   });
 
-  it('should return an Error if the address is empty', () => {
+  it('[Mint] - should return an Error if the address is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const myNFT = async () => {
@@ -71,7 +71,7 @@ describe('SDK', () => {
     expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A valid address is required to mint.');
   });
 
-  it('should return an Error if the tokenURI is empty', () => {
+  it('[Mint] - should return an Error if the tokenURI is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const myNFT = async () => {
@@ -81,7 +81,7 @@ describe('SDK', () => {
     expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A TokenURI is required to mint.');
   });
 
-  it('should mint a token', async () => {
+  it('[Mint] - should mint a token', async () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
@@ -90,7 +90,7 @@ describe('SDK', () => {
     // TODO expect something
   });
 
-  it('should return an Error if contract is already deployed', () => {
+  it('[LoadContract] - should return an Error if contract is already deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const contract = async () => {
@@ -102,7 +102,7 @@ describe('SDK', () => {
     );
   });
 
-  it('should return an Error if the address is empty', () => {
+  it('[LoadContract] - should return an Error if the address is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const contract = async () => {
@@ -113,7 +113,7 @@ describe('SDK', () => {
     );
   });
 
-  it('should load the contract', async () => {
+  it('[LoadContract] - should load the contract', async () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     await eRC721Mintable.loadContract(CONTRACT_ADDRESS);
