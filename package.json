@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --testPathPattern=test/",
     "test:e2e": "jest --testPathPattern=e2e/",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --testPathPattern=test/",
     "prettier:format": "prettier -- write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
