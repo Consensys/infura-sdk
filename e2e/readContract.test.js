@@ -1,60 +1,96 @@
 import { config as loadEnv } from 'dotenv';
-import { ExternallyOwnedAccount } from '../lib/NFT/externallyOwnedAccount';
+import SDK from '../lib/SDK/SDK';
+import Auth from '../lib/Auth/Auth';
 
 loadEnv();
 
-describe('E2E Test: Basic NFT (read)', () => {
+describe('E2E Test: SDK (read)', () => {
   jest.setTimeout(120 * 1000);
-  let externallyOwnedAccount;
+  let sdk;
 
-  beforeAll(async () => {
-    // create the apiKey
-    const apiKey = Buffer.from(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`).toString(
-      'base64',
-    );
-
-    externallyOwnedAccount = new ExternallyOwnedAccount({
+  beforeAll(() => {
+    const auth = new Auth({
       privateKey: process.env.PRIVATE_KEY,
-      apiKey,
+      projectId: process.env.PROJECT_ID,
+      secretId: process.env.SECRET_ID,
       rpcUrl: process.env.RPC_URL,
       chainId: 4,
+    });
+
+    sdk = new SDK(auth);
+  });
+
+  describe('As an account I should be able to get the contract metadata', () => {
+    it('should return the contract metadata', async () => {
+      const contractMetadata = await sdk.getContractMetadata(
+        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+      );
+      const expectedContractMetadata = { name: 'testContract', symbol: 'TST', tokenType: 'ERC721' };
+      expect(contractMetadata).toStrictEqual(expectedContractMetadata);
     });
   });
 
   describe('As an account I should be able to get the list of NFTs by address', () => {
     it('should return list of NFTs by address', async () => {
-      const nfts = await externallyOwnedAccount.getNFTs(
-        '0xF69c1883b098d621FC58a42E673C4bF6a6483fFf',
-      );
-      expect(nfts.assets.length).not.toBe(null);
+      const nfts = await sdk.getNFTs(process.env.PUBLIC_ADDRESS);
+      expect(nfts.assets.length).toBeGreaterThan(0);
+      expect(nfts.assets[0]).not.toHaveProperty('metadata');
     });
   });
 
-  describe('As an account I should be able to get the contract by address', () => {
-    it('should return a contract abstraction by address', async () => {
-      const contract = await externallyOwnedAccount.getContractAbstraction(
-        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
-      );
-      expect(Object.keys(contract)).toEqual(['deploy', 'mint', 'getSymbol', 'getNFTs']);
+  describe('As an account I should be able to get the list of NFTs by collection', () => {
+    it('should return list of NFTs by collection', async () => {
+      const nfts = await sdk.getNFTsForCollection('0xE26a682fa90322eC48eB9F3FA66E8961D799177C');
+      expect(nfts.assets.length).toBeGreaterThan(0);
     });
   });
 
-  describe('As an account I should be able to get the collection symbol using the contract abstraction', () => {
-    it('should return the collection symbol', async () => {
-      const contract = await externallyOwnedAccount.getContractAbstraction(
+  describe('As an account I should be able to get the token metadata', () => {
+    it('should return token metadata', async () => {
+      const tokenMetadata = await sdk.getTokenMetadata(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+        1,
       );
-      expect(await contract.getSymbol()).toEqual('TST');
+      const expectedTokenMetadata = {
+        contract: '0xe26a682fa90322ec48eb9f3fa66e8961d799177c',
+        tokenId: '1',
+        name: '',
+        description: '',
+        image: '',
+      };
+
+      expect(tokenMetadata).toStrictEqual(expectedTokenMetadata);
     });
   });
 
-  describe('As contract account I should be able to get the list of nfts that i created', () => {
-    it('should return list of nfts for given contract', async () => {
-      const contract = await externallyOwnedAccount.getContractAbstraction(
-        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
-      );
-      const nfts = await contract.getNFTs();
-      expect(nfts.assets.length).not.toBe(null);
+  describe('As an account I should be able to get the account ETH balance', () => {
+    it('should return account ETH balance', async () => {
+      const ethBalance = await sdk.getEthBalance(process.env.PUBLIC_ADDRESS);
+      expect(ethBalance).toEqual(expect.any(Number));
+    });
+  });
+
+  describe('As an account I should be able to get the account ERC20 balances', () => {
+    it('should return account ERC20 balances', async () => {
+      const erc20Balance = await sdk.getERC20Balances(process.env.PUBLIC_ADDRESS);
+
+      const expectedERC20Balance = {
+        account: process.env.PUBLIC_ADDRESS,
+        assets: expect.arrayContaining([
+          {
+            balance: expect.any(Number),
+            contract: '0x0000000000000000000000000000000000000000',
+            decimals: 18,
+            name: 'Ethereum',
+            rawBalance: expect.any(String),
+            symbol: 'ETH',
+          },
+        ]),
+        network: 'Ethereum',
+        type: 'ERC20',
+      };
+
+      expect(erc20Balance).toStrictEqual(expectedERC20Balance);
     });
   });
 });

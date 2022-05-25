@@ -32,6 +32,7 @@
     "object-curly-newline": "off",
     "import/extensions": ["error", "ignorePackages", {
       "js": "never"
-    }]
+    }],
+    "arrow-parens": "off"
   }
 }
