@@ -1,10 +1,10 @@
 import { config as loadEnv } from 'dotenv';
-import SDK from '../lib/SDK/SDK';
+import SDK from '../lib/SDK/sdk';
 import Auth from '../lib/Auth/Auth';
 
 loadEnv();
 
-describe('E2E Test: SDK (read)', () => {
+describe('E2E Test: Sdk (read)', () => {
   jest.setTimeout(120 * 1000);
   let sdk;
 
