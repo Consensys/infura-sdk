@@ -4,12 +4,12 @@
  * MIT Licensed
  */
 
-import SDK from './lib/SDK/index';
-import Auth from './lib/Auth/index';
+import Sdk from './lib/SDK/sdk';
+import Auth from './lib/Auth/Auth';
 import { TEMPLATES } from './lib/NFT/constants';
 
 export default {
-  SDK,
+  SDK: Sdk,
   Auth,
   TEMPLATES,
 };

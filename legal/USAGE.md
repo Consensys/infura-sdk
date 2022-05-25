@@ -4,21 +4,21 @@
 ## Pseudo flow
 
 Pseudo User flow.
-End user should be able to configure and use SDK as clean as possible.
+End user should be able to configure and use Sdk as clean as possible.
 Design patterns to consider: Facade, Delegate, Builder.
 
 
 ## Start
 
 
-1. Developer imports dependencies 
+1. Developer imports dependencies
     > *Usage: npm install dotenv --save*
 
 ```sh
 import 'dotenv/config'
 ```
 
-2. Developer imports the Consensys SDK
+2. Developer imports the Consensys Sdk
     > *Usage: npm install csys-sdk --save*
 
 ```sh
@@ -33,7 +33,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY
 const API_KEY = process.env.INFURA_API_KEY
 ```
 
-4. Developer create & configue instance of the Consensys Client 
+4. Developer create & configue instance of the Consensys Client
 
 ```sh
 const client = new ConsensysClient(API_KEY)
@@ -60,40 +60,40 @@ const mintNft = await nftClient.mint('tokenURI');
 const getNft = await nftClient.get('tokenURI');
 ```
 
-7. Response from completed Tx is received and logged 
+7. Response from completed Tx is received and logged
 
 ```sh
 console.log('nft:mint', mintNft);
 console.log('nft:get', getNft);
 ```
 
- 
-## Next SDK Phase
 
-In next phase to unlock more SDK features users can work on ConsensysClient,
-e.g. 
+## Next Sdk Phase
+
+In next phase to unlock more Sdk features users can work on ConsensysClient,
+e.g.
 
     GasEstimation module:
     ConsensysClient.GasEstimation()
 
     Token module:
     ConsensysClient.Token()
-        
 
-Idea is that SDK features/modules are exposed via internal SDK API.
 
-Downside of this approach is that users will need to import full SDK instead of only modules they need.
+Idea is that Sdk features/modules are exposed via internal Sdk API.
+
+Downside of this approach is that users will need to import full Sdk instead of only modules they need.
 Maybe workaround can be to move auth into separate module so that it can be imported as standalone module
 e.g.
 
-    
+
     import { AuthClient } from '@consensys-sdk/core'
     import { Nft } from '@consensys-sdk/common'
     import { GasEstimation, Token } from '@consensys-sdk/common'
-    
+
 
 this way user imports modules as required while keeping code base reasonably low.
-Downside of this approach is that it takes more time to develop but certainly improves quality and extendibility of the SDK. 
+Downside of this approach is that it takes more time to develop but certainly improves quality and extendibility of the Sdk.
 
 
 ## MVP Features

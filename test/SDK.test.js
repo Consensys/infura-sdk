@@ -1,5 +1,5 @@
 import { config as loadEnv } from 'dotenv';
-import SDK from '../lib/SDK/SDK';
+import Sdk from '../lib/SDK/sdk';
 import Auth from '../lib/Auth/Auth';
 import { HttpService } from '../services/httpService';
 import {
@@ -15,38 +15,21 @@ import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 let sdk;
 let account;
 
-describe('SDK', () => {
+describe('Sdk', () => {
   jest.setTimeout(120 * 1000);
   const HttpServiceMock = jest
     .spyOn(HttpService.prototype, 'get')
     .mockImplementation(() => jest.fn());
   let sdk;
   beforeAll(() => {
-    const privateKey = 'privateKey';
-    const rpcUrl = 'rpcUrl';
-    const chainId = '4';
-    const projectId = 'projectID';
-    const secretId = 'secretId';
-    const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
-
-    account = new Auth({
-      privateKey,
-      projectId,
-      secretId,
-      rpcUrl,
-      chainId,
-      IPFS,
+    const account = new Auth({
+      privateKey: 'privateKey',
+      projectId: process.env.PROJECT_ID,
+      secretId: process.env.SECRET_ID,
+      rpcUrl: process.env.RPC_URL,
+      chainId: 4,
     });
-
-    jest.spyOn(account, 'getProvider').mockImplementation(() => ({}));
-    jest.spyOn(account, 'getSigner').mockImplementation(() => ({}));
-
-    account.getProvider();
-  });
-
-  it('should create SDK instance', () => {
-    sdk = new SDK(account);
-    expect(sdk).not.toBe(null);
+    sdk = new Sdk(account);
   });
 
   afterEach(() => {
@@ -54,7 +37,7 @@ describe('SDK', () => {
   });
 
   it('should throw when args are missing auth instance', () => {
-    expect(() => new SDK(1)).toThrow(
+    expect(() => new Sdk(1)).toThrow(
       '[SDK.constructor] You need to pass a valid instance of Auth class!',
     );
   });

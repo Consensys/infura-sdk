@@ -1,5 +1,5 @@
 import { ContractFactory } from 'ethers';
-import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable';
+import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
 
 let eRC721Mintable;
 let signer;
@@ -10,16 +10,15 @@ jest.mock('ethers');
 describe('SDK', () => {
   beforeAll(() => {
     signer = 'signer';
-    contractAddress = '';
 
     jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementation(() => ({
       deployed: () => ({}),
     }));
   });
   it('should create "ERC721Mintable" instance', () => {
-    eRC721Mintable = new ERC721Mintable(signer, contractAddress);
+    eRC721Mintable = new ERC721Mintable(signer);
 
-    expect(eRC721Mintable.signer).toEqual('signer');
+    expect(eRC721Mintable).not.toBe(null);
   });
 
   it('should return an Error if signer not defined ', () => {
@@ -27,7 +26,7 @@ describe('SDK', () => {
 
     const contract = async () => eRC721Mintable.deploy('name', 'symbol');
 
-    expect(contract).rejects.toThrow('Signer instance needed to deploy a contract');
+    expect(contract).rejects.toThrow('Signer instance is required to interact with contract.');
   });
 
   it('should return an Error if Name is empty', () => {

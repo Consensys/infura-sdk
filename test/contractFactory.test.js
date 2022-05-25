@@ -1,4 +1,4 @@
-import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable';
+import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
 import { TEMPLATES } from '../lib/NFT/constants';
 import ContractFactory from '../lib/NFT/contractFactory';
 

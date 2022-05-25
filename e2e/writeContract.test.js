@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
-import Auth from '../lib/Auth/index';
-import SDK from '../lib/SDK/index';
+import Auth from '../lib/Auth/Auth';
+import SDK from '../lib/SDK/sdk';
 import { TEMPLATES } from '../lib/NFT/constants';
 
 loadEnv();
@@ -13,7 +13,7 @@ describe('E2E Test: Basic NFT (write)', () => {
   beforeAll(async () => {
     const privateKey = process.env.PRIVATE_KEY;
     const rpcUrl = process.env.RPC_URL;
-    const chainId = '4';
+    const chainId = 4;
     const projectId = process.env.PROJECT_ID;
     const secretId = process.env.SECRET_ID;
     const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
@@ -27,8 +27,6 @@ describe('E2E Test: Basic NFT (write)', () => {
       IPFS,
     });
 
-    account.getProvider();
-
     sdk = new SDK(account);
   });
 
@@ -38,6 +36,7 @@ describe('E2E Test: Basic NFT (write)', () => {
       params: {
         name: 'Cool Contract',
         symbol: 'CC',
+        contractURI: 'URI',
       },
     });
 
