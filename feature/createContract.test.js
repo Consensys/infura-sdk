@@ -29,7 +29,7 @@ describe('Feature Test: Basic NFT', () => {
   beforeAll(async () => {
     const options = {
       wallet: {
-        accountKeysPath: 'feature-test/keys.json',
+        accountKeysPath: 'feature/keys.json',
       },
     };
 

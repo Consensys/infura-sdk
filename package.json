@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --testPathPattern=test/",
-    "test:feature": "jest --testPathPattern=feature-test/",
+    "test:feature": "jest --testPathPattern=feature/",
     "test:coverage": "jest --coverage --coverageReporters='json-summary'",
     "prettier:format": "prettier -- write \"*.js\" ",
     "prettier:check": "prettier --check .",
