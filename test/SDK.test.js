@@ -1,5 +1,5 @@
 import { config as loadEnv } from 'dotenv';
-import SDK from '../lib/SDK/SDK';
+import Sdk from '../lib/SDK/sdk';
 import Auth from '../lib/Auth/Auth';
 import { HttpService } from '../services/httpService';
 import {
@@ -14,7 +14,7 @@ import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 
 loadEnv();
 
-describe('SDK', () => {
+describe('Sdk', () => {
   jest.setTimeout(120 * 1000);
   const HttpServiceMock = jest
     .spyOn(HttpService.prototype, 'get')
@@ -28,7 +28,7 @@ describe('SDK', () => {
       rpcUrl: process.env.RPC_URL,
       chainId: 4,
     });
-    sdk = new SDK(account);
+    sdk = new Sdk(account);
   });
 
   afterEach(() => {
@@ -36,7 +36,7 @@ describe('SDK', () => {
   });
 
   it('should throw when args are missing auth instance', () => {
-    expect(() => new SDK(1)).toThrow(
+    expect(() => new Sdk(1)).toThrow(
       '[SDK.constructor] You need to pass a valid instance of Auth class!',
     );
   });
