@@ -1,6 +1,6 @@
-import { ContractFactory } from 'ethers';
+import { ContractFactory, ethers } from 'ethers';
 import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
-import { ACCOUNT_ADDRESS } from './__mocks__/utils';
+import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 
 let eRC721Mintable;
 let signer;
@@ -17,6 +17,9 @@ describe('SDK', () => {
         mintWithTokenURI: () => ({}),
       }),
     }));
+
+    jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
+    jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
   });
   it('should create "ERC721Mintable" instance', () => {
     eRC721Mintable = new ERC721Mintable(signer);
@@ -58,7 +61,7 @@ describe('SDK', () => {
     );
   });
 
-  it('should return an Error if the address is not empty', () => {
+  it('should return an Error if the address is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const myNFT = async () => {
@@ -85,5 +88,36 @@ describe('SDK', () => {
     await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
 
     // TODO expect something
+  });
+
+  it('should return an Error if contract is already deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const contract = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+      await eRC721Mintable.loadContract(CONTRACT_ADDRESS);
+    };
+    expect(contract).rejects.toThrow(
+      '[ERC721Mintable.loadContract] The contract has already been loaded!',
+    );
+  });
+
+  it('should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const contract = async () => {
+      await eRC721Mintable.loadContract();
+    };
+    expect(contract).rejects.toThrow(
+      '[ERC721Mintable.loadContract] A valid contract address is required to load a contract.',
+    );
+  });
+
+  it('should load the contract', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.loadContract(CONTRACT_ADDRESS);
+
+    expect(ethers.Contract).toHaveBeenCalledTimes(1);
   });
 });
