@@ -6,15 +6,27 @@
 
 /* eslint-disable */
 
-import { Client } from './lib/consensysClient';
+import SDK from './lib/SDK/index';
+import Auth from './lib/Auth/index';
 
-const consensysClient = new Client();
-
-consensysClient.authenticate({
-  accountAddress: '123',
-  key: '321',
+const acc = new Auth({
+  chainId: 1,
+  privateKey: 'stringlong',
+  projectId: '9876456789',
+  secretId: '0987654567890',
+  rpcUrl: 'http://0.0.0.0:8545',
 });
 
-consensysClient.nft.mint();
+const sdk = new SDK(acc);
 
-export default consensysClient;
+const newContract = await sdk.deploy({
+  template: 'templatename',
+  params: {
+    name: 'testing',
+  },
+});
+
+const existingContract = await sdk.loadContract({
+  template: 'templatename',
+  contractAddress: '0x09765678',
+});
