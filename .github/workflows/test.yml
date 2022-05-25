@@ -51,6 +51,7 @@ jobs:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           SECRET_ID: ${{ secrets.SECRET_ID }}
           RPC_URL: ${{ secrets.RPC_URL }}
+          PUBLIC_ADDRESS: ${{ secrets.PUBLIC_ADDRESS }}
 
   release:
     runs-on: ubuntu-latest
