@@ -12,6 +12,8 @@ import {
 } from './__mocks__/api';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 
+loadEnv();
+
 let sdk;
 let account;
 

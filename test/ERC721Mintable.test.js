@@ -1,5 +1,6 @@
 import { ContractFactory } from 'ethers';
 import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
+import { ACCOUNT_ADDRESS } from './__mocks__/utils';
 
 let eRC721Mintable;
 let signer;
@@ -12,7 +13,9 @@ describe('SDK', () => {
     signer = 'signer';
 
     jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementation(() => ({
-      deployed: () => ({}),
+      deployed: () => ({
+        mintWithTokenURI: () => ({}),
+      }),
     }));
   });
   it('should create "ERC721Mintable" instance', () => {
@@ -43,5 +46,44 @@ describe('SDK', () => {
     await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
 
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const myNFT = async () =>
+      eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
+    expect(myNFT).rejects.toThrow(
+      '[ERC721Mintable.mint] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('should return an Error if the address is not empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const myNFT = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+      await eRC721Mintable.mint('', 'https://infura.io/images/404.png');
+    };
+    expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A valid address is required to mint.');
+  });
+
+  it('should return an Error if the tokenURI is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const myNFT = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+      await eRC721Mintable.mint('0xE26a682fa90322eC48eB9F3FA66E8961D799177C', '');
+    };
+    expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A TokenURI is required to mint.');
+  });
+
+  it('should mint a token', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+    await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
+
+    // TODO expect something
   });
 });
