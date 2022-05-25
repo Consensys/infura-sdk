@@ -1,12 +1,26 @@
-import Auth from '../lib/Auth/index';
-import SDK from '../lib/SDK/index';
-import ContractFactory from '../lib/NFT/contractFactory';
-import { TEMPLATES } from '../lib/NFT/constants';
+import { config as loadEnv } from 'dotenv';
+import SDK from '../lib/SDK/SDK';
+import Auth from '../lib/Auth/Auth';
+import { HttpService } from '../services/httpService';
+import {
+  accountNFTsMock,
+  collectionNFTsMock,
+  contractMetadataMock,
+  erc20BalanceMock,
+  ethBalanceMock,
+  tokenMetadataMock,
+} from './__mocks__/api';
+import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 
 let sdk;
 let account;
 
 describe('SDK', () => {
+  jest.setTimeout(120 * 1000);
+  const HttpServiceMock = jest
+    .spyOn(HttpService.prototype, 'get')
+    .mockImplementation(() => jest.fn());
+  let sdk;
   beforeAll(() => {
     const privateKey = 'privateKey';
     const rpcUrl = 'rpcUrl';
@@ -35,49 +49,151 @@ describe('SDK', () => {
     expect(sdk).not.toBe(null);
   });
 
-  it('should return contract', async () => {
-    jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
-      deploy: () => ({
-        address: 'contractAdress',
-      }),
-    }));
+  afterEach(() => {
+    HttpServiceMock.mockClear();
+  });
 
-    const contract = await sdk.deploy({
-      template: TEMPLATES.ERC721Mintable,
-      params: {
-        name: 'name',
-        symbol: 'symbol',
-      },
+  it('should throw when args are missing auth instance', () => {
+    expect(() => new SDK(1)).toThrow(
+      '[SDK.constructor] You need to pass a valid instance of Auth class!',
+    );
+  });
+
+  describe('getContractMetadata', () => {
+    it('should throw when args are missing (contractAddress)', async () => {
+      await expect(() => sdk.getContractMetadata()).rejects.toThrow(
+        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+      );
     });
 
-    expect(contract).not.toBe(null);
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() => sdk.getContractMetadata('notAValidAddress')).rejects.toThrow(
+        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+      );
+    });
+
+    it('should return contract metadata', async () => {
+      HttpServiceMock.mockResolvedValueOnce(contractMetadataMock);
+      const contractMetadata = await sdk.getContractMetadata(
+        '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+      );
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect(contractMetadata).not.toHaveProperty('contract');
+    });
   });
 
-  it('should return error if name is not provided', async () => {
-    jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
-      deploy: () => ({
-        address: 'contractAdress',
-      }),
-    }));
+  describe('getNFTs', () => {
+    it('should throw when args are missing (address)', async () => {
+      await expect(() => sdk.getNFTs()).rejects.toThrow(
+        '[SDK.getNFTs] You need to pass a valid account address as parameter',
+      );
+    });
 
-    const contract = async () =>
-      // eslint-disable-next-line implicit-arrow-linebreak
-      sdk.deploy({ template: TEMPLATES.ERC721Mintable, params: { name: null } });
+    it('should throw when "address" is not a valid address', async () => {
+      await expect(() => sdk.getNFTs('notAValidAddress')).rejects.toThrow(
+        '[SDK.getNFTs] You need to pass a valid account address as parameter',
+      );
+    });
 
-    expect(contract).rejects.toThrow('Name is mandatory.');
+    it('should return the list of NFTs without metadata', async () => {
+      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock);
+      const accountNFTs = await sdk.getNFTs(CONTRACT_ADDRESS);
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect(accountNFTs.assets[0]).not.toHaveProperty('metadata');
+    });
+
+    it('should return the list of NFTs with metadata', async () => {
+      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock);
+      const accountNFTs = await sdk.getNFTs(CONTRACT_ADDRESS, true);
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect(accountNFTs.assets[0]).toHaveProperty('metadata');
+    });
   });
 
-  it('should return error if template is not provided', async () => {
-    jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
-      deploy: () => ({
-        address: 'contractAdress',
-      }),
-    }));
+  describe('getNFTsForCollection', () => {
+    it('should throw when args are missing (contractAddress)', async () => {
+      await expect(() => sdk.getNFTsForCollection()).rejects.toThrow(
+        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+      );
+    });
 
-    const contract = async () =>
-      // eslint-disable-next-line implicit-arrow-linebreak
-      sdk.deploy({ template: null, params: { name: null } });
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() => sdk.getNFTsForCollection('notAValidAddress')).rejects.toThrow(
+        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+      );
+    });
 
-    expect(contract).rejects.toThrow('The template type is mandatory.');
+    it('should return return collection NFTs list', async () => {
+      HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock);
+      await sdk.getNFTsForCollection(CONTRACT_ADDRESS);
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTokenMetadata', () => {
+    it('should throw when args are missing (contractAddress)', async () => {
+      await expect(() => sdk.getTokenMetadata()).rejects.toThrow(
+        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+      );
+    });
+
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() => sdk.getTokenMetadata('notAValidAddress')).rejects.toThrow(
+        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+      );
+    });
+
+    it('should throw when args are missing (tokenId)', async () => {
+      await expect(() =>
+        sdk.getTokenMetadata('0x97ed63533c9f4f50521d78e58caeb94b175f5d35'),
+      ).rejects.toThrow('[SDK.getTokenMetadata] You need to pass the tokenId as second parameter');
+    });
+
+    it('should return token metadata', async () => {
+      HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock);
+      await sdk.getTokenMetadata(CONTRACT_ADDRESS, 1);
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getEthBalance', () => {
+    it('should throw when args are missing (address)', async () => {
+      await expect(() => sdk.getEthBalance()).rejects.toThrow(
+        '[SDK.getEthBalance] You need to pass a valid account address as parameter',
+      );
+    });
+
+    it('should throw when "address" is not a valid address', async () => {
+      await expect(() => sdk.getEthBalance('notAValidAddress')).rejects.toThrow(
+        '[SDK.getEthBalance] You need to pass a valid account address as parameter',
+      );
+    });
+
+    it('should return ETH balance', async () => {
+      HttpServiceMock.mockResolvedValueOnce(ethBalanceMock);
+      const accountBalance = await sdk.getEthBalance(ACCOUNT_ADDRESS, 1);
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect(accountBalance).toStrictEqual(10);
+    });
+  });
+
+  describe('getERC20Balances', () => {
+    it('should throw when args are missing (address)', async () => {
+      await expect(() => sdk.getERC20Balances()).rejects.toThrow(
+        '[SDK.getERC20Balances] You need to pass a valid account address as parameter',
+      );
+    });
+
+    it('should throw when "address" is not a valid address', async () => {
+      await expect(() => sdk.getERC20Balances('notAValidAddress')).rejects.toThrow(
+        '[SDK.getERC20Balances] You need to pass a valid account address as parameter',
+      );
+    });
+
+    it('should return ERC20 balances', async () => {
+      HttpServiceMock.mockResolvedValueOnce(erc20BalanceMock);
+      await sdk.getERC20Balances(ACCOUNT_ADDRESS, 1);
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
   });
 });
