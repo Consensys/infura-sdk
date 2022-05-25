@@ -70,7 +70,7 @@ describe('E2E Test: Basic NFT (read)', () => {
   it('Given a valid Auth instance, I should be able to get the list of NFTs by address', async () => {
     // Arrange
     const account = new Auth({
-      privateKey: 'PRIV_KEY',
+      privateKey: process.env.PRIVATE_KEY,
       projectId: process.env.PROJECT_ID,
       secretId: process.env.SECRET_ID,
       chainId: 4,
