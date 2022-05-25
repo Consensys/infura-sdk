@@ -38,8 +38,8 @@ jobs:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           SECRET_ID: ${{ secrets.SECRET_ID }}
 
-      - name: Run e2e tests
-        run: npm run test:e2e
+      - name: Run feature tests
+        run: npm run test:feature
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
@@ -83,7 +83,7 @@ jobs:
       # - name: Bump npm version
       #   run: npm version ${{ github.ref_name }} -m "bump version to %s"
 
-      # - name: Commit version 
+      # - name: Commit version
       #   run: |
       #     git status
       #     git push

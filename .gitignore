@@ -47,6 +47,5 @@ node_modules/
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 
-e2e/keys.json
-e2e/keys2.json
+feature-test/keys.json
 storage
