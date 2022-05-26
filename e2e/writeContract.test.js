@@ -37,7 +37,6 @@ describe('E2E Test: Basic NFT (write)', () => {
       params: {
         name: 'Cool Contract',
         symbol: 'CC',
-        contractURI: 'URI',
       },
     });
 

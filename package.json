@@ -8,7 +8,7 @@
     "test": "jest --testPathPattern=test/",
     "test:e2e": "jest --testPathPattern=e2e/",
     "test:coverage": "jest --coverage",
-    "prettier:format": "prettier -- write \"*.js\" ",
+    "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
