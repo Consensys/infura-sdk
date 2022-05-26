@@ -1,6 +1,6 @@
 {
-  "name": "infura-sdk",
-  "version": "0.1.0",
+  "name": "@infura/sdk",
+  "version": "2.0.0",
   "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
   "type": "module",
   "main": "index.js",
@@ -37,6 +37,18 @@
     "web3",
     "tooling"
   ],
+  "files": [
+    "dist/",
+    "index.js",
+    "lib/",
+    "services/",
+    "usage.js",
+    "LICENSE",
+    "README.MD"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
@@ -46,6 +58,7 @@
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "babel-jest": "^28.1.0",
+    "babel-plugin-transform-import-meta": "^2.1.1",
     "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
