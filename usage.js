@@ -6,15 +6,19 @@
 
 /* eslint-disable */
 
-import SDK from './lib/SDK/index';
-import Auth from './lib/Auth/index';
+import { config as loadEnv } from 'dotenv';
+import SDK from './lib/SDK/sdk';
+import Auth from './lib/Auth/Auth';
+import { ACCOUNT_ADDRESS } from './test/__mocks__/utils';
+
+loadEnv();
 
 const acc = new Auth({
-  chainId: 1,
-  privateKey: 'stringlong',
-  projectId: '9876456789',
-  secretId: '0987654567890',
-  rpcUrl: 'http://0.0.0.0:8545',
+  privateKey: 'privateKey',
+  projectId: process.env.PROJECT_ID,
+  secretId: process.env.SECRET_ID,
+  rpcUrl: process.env.RPC_URL,
+  chainId: 4,
 });
 
 const sdk = new SDK(acc);
@@ -30,3 +34,8 @@ const existingContract = await sdk.loadContract({
   template: 'templatename',
   contractAddress: '0x09765678',
 });
+
+// mintNFT
+if (newContract.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png')) {
+  console.log(`yay, I successfully minted an NFT to ${ACCOUNT_ADDRESS}!!`);
+} else console.log('something unexpected happened');
