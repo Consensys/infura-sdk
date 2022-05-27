@@ -8,7 +8,6 @@
 
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, TEMPLATES } from './index.js';
-import { ACCOUNT_ADDRESS } from './test/__mocks__/utils.js';
 
 loadEnv();
 
@@ -22,22 +21,31 @@ const acc = new Auth({
 
 const sdk = new SDK(acc);
 
-const newContract = await sdk.deploy({
-  template: TEMPLATES.ERC721Mintable,
-  params: {
-    name: 'testing',
-  },
-});
-// console.log(newContract);
+// const newContract = await sdk.deploy({
+//   template: TEMPLATES.ERC721Mintable,
+//   params: {
+//     name: '1311Contract',
+//     symbol: 'TOC',
+//     contractURI: 'URI',
+//   },
+// });
+
+//console.log(newContract.contractAddress); // 0x959A9b5F9Ceed6B4B1B09cE6AFCFb32162c70bB9
 
 const existingContract = await sdk.loadContract({
-  template: 'templatename',
-  contractAddress: '0x09765678',
+  template: TEMPLATES.ERC721Mintable,
+  contractAddress: '0x959A9b5F9Ceed6B4B1B09cE6AFCFb32162c70bB9',
 });
 
-// console.log(existingContract);
+console.log('contract address: \n', existingContract.contractAddress);
 
 // mintNFT
-// if (newContract.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png')) {
-//   console.log(`yay, I successfully minted an NFT to ${ACCOUNT_ADDRESS}!!`);
-// } else console.log('something unexpected happened');
+const tx = await existingContract.mint(
+  '0x975D72d053AF7Bcf109b2964a752a678E52B50f9',
+  'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+);
+console.log('submitted tx: \n', tx);
+
+const confirmed = await tx.wait();
+
+console.log('confirmed tx: \n', confirmed);

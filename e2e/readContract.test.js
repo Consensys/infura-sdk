@@ -22,6 +22,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the contract metadata', () => {
     it('should return the contract metadata', async () => {
+      await process.nextTick(() => {});
       const contractMetadata = await sdk.getContractMetadata(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
       );
@@ -32,6 +33,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the list of NFTs by address', () => {
     it('should return list of NFTs by address', async () => {
+      await process.nextTick(() => {});
       const nfts = await sdk.getNFTs(process.env.PUBLIC_ADDRESS);
       expect(nfts.assets.length).toBeGreaterThan(0);
       expect(nfts.assets[0]).not.toHaveProperty('metadata');
@@ -40,6 +42,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the list of NFTs by collection', () => {
     it('should return list of NFTs by collection', async () => {
+      await process.nextTick(() => {});
       const nfts = await sdk.getNFTsForCollection('0xE26a682fa90322eC48eB9F3FA66E8961D799177C');
       expect(nfts.assets.length).toBeGreaterThan(0);
     });
@@ -47,6 +50,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the token metadata', () => {
     it('should return token metadata', async () => {
+      await process.nextTick(() => {});
       const tokenMetadata = await sdk.getTokenMetadata(
         '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
         1,
@@ -65,6 +69,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the account ETH balance', () => {
     it('should return account ETH balance', async () => {
+      await process.nextTick(() => {});
       const ethBalance = await sdk.getEthBalance(process.env.PUBLIC_ADDRESS);
       expect(ethBalance).toEqual(expect.any(Number));
     });
@@ -72,6 +77,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the account ERC20 balances', () => {
     it('should return account ERC20 balances', async () => {
+      await process.nextTick(() => {});
       const erc20Balance = await sdk.getERC20Balances(process.env.PUBLIC_ADDRESS);
 
       const expectedERC20Balance = {
