@@ -47,6 +47,10 @@ describe('E2E Test: Basic NFT (write)', () => {
     sdk = new SDK(account);
   });
 
+  afterAll(async () => {
+    await server.close();
+  });
+
   it('should return deployed contract', async () => {
     const contractObject = await sdk.deploy({
       template: TEMPLATES.ERC721Mintable,
