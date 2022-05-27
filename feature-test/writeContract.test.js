@@ -16,7 +16,7 @@ describe('E2E Test: Basic NFT (write)', () => {
   beforeAll(async () => {
     const options = {
       wallet: {
-        accountKeysPath: 'e2e/keys.json',
+        accountKeysPath: 'feature-test/keys.json',
       },
     };
 
