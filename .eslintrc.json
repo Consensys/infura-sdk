@@ -9,6 +9,7 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "plugins": ["jest"],
   "rules": {
     "eol-last": "error",
     "eqeqeq": ["error", "allow-null"],
@@ -30,9 +31,13 @@
       }
     ],
     "object-curly-newline": "off",
-    "import/extensions": ["error", "ignorePackages", {
-      "js": "never"
-    }],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "always"
+      }
+    ],
     "arrow-parens": "off"
   }
 }

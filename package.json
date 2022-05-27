@@ -7,8 +7,8 @@
   "scripts": {
     "test": "jest --testPathPattern=test/",
     "test:e2e": "jest --testPathPattern=e2e/",
-    "test:coverage": "jest --coverage --testPathPattern=test/",
-    "prettier:format": "prettier -- write \"*.js\" ",
+    "test:coverage": "jest --coverage",
+    "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -37,6 +37,18 @@
     "web3",
     "tooling"
   ],
+  "files": [
+    "dist/",
+    "index.js",
+    "lib/",
+    "services/",
+    "usage.js",
+    "LICENSE",
+    "README.MD"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
@@ -46,9 +58,12 @@
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "babel-jest": "^28.1.0",
-    "eslint": "^8.14.0",
+    "babel-plugin-transform-import-meta": "^2.1.1",
+    "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.2.2",
+    "eslint-plugin-no-only-tests": "^2.6.0",
     "ganache": "^7.0.0",
     "husky": "^7.0.0",
     "jest": "^28.1.0",

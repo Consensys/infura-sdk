@@ -14,6 +14,9 @@ import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 
 loadEnv();
 
+let sdk;
+let account;
+
 describe('Sdk', () => {
   jest.setTimeout(120 * 1000);
   const HttpServiceMock = jest

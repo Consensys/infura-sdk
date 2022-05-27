@@ -2,6 +2,7 @@ import { config as loadEnv } from 'dotenv';
 import Auth from '../lib/Auth/Auth';
 import SDK from '../lib/SDK/sdk';
 import { TEMPLATES } from '../lib/NFT/constants';
+import { CONTRACT_ADDRESS } from '../test/__mocks__/utils';
 
 loadEnv();
 let sdk;
@@ -38,6 +39,15 @@ describe('E2E Test: Basic NFT (write)', () => {
         symbol: 'CC',
         contractURI: 'URI',
       },
+    });
+
+    expect(contractObject).not.toBe(null);
+  });
+
+  it('should return loaded contract', async () => {
+    const contractObject = await sdk.loadContract({
+      template: TEMPLATES.ERC721Mintable,
+      contractAddress: CONTRACT_ADDRESS,
     });
 
     expect(contractObject).not.toBe(null);

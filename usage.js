@@ -6,15 +6,38 @@
 
 /* eslint-disable */
 
-import { Client } from './lib/consensysClient.js';
+import { config as loadEnv } from 'dotenv';
+import { SDK, Auth, TEMPLATES } from './index.js';
+import { ACCOUNT_ADDRESS } from './test/__mocks__/utils.js';
 
-const consensysClient = new Client();
+loadEnv();
 
-consensysClient.authenticate({
-  accountAddress: '123',
-  key: '321',
+const acc = new Auth({
+  privateKey: process.env.PRIVATE_KEY,
+  projectId: process.env.PROJECT_ID,
+  secretId: process.env.SECRET_ID,
+  rpcUrl: process.env.RPC_URL,
+  chainId: 4,
 });
 
-consensysClient.nft.mint();
+const sdk = new SDK(acc);
 
-export default consensysClient;
+const newContract = await sdk.deploy({
+  template: TEMPLATES.ERC721Mintable,
+  params: {
+    name: 'testing',
+  },
+});
+// console.log(newContract);
+
+const existingContract = await sdk.loadContract({
+  template: 'templatename',
+  contractAddress: '0x09765678',
+});
+
+// console.log(existingContract);
+
+// mintNFT
+// if (newContract.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png')) {
+//   console.log(`yay, I successfully minted an NFT to ${ACCOUNT_ADDRESS}!!`);
+// } else console.log('something unexpected happened');
