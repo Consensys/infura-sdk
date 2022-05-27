@@ -21,26 +21,23 @@ const acc = new Auth({
 
 const sdk = new SDK(acc);
 
-// const newContract = await sdk.deploy({
-//   template: TEMPLATES.ERC721Mintable,
-//   params: {
-//     name: '1311Contract',
-//     symbol: 'TOC',
-//     contractURI: 'URI',
-//   },
-// });
-
-//console.log(newContract.contractAddress); // 0x959A9b5F9Ceed6B4B1B09cE6AFCFb32162c70bB9
-
-const existingContract = await sdk.loadContract({
+const newContract = await sdk.deploy({
   template: TEMPLATES.ERC721Mintable,
-  contractAddress: '0x959A9b5F9Ceed6B4B1B09cE6AFCFb32162c70bB9',
+  params: {
+    name: '1755Contract',
+    symbol: 'DCC',
+    contractURI: 'URI',
+  },
 });
 
-console.log('contract address: \n', existingContract.contractAddress);
+// const existingContract = await sdk.loadContract({
+//   template: TEMPLATES.ERC721Mintable,
+//   contractAddress: '0x959A9b5F9Ceed6B4B1B09cE6AFCFb32162c70bB9',
+// });
+console.log('contract address: \n', newContract.contractAddress);
 
 // mintNFT
-const tx = await existingContract.mint(
+const tx = await newContract.mint(
   '0x975D72d053AF7Bcf109b2964a752a678E52B50f9',
   'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
 );
