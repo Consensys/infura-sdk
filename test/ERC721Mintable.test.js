@@ -86,7 +86,8 @@ describe('SDK', () => {
 
     await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
     const tx = await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
-    expect(typeof tx.wait).toBe('function');
+
+    // TODO expect something
   });
 
   it('[LoadContract] - should return an Error if contract is already deployed', () => {
