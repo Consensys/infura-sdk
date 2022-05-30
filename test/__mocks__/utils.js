@@ -6,3 +6,4 @@ export const CONTRACT_ADDRESS = '0x97ed63533c9f4f50521d78e58caeb94b175f5d35';
 export const generateTestPrivateKey = () => {
   return `0x${randomBytes(32).toString('hex')}`;
 };
+export const ACCOUNT_ADDRESS_2 = '0xF69c1883b098d621FC58a42E673C4bF6a6483fFf';

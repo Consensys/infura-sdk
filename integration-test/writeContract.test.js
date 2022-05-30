@@ -9,6 +9,25 @@ loadEnv();
 let sdk;
 let account;
 let server;
+let contractObject;
+
+const rpcUrl = process.env.RPC_URL;
+const chainId = 4;
+const projectId = process.env.PROJECT_ID;
+const secretId = process.env.SECRET_ID;
+const privateKey = process.env.PRIVATE_KEY;
+const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
+
+const accountRinkeby = new Auth({
+  privateKey,
+  projectId,
+  secretId,
+  rpcUrl,
+  chainId,
+  IPFS,
+});
+
+const sdkRinkeby = new SDK(accountRinkeby);
 
 describe('E2E Test: Basic NFT (write)', () => {
   jest.setTimeout(120 * 1000);
@@ -60,7 +79,6 @@ describe('E2E Test: Basic NFT (write)', () => {
         contractURI: 'URI',
       },
     });
-
     expect(contractObject).not.toBe(null);
   });
 
@@ -71,5 +89,37 @@ describe('E2E Test: Basic NFT (write)', () => {
     });
 
     expect(contractObject).not.toBe(null);
+  });
+
+  it('should mint nft', async () => {
+    contractObject = await sdkRinkeby.deploy({
+      template: TEMPLATES.ERC721Mintable,
+      params: {
+        name: 'Cool Contract',
+        symbol: 'CC',
+        contractURI: 'URI',
+      },
+    });
+
+    const tx = await contractObject.mint(
+      process.env.PUBLIC_ADDRESS,
+      'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+    );
+
+    await tx.wait();
+
+    expect(tx.hash).not.toBe(null);
+  });
+
+  it('should transfer nft', async () => {
+    const tx = await contractObject.transfer({
+      from: process.env.PUBLIC_ADDRESS,
+      to: '0xF6402e8fD69153a86c75a9995E527E549fd5707a',
+      tokenId: 0,
+    });
+
+    await tx.wait();
+
+    expect(tx.hash).not.toBe(null);
   });
 });
