@@ -34,6 +34,7 @@ describe('SDK', () => {
 
   afterEach(() => {
     contractFactoryMock.mockClear();
+    jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
   });
 
   it('should create "ERC721Mintable" instance', () => {
@@ -601,5 +602,55 @@ describe('SDK', () => {
     await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe.only('setRoyalties', () => {
+    it('should throw when args are missing (address)', async () => {
+      const contract = new ERC721Mintable(signer);
+
+      await expect(() => contract.setRoyalties()).rejects.toThrow(
+        '[SDK.setRoyalties] Address is required',
+      );
+    });
+    it('should throw when args are missing (fee)', async () => {
+      const contract = new ERC721Mintable(signer);
+
+      await expect(() => contract.setRoyalties(ACCOUNT_ADDRESS)).rejects.toThrow(
+        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+      );
+    });
+    it('should throw when "fee" is not a number', async () => {
+      const contract = new ERC721Mintable(signer);
+
+      await expect(() => contract.setRoyalties(ACCOUNT_ADDRESS, 'number')).rejects.toThrow(
+        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+      );
+    });
+    it('should throw when "fee" is not a number larger than 0 and less than 10000', async () => {
+      const contract = new ERC721Mintable(signer);
+      // contract.contractAddress = CONTRACT_ADDRESS;
+
+      await expect(() => contract.setRoyalties(ACCOUNT_ADDRESS, 0)).rejects.toThrow(
+        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+      );
+    });
+    it('should throw if contract not deployed', async () => {
+      const contract = new ERC721Mintable(signer);
+      contract.contractAddress = '';
+
+      await expect(() => contract.setRoyalties(ACCOUNT_ADDRESS, 1)).rejects.toThrow(
+        '[SDK.setRoyalties] Contract needs to be deployed',
+      );
+    });
+
+    it('should set royalties', async () => {
+      const setRoyaltiesMock = jest.spyOn(ethers, 'Contract').mockImplementationOnce(() => ({
+        setRoyalties: jest.fn(),
+      }));
+      const contract = new ERC721Mintable(signer);
+      await contract.loadContract(CONTRACT_ADDRESS);
+      contract.setRoyalties(ACCOUNT_ADDRESS, 1);
+      await expect(setRoyaltiesMock).toHaveBeenCalledTimes(1);
+    });
   });
 });
