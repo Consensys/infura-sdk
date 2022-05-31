@@ -604,7 +604,7 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
-  describe.only('setRoyalties', () => {
+  describe('setRoyalties', () => {
     it('should throw when args are missing (address)', async () => {
       const contract = new ERC721Mintable(signer);
 
