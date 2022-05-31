@@ -20,6 +20,11 @@ describe('E2E Test: Sdk (read)', () => {
     sdk = new SDK(auth);
   });
 
+  // fix to avoid axios open handle
+  beforeEach(async () => {
+    await process.nextTick(() => {});
+  });
+
   describe('As an account I should be able to get the contract metadata', () => {
     it('should return the contract metadata', async () => {
       const contractMetadata = await sdk.getContractMetadata(

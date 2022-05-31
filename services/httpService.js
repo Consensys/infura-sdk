@@ -24,10 +24,9 @@ export class HttpService {
 
   async get(uri) {
     try {
-      const response = await this.instance.get(uri);
-      return response;
+      return await this.instance.get(uri);
     } catch (error) {
-      throw new Error(err).stack;
+      throw new Error(`[httpService.get] An error occured: ${error}`);
     }
   }
 

@@ -30,23 +30,43 @@ describe('SDK', () => {
   it('[Deploy] - should return an Error if signer not defined ', () => {
     eRC721Mintable = new ERC721Mintable(null, contractAddress);
 
-    const contract = async () => eRC721Mintable.deploy('name', 'symbol');
+    const contract = async () =>
+      eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
 
-    expect(contract).rejects.toThrow('Signer instance is required to interact with contract.');
+    expect(contract).rejects.toThrow(
+      '[ERC721Mintable.deploy] Signer instance is required to interact with contract.',
+    );
   });
 
   it('[Deploy] - should return an Error if Name is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer, contractAddress);
 
-    const contract = async () => eRC721Mintable.deploy({ name: '', symbol: 'sumbol' });
+    const contract = async () =>
+      eRC721Mintable.deploy({ name: '', symbol: 'symbol', contractURI: 'URI' });
 
-    expect(contract).rejects.toThrow('Name cannot be empty');
+    expect(contract).rejects.toThrow('[ERC721Mintable.deploy] Name cannot be empty');
+  });
+
+  it('[Deploy] - should return an Error if symbol is undefined', () => {
+    eRC721Mintable = new ERC721Mintable(signer, contractAddress);
+
+    const contract = async () => eRC721Mintable.deploy({ name: 'name', contractURI: 'URI' });
+
+    expect(contract).rejects.toThrow('[ERC721Mintable.deploy] symbol cannot be undefined');
+  });
+
+  it('[Deploy] - should return an Error if contractURI is undefined', () => {
+    eRC721Mintable = new ERC721Mintable(signer, contractAddress);
+
+    const contract = async () => eRC721Mintable.deploy({ name: 'name', symbol: 'symbol' });
+
+    expect(contract).rejects.toThrow('[ERC721Mintable.deploy] contractURI cannot be undefined');
   });
 
   it('[Deploy] - should return a contract', async () => {
     eRC721Mintable = new ERC721Mintable(signer, contractAddress);
 
-    await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
 
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
   });
@@ -65,7 +85,7 @@ describe('SDK', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const myNFT = async () => {
-      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
       await eRC721Mintable.mint('', 'https://infura.io/images/404.png');
     };
     expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A valid address is required to mint.');
@@ -75,17 +95,17 @@ describe('SDK', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const myNFT = async () => {
-      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
       await eRC721Mintable.mint('0xE26a682fa90322eC48eB9F3FA66E8961D799177C', '');
     };
-    expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A TokenURI is required to mint.');
+    expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A tokenURI is required to mint.');
   });
 
   it('[Mint] - should mint a token', async () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
-    await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
-    await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    const tx = await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
 
     // TODO expect something
   });
@@ -94,7 +114,7 @@ describe('SDK', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     const contract = async () => {
-      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol' });
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
       await eRC721Mintable.loadContract(CONTRACT_ADDRESS);
     };
     expect(contract).rejects.toThrow(
