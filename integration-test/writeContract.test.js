@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers';
 import Auth from '../lib/Auth/Auth.js';
 import SDK from '../lib/SDK/sdk.js';
 import { TEMPLATES } from '../lib/NFT/constants.js';
-import { CONTRACT_ADDRESS, ACCOUNT_ADDRESS } from '../test/__mocks__/utils.js';
+import { CONTRACT_ADDRESS } from '../test/__mocks__/utils.js';
 
 loadEnv();
 let sdk;
@@ -289,13 +289,18 @@ describe('E2E Test: Basic NFT (write)', () => {
   });
 
   it('should return setRoyalties', async () => {
-    const contractObject = await sdk.loadContract({
+    const contractObject = await sdk.deploy({
       template: TEMPLATES.ERC721Mintable,
-      contractAddress: CONTRACT_ADDRESS,
+      params: {
+        name: 'Cool Contract',
+        symbol: 'CC',
+        contractURI: 'URI',
+      },
     });
-    await contractObject.setRoyalties(ACCOUNT_ADDRESS, 1000);
+
+    await contractObject.setRoyalties(accountAddress, 1000);
     const infos = await contractObject.royaltyInfo(1, 10);
 
-    expect(infos).toStrictEqual([ACCOUNT_ADDRESS, BigNumber.from('1')]);
+    expect(infos).toStrictEqual([utils.getAddress(accountAddress), BigNumber.from('1')]);
   });
 });
