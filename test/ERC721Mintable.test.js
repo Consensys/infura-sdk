@@ -16,6 +16,10 @@ describe('SDK', () => {
         mintWithTokenURI: () => ({}),
         'safeTransferFrom(address,address,uint256)': () => ({}),
         setContractURI: jest.fn(),
+        estimateGas: {
+          'safeTransferFrom(address,address,uint256)': () => ({}),
+          mintWithTokenURI: () => ({}),
+        },
       }),
     }));
 
@@ -23,7 +27,11 @@ describe('SDK', () => {
   jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
 
   beforeAll(() => {
-    signer = 'signer';
+    signer = {
+      provider: {
+        getTransactionCount: () => Promise.resolve(1),
+      },
+    };
   });
 
   afterEach(() => {

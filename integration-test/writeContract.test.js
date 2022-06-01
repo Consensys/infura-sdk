@@ -106,9 +106,9 @@ describe('E2E Test: Basic NFT (write)', () => {
       'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
     );
 
-    await tx.wait();
+    const receipt = await tx.wait();
 
-    expect(tx.hash).not.toBe(null);
+    expect(receipt.status).toEqual(1);
   });
 
   it('should transfer nft', async () => {
@@ -118,9 +118,9 @@ describe('E2E Test: Basic NFT (write)', () => {
       tokenId: 0,
     });
 
-    await tx.wait();
+    const receipt = await tx.wait();
 
-    expect(tx.hash).not.toBe(null);
+    expect(receipt.status).toEqual(1);
   });
 
   it('should set contract URI', async () => {
