@@ -12,11 +12,11 @@ import { SDK, Auth, TEMPLATES } from './index.js';
 loadEnv();
 
 const acc = new Auth({
-  privateKey: process.env.PRIVATE_KEY,
-  projectId: process.env.PROJECT_ID,
-  secretId: process.env.SECRET_ID,
-  rpcUrl: process.env.RPC_URL,
-  chainId: 4,
+  privateKey: process.env.WALLET_PRIVATE_KEY,
+  projectId: process.env.INFURA_PROJECT_ID,
+  secretId: process.env.INFURA_PROJECT_SECRET,
+  rpcUrl: process.env.EVM_RPC_URL,
+  chainId: 5,
 });
 
 const sdk = new SDK(acc);

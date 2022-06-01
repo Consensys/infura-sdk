@@ -34,11 +34,11 @@ jobs:
       - name: Run unit tests + e2e tests + coverage
         run: npm run test:coverage
         env:
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-          SECRET_ID: ${{ secrets.SECRET_ID }}
-          RPC_URL: ${{ secrets.RPC_URL }}
-          PUBLIC_ADDRESS: ${{ secrets.PUBLIC_ADDRESS }}
+          WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
+          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+          INFURA_PROJECT_SECRET: ${{ secrets.INFURA_PROJECT_SECRET }}
+          EVM_RPC_URL: ${{ secrets.EVM_RPC_URL }}
+          WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e
