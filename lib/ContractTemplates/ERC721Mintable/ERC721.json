@@ -23300,66 +23300,26 @@
   "ast": {
     "absolutePath": "project:/contracts/ERC721Mintable.sol",
     "exportedSymbols": {
-      "AccessControl": [
-        319
-      ],
-      "Address": [
-        2164
-      ],
-      "Context": [
-        2186
-      ],
-      "ContractURIIsEmpty": [
-        2515
-      ],
-      "Counters": [
-        2260
-      ],
-      "ERC165": [
-        2487
-      ],
-      "ERC2981": [
-        1869
-      ],
-      "ERC721": [
-        1382
-      ],
-      "ERC721Mintable": [
-        2714
-      ],
-      "ERC721URIStorage": [
-        1644
-      ],
-      "IAccessControl": [
-        392
-      ],
-      "IERC165": [
-        2499
-      ],
-      "IERC2981": [
-        516
-      ],
-      "IERC721": [
-        1498
-      ],
-      "IERC721Metadata": [
-        1671
-      ],
-      "IERC721Receiver": [
-        1516
-      ],
-      "NameIsEmpty": [
-        2509
-      ],
-      "Ownable": [
-        497
-      ],
-      "Strings": [
-        2463
-      ],
-      "TokenURIIsEmpty": [
-        2512
-      ]
+      "AccessControl": [319],
+      "Address": [2164],
+      "Context": [2186],
+      "ContractURIIsEmpty": [2515],
+      "Counters": [2260],
+      "ERC165": [2487],
+      "ERC2981": [1869],
+      "ERC721": [1382],
+      "ERC721Mintable": [2714],
+      "ERC721URIStorage": [1644],
+      "IAccessControl": [392],
+      "IERC165": [2499],
+      "IERC2981": [516],
+      "IERC721": [1498],
+      "IERC721Metadata": [1671],
+      "IERC721Receiver": [1516],
+      "NameIsEmpty": [2509],
+      "Ownable": [497],
+      "Strings": [2463],
+      "TokenURIIsEmpty": [2512]
     },
     "id": 2715,
     "license": "MIT",
@@ -23367,11 +23327,7 @@
     "nodes": [
       {
         "id": 2501,
-        "literals": [
-          "solidity",
-          "0.8",
-          ".13"
-        ],
+        "literals": ["solidity", "0.8", ".13"],
         "nodeType": "PragmaDirective",
         "src": "32:23:16"
       },
@@ -23553,19 +23509,7 @@
         "fullyImplemented": true,
         "id": 2714,
         "linearizedBaseContracts": [
-          2714,
-          497,
-          319,
-          1869,
-          1644,
-          1382,
-          1671,
-          1498,
-          2487,
-          516,
-          2499,
-          392,
-          2186
+          2714, 497, 319, 1869, 1644, 1382, 1671, 1498, 2487, 516, 2499, 392, 2186
         ],
         "name": "ERC721Mintable",
         "nameLocation": "569:14:16",
@@ -24639,9 +24583,7 @@
                   }
                 },
                 {
-                  "assignments": [
-                    2622
-                  ],
+                  "assignments": [2622],
                   "declarations": [
                     {
                       "constant": false,
@@ -24812,10 +24754,7 @@
                       "id": 2632,
                       "name": "_safeMint",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        1011,
-                        1040
-                      ],
+                      "overloadedDeclarations": [1011, 1040],
                       "referencedDeclaration": 1011,
                       "src": "2074:9:16",
                       "typeDescriptions": {
@@ -25662,11 +25601,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              60,
-              610,
-              1717
-            ],
+            "baseFunctions": [60, 610, 1717],
             "body": {
               "id": 2712,
               "nodeType": "Block",
@@ -25856,11 +25791,7 @@
         ],
         "scope": 2715,
         "src": "560:2393:16",
-        "usedErrors": [
-          2509,
-          2512,
-          2515
-        ]
+        "usedErrors": [2509, 2512, 2515]
       }
     ],
     "src": "32:2922:16"
