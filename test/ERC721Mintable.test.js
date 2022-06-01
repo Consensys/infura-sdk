@@ -1,6 +1,6 @@
 import { ContractFactory, ethers } from 'ethers';
 import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
-import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
+import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
 
 let eRC721Mintable;
 let signer;
@@ -10,14 +10,18 @@ jest.mock('ethers');
 
 describe('SDK', () => {
   beforeAll(() => {
-    signer = 'signer';
+    signer = {
+      getGasPrice: jest.fn(() => Promise.resolve(1)),
+    };
 
     jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementation(() => ({
       deployed: () => ({
         mintWithTokenURI: () => ({}),
+        'safeTransferFrom(address,address,uint256)': () => ({}),
       }),
     }));
     jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
+    jest.spyOn(ethers.utils, 'formatUnits').mockImplementation(() => 1000);
     jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
   });
 
@@ -139,5 +143,76 @@ describe('SDK', () => {
     await eRC721Mintable.loadContract(CONTRACT_ADDRESS);
 
     expect(ethers.Contract).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Transfer] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const transferNft = async () =>
+      eRC721Mintable.transfer({ from: ACCOUNT_ADDRESS, to: ACCOUNT_ADDRESS_2, tokenId: 1 });
+    expect(transferNft).rejects.toThrow(
+      '[ERC721Mintable.transfer] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[Transfer] - should return an Error if from address is not valid', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const transferNft = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+      await eRC721Mintable.transfer({
+        from: '',
+        to: ACCOUNT_ADDRESS_2,
+        tokenId: 1,
+      });
+    };
+    expect(transferNft).rejects.toThrow(
+      '[ERC721Mintable.transfer] A valid address "from" is required to transfer.',
+    );
+  });
+
+  it('[Transfer] - should return an Error if to address is not valid', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const transferNft = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+      await eRC721Mintable.transfer({
+        from: ACCOUNT_ADDRESS,
+        to: '',
+        tokenId: 1,
+      });
+    };
+    expect(transferNft).rejects.toThrow(
+      '[ERC721Mintable.transfer] A valid address "to" is required to transfer.',
+    );
+  });
+
+  it('[Transfer] - should return an Error if to tokenID is not valid', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const transferNft = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+      await eRC721Mintable.transfer({
+        from: ACCOUNT_ADDRESS,
+        to: ACCOUNT_ADDRESS_2,
+        tokenId: 'test',
+      });
+    };
+    expect(transferNft).rejects.toThrow('[ERC721Mintable.transfer] TokenId should be an integer.');
+  });
+
+  it('[Transfer] - should transfer nft', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const transferNft = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+      await eRC721Mintable.transfer({
+        from: ACCOUNT_ADDRESS,
+        to: ACCOUNT_ADDRESS_2,
+        tokenId: 1,
+      });
+    };
+
+    expect(transferNft).not.toThrow();
   });
 });
