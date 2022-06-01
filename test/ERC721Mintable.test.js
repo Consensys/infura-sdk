@@ -9,20 +9,25 @@ let contractAddress;
 jest.mock('ethers');
 
 describe('SDK', () => {
-  beforeAll(() => {
-    signer = {
-      getGasPrice: jest.fn(() => Promise.resolve(1)),
-    };
-
-    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementation(() => ({
+  const contractFactoryMock = jest
+    .spyOn(ContractFactory.prototype, 'deploy')
+    .mockImplementation(() => ({
       deployed: () => ({
         mintWithTokenURI: () => ({}),
         'safeTransferFrom(address,address,uint256)': () => ({}),
+        setContractURI: jest.fn(),
       }),
     }));
-    jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
-    jest.spyOn(ethers.utils, 'formatUnits').mockImplementation(() => 1000);
-    jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
+
+  jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
+  jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
+
+  beforeAll(() => {
+    signer = 'signer';
+  });
+
+  afterEach(() => {
+    contractFactoryMock.mockClear();
   });
 
   it('should create "ERC721Mintable" instance', () => {
@@ -214,5 +219,40 @@ describe('SDK', () => {
     };
 
     expect(transferNft).not.toThrow();
+  });
+
+  it('[SetContractURI] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() =>
+      eRC721Mintable.setContractURI(
+        'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+      ),
+    ).rejects.toThrow(
+      '[ERC721Mintable.setContractURI] A contract should be deployed or loaded first!',
+    );
+  });
+
+  it('[SetContractURI] - should return an Error if the contractURI is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const uri = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setContractURI(null);
+    };
+    expect(uri).rejects.toThrow(
+      '[ERC721Mintable.setContractURI] A valid contract uri is required!',
+    );
+  });
+
+  it('[SetContractURI] - should set the contractURI', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.setContractURI(
+      'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+    );
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 });

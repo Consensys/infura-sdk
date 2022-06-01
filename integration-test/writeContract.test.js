@@ -122,4 +122,17 @@ describe('E2E Test: Basic NFT (write)', () => {
 
     expect(tx.hash).not.toBe(null);
   });
+
+  it('should set contract URI', async () => {
+    const contractObject = await sdk.loadContract({
+      template: TEMPLATES.ERC721Mintable,
+      contractAddress: CONTRACT_ADDRESS,
+    });
+
+    const tx = await contractObject.setContractURI(
+      'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+    );
+    const receipt = await tx.wait();
+    expect(receipt.status).toEqual(1);
+  });
 });
