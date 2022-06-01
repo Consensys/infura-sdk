@@ -11,11 +11,11 @@ let account;
 let server;
 let contractObject;
 
-const rpcUrl = process.env.RPC_URL;
-const chainId = 4;
-const projectId = process.env.PROJECT_ID;
-const secretId = process.env.SECRET_ID;
-const privateKey = process.env.PRIVATE_KEY;
+const rpcUrl = process.env.EVM_RPC_URL;
+const chainId = 5;
+const projectId = process.env.INFURA_PROJECT_ID;
+const secretId = process.env.INFURA_PROJECT_SECRET;
+const privateKey = process.env.WALLET_PRIVATE_KEY;
 const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
 
 const accountRinkeby = new Auth({
@@ -49,9 +49,9 @@ describe('E2E Test: Basic NFT (write)', () => {
     const privateKey = pk[owner];
 
     const rpcUrl = 'http://0.0.0.0:8545';
-    const chainId = 4;
-    const projectId = process.env.PROJECT_ID;
-    const secretId = process.env.SECRET_ID;
+    const chainId = 5;
+    const projectId = process.env.INFURA_PROJECT_ID;
+    const secretId = process.env.INFURA_PROJECT_SECRET;
     const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
 
     account = new Auth({
@@ -79,6 +79,7 @@ describe('E2E Test: Basic NFT (write)', () => {
         contractURI: 'URI',
       },
     });
+
     expect(contractObject).not.toBe(null);
   });
 
@@ -102,7 +103,7 @@ describe('E2E Test: Basic NFT (write)', () => {
     });
 
     const tx = await contractObject.mint(
-      process.env.PUBLIC_ADDRESS,
+      process.env.WALLET_PUBLIC_ADDRESS,
       'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
     );
 
@@ -113,7 +114,7 @@ describe('E2E Test: Basic NFT (write)', () => {
 
   it('should transfer nft', async () => {
     const tx = await contractObject.transfer({
-      from: process.env.PUBLIC_ADDRESS,
+      from: process.env.WALLET_PUBLIC_ADDRESS,
       to: '0xF6402e8fD69153a86c75a9995E527E549fd5707a',
       tokenId: 0,
     });

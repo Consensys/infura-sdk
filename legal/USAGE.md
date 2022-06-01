@@ -28,8 +28,8 @@ import ConsensysClient from 'consensys-sdk'
 3. Developer set up authentication credentials
 
 ```sh
-const PUBLIC_KEY = process.env.PUBLIC_KEY
-const PRIVATE_KEY = process.env.PRIVATE_KEY
+const PUBLIC_KEY = process.env.WALLET_PUBLIC_ADDRESS
+const PRIVATE_KEY = process.env.WALLET_PRIVATE_KEY
 const API_KEY = process.env.INFURA_API_KEY
 ```
 

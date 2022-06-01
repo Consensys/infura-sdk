@@ -14,9 +14,6 @@ import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
 
 loadEnv();
 
-let sdk;
-let account;
-
 describe('Sdk', () => {
   jest.setTimeout(120 * 1000);
   const HttpServiceMock = jest
@@ -26,10 +23,10 @@ describe('Sdk', () => {
   beforeAll(() => {
     const account = new Auth({
       privateKey: 'privateKey',
-      projectId: process.env.PROJECT_ID,
-      secretId: process.env.SECRET_ID,
-      rpcUrl: process.env.RPC_URL,
-      chainId: 4,
+      projectId: process.env.INFURA_PROJECT_ID,
+      secretId: process.env.INFURA_PROJECT_SECRET,
+      rpcUrl: process.env.EVM_RPC_URL,
+      chainId: 5,
     });
     sdk = new Sdk(account);
   });

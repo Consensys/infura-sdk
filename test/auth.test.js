@@ -12,10 +12,10 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: null,
-          projectId: process.env.PROJECT_ID,
-          secretId: process.env.SECRET_ID,
-          rpcUrl: process.env.RPC_URL,
-          chainId: 4,
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
         }),
     ).toThrow('[Auth.constructor] privateKey is missing!');
   });
@@ -26,9 +26,9 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
-          secretId: process.env.SECRET_ID,
-          rpcUrl: process.env.RPC_URL,
-          chainId: 4,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
         }),
     ).toThrow('[Auth.constructor] projectId is missing!');
   });
@@ -39,9 +39,9 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.PROJECT_ID,
-          rpcUrl: process.env.RPC_URL,
-          chainId: 4,
+          projectId: process.env.INFURA_PROJECT_ID,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
         }),
     ).toThrow('[Auth.constructor] secretId is missing!');
   });
@@ -52,9 +52,9 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.PROJECT_ID,
-          secretId: process.env.SECRET_ID,
-          rpcUrl: process.env.RPC_URL,
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
         }),
     ).toThrow('[Auth.constructor] chainId is missing!');
   });
@@ -64,9 +64,9 @@ describe('Auth', () => {
       () =>
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.PROJECT_ID,
-          secretId: process.env.SECRET_ID,
-          rpcUrl: process.env.RPC_URL,
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
           chainId: 6,
         }),
     ).toThrow('[Auth.constructor] chainId: 6 is not supported!');
@@ -76,14 +76,14 @@ describe('Auth', () => {
     it("Should return default provider when we don't pass the injectedProvider parameter", () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
 
       expect(account.getProvider()).toStrictEqual(
-        new ethers.providers.getDefaultProvider(process.env.RPC_URL),
+        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
       );
     });
   });
@@ -92,10 +92,10 @@ describe('Auth', () => {
     it("Should throw when we don't pass the injectedProvider parameter", () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
 
       expect(() => account.setInjectedProvider()).toThrow(
@@ -105,10 +105,10 @@ describe('Auth', () => {
     it("Should return default provider when we don't pass the injectedProvider parameter", () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
 
       expect(account.setInjectedProvider(ethers.providers.Provider)).toStrictEqual(
@@ -122,15 +122,17 @@ describe('Auth', () => {
       const privateKey = generateTestPrivateKey();
       const account = new Auth({
         privateKey,
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
       const provider = account.getProvider();
 
       // eslint-disable-next-line new-cap
-      expect(provider).toStrictEqual(new ethers.providers.getDefaultProvider(process.env.RPC_URL));
+      expect(provider).toStrictEqual(
+        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
+      );
       expect(JSON.stringify(account.getSigner())).toStrictEqual(
         JSON.stringify(new ethers.Wallet(privateKey, provider)),
       );
@@ -141,14 +143,16 @@ describe('Auth', () => {
     it('should return the apiAuth key', () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
 
       expect(account.getApiAuth()).toStrictEqual(
-        Buffer.from(`${process.env.PROJECT_ID}:${process.env.SECRET_ID}`).toString('base64'),
+        Buffer.from(
+          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
+        ).toString('base64'),
       );
     });
   });
@@ -157,13 +161,13 @@ describe('Auth', () => {
     it('should return the chainId', () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
 
-      expect(account.getChainId()).toStrictEqual(4);
+      expect(account.getChainId()).toStrictEqual(5);
     });
   });
 
@@ -171,15 +175,15 @@ describe('Auth', () => {
     it('should return the chainId', () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.PROJECT_ID,
-        secretId: process.env.SECRET_ID,
-        rpcUrl: process.env.RPC_URL,
-        chainId: 4,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
       });
 
       expect(account.getApiAuthHeader()).toStrictEqual({
         Authorization: `Basic ${Buffer.from(
-          `${process.env.PROJECT_ID}:${process.env.SECRET_ID}`,
+          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
         ).toString('base64')}`,
       });
     });
