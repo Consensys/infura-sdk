@@ -16,6 +16,7 @@ describe('SDK', () => {
         mintWithTokenURI: () => ({}),
         'safeTransferFrom(address,address,uint256)': () => ({}),
         setContractURI: jest.fn(),
+        setApprovalForAll: jest.fn(),
       }),
     }));
 
@@ -253,6 +254,50 @@ describe('SDK', () => {
       'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
     );
 
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[SetApprovalForAll] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() => eRC721Mintable.setApprovalForAll(ACCOUNT_ADDRESS, true)).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] A contract should be deployed or loaded first.',
+    );
+  });
+
+  it('[SetApprovalForAll] - should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approval = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll('', true);
+    };
+    expect(approval).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] An address is required to setApprovalForAll.',
+    );
+  });
+
+  it('[SetApprovalForAll] - should return an Error if the approvalStatus is not a boolean', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approval = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll(ACCOUNT_ADDRESS, null);
+    };
+    expect(approval).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] approvalStatus param should be a boolean.',
+    );
+  });
+
+  it('[SetApprovalForAll] - should set approval for all when all params are correct', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approval = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll(ACCOUNT_ADDRESS, true);
+    };
+
+    expect(approval).not.toThrow();
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 });
