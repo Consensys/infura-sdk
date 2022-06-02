@@ -2,3 +2,4 @@ coverage
 legal
 .github
 README.md
+*.json
