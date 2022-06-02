@@ -10,24 +10,9 @@ let sdk;
 let account;
 let server;
 let contractObject;
-
-const rpcUrl = process.env.EVM_RPC_URL;
-const chainId = 5;
-const projectId = process.env.INFURA_PROJECT_ID;
-const secretId = process.env.INFURA_PROJECT_SECRET;
-const privateKey = process.env.WALLET_PRIVATE_KEY;
-const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
-
-const accountRinkeby = new Auth({
-  privateKey,
-  projectId,
-  secretId,
-  rpcUrl,
-  chainId,
-  IPFS,
-});
-
-const sdkRinkeby = new SDK(accountRinkeby);
+let publicAddress;
+let owner;
+let privateKeyPublicAddress;
 
 describe('E2E Test: Basic NFT (write)', () => {
   jest.setTimeout(120 * 1000);
@@ -45,8 +30,9 @@ describe('E2E Test: Basic NFT (write)', () => {
     // grab the first account
     // eslint-disable-next-line global-require
     const { addresses: addr, private_keys: pk } = require('./keys.json');
-    const owner = Object.keys(addr)[0];
+    [owner, publicAddress] = Object.keys(addr);
     const privateKey = pk[owner];
+    privateKeyPublicAddress = pk[publicAddress];
 
     const rpcUrl = 'http://0.0.0.0:8545';
     const chainId = 5;
@@ -64,6 +50,14 @@ describe('E2E Test: Basic NFT (write)', () => {
     });
 
     sdk = new SDK(account);
+    contractObject = await sdk.deploy({
+      template: TEMPLATES.ERC721Mintable,
+      params: {
+        name: 'Cool Contract',
+        symbol: 'CC',
+        contractURI: 'URI',
+      },
+    });
   });
 
   afterAll(async () => {
@@ -71,69 +65,107 @@ describe('E2E Test: Basic NFT (write)', () => {
   });
 
   it('should return deployed contract', async () => {
-    const contractObject = await sdk.deploy({
-      template: TEMPLATES.ERC721Mintable,
-      params: {
-        name: 'Cool Contract',
-        symbol: 'CC',
-        contractURI: 'URI',
-      },
-    });
-
-    expect(contractObject).not.toBe(null);
+    expect(contractObject.contractAddress).not.toBe(null);
   });
 
   it('should return loaded contract', async () => {
-    const contractObject = await sdk.loadContract({
+    const loadedContract = await sdk.loadContract({
       template: TEMPLATES.ERC721Mintable,
-      contractAddress: CONTRACT_ADDRESS,
+      contractAddress: contractObject.contractAddress,
     });
 
-    expect(contractObject).not.toBe(null);
+    expect(loadedContract).not.toBe(null);
   });
 
   it('should mint nft', async () => {
-    contractObject = await sdkRinkeby.deploy({
-      template: TEMPLATES.ERC721Mintable,
-      params: {
-        name: 'Cool Contract',
-        symbol: 'CC',
-        contractURI: 'URI',
-      },
-    });
-
     const tx = await contractObject.mint(
-      process.env.WALLET_PUBLIC_ADDRESS,
+      owner,
       'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
     );
 
-    await tx.wait();
+    const receipt = await tx.wait();
 
-    expect(tx.hash).not.toBe(null);
+    expect(receipt.status).toEqual(1);
   });
 
   it('should transfer nft', async () => {
     const tx = await contractObject.transfer({
-      from: process.env.WALLET_PUBLIC_ADDRESS,
-      to: '0xF6402e8fD69153a86c75a9995E527E549fd5707a',
+      from: owner,
+      to: publicAddress,
       tokenId: 0,
     });
+    console.log(tx);
+    const receipt = await tx.wait();
+    console.log(receipt);
 
-    await tx.wait();
-
-    expect(tx.hash).not.toBe(null);
+    expect(receipt.status).toEqual(1);
   });
 
   it('should set contract URI', async () => {
-    const contractObject = await sdk.loadContract({
-      template: TEMPLATES.ERC721Mintable,
-      contractAddress: CONTRACT_ADDRESS,
-    });
-
     const tx = await contractObject.setContractURI(
       'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
     );
     const receipt = await tx.wait();
     expect(receipt.status).toEqual(1);
+  });
+
+  it('should Grant & check Minter role', async () => {
+    // grant minter role
+    const tx = await contractObject.addMinter(publicAddress);
+    const receipt = await tx.wait();
+
+    // // check minter role
+    const isMinter = await contractObject.isMinter(publicAddress);
+
+    expect(receipt.status).toEqual(1);
+    expect(isMinter).toEqual(true);
+  });
+
+  it('should Grant & revoke & check Minter role', async () => {
+    // grant minter role
+    const tx = await contractObject.addMinter(publicAddress);
+    const receipt = await tx.wait();
+
+    // revoke minter role
+    const tx2 = await contractObject.removeMinter(publicAddress);
+    const receipt2 = await tx2.wait();
+
+    // // check minter role
+    const isMinter = await contractObject.isMinter(publicAddress);
+
+    expect(receipt.status).toEqual(1);
+    expect(receipt2.status).toEqual(1);
+    expect(isMinter).toEqual(false);
+  });
+
+  it('should Grant & renounce & check Minter role', async () => {
+    // grant minter role
+    const tx = await contractObject.addMinter(publicAddress);
+    const receipt = await tx.wait();
+
+    // renounce minter role
+    const accountPublic = new Auth({
+      privateKey: privateKeyPublicAddress,
+      projectId: process.env.INFURA_PROJECT_ID,
+      secretId: process.env.INFURA_PROJECT_SECRET,
+      rpcUrl: 'http://0.0.0.0:8545',
+      chainId: 5,
+    });
+
+    const sdkPublic = new SDK(accountPublic);
+    const existing = await sdkPublic.loadContract({
+      template: TEMPLATES.ERC721Mintable,
+      contractAddress: contractObject.contractAddress,
+    });
+
+    const tx2 = await existing.renounceMinter(publicAddress);
+    const receipt2 = await tx2.wait();
+
+    // // check minter role
+    const isMinter = await contractObject.isMinter(publicAddress);
+
+    expect(receipt.status).toEqual(1);
+    expect(receipt2.status).toEqual(1);
+    expect(isMinter).toEqual(false);
   });
 });
