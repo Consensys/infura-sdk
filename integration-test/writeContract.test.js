@@ -93,9 +93,7 @@ describe('E2E Test: Basic NFT (write)', () => {
       to: publicAddress,
       tokenId: 0,
     });
-    console.log(tx);
     const receipt = await tx.wait();
-    console.log(receipt);
 
     expect(receipt.status).toEqual(1);
   });
@@ -166,5 +164,16 @@ describe('E2E Test: Basic NFT (write)', () => {
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
     expect(isMinter).toEqual(false);
+  });
+
+  it('should set approval for all', async () => {
+    const loadedContractObject = await sdk.loadContract({
+      template: TEMPLATES.ERC721Mintable,
+      contractAddress: contractObject.contractAddress,
+    });
+    const tx = await loadedContractObject.setApprovalForAll(publicAddress, true);
+    const receipt = await tx.wait();
+
+    expect(receipt.status).toEqual(1);
   });
 });
