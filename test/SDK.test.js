@@ -231,41 +231,4 @@ describe('Sdk', () => {
       );
     });
   });
-
-  describe('setRoyalties', () => {
-    it('should throw when args are missing (address)', async () => {
-      await expect(() => sdk.setRoyalties()).rejects.toThrow(
-        '[SDK.setRoyalties] Address is required',
-      );
-    });
-    it('should throw when args are missing (fee)', async () => {
-      await expect(() => sdk.setRoyalties(ACCOUNT_ADDRESS)).rejects.toThrow(
-        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
-      );
-    });
-    it('should throw when "address" is not a valid address', async () => {
-      await expect(() => sdk.setRoyalties('address', 1)).rejects.toThrow(
-        '[SDK.setRoyalties] Address is required',
-      );
-    });
-    it('should throw when "fee" is not a number', async () => {
-      await expect(() => sdk.setRoyalties(ACCOUNT_ADDRESS, 'number')).rejects.toThrow(
-        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
-      );
-    });
-    it('should throw when "fee" is not a number larger than 0 and less than 10000', async () => {
-      await expect(() => sdk.setRoyalties(ACCOUNT_ADDRESS, 0)).rejects.toThrow(
-        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
-      );
-    });
-    it('should throw if contract not deployed', async () => {
-      await expect(() => sdk.setRoyalties(ACCOUNT_ADDRESS, 0)).rejects.toThrow(
-        '[SDK.setRoyalties] Fee as numeric value between 0 and 10000 is required',
-      );
-    });
-    it('should return bool result', async () => {
-      const result = await sdk.setRoyalties(ACCOUNT_ADDRESS, 100);
-      expect(typeof result === 'boolean').toBeTruthy();
-    });
-  });
 });
