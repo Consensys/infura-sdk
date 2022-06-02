@@ -17,9 +17,10 @@ describe('SDK', () => {
         'safeTransferFrom(address,address,uint256)': () => ({}),
         setContractURI: jest.fn(),
         grantRole: jest.fn(),
-        revokeRole: jest.fn(),
         renounceRole: jest.fn(),
+        revokeRole: jest.fn(),
         hasRole: jest.fn(),
+        setApprovalForAll: jest.fn(),
       }),
     }));
 
@@ -118,9 +119,9 @@ describe('SDK', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
     await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
-    const tx = await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
+    await eRC721Mintable.mint(ACCOUNT_ADDRESS, 'https://infura.io/images/404.png');
 
-    // TODO expect something
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[LoadContract] - should return an Error if contract is already deployed', () => {
@@ -257,6 +258,170 @@ describe('SDK', () => {
       'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
     );
 
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[addMinter] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => eRC721Mintable.addMinter(ACCOUNT_ADDRESS);
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.addMinter] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[addMinter] - should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.addMinter('');
+    };
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.addMinter] A valid address is required to add the minter role.',
+    );
+  });
+
+  it('[addMinter] - should add minter role to an address', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.addMinter(ACCOUNT_ADDRESS);
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[removeMinter] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => eRC721Mintable.removeMinter(ACCOUNT_ADDRESS);
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.removeMinter] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[removeMinter] - should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.removeMinter('');
+    };
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.removeMinter] A valid address is required to remove the minter role.',
+    );
+  });
+
+  it('[removeMinter] - should remove minter role to an address', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.removeMinter(ACCOUNT_ADDRESS);
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[renounceMinter] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => eRC721Mintable.renounceMinter(ACCOUNT_ADDRESS);
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.renounceMinter] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[renounceMinter] - should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.renounceMinter('');
+    };
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.renounceMinter] A valid address is required to renounce the minter role.',
+    );
+  });
+
+  it('[renounceMinter] - should renounce minter role for an address', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.renounceMinter(ACCOUNT_ADDRESS);
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[isMinter] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => eRC721Mintable.isMinter(ACCOUNT_ADDRESS);
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.isMinter] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[isMinter] - should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const minter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.isMinter('');
+    };
+    expect(minter).rejects.toThrow(
+      '[ERC721Mintable.isMinter] A valid address is required to check the minter role.',
+    );
+  });
+
+  it('[isMinter] - should check if an address has minter role', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.isMinter(ACCOUNT_ADDRESS);
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[SetApprovalForAll] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() => eRC721Mintable.setApprovalForAll(ACCOUNT_ADDRESS, true)).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] A contract should be deployed or loaded first.',
+    );
+  });
+
+  it('[SetApprovalForAll] - should return an Error if the address is empty', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approval = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll('', true);
+    };
+    expect(approval).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] An address is required to setApprovalForAll.',
+    );
+  });
+
+  it('[SetApprovalForAll] - should return an Error if the approvalStatus is not a boolean', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approval = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll(ACCOUNT_ADDRESS, null);
+    };
+    expect(approval).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] approvalStatus param should be a boolean.',
+    );
+  });
+
+  it('[SetApprovalForAll] - should set approval for all when all params are correct', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approval = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll(ACCOUNT_ADDRESS, true);
+    };
+
+    expect(approval).not.toThrow();
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
