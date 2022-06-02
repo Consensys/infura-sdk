@@ -3,7 +3,6 @@ import ganache from 'ganache';
 import Auth from '../lib/Auth/Auth';
 import SDK from '../lib/SDK/sdk';
 import { TEMPLATES } from '../lib/NFT/constants';
-import { CONTRACT_ADDRESS } from '../test/__mocks__/utils';
 
 loadEnv();
 let sdk;
