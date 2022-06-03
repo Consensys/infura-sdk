@@ -278,4 +278,9 @@ describe('E2E Test: Basic NFT (write)', () => {
 
     expect(infos).toStrictEqual([utils.getAddress(publicAddress), BigNumber.from('1')]);
   });
+
+  it('should renounce contract ownership', async () => {
+    const result = await contractObject.renounceOwnership();
+    expect(result).not.toBe(null);
+  });
 });

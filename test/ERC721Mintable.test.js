@@ -699,8 +699,19 @@ describe('SDK', () => {
         '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
       );
     });
-    it('[renounceOwnership] - should throw if contract not deployed', async () => {});
+    it('[renounceOwnership] - should throw if contract not deployed', async () => {
+      const contract = new ERC721Mintable(signer);
 
-    it('[renounceOwnership] - should call renounce ownership', async () => {});
+      expect(contract.renounceOwnership()).rejects.toThrow(
+        '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
+      );
+    });
+
+    it('[renounceOwnership] - should call renounce ownership', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
   });
 });
