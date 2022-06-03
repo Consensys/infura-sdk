@@ -24,6 +24,7 @@ describe('SDK', () => {
         approve: jest.fn(),
         setRoyalties: jest.fn(),
         royaltyInfo: jest.fn(),
+        renounceOwnership: jest.fn(),
       }),
     }));
 
@@ -688,5 +689,18 @@ describe('SDK', () => {
         '[ERC721Mintable.royaltyInfo] Sell price is required',
       );
     });
+  });
+  describe('renounceOwnership', () => {
+    it('[renounceOwnership] - should throw when args are missing (contractAddress)', async () => {
+      const contract = new ERC721Mintable(signer);
+      contract.contractAddress = null;
+
+      await expect(() => contract.renounceOwnership()).rejects.toThrow(
+        '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
+      );
+    });
+    it('[renounceOwnership] - should throw if contract not deployed', async () => {});
+
+    it('[renounceOwnership] - should call renounce ownership', async () => {});
   });
 });
