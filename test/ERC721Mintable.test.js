@@ -424,4 +424,120 @@ describe('SDK', () => {
     expect(approval).not.toThrow();
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
+
+  it('[addAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() =>
+      eRC721Mintable.addAdmin('0xB3C24BB465b682225F8C87b29a031921B764Ed94'),
+    ).rejects.toThrow('[ERC721Mintable.addAdmin] A contract should be deployed or loaded first!');
+  });
+
+  it('[addAdmin] - should return an Error because of bad address', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+    const admin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.addAdmin('');
+    };
+    expect(admin).rejects.toThrow(
+      '[ERC721Mintable.addAdmin] A valid address is required to add the admin role.',
+    );
+  });
+
+  it('[addAdmin] - should add admin', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.addAdmin('0x417C0309d43C27593F8a4DFEC427894306f6CE67');
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[removeAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() =>
+      eRC721Mintable.removeAdmin('0xB3C24BB465b682225F8C87b29a031921B764Ed94'),
+    ).rejects.toThrow(
+      '[ERC721Mintable.removeAdmin] A contract should be deployed or loaded first!',
+    );
+  });
+
+  it('[removeAdmin] - should return an Error because of bad address', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+    const admin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.removeAdmin('');
+    };
+    expect(admin).rejects.toThrow(
+      '[ERC721Mintable.removeAdmin] A valid address is required to remove the admin role.',
+    );
+  });
+
+  it('[removeAdmin] - should remove admin', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.removeAdmin('0x417C0309d43C27593F8a4DFEC427894306f6CE67');
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[renounceAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() =>
+      eRC721Mintable.renounceAdmin('0xB3C24BB465b682225F8C87b29a031921B764Ed94'),
+    ).rejects.toThrow(
+      '[ERC721Mintable.renounceAdmin] A contract should be deployed or loaded first!',
+    );
+  });
+
+  it('[renounceAdmin] - should return an Error because of bad address', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+    const admin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.renounceAdmin('');
+    };
+    expect(admin).rejects.toThrow(
+      '[ERC721Mintable.renounceAdmin] A valid address is required to renounce the admin role.',
+    );
+  });
+
+  it('[renounceAdmin] - should renounce admin', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.renounceAdmin('0x417C0309d43C27593F8a4DFEC427894306f6CE67');
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[isAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    expect(() =>
+      eRC721Mintable.isAdmin('0xB3C24BB465b682225F8C87b29a031921B764Ed94'),
+    ).rejects.toThrow('[ERC721Mintable.isAdmin] A contract should be deployed or loaded first!');
+  });
+
+  it('[isAdmin] - should return an Error because of bad address', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+    const admin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.isAdmin('');
+    };
+    expect(admin).rejects.toThrow(
+      '[ERC721Mintable.isAdmin] A valid address is required to check the admin role.',
+    );
+  });
+
+  it('[isAdmin] - should renounce admin', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+    await eRC721Mintable.isAdmin('0x417C0309d43C27593F8a4DFEC427894306f6CE67');
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
 });

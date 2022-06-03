@@ -176,4 +176,56 @@ describe('E2E Test: Basic NFT (write)', () => {
 
     expect(receipt.status).toEqual(1);
   });
+
+  it('should grant & check Admin role', async () => {
+    const tx = await contractObject.addAdmin(publicAddress);
+    const receipt = await tx.wait();
+
+    const isAdmin = await contractObject.isAdmin(publicAddress);
+
+    expect(receipt.status).toEqual(1);
+    expect(isAdmin).toEqual(true);
+  });
+
+  it('should grant & revoke & check Admin role', async () => {
+    const tx = await contractObject.addAdmin(publicAddress);
+    const receipt = await tx.wait();
+
+    const tx2 = await contractObject.removeAdmin(publicAddress);
+    const receipt2 = await tx2.wait();
+
+    const isAdmin = await contractObject.isAdmin(publicAddress);
+
+    expect(receipt.status).toEqual(1);
+    expect(receipt2.status).toEqual(1);
+    expect(isAdmin).toEqual(false);
+  });
+
+  it('should grant & renounce & check Admin role', async () => {
+    const tx = await contractObject.addAdmin(publicAddress);
+    const receipt = await tx.wait();
+
+    const accountPublic = new Auth({
+      privateKey: privateKeyPublicAddress,
+      projectId: process.env.INFURA_PROJECT_ID,
+      secretId: process.env.INFURA_PROJECT_SECRET,
+      rpcUrl: 'http://0.0.0.0:8545',
+      chainId: 5,
+    });
+
+    const sdkPublic = new SDK(accountPublic);
+    const existing = await sdkPublic.loadContract({
+      template: TEMPLATES.ERC721Mintable,
+      contractAddress: contractObject.contractAddress,
+    });
+
+    const tx2 = await existing.renounceAdmin(publicAddress);
+    const receipt2 = await tx2.wait();
+
+    const isAdmin = await contractObject.isAdmin(publicAddress);
+
+    expect(receipt.status).toEqual(1);
+    expect(receipt2.status).toEqual(1);
+    expect(isAdmin).toEqual(false);
+  });
 });
