@@ -27,9 +27,9 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the contract metadata', () => {
     it('should return the contract metadata', async () => {
-      const contractMetadata = await sdk.getContractMetadata(
-        '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-      );
+      const contractMetadata = await sdk.getContractMetadata({
+        contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
+      });
       const expectedContractMetadata = { name: 'testContract', symbol: 'TST', tokenType: 'ERC721' };
       expect(contractMetadata).toStrictEqual(expectedContractMetadata);
     });
@@ -37,7 +37,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the list of NFTs by address', () => {
     it('should return list of NFTs by address', async () => {
-      const nfts = await sdk.getNFTs(process.env.WALLET_PUBLIC_ADDRESS);
+      const nfts = await sdk.getNFTs({ publicAddress: process.env.WALLET_PUBLIC_ADDRESS });
       expect(nfts.assets.length).toBeGreaterThan(0);
       expect(nfts.assets[0]).not.toHaveProperty('metadata');
     });
@@ -45,17 +45,19 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the list of NFTs by collection', () => {
     it('should return list of NFTs by collection', async () => {
-      const nfts = await sdk.getNFTsForCollection('0x2a66707e4ffe929cf866bc048e54ce28f6b7275f');
+      const nfts = await sdk.getNFTsForCollection({
+        contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
+      });
       expect(nfts.assets.length).toBeGreaterThan(0);
     });
   });
 
   describe('As an account I should be able to get the token metadata', () => {
     it('should return token metadata', async () => {
-      const tokenMetadata = await sdk.getTokenMetadata(
-        '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-        0,
-      );
+      const tokenMetadata = await sdk.getTokenMetadata({
+        contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
+        tokenId: 0,
+      });
       const expectedTokenMetadata = {
         contract: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
         tokenId: '0',
@@ -70,14 +72,18 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the account ETH balance', () => {
     it('should return account ETH balance', async () => {
-      const ethBalance = await sdk.getEthBalance(process.env.WALLET_PUBLIC_ADDRESS);
+      const ethBalance = await sdk.getEthBalance({
+        publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+      });
       expect(ethBalance).toEqual(expect.any(Number));
     });
   });
 
   describe('As an account I should be able to get the account ERC20 balances', () => {
     it('should return account ERC20 balances', async () => {
-      const erc20Balance = await sdk.getERC20Balances(process.env.WALLET_PUBLIC_ADDRESS);
+      const erc20Balance = await sdk.getERC20Balances({
+        publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+      });
 
       const expectedERC20Balance = {
         account: process.env.WALLET_PUBLIC_ADDRESS,

@@ -49,3 +49,4 @@ node_modules/
 
 integration-test/keys.json
 storage
+.DS_STORE
