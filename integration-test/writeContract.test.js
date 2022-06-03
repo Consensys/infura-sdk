@@ -11,6 +11,7 @@ let server;
 let contractObject;
 let publicAddress;
 let owner;
+let thirdUser;
 let privateKeyPublicAddress;
 
 describe('E2E Test: Basic NFT (write)', () => {
@@ -29,7 +30,7 @@ describe('E2E Test: Basic NFT (write)', () => {
     // grab the first account
     // eslint-disable-next-line global-require
     const { addresses: addr, private_keys: pk } = require('./keys.json');
-    [owner, publicAddress] = Object.keys(addr);
+    [owner, publicAddress, thirdUser] = Object.keys(addr);
     const privateKey = pk[owner];
     privateKeyPublicAddress = pk[publicAddress];
 
@@ -84,7 +85,6 @@ describe('E2E Test: Basic NFT (write)', () => {
     });
 
     const receipt = await tx.wait();
-
     expect(receipt.status).toEqual(1);
   });
 
@@ -232,5 +232,42 @@ describe('E2E Test: Basic NFT (write)', () => {
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
     expect(isAdmin).toEqual(false);
+  });
+
+  it('should transfer nft with approval', async () => {
+    // owner mints a token to themselves
+    const tx = await contractObject.mint({
+      publicAddress: owner,
+      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+    });
+
+    await tx.wait();
+
+    // owner approves publicAddress to transfer token that he owns
+    const txApprove = await contractObject.approveTransfer({ to: publicAddress, tokenId: 1 });
+
+    await txApprove.wait();
+
+    const accountPublic = new Auth({
+      privateKey: privateKeyPublicAddress,
+      projectId: process.env.INFURA_PROJECT_ID,
+      secretId: process.env.INFURA_PROJECT_SECRET,
+      rpcUrl: 'http://0.0.0.0:8545',
+      chainId: 5,
+    });
+
+    const sdkPublic = new SDK(accountPublic);
+
+    const existing = await sdkPublic.loadContract({
+      template: TEMPLATES.ERC721Mintable,
+      contractAddress: contractObject.contractAddress,
+    });
+
+    // publicAddress transfers token of owner
+    const txTransfer = await existing.transfer({ from: owner, to: thirdUser, tokenId: 1 });
+
+    const receipt = await txTransfer.wait();
+
+    expect(receipt.status).toEqual(1);
   });
 });

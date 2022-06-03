@@ -13,14 +13,15 @@ describe('SDK', () => {
     .spyOn(ContractFactory.prototype, 'deploy')
     .mockImplementation(() => ({
       deployed: () => ({
-        mintWithTokenURI: () => ({}),
-        'safeTransferFrom(address,address,uint256)': () => ({}),
+        mintWithTokenURI: jest.fn(),
+        'safeTransferFrom(address,address,uint256)': jest.fn(),
         setContractURI: jest.fn(),
         grantRole: jest.fn(),
         renounceRole: jest.fn(),
         revokeRole: jest.fn(),
         hasRole: jest.fn(),
         setApprovalForAll: jest.fn(),
+        approve: jest.fn(),
       }),
     }));
 
@@ -226,16 +227,14 @@ describe('SDK', () => {
   it('[Transfer] - should transfer nft', async () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
-    const transferNft = async () => {
-      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
-      await eRC721Mintable.transfer({
-        from: ACCOUNT_ADDRESS,
-        to: ACCOUNT_ADDRESS_2,
-        tokenId: 1,
-      });
-    };
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+    await eRC721Mintable.transfer({
+      from: ACCOUNT_ADDRESS,
+      to: ACCOUNT_ADDRESS_2,
+      tokenId: 1,
+    });
 
-    expect(transferNft).not.toThrow();
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[SetContractURI] - should return an Error if contract is not deployed', () => {
@@ -557,6 +556,49 @@ describe('SDK', () => {
 
     await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
     await eRC721Mintable.isAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+  it('[ApproveTransfer] - should return an Error if contract is not deployed', () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approveTransfer = async () =>
+      eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS_2, tokenId: 1 });
+    expect(approveTransfer).rejects.toThrow(
+      '[ERC721Mintable.approveTransfer] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[ApproveTransfer] - should return an Error if to address is not valid', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approveTransfer = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+      await eRC721Mintable.approveTransfer({ to: '', tokenId: 1 });
+    };
+
+    expect(approveTransfer).rejects.toThrow(
+      '[ERC721Mintable.approveTransfer] A valid address "to" is required to transfer.',
+    );
+  });
+
+  it('[ApproveTransfer] - should return an Error if tokenId is not valid', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approveTransfer = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+      await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: '' });
+    };
+
+    expect(approveTransfer).rejects.toThrow(
+      '[ERC721Mintable.approveTransfer] TokenId should be an integer.',
+    );
+  });
+
+  it('[ApproveTransfer] - should approve transfer nft', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'sumbol', contractURI: 'URI' });
+    await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
