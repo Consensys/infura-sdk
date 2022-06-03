@@ -192,43 +192,4 @@ describe('Sdk', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
-
-  describe('getRoyalties', () => {
-    it('should throw when args are missing (template)', async () => {
-      const params = {
-        contractAddress: '0xF69c1883b098d621FC58a42E673C4bF6a6483fFf',
-        tokenId: '1',
-        sellPrice: '123',
-      };
-      await expect(() => sdk.getRoyalties(params)).rejects.toThrow(
-        '[SDK.getRoyalties] Please choose the template',
-      );
-    });
-    it('should throw when args are missing (contract address)', async () => {
-      const params = { template: 'ERC721Mintable', tokenId: '1', sellPrice: '123' };
-      await expect(() => sdk.getRoyalties(params)).rejects.toThrow(
-        '[SDK.getRoyalties] Please use valid Contract address',
-      );
-    });
-    it('should throw when args are missing (tokenId)', async () => {
-      const params = {
-        template: 'ERC721Mintable',
-        contractAddress: '0xF69c1883b098d621FC58a42E673C4bF6a6483fFf',
-        sellPrice: '123',
-      };
-      await expect(() => sdk.getRoyalties(params)).rejects.toThrow(
-        '[SDK.getRoyalties] Please add tokenId',
-      );
-    });
-    it('should throw when args are missing (sellPrice)', async () => {
-      const params = {
-        template: 'ERC721Mintable',
-        contractAddress: '0xF69c1883b098d621FC58a42E673C4bF6a6483fFf',
-        tokenId: '1',
-      };
-      await expect(() => sdk.getRoyalties(params)).rejects.toThrow(
-        '[SDK.getRoyalties] Please add sellPrice',
-      );
-    });
-  });
 });
