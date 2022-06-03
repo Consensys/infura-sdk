@@ -22,6 +22,8 @@ describe('SDK', () => {
         hasRole: jest.fn(),
         setApprovalForAll: jest.fn(),
         approve: jest.fn(),
+        setRoyalties: jest.fn(),
+        royaltyInfo: jest.fn(),
       }),
     }));
 
@@ -601,5 +603,90 @@ describe('SDK', () => {
     await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  describe('setRoyalties', () => {
+    it('[setRoyalties] - should throw if contract not deployed', async () => {
+      const contract = new ERC721Mintable(signer);
+
+      await expect(() =>
+        contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 }),
+      ).rejects.toThrow('[ERC721Mintable.setRoyalties] Contract needs to be deployed');
+    });
+    it('[setRoyalties] - should throw when args are missing (address)', async () => {
+      const contract = new ERC721Mintable(signer);
+      contract.contractAddress = CONTRACT_ADDRESS;
+
+      await expect(() => contract.setRoyalties({ publicAddress: null, fee: 1 })).rejects.toThrow(
+        '[ERC721Mintable.setRoyalties] Address is required',
+      );
+    });
+    it('[setRoyalties] - should throw when args are missing (fee)', async () => {
+      const contract = new ERC721Mintable(signer);
+      contract.contractAddress = CONTRACT_ADDRESS;
+
+      await expect(() =>
+        contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: null }),
+      ).rejects.toThrow(
+        '[ERC721Mintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+      );
+    });
+    it('[setRoyalties] - should throw when "fee" is not a number', async () => {
+      const contract = new ERC721Mintable(signer);
+      contract.contractAddress = CONTRACT_ADDRESS;
+
+      await expect(() =>
+        contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 'number' }),
+      ).rejects.toThrow(
+        '[ERC721Mintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+      );
+    });
+    it('[setRoyalties] - should throw when "fee" is not a number larger than 0 and less than 10000', async () => {
+      const contract = new ERC721Mintable(signer);
+      contract.contractAddress = CONTRACT_ADDRESS;
+
+      await expect(() =>
+        contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 0 }),
+      ).rejects.toThrow(
+        '[ERC721Mintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+      );
+    });
+
+    it('[setRoyalties] - should set royalties', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      await expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('royaltyInfo', () => {
+    it('[royaltyInfo] - should throw if contract not deployed', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+
+      await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: null })).rejects.toThrow(
+        '[ERC721Mintable.royaltyInfo] Sell price is required',
+      );
+    });
+    it('[royaltyInfo] - should throw when args are missing (tokenId)', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+
+      await expect(() => contract.royaltyInfo({ tokenId: null, sellPrice: null })).rejects.toThrow(
+        '[ERC721Mintable.royaltyInfo] TokenId is required',
+      );
+    });
+    it('[royaltyInfo] - should throw when args are missing (sellPrice)', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+
+      await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: null })).rejects.toThrow(
+        '[ERC721Mintable.royaltyInfo] Sell price is required',
+      );
+    });
   });
 });

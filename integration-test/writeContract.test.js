@@ -1,5 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
+import { BigNumber, utils } from 'ethers';
 import Auth from '../lib/Auth/Auth';
 import SDK from '../lib/SDK/sdk';
 import { TEMPLATES } from '../lib/NFT/constants';
@@ -69,7 +70,6 @@ describe('E2E Test: Basic NFT (write)', () => {
   });
 
   it('should return loaded contract', async () => {
-    console.log(contractObject.contractAddress);
     const loadedContract = await sdk.loadContract({
       template: TEMPLATES.ERC721Mintable,
       contractAddress: contractObject.contractAddress,
@@ -94,6 +94,7 @@ describe('E2E Test: Basic NFT (write)', () => {
       to: publicAddress,
       tokenId: 0,
     });
+
     const receipt = await tx.wait();
 
     expect(receipt.status).toEqual(1);
@@ -269,5 +270,12 @@ describe('E2E Test: Basic NFT (write)', () => {
     const receipt = await txTransfer.wait();
 
     expect(receipt.status).toEqual(1);
+  });
+
+  it('should return setRoyalties', async () => {
+    await contractObject.setRoyalties({ publicAddress, fee: 1000 });
+    const infos = await contractObject.royaltyInfo({ tokenId: 1, sellPrice: 10 });
+
+    expect(infos).toStrictEqual([utils.getAddress(publicAddress), BigNumber.from('1')]);
   });
 });
