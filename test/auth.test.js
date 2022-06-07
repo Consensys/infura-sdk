@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import Auth from '../lib/Auth/Auth.js';
+import Provider from '../lib/Provider/Provider.js';
 import { generateTestPrivateKey } from './__mocks__/utils.js';
 
 loadEnv();
@@ -72,22 +73,6 @@ describe('Auth', () => {
     ).toThrow('[Auth.constructor] chainId: 6 is not supported!');
   });
 
-  describe('getProvider', () => {
-    it("Should return default provider when we don't pass the injectedProvider parameter", () => {
-      const account = new Auth({
-        privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
-        chainId: 5,
-      });
-
-      expect(account.getProvider()).toStrictEqual(
-        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-      );
-    });
-  });
-
   describe('setInjectedProvider', () => {
     it("Should throw when we don't pass the injectedProvider parameter", () => {
       const account = new Auth({
@@ -127,7 +112,7 @@ describe('Auth', () => {
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
-      const provider = account.getProvider();
+      const provider = Provider.getProvider(process.env.EVM_RPC_URL);
 
       // eslint-disable-next-line new-cap
       expect(provider).toStrictEqual(
