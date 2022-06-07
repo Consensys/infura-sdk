@@ -65,7 +65,6 @@ jobs:
         with:
           token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
           registry: https://registry.nft.consensys-solutions.net
-          tag: ${{ github.ref_name }}
 
       # uncomment to publish publicly
       # - name: Publish on NPM
