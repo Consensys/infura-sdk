@@ -61,10 +61,11 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Publish on Verdaccio
-        uses: verdaccio/github-actions/publish@master
+      - uses: JS-DevTools/npm-publish@v1
         with:
-          args: -d
+          token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
+          registry: https://registry.nft.consensys-solutions.net
+          tag: ${{ github.ref_name }}
 
       # uncomment to publish publicly
       # - name: Publish on NPM
