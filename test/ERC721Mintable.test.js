@@ -691,25 +691,20 @@ describe('SDK', () => {
     });
   });
   describe('renounceOwnership', () => {
-    it('[renounceOwnership] - should throw when args are missing (contractAddress)', async () => {
-      const contract = new ERC721Mintable(signer);
-      contract.contractAddress = null;
-
-      await expect(() => contract.renounceOwnership()).rejects.toThrow(
-        '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
-      );
-    });
     it('[renounceOwnership] - should throw if contract not deployed', async () => {
-      const contract = new ERC721Mintable(signer);
+      eRC721Mintable = new ERC721Mintable(signer);
+      const renounceOwnership = async () => eRC721Mintable.renounceOwnership();
 
-      expect(contract.renounceOwnership()).rejects.toThrow(
+      expect(renounceOwnership).rejects.toThrow(
         '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
       );
     });
 
     it('[renounceOwnership] - should call renounce ownership', async () => {
-      const contract = new ERC721Mintable(signer);
-      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      eRC721Mintable = new ERC721Mintable(signer);
+
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.renounceOwnership();
 
       expect(contractFactoryMock).toHaveBeenCalledTimes(1);
     });

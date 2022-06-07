@@ -281,6 +281,8 @@ describe('E2E Test: Basic NFT (write)', () => {
 
   it('should renounce contract ownership', async () => {
     const result = await contractObject.renounceOwnership();
-    expect(result).not.toBe(null);
+    const receipt = await result.wait();
+
+    expect(receipt.status).toBe(1);
   });
 });
