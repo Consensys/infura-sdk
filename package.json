@@ -2,7 +2,6 @@
   "name": "@infura/sdk",
   "version": "0.2.0",
   "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "jest '/test'",
@@ -12,7 +11,9 @@
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "babel src -d dist --copy-files",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -46,15 +47,13 @@
     "LICENSE",
     "README.MD"
   ],
-  "engines": {
-    "node": ">=12"
-  },
   "dependencies": {
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "ethers": "^5.6.6"
   },
   "devDependencies": {
+    "@babel/cli": "^7.17.10",
     "@babel/core": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "babel-jest": "^28.1.0",

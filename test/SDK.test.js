@@ -1,7 +1,7 @@
 import { config as loadEnv } from 'dotenv';
-import Sdk from '../lib/SDK/sdk';
-import Auth from '../lib/Auth/Auth';
-import { HttpService } from '../services/httpService';
+import Sdk from '../src/lib/SDK/sdk';
+import Auth from '../src/lib/Auth/Auth';
+import { HttpService } from '../src/services/httpService';
 import {
   accountNFTsMock,
   collectionNFTsMock,

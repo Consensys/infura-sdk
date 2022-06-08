@@ -1,9 +1,9 @@
 import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
 import { BigNumber, utils } from 'ethers';
-import Auth from '../lib/Auth/Auth';
-import SDK from '../lib/SDK/sdk';
-import { TEMPLATES } from '../lib/NFT/constants';
+import Auth from '../src/lib/Auth/Auth';
+import SDK from '../src/lib/SDK/sdk';
+import { TEMPLATES } from '../src/lib/NFT/constants';
 
 loadEnv();
 let sdk;

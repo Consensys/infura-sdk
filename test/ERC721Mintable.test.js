@@ -1,5 +1,5 @@
 import { ContractFactory, ethers } from 'ethers';
-import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
+import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
 
 let eRC721Mintable;

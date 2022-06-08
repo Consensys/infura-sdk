@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
-import Provider from '../lib/Provider/Provider.js';
+import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKey } from './__mocks__/utils.js';
 
 loadEnv();
