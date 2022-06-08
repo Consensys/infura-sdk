@@ -1,28 +1,118 @@
-TO BE REVIEWED
+# Infura NFT SDK
 
-## Installation
+The Infura NFT SDK is a JavaScript library that wraps REST calls to Ethereum nodes.
 
-This is a [Node.js](https://nodejs.org/en/) module available through the
-[npm registry](https://www.npmjs.com/).
+The library allows you to deploy and call methods on common Ethereum smart-contract definitions through Infura without the developer overhead of learning Solidity, compiling code, importing ABI’s, etc.
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/).
-Node.js 0.10 or higher is required.
+The current alpha version of the SDK defines common ERC721 read and write methods. The read methods are also available for interactive testing on a Swagger doc.
 
-If this is a brand new project, make sure to create a `package.json` first with
-the [`npm init` command](https://docs.npmjs.com/creating-a-package-json-file).
+Contact us on slack channel #nft-infura-alpha-testing with any questions, or if you haven't yet received a username/password.
 
-Installation is done using the
-[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
+## Prerequisites
 
-```console
-$ npm install consensys-sdk
+In a terminal window: 
+
+* Log into the [registry](https://registry.nft.consensys-solutions.net) with the username and password we gave you for private alpha access.
+
+```bash
+npm login --registry https://registry.nft.consensys-solutions.net
 ```
 
-Follow [our installing guide](http://expressjs.com/en/starter/installing.html)
-for more information.
+* Input your email address.
 
-## Features
+## Initialize a new project
 
-  * Get list Nfts
-  * Deploy smart contract
-  * Mint nft
+```bash
+mkdir new_project
+cd new_project
+npm init -y
+```
+
+Add `"type":"module"` to the `package.json` file to run it as a ESmodule.
+
+## Install the libraries
+
+```bash
+npm install -S @infura/sdk --registry https://registry.nft.consensys-solutions.net
+npm install dotenv #optional
+```
+
+## Authentication
+
+Authentication requires an active `PROJECT_ID` and `PROJECT_SECRET` from an Ethereum project. Find an example in your [Infura dashboard](https://infura.io/dashboard) or create a new Ethereum project and get the details in project settings.
+
+To run the example code, add the following environment variables to a `.env` file:
+
+```bash
+INFURA_PROJECT_ID=xxx
+INFURA_PROJECT_SECRET=xxx
+WALLET_PRIVATE_KEY=xxx
+EVM_RPC_URL=https://goerli.infura.io/v3/<PROJECT-SECRET>
+```
+
+## Use the SDK
+
+### Import the libraries
+
+Create an `index.js` file, import the libraries, and load the environment variables.
+
+```js
+import { config as loadEnv } from 'dotenv';
+import { SDK, Auth, TEMPLATES } from '@infura/sdk';
+
+loadEnv();
+```
+
+### Create an `Auth` object
+
+```javascript
+const auth = new Auth({
+  projectId: process.env.INFURA_PROJECT_ID,
+  secretId: process.env.INFURA_PROJECT_SECRET,
+  privateKey: process.env.WALLET_PRIVATE_KEY,
+  rpcUrl: process.env.EVM_RPC_URL,
+  chainId: 5, // Goerli
+});
+```
+
+### Instantiate the SDK
+
+```js
+const sdk = new SDK(auth);
+```
+
+### Deploy an ERC721Mintable contract
+
+```js
+const newContract = await sdk.deploy({
+   template: TEMPLATES.ERC721Mintable,
+   params: {
+     name: 'NFT contract',
+     symbol: 'CNSYS',
+     contractURI: 'linktoametadata.json',
+   },
+ });
+console.log(`Contract address is: ${newContract.contractAddress}`);
+```
+
+### Run with Node
+
+```bash
+node index.js
+```
+
+## Examples
+
+Check out [this demo file](usage.js) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
+
+## Swagger READ methods
+
+https://staging.nft.consensys-solutions.net/docs/
+
+## SDK methods
+
+https://github.com/ConsenSys/consensys-sdk/blob/main/lib/SDK/sdk.js
+
+## ERC721 template methods
+
+https://github.com/ConsenSys/consensys-sdk/blob/main/lib/ContractTemplates/ERC721Mintable/ERC721Mintable.js
