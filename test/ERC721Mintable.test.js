@@ -24,6 +24,7 @@ describe('SDK', () => {
         approve: jest.fn(),
         setRoyalties: jest.fn(),
         royaltyInfo: jest.fn(),
+        renounceOwnership: jest.fn(),
       }),
     }));
 
@@ -687,6 +688,25 @@ describe('SDK', () => {
       await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: null })).rejects.toThrow(
         '[ERC721Mintable.royaltyInfo] Sell price is required',
       );
+    });
+  });
+  describe('renounceOwnership', () => {
+    it('[renounceOwnership] - should throw if contract not deployed', async () => {
+      eRC721Mintable = new ERC721Mintable(signer);
+      const renounceOwnership = async () => eRC721Mintable.renounceOwnership();
+
+      expect(renounceOwnership).rejects.toThrow(
+        '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
+      );
+    });
+
+    it('[renounceOwnership] - should call renounce ownership', async () => {
+      eRC721Mintable = new ERC721Mintable(signer);
+
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.renounceOwnership();
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
     });
   });
 });
