@@ -2,3 +2,5 @@ coverage
 node_modules
 test
 integration-test
+dist
+/index.js

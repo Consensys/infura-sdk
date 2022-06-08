@@ -1,14 +1,6 @@
 import { ethers, utils } from 'ethers';
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import * as smartContractArtifact from './ERC721.js';
 import { isBoolean } from '../../utils.js';
-
-const filename = fileURLToPath(import.meta.url);
-
-const smartContractArtifact = JSON.parse(
-  fs.readFileSync(path.join(dirname(filename), 'ERC721.json')),
-);
 
 export default class ERC721Mintable {
   #gasLimit = 6000000;

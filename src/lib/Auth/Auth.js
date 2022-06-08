@@ -54,7 +54,7 @@ export default class Auth {
   }
 
   #base64encode() {
-    return Buffer.from(`${this.#projectId}:${this.#secretId}`).toString('base64');
+    return btoa(`${this.#projectId}:${this.#secretId}`);
   }
 
   getApiAuth() {

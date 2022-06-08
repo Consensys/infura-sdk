@@ -1,6 +1,6 @@
-import ERC721Mintable from '../lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
-import { TEMPLATES } from '../lib/NFT/constants';
-import ContractFactory from '../lib/NFT/contractFactory';
+import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable/ERC721Mintable';
+import { TEMPLATES } from '../src/lib/NFT/constants';
+import ContractFactory from '../src/lib/NFT/contractFactory';
 
 describe('ContractFactory', () => {
   it('should return "ERC721Mintable" instance', async () => {
