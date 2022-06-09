@@ -98,7 +98,7 @@ export default class ERC721Mintable {
 
   /*
    * Returns receiver address and royalty amount based on sell price
-   * @param {string} - Token ID
+   * @param {number} - Token ID
    * @param {number} - Sell price
    * @returns {[]} - Returns receiver address and sell price
    */
@@ -277,7 +277,7 @@ export default class ERC721Mintable {
    * Transfer function: Transfer the token 'tokenId' between 'from' and 'to addresses.
    * @param {string} from Address who will transfer the token
    * @param {string} to Address that will receive the token
-   * @param {integer} tokenId ID of the token that will be transfered
+   * @param {number} tokenId ID of the token that will be transfered
    * @returns promise<ethers.receipt> Promise that will return the tx receipt
    */
   async transfer({ from, to, tokenId }) {
@@ -470,7 +470,7 @@ export default class ERC721Mintable {
   /**
    * Gives permission to to to transfer tokenId token to another address.
    * @param {string} to the address that will be approved to do the transfer.
-   * @param {integer} tokenId tokenId the nft id to transfer.
+   * @param {number} tokenId tokenId the nft id to transfer.
    * @returns promise<ethers.receipt> Promise that will return the tx receipt
    */
   async approveTransfer({ to, tokenId }) {

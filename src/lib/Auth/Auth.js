@@ -49,7 +49,7 @@ export default class Auth {
 
   getApiAuthHeader() {
     return {
-      Authorization: `Basic ${this.#base64encode(this.#projectId, this.#secretId)}`,
+      Authorization: `Basic ${this.#base64encode()}`,
     };
   }
 
