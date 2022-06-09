@@ -49,7 +49,7 @@ describe('Auth', () => {
           chainId: 5,
           provider: new FakeProvider(),
         }),
-    ).toThrow('[Auth.setProviderAndSigner] Invalid provider given');
+    ).toThrow('[Auth.setProvider] Invalid provider given');
   });
 
   it('should throw when args are missing (projectId)', () => {
@@ -104,47 +104,48 @@ describe('Auth', () => {
     ).toThrow('[Auth.constructor] chainId: 6 is not supported!');
   });
 
-  // describe('getSigner', () => {
-  //   it('should return the signer using private key and rpc_url', () => {
-  //     const privateKey = generateTestPrivateKey();
-  //     const account = new Auth({
-  //       privateKey,
-  //       projectId: process.env.INFURA_PROJECT_ID,
-  //       secretId: process.env.INFURA_PROJECT_SECRET,
-  //       rpcUrl: process.env.EVM_RPC_URL,
-  //       chainId: 5,
-  //     });
-  //     const provider = Provider.getProvider(process.env.EVM_RPC_URL);
+  describe('getSigner', () => {
+    it('should return the signer using private key and rpc_url', async () => {
+      const privateKey = generateTestPrivateKey();
+      const account = new Auth({
+        privateKey,
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+      });
+      const provider = Provider.getProvider(process.env.EVM_RPC_URL);
+      const signer = await account.getSigner();
 
-  //     // eslint-disable-next-line new-cap
-  //     expect(provider).toStrictEqual(
-  //       new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-  //     );
-  //     expect(JSON.stringify(account.getSigner())).toStrictEqual(
-  //       JSON.stringify(new ethers.Wallet(privateKey, provider)),
-  //     );
-  //   });
+      // eslint-disable-next-line new-cap
+      expect(provider).toStrictEqual(
+        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
+      );
+      expect(JSON.stringify(signer)).toStrictEqual(
+        JSON.stringify(new ethers.Wallet(privateKey, provider)),
+      );
+    });
 
-  //   it('should return the signer using passed provider', async () => {
-  //     const provider = new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL);
-  //     const account = new Auth({
-  //       projectId: process.env.INFURA_PROJECT_ID,
-  //       secretId: process.env.INFURA_PROJECT_SECRET,
-  //       rpcUrl: process.env.EVM_RPC_URL,
-  //       chainId: 5,
-  //       provider: provider,
-  //     });
+    it('should return the signer using passed provider', async () => {
+      const provider = new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL);
+      const account = new Auth({
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+        provider: provider,
+      });
 
-  //     const signer = await provider.getSigner();
-  //     const authSigner = await account.getSigner();
+      const signer = await provider.getSigner();
+      const authSigner = await account.getSigner();
 
-  //     // eslint-disable-next-line new-cap
-  //     expect(provider).toStrictEqual(
-  //       new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-  //     );
-  //     expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
-  //   });
-  // });
+      // eslint-disable-next-line new-cap
+      expect(provider).toStrictEqual(
+        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
+      );
+      expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
+    });
+  });
 
   describe('getApiAuth', () => {
     it('should return the apiAuth key', () => {

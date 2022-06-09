@@ -43,7 +43,7 @@ export default class Auth {
     this.#secretId = secretId;
     this.#chainId = chainId;
 
-    this.setProviderAndSigner(privateKey, provider);
+    this.setProvider(privateKey, provider);
   }
 
   getChainId() {
@@ -71,7 +71,7 @@ export default class Auth {
     return this.#provider.getSigner();
   }
 
-  setProviderAndSigner(privateKey, provider) {
+  setProvider(privateKey, provider) {
     if (privateKey) {
       // eslint-disable-next-line new-cap
       this.#provider = Provider.getProvider(this.#rpcUrl);
@@ -81,6 +81,6 @@ export default class Auth {
       this.#provider = provider;
       return;
     }
-    throw new Error('[Auth.setProviderAndSigner] Invalid provider given');
+    throw new Error('[Auth.setProvider] Invalid provider given');
   }
 }
