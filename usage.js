@@ -8,6 +8,7 @@
 
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, TEMPLATES } from './index.js';
+import Provider from './src/lib/Provider/Provider.js';
 
 loadEnv();
 
@@ -18,6 +19,20 @@ const acc = new Auth({
   rpcUrl: process.env.EVM_RPC_URL,
   chainId: 5,
 });
+
+///////// Alternative Auth Instantiation with MetaMask /////////
+// When using SDK in a browser
+//
+// const provider = Provider.getInjectedProvider(window.ethereum);
+// const accWithProvider = new Auth({
+//   projectId: process.env.INFURA_PROJECT_ID,
+//   secretId: process.env.INFURA_PROJECT_SECRET,
+//   rpcUrl: process.env.EVM_RPC_URL,
+//   chainId: 5,
+//   provider,
+// });
+//
+//////////////////////////////////////////////////////////////
 
 const sdk = new SDK(acc);
 

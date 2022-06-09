@@ -1,6 +1,7 @@
 import { ethers, utils } from 'ethers';
-import * as smartContractArtifact from './ERC721.js';
-import { isBoolean } from '../../utils.js';
+import * as smartContractArtifact from './artifacts/ERC721Mintable.js';
+import { isBoolean } from '../utils.js';
+import { TEMPLATES } from '../NFT/constants.js';
 
 export default class ERC721Mintable {
   #gasLimit = 6000000;
@@ -15,8 +16,14 @@ export default class ERC721Mintable {
 
   #signer;
 
+  #template = TEMPLATES.ERC721Mintable;
+
   constructor(signer) {
     this.#signer = signer;
+  }
+
+  template() {
+    return this.#template;
   }
 
   /**
