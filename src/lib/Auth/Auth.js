@@ -3,10 +3,10 @@
  * Copyright(c) https://consensys.net/
  * MIT Licensed
  */
+import { ethers } from 'ethers';
 import { availableChains, getChainName } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
-// import { ethers } from 'ethers';
 
 export default class Auth {
   #privateKey;
@@ -77,10 +77,10 @@ export default class Auth {
       this.#provider = Provider.getProvider(this.#rpcUrl);
       return;
     }
-    // TODO: How to do this properly?
-    // if (!provider instanceof ethers.providers.Provider) {
-    //   throw new Error('[Auth.setProviderAndSigner] Invalid provider given');
-    // }
-    this.#provider = provider;
+    if (provider instanceof ethers.providers.Provider) {
+      this.#provider = provider;
+      return;
+    }
+    throw new Error('[Auth.setProviderAndSigner] Invalid provider given');
   }
 }
