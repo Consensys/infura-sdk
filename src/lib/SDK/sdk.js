@@ -34,7 +34,8 @@ export default class SDK {
       throw new Error('A set of parameters are required to deploy a new contract.');
     }
 
-    const contract = ContractFactory.factory(template, this.#auth.getSigner());
+    const signer = await this.#auth.getSigner();
+    const contract = ContractFactory.factory(template, signer);
 
     await contract.deploy(params);
     return contract;
@@ -50,7 +51,8 @@ export default class SDK {
     if (!template) throw new Error('Template type is required to load a contract.');
     if (!contractAddress) throw new Error('A Contract address is required to load a contract.');
 
-    const contract = ContractFactory.factory(template, this.#auth.getSigner());
+    const signer = await this.#auth.getSigner();
+    const contract = ContractFactory.factory(template, signer);
 
     await contract.loadContract({ contractAddress });
     return contract;

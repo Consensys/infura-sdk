@@ -15,7 +15,7 @@ export default class Provider {
   }
 
   static getInjectedProvider(injectedProvider) {
-    if (!injectedProvider) throw new Error('[Provider.getProvider] rpcUrl is missing!');
+    if (!injectedProvider) throw new Error('[Provider.getProvider] provider is missing!');
 
     // eslint-disable-next-line new-cap
     return new ethers.providers.Web3Provider(injectedProvider);
