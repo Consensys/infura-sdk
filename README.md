@@ -28,7 +28,7 @@ cd new_project
 npm init -y
 ```
 
-Add `"type":"module"` to the `package.json` file to run it as a ESmodule.
+Add `"type":"module"` to the `package.json` file to run it as an ESmodule.
 
 ## Install the libraries
 
@@ -106,6 +106,9 @@ node index.js
 Check out [this demo file](usage.js) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
 
 ## Swagger READ methods
+
+Username: `PROJECT-ID`
+Password: `PROJECT-SECRET`
 
 https://staging.nft.consensys-solutions.net/docs/
 
