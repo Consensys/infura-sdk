@@ -47,7 +47,7 @@ To run the example code, add the following environment variables to a `.env` fil
 INFURA_PROJECT_ID=xxx
 INFURA_PROJECT_SECRET=xxx
 WALLET_PRIVATE_KEY=xxx
-EVM_RPC_URL=https://goerli.infura.io/v3/<PROJECT-SECRET>
+EVM_RPC_URL=https://goerli.infura.io/v3/<PROJECT-ID>
 ```
 
 ## Use the SDK
@@ -114,8 +114,8 @@ https://staging.nft.consensys-solutions.net/docs/
 
 ## SDK methods
 
-https://github.com/ConsenSys/consensys-sdk/blob/main/lib/SDK/sdk.js
+https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/SDK/sdk.js
 
 ## ERC721 template methods
 
-https://github.com/ConsenSys/consensys-sdk/blob/main/lib/ContractTemplates/ERC721Mintable/ERC721Mintable.js
+https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC721Mintable/ERC721Mintable.js
