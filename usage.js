@@ -23,13 +23,12 @@ const acc = new Auth({
 ///////// Alternative Auth Instantiation with MetaMask /////////
 // When using SDK in a browser
 //
-// const provider = Provider.getInjectedProvider(window.ethereum);
 // const accWithProvider = new Auth({
 //   projectId: process.env.INFURA_PROJECT_ID,
 //   secretId: process.env.INFURA_PROJECT_SECRET,
 //   rpcUrl: process.env.EVM_RPC_URL,
 //   chainId: 5,
-//   provider,
+//   provider: window.ethereum,
 // });
 //
 //////////////////////////////////////////////////////////////

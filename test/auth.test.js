@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKey } from './__mocks__/utils.js';
+import ganache from 'ganache';
 
 loadEnv();
 
@@ -49,7 +50,7 @@ describe('Auth', () => {
           chainId: 5,
           provider: new FakeProvider(),
         }),
-    ).toThrow('[Auth.setProvider] Invalid provider given');
+    ).toThrow('[Provider] Invalid provider given');
   });
 
   it('should throw when args are missing (projectId)', () => {
@@ -117,7 +118,6 @@ describe('Auth', () => {
       const provider = Provider.getProvider(process.env.EVM_RPC_URL);
       const signer = await account.getSigner();
 
-      // eslint-disable-next-line new-cap
       expect(provider).toStrictEqual(
         new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
       );
@@ -127,22 +127,18 @@ describe('Auth', () => {
     });
 
     it('should return the signer using passed provider', async () => {
-      const provider = new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL);
+      const provider = ganache.provider();
       const account = new Auth({
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
-        provider: provider,
+        provider,
       });
 
-      const signer = await provider.getSigner();
+      const signer = await new ethers.providers.Web3Provider(provider).getSigner();
       const authSigner = await account.getSigner();
 
-      // eslint-disable-next-line new-cap
-      expect(provider).toStrictEqual(
-        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-      );
       expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
     });
   });

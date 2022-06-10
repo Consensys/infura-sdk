@@ -17,7 +17,11 @@ export default class Provider {
   static getInjectedProvider(injectedProvider) {
     if (!injectedProvider) throw new Error('[Provider.getProvider] provider is missing!');
 
-    // eslint-disable-next-line new-cap
-    return new ethers.providers.Web3Provider(injectedProvider);
+    try {
+      // eslint-disable-next-line new-cap
+      return new ethers.providers.Web3Provider(injectedProvider);
+    } catch (e) {
+      throw new Error('[Provider] Invalid provider given');
+    }
   }
 }

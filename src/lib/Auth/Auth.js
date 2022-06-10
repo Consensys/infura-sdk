@@ -3,7 +3,6 @@
  * Copyright(c) https://consensys.net/
  * MIT Licensed
  */
-import { ethers } from 'ethers';
 import { availableChains, getChainName } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
@@ -18,8 +17,6 @@ export default class Auth {
   #rpcUrl;
 
   #provider;
-
-  #signer;
 
   #chainId;
 
@@ -43,7 +40,7 @@ export default class Auth {
     this.#secretId = secretId;
     this.#chainId = chainId;
 
-    this.setProvider(privateKey, provider);
+    this.setProvider(provider);
   }
 
   getChainId() {
@@ -71,16 +68,13 @@ export default class Auth {
     return this.#provider.getSigner();
   }
 
-  setProvider(privateKey, provider) {
-    if (privateKey) {
-      // eslint-disable-next-line new-cap
+  setProvider(provider) {
+    if (this.#privateKey) {
       this.#provider = Provider.getProvider(this.#rpcUrl);
       return;
     }
-    if (provider instanceof ethers.providers.Provider) {
-      this.#provider = provider;
-      return;
+    if (provider) {
+      this.#provider = Provider.getInjectedProvider(provider);
     }
-    throw new Error('[Auth.setProvider] Invalid provider given');
   }
 }
