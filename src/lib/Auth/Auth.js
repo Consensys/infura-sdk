@@ -31,7 +31,7 @@ export default class Auth {
 
     this.#rpcUrl = rpcUrl;
 
-    if (!this.#rpcUrl) {
+    if (!this.#rpcUrl && typeof this.#rpcUrl !== 'undefined') {
       this.#rpcUrl = `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;
     }
 
