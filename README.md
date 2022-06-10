@@ -107,8 +107,8 @@ Check out [this demo file](usage.js) for example method calls such as minting an
 
 ## Swagger READ methods
 
-Username: `PROJECT-ID`
-Password: `PROJECT-SECRET`
+- Username: `PROJECT-ID`
+- Password: `PROJECT-SECRET`
 
 https://staging.nft.consensys-solutions.net/docs/
 
