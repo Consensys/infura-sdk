@@ -68,11 +68,11 @@ export default class ERC721Mintable {
     }
   }
 
-  /*
+  /**
    * Set royalties information for the receiver address with the provided fee
    * @param {string} - address
    * @param {number} - fee
-   * @returns {boolean} - Operation result
+   * @returns {Promise<ethers.providers.TransactionResponse>} - Transaction
    */
   async setRoyalties({ publicAddress, fee }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -90,17 +90,20 @@ export default class ERC721Mintable {
     }
 
     try {
-      return await this.#contractDeployed.setRoyalties(publicAddress, fee);
+      return await this.#contractDeployed.setRoyalties(publicAddress, fee, {
+        gasLimit: this.#gasLimit,
+      });
     } catch (error) {
       throw new Error(`[ERC721Mintable.setRoyalties] An error occured: ${error}`);
     }
   }
 
-  /*
+  /**
    * Returns receiver address and royalty amount based on sell price
    * @param {number} - Token ID
    * @param {number} - Sell price
-   * @returns {[]} - Returns receiver address and sell price
+   * @returns {Promise<object>} - Returns receiver address and bigNumber
+   * representing royalty amount based on sell price
    */
   async royaltyInfo({ tokenId, sellPrice }) {
     if (!this.#contractDeployed) {
@@ -121,11 +124,11 @@ export default class ERC721Mintable {
     }
   }
 
-  /*
+  /**
    * Mint function: Mint a token for publicAddress with the tokenURI provided
    * @param {string} publicAddress destination address of the minted token
    * @param {string} tokenURI link to the JSON object containing metadata about the token
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async mint({ publicAddress, tokenURI }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -151,7 +154,7 @@ export default class ERC721Mintable {
   /**
    * Add minter function: Grant the 'minter' role to an address
    * @param {string} publicAddress the address to be elevated at 'minter' role
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async addMinter({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -174,7 +177,7 @@ export default class ERC721Mintable {
   /**
    * Renounce minter function: Renounce the 'minter' role
    * @param {string} publicAddress the address that will renounce its 'minter' role
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async renounceMinter({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -199,7 +202,7 @@ export default class ERC721Mintable {
   /**
    * Remove minter function: Remove the 'minter' role to an address
    * @param {string} publicAddress the address that will loose the 'minter' role
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async removeMinter({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -224,7 +227,7 @@ export default class ERC721Mintable {
   /**
    * Is minter function: Check if an address has the 'minter' role or not
    * @param {string} publicAddress the address to check
-   * @returns promise<boolean> Promise that will return a boolean
+   * @returns {Promise<boolean>} Promise that will return a boolean
    */
   async isMinter({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -278,7 +281,7 @@ export default class ERC721Mintable {
    * @param {string} from Address who will transfer the token
    * @param {string} to Address that will receive the token
    * @param {number} tokenId ID of the token that will be transfered
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async transfer({ from, to, tokenId }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -315,7 +318,7 @@ export default class ERC721Mintable {
    * setContractURI function: Set the "contractURI" metadata for the specified contract
    * @param {string} contractURI ContractURI for the contract
    * (URI to a JSON file describing the contract's metadata)
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setContractURI({ contractURI }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -339,7 +342,7 @@ export default class ERC721Mintable {
    * Add Admin function: Add the 'admin' role to an address. Only callable by
    * addresses with the admin role.
    * @param {string} publicAddress the address that will loose the 'minter' role
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async addAdmin({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -363,7 +366,7 @@ export default class ERC721Mintable {
    * Remove Admin function: Remove the 'admin' role to an address. Only callable by
    * addresses with the admin role.
    * @param {string} publicAddress the address that will loose the 'minter' role
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async removeAdmin({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -389,7 +392,7 @@ export default class ERC721Mintable {
    * Renounce Admin function: Remove the 'admin' role to an address. Only callable by
    * address invoking the request.
    * @param {string} publicAddress the address that will loose the 'minter' role
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async renounceAdmin({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -414,7 +417,7 @@ export default class ERC721Mintable {
   /**
    * Is Admin function: Check whether an address has the 'admin' role
    * @param {string} publicAddress the address to check
-   * @returns promise<boolean> Promise that will return a boolean
+   * @returns {Promise<boolean>} Promise that will return a boolean
    */
   async isAdmin({ publicAddress }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -439,7 +442,7 @@ export default class ERC721Mintable {
    * @param {string} to Address which will receive the approval rights
    * @param {boolean} approvalStatus Boolean representing the approval to be given (true)
    *  or revoked (false)
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setApprovalForAll({ to, approvalStatus }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -471,7 +474,7 @@ export default class ERC721Mintable {
    * Gives permission to to to transfer tokenId token to another address.
    * @param {string} to the address that will be approved to do the transfer.
    * @param {number} tokenId tokenId the nft id to transfer.
-   * @returns promise<ethers.receipt> Promise that will return the tx receipt
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async approveTransfer({ to, tokenId }) {
     if (!this.#contractDeployed && !this.contractAddress) {
@@ -497,9 +500,9 @@ export default class ERC721Mintable {
     }
   }
 
-  /*
+  /**
    * Renouncing ownership of the smart contract (will leave the contract without an owner).
-   * @returns {object} Transaction object
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async renounceOwnership() {
     if (!this.contractAddress && !this.#contractDeployed) {

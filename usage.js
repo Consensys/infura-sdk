@@ -6,152 +6,164 @@
 
 /* eslint-disable */
 
-import { config as loadEnv } from 'dotenv';
-import { SDK, Auth, TEMPLATES } from './index.js';
+// Use this in "module" type nodejs projects
+// import { config as loadEnv } from 'dotenv';
+// import { SDK, Auth, TEMPLATES } from './index.js';
 
-loadEnv();
+// workaround for internal demo + usage purpose
+(async () => {
+  const dotenv = require('dotenv');
+  dotenv.config();
+  const { Auth, TEMPLATES, SDK } = require('./index');
 
-const acc = new Auth({
-  privateKey: process.env.WALLET_PRIVATE_KEY,
-  projectId: process.env.INFURA_PROJECT_ID,
-  secretId: process.env.INFURA_PROJECT_SECRET,
-  rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 5,
-});
+  const acc = new Auth({
+    privateKey: process.env.WALLET_PRIVATE_KEY,
+    projectId: process.env.INFURA_PROJECT_ID,
+    secretId: process.env.INFURA_PROJECT_SECRET,
+    rpcUrl: process.env.EVM_RPC_URL,
+    chainId: 4,
+  });
 
-const sdk = new SDK(acc);
+  const sdk = new SDK(acc);
 
-// Create a new contract
-// const newContract = await sdk.deploy({
-//   template: TEMPLATES.ERC721Mintable,
-//   params: {
-//     name: '1403Contract',
-//     symbol: 'QZC',
-//     contractURI: 'URI',
-//   },
-// });
+  // Create a new contract
+  const newContract = await sdk.deploy({
+    template: TEMPLATES.ERC721Mintable,
+    params: {
+      name: '1507Contract',
+      symbol: 'TOC',
+      contractURI: 'URI',
+    },
+  });
 
-// READ API
-// Get ERC20 Balance
-// const erc20Balance = await sdk.getEthBalance({
-//   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-// });
-// console.log(erc20Balance);
+  // READ API
+  // Get ERC20 Balance
+  // const erc20Balance = await sdk.getERC20Balances({
+  //   publicAddress: '0xAc7cdddB692c7265CA896c1a7fCa85F30f576570',
+  // });
+  // console.log(typeof erc20Balance);
 
-// Get ETH Balance
-// const ethBalance = await sdk.getEthBalance({
-//   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-// });
-// console.log(ethBalance);
+  // Get ETH Balance
+  // const ethBalance = await sdk.getEthBalance({
+  //   publicAddress: '0xAc7cdddB692c7265CA896c1a7fCa85F30f576570',
+  // });
+  // console.log(typeof ethBalance);
 
-// Get contract metadata
-// const contractMetadata = await sdk.getContractMetadata({
-//   contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-// });
-// console.log(contractMetadata);
+  // Get contract metadata
+  // const contractMetadata = await sdk.getContractMetadata({
+  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
+  // });
+  // console.log(contractMetadata);
 
-// Get all NFTs for the specified address
-// const mynfts = await sdk.getNFTs({ publicAddress });
-// console.log(mynfts);
+  // Get all NFTs for the specified address
+  // const mynfts = await sdk.getNFTs({ publicAddress: process.env.WALLET_PUBLIC_ADDRESS });
+  // console.log(mynfts);
 
-// Get all NFTs for the specified contract
-// const nfts = await sdk.getNFTsForCollection({
-//   contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-// });
-// console.log(nfts);
+  // Get all NFTs for the specified contract
+  // const nfts = await sdk.getNFTsForCollection({
+  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
+  // });
+  // console.log(nfts);
 
-// Get the token metadata
-// const tokenMetadata = await sdk.getTokenMetadata({
-//   contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-//   tokenId: 0,
-// });
-// console.log(tokenMetadata);
+  // Get the token metadata
+  // const tokenMetadata = await sdk.getTokenMetadata({
+  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
+  //   tokenId: 0,
+  // });
+  // console.log(tokenMetadata);
 
-// Load an existing contract
-const existingContract = await sdk.loadContract({
-  template: TEMPLATES.ERC721Mintable,
-  contractAddress: '0x959A9b5F9Ceed6B4B1B09cE6AFCFb32162c70bB9',
-});
+  // Load an existing contract
+  // const existingContract = await sdk.loadContract({
+  //   template: TEMPLATES.ERC721Mintable,
+  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
+  // });
 
-console.log('contract address: \n', existingContract.contractAddress);
+  // console.log('contract address: \n', existingContract.contractAddress);
 
-// mint a NFT
-const mint = await existingContract.mint({
-  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-  tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
-});
+  // // mint a NFT
+  const mint = await newContract.mint({
+    publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+    tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
+  });
 
-const minted = await mint.wait();
-console.log(minted);
+  await mint.wait();
+  // console.log(minted);
 
-// Transfer a NFT
-const transfer = await existingContract.transfer({
-  from: ownerOfToken,
-  to: anotherAddress,
-  tokenId: 0,
-});
+  // // Transfer a NFT
+  // const transfer = await existingContract.transfer({
+  //   from: ownerOfToken,
+  //   to: anotherAddress,
+  //   tokenId: 0,
+  // });
 
-const transfered = await transfer.wait();
-console.log(transfered);
+  // const transfered = await transfer.wait();
+  // console.log(transfered);
 
-// ROLES (MINTER and ADMIN)
-// Grant MINTER Role
-const add = await existingContract.addMinter({ publicAddress });
+  // // ROLES (MINTER and ADMIN)
+  // // Grant MINTER Role
+  // const add = await existingContract.addMinter({ publicAddress });
 
-const added = await add.wait();
-console.log(added);
+  // const added = await add.wait();
+  // console.log(added);
 
-// check MINTER role
-const isMinter = await existingContract.isMinter({ publicAddress });
-console.log(isMinter);
+  // // check MINTER role
+  // const isMinter = await existingContract.isMinter({ publicAddress });
+  // console.log(isMinter);
 
-// APPROVAL
-// Set approval for all
-const setApproval = await existingContract.setApprovalForAll({
-  to: publicAddress,
-  approvalStatus: true,
-});
-const approvalSet = await setApproval.wait();
-console.log(approvalSet);
+  // // APPROVAL
+  // // Set approval for all
+  // const setApproval = await existingContract.setApprovalForAll({
+  //   to: publicAddress,
+  //   approvalStatus: true,
+  // });
+  // const approvalSet = await setApproval.wait();
+  // console.log(approvalSet);
 
-// Transfer NFT with approval
-// 1. owner mints a token
-const tx = await existingContract.mint({
-  publicAddress: owner,
-  tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
-});
-await tx.wait();
+  // // Transfer NFT with approval
+  // // 1. owner mints a token
+  const tx = await newContract.mint({
+    publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+    tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+  });
+  await tx.wait();
 
-// 2. owner approves publicAddress to transfer token that he owns
-const txApprove = await existingContract.approveTransfer({ to: publicAddress, tokenId: 1 });
-await txApprove.wait();
+  // // 2. owner approves publicAddress to transfer token that he owns
+  // const txApprove = await existingContract.approveTransfer({ to: publicAddress, tokenId: 1 });
+  // await txApprove.wait();
 
-// new auth as "publicAddress"
-const accountPublic = new Auth({
-  privateKey: privateKeyPublicAddress,
-  projectId: process.env.INFURA_PROJECT_ID,
-  secretId: process.env.INFURA_PROJECT_SECRET,
-  rpcUrl: 'http://0.0.0.0:8545',
-  chainId: 5,
-});
-const sdkPublic = new SDK(accountPublic);
-const existing = await sdkPublic.loadContract({
-  template: TEMPLATES.ERC721Mintable,
-  contractAddress: contractObject.contractAddress,
-});
+  // // new auth as "publicAddress"
+  // const accountPublic = new Auth({
+  //   privateKey: privateKeyPublicAddress,
+  //   projectId: process.env.INFURA_PROJECT_ID,
+  //   secretId: process.env.INFURA_PROJECT_SECRET,
+  //   rpcUrl: 'http://0.0.0.0:8545',
+  //   chainId: 5,
+  // });
+  // const sdkPublic = new SDK(accountPublic);
+  // const existing = await sdkPublic.loadContract({
+  //   template: TEMPLATES.ERC721Mintable,
+  //   contractAddress: contractObject.contractAddress,
+  // });
 
-// 3. publicAddress transfers token of owner
-const txTransfer = await existing.transfer({ from: owner, to: thirdUser, tokenId: 1 });
+  // // 3. publicAddress transfers token of owner
+  // const txTransfer = await existing.transfer({ from: owner, to: thirdUser, tokenId: 1 });
 
-const receipt = await txTransfer.wait();
-console.log(receipt);
+  // const receipt = await txTransfer.wait();
+  // console.log(receipt);
 
-// ROYALTIES
-// Set Royalties for a contract
-const royalties = await existingContract.setRoyalties({ publicAddress, fee: 1000 });
-const royaltiesSet = await royalties.wait();
-console.log(royaltiesSet);
+  // // ROYALTIES
+  // // Set Royalties for a contract
+  // const royalties = await newContract.setRoyalties({
+  //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+  //   fee: 50,
+  // });
+  // const royaltiesSet = await royalties.wait();
+  // console.log(royaltiesSet);
 
-// Get Royalties info for a token at a specific sellPrice
-const infos = await existingContract.royaltyInfo({ tokenId: 1, sellPrice: 10 });
-console.log(infos);
+  // // Get Royalties info for a token at a specific sellPrice
+  // const infos = await newContract.royaltyInfo({ tokenId: 1, sellPrice: 100000 });
+  // console.log(infos);
+
+  const isMinter = await newContract.isMinter({ publicAddress: process.env.WALLET_PUBLIC_ADDRESS });
+  console.log(isMinter);
+})();
