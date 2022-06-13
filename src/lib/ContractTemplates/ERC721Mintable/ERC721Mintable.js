@@ -109,11 +109,12 @@ export default class ERC721Mintable {
     if (!this.#contractDeployed) {
       throw new Error('[ERC721Mintable.royaltyInfo] Contract needs to be deployed');
     }
-    if (!tokenId) {
+
+    if (!tokenId && tokenId !== 0) {
       throw new Error('[ERC721Mintable.royaltyInfo] TokenId is required');
     }
 
-    if (!sellPrice) {
+    if (!sellPrice && tokenId !== 0) {
       throw new Error('[ERC721Mintable.royaltyInfo] Sell price is required');
     }
 
