@@ -4,6 +4,7 @@ import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKey } from './__mocks__/utils.js';
 import ganache from 'ganache';
+import { getChainName } from '../src/lib/Auth/availableChains.js';
 
 loadEnv();
 
@@ -172,6 +173,38 @@ describe('Auth', () => {
       });
 
       expect(account.getChainId()).toStrictEqual(5);
+    });
+  });
+
+  describe('getRpcUrl', () => {
+    it('should return the rpcUrl', () => {
+      const account = new Auth({
+        privateKey: 'privateKey',
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+      });
+
+      expect(account.getRpcUrl()).toStrictEqual(process.env.EVM_RPC_URL);
+    });
+  });
+
+  describe('rpcUrl', () => {
+    it('Auth should construct correct RpcURL, if no rpcUrl is provided', () => {
+      const defaultRpcUrl = `https://${getChainName(5)}.infura.io/v3/${
+        process.env.INFURA_PROJECT_ID
+      }`;
+
+      const account = new Auth({
+        privateKey: 'privateKey',
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        // rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+      });
+
+      expect(account.getRpcUrl()).toStrictEqual(defaultRpcUrl);
     });
   });
 

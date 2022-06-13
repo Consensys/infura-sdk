@@ -6,6 +6,7 @@
 import { availableChains, getChainName } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
+import { isValidString } from '../utils.js';
 
 export default class Auth {
   #privateKey;
@@ -34,7 +35,11 @@ export default class Auth {
       throw new Error(`[Auth.constructor] chainId: ${chainId} is not supported!`);
     }
 
-    this.#rpcUrl = rpcUrl || `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;
+    this.#rpcUrl = rpcUrl;
+
+    if (!isValidString(this.#rpcUrl)) {
+      this.#rpcUrl = `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;
+    }
     this.#privateKey = privateKey;
     this.#projectId = projectId;
     this.#secretId = secretId;
@@ -45,6 +50,10 @@ export default class Auth {
 
   getChainId() {
     return this.#chainId;
+  }
+
+  getRpcUrl() {
+    return this.#rpcUrl;
   }
 
   getApiAuthHeader() {

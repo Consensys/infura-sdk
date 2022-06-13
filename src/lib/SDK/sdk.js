@@ -26,7 +26,7 @@ export default class SDK {
    * Deploy Contract on the blockchain
    * @param {string} template name of the template to use (ERC721Mintable, ...)
    * @param {object} params template parameters (name, symbol, contractURI, ...)
-   * @returns Contract instance
+   * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async deploy({ template, params }) {
     if (!template) throw new Error('Template type is required to deploy a new contract.');
@@ -45,7 +45,7 @@ export default class SDK {
    * Load a contract from an existing contract address and a template
    * @param {string} template name of the template to use (ERC721Mintable, ...)
    * @param {string} contractAddress address of the contract to load
-   * @returns Contract instance
+   * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async loadContract({ template, contractAddress }) {
     if (!template) throw new Error('Template type is required to load a contract.');
@@ -61,7 +61,7 @@ export default class SDK {
   /**
    * Get contract metadata by contract address
    * @param {string} contractAddress
-   * @returns {object} Contract metadata object
+   * @returns {Promise<object>} Contract metadata object
    */
   async getContractMetadata({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
@@ -82,7 +82,7 @@ export default class SDK {
    * Get NFTs by an account address
    * @param  {string} address Account address
    * @param  {string} [includeMetadata=false] flag to include the metadata object in the results
-   * @returns {[]} List of NFTs with metadata if 'includeMetadata' flag is true
+   * @returns {Promise<object>} List of NFTs with metadata if 'includeMetadata' flag is true
    */
   async getNFTs({ publicAddress, includeMetadata = false }) {
     if (!publicAddress || !utils.isAddress(publicAddress)) {
@@ -108,7 +108,7 @@ export default class SDK {
 
   /** Get list of NFTs for the specified contract address
    * @param {string} contractAddress address of the contract to get the list of NFTs
-   * @returns {[]} List of NFTs with metadata
+   * @returns {Promise<object>} List of NFTs with metadata
    */
   async getNFTsForCollection({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
@@ -125,7 +125,7 @@ export default class SDK {
   /** Get a token metadata
    * @param {string} contractAddress address of the contract which holds the token
    * @param {number} tokenId ID of the token
-   * @returns {[]} Token metadata
+   * @returns {Promise<object>} Token metadata
    */
   async getTokenMetadata({ contractAddress, tokenId }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
@@ -146,7 +146,7 @@ export default class SDK {
 
   /** Get ETH balance
    * @param  {string} publicAddress Account address
-   * @returns {number} Account balance object
+   * @returns {Promise<number>} Account balance object
    */
   async getEthBalance({ publicAddress }) {
     if (!publicAddress || !utils.isAddress(publicAddress)) {
@@ -163,7 +163,7 @@ export default class SDK {
 
   /** Get ERC20 balances
    * @param  {string} publicAddress Account address
-   * @returns {object} ERC20 balance object
+   * @returns {Promise<object>} ERC20 balance object
    */
   async getERC20Balances({ publicAddress }) {
     if (!publicAddress || !utils.isAddress(publicAddress)) {

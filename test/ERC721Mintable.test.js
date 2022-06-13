@@ -689,6 +689,20 @@ describe('SDK', () => {
         '[ERC721Mintable.royaltyInfo] Sell price is required',
       );
     });
+    it('[royaltyInfo] - should not throw if TokenId is 0', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+
+      await expect(() => contract.royaltyInfo({ tokenId: 0, sellPrice: 10 })).toBeTruthy();
+    });
+    it('[royaltyInfo] - should not throw if SalePrice is 0', async () => {
+      const contract = new ERC721Mintable(signer);
+      await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+
+      await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: 0 })).toBeTruthy();
+    });
   });
   describe('renounceOwnership', () => {
     it('[renounceOwnership] - should throw if contract not deployed', async () => {
