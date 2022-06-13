@@ -35,15 +35,15 @@ export default class Auth {
       throw new Error(`[Auth.constructor] chainId: ${chainId} is not supported!`);
     }
 
+    this.#privateKey = privateKey;
+    this.#projectId = projectId;
+    this.#secretId = secretId;
+    this.#chainId = chainId;
     this.#rpcUrl = rpcUrl;
 
     if (!isValidString(this.#rpcUrl)) {
       this.#rpcUrl = `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;
     }
-    this.#privateKey = privateKey;
-    this.#projectId = projectId;
-    this.#secretId = secretId;
-    this.#chainId = chainId;
 
     this.setProvider(provider);
   }

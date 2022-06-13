@@ -200,7 +200,6 @@ describe('Auth', () => {
         privateKey: 'privateKey',
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
-        // rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
 
