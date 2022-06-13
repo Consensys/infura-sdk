@@ -1,6 +1,6 @@
 {
   "name": "@infura/sdk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
   "main": "index.js",
   "scripts": {
