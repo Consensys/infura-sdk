@@ -1,6 +1,6 @@
 import { ethers, utils } from 'ethers';
 import * as smartContractArtifact from './artifacts/ERC721Mintable.js';
-import { isBoolean } from '../utils.js';
+import { isBoolean, isDefined } from '../utils.js';
 import { TEMPLATES } from '../NFT/constants.js';
 
 export default class ERC721Mintable {
@@ -117,7 +117,7 @@ export default class ERC721Mintable {
       throw new Error('[ERC721Mintable.royaltyInfo] Contract needs to be deployed');
     }
 
-    if (!tokenId) {
+    if (!isDefined(tokenId)) {
       throw new Error('[ERC721Mintable.royaltyInfo] TokenId is required');
     }
 
