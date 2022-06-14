@@ -23,6 +23,9 @@ describe('E2E Test: Basic NFT (write)', () => {
       wallet: {
         accountKeysPath: 'integration-test/keys.json',
       },
+      logging: {
+        quiet: true,
+      },
     };
 
     server = ganache.server(options);

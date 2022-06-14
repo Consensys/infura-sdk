@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import Auth from '../Auth/Auth.js';
 import { HttpService } from '../../services/httpService.js';
-import NFT_API_URL from '../NFT/constants.js';
+import { NFT_API_URL, NFT_API_URL_STAGING } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
 
 export default class SDK {
@@ -19,7 +19,8 @@ export default class SDK {
     this.#auth = auth;
 
     this.#apiPath = `/networks/${this.#auth.getChainId()}`;
-    this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
+    const endpointUrl = process.env.NODE_ENV === 'test' ? NFT_API_URL_STAGING : NFT_API_URL;
+    this.#httpClient = new HttpService(endpointUrl, this.#auth.getApiAuth());
   }
 
   /**

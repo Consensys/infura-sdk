@@ -22,7 +22,7 @@ export default class ERC721Mintable {
     this.#signer = signer;
   }
 
-  template() {
+  getTemplate() {
     return this.#template;
   }
 

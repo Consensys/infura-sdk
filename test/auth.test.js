@@ -3,10 +3,11 @@ import { ethers } from 'ethers';
 import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKey } from './__mocks__/utils.js';
-import ganache from 'ganache';
+import ganache, { provider } from 'ganache';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
 
 loadEnv();
+let ganacheprovider;
 
 class FakeProvider {}
 
@@ -14,7 +15,6 @@ describe('Auth', () => {
   it('should throw when args are missing (privateKey)', () => {
     expect(
       () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: null,
           projectId: process.env.INFURA_PROJECT_ID,
@@ -28,7 +28,6 @@ describe('Auth', () => {
   it('should throw when passing both privateKey and provider', () => {
     expect(
       () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: generateTestPrivateKey(),
           projectId: process.env.INFURA_PROJECT_ID,
@@ -43,7 +42,6 @@ describe('Auth', () => {
   it('should throw when passing invalid provider', () => {
     expect(
       () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           projectId: process.env.INFURA_PROJECT_ID,
           secretId: process.env.INFURA_PROJECT_SECRET,
@@ -57,7 +55,6 @@ describe('Auth', () => {
   it('should throw when args are missing (projectId)', () => {
     expect(
       () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
           secretId: process.env.INFURA_PROJECT_SECRET,
@@ -70,7 +67,6 @@ describe('Auth', () => {
   it('should throw when args are missing (secretId)', () => {
     expect(
       () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
           projectId: process.env.INFURA_PROJECT_ID,
@@ -83,7 +79,6 @@ describe('Auth', () => {
   it('should throw when args are missing (chainId)', () => {
     expect(
       () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
           projectId: process.env.INFURA_PROJECT_ID,
@@ -119,28 +114,28 @@ describe('Auth', () => {
       const provider = Provider.getProvider(process.env.EVM_RPC_URL);
       const signer = await account.getSigner();
 
-      expect(provider).toStrictEqual(
-        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-      );
       expect(JSON.stringify(signer)).toStrictEqual(
         JSON.stringify(new ethers.Wallet(privateKey, provider)),
       );
     });
 
     it('should return the signer using passed provider', async () => {
-      const provider = ganache.provider();
+      ganacheprovider = ganache.provider();
       const account = new Auth({
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
-        provider,
+        provider: ganacheprovider,
       });
 
-      const signer = await new ethers.providers.Web3Provider(provider).getSigner();
+      const signer = new ethers.providers.Web3Provider(ganacheprovider).getSigner();
       const authSigner = await account.getSigner();
-
       expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
+    });
+
+    afterAll(async () => {
+      await ganacheprovider.disconnect();
     });
   });
 
