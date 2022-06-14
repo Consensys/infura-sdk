@@ -10,7 +10,7 @@ import {
   ethBalanceMock,
   tokenMetadataMock,
 } from './__mocks__/api';
-import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './__mocks__/utils';
+import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, generateTestPrivateKey } from './__mocks__/utils';
 
 loadEnv();
 
@@ -22,7 +22,7 @@ describe('Sdk', () => {
   let sdk;
   beforeAll(() => {
     const account = new Auth({
-      privateKey: 'privateKey',
+      privateKey: generateTestPrivateKey(),
       projectId: process.env.INFURA_PROJECT_ID,
       secretId: process.env.INFURA_PROJECT_SECRET,
       rpcUrl: process.env.EVM_RPC_URL,

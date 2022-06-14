@@ -4,9 +4,9 @@
   "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
   "main": "index.js",
   "scripts": {
-    "test": "jest '/test'",
-    "test:integration": "jest '/integration-test'",
-    "test:coverage": "jest --coverage",
+    "test": "NODE_ENV=test jest '/test'",
+    "test:integration": "NODE_ENV=test jest '/integration-test'",
+    "test:coverage": "NODE_ENV=test jest --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",

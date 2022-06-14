@@ -1,5 +1,5 @@
 import { TEMPLATES } from './constants.js';
-import ERC721Mintable from '../ContractTemplates/ERC721Mintable/ERC721Mintable.js';
+import ERC721Mintable from '../ContractTemplates/ERC721Mintable.js';
 
 export default class ContractFactory {
   static factory(template, signer) {

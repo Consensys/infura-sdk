@@ -21,8 +21,13 @@ export default class Auth {
 
   #chainId;
 
-  constructor({ privateKey, projectId, secretId, rpcUrl, chainId }) {
-    if (!privateKey) throw new Error('[Auth.constructor] privateKey is missing!');
+  constructor({ privateKey, projectId, secretId, rpcUrl, chainId, provider }) {
+    if (!privateKey && !provider) {
+      throw new Error('[Auth.constructor] privateKey or provider missing');
+    }
+    if (privateKey && provider) {
+      throw new Error('[Auth.constructor] please provide only privateKey or provider');
+    }
     if (!projectId) throw new Error('[Auth.constructor] projectId is missing!');
     if (!secretId) throw new Error('[Auth.constructor] secretId is missing!');
     if (!chainId) throw new Error('[Auth.constructor] chainId is missing!');
@@ -34,15 +39,13 @@ export default class Auth {
     this.#projectId = projectId;
     this.#secretId = secretId;
     this.#chainId = chainId;
-
     this.#rpcUrl = rpcUrl;
 
     if (!isValidString(this.#rpcUrl)) {
       this.#rpcUrl = `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;
     }
 
-    // eslint-disable-next-line new-cap
-    this.#provider = Provider.getProvider(this.#rpcUrl);
+    this.setProvider(provider);
   }
 
   getChainId() {
@@ -67,18 +70,20 @@ export default class Auth {
     return this.#base64encode();
   }
 
-  getSigner() {
-    return Signer.getWallet(this.#privateKey, this.#provider);
+  async getSigner() {
+    if (this.#privateKey) {
+      return Signer.getWallet(this.#privateKey, this.#provider);
+    }
+    return this.#provider.getSigner();
   }
 
-  setInjectedProvider(injectedProvider) {
-    if (!injectedProvider) {
-      throw new Error(
-        '[Auth.setInjectedProvider] You need to pass an injected provider to this function!',
-      );
+  setProvider(provider) {
+    if (this.#privateKey) {
+      this.#provider = Provider.getProvider(this.#rpcUrl);
+      return;
     }
-
-    this.#provider = Provider.getInjectedProvider(injectedProvider);
-    return this.#provider;
+    if (provider) {
+      this.#provider = Provider.getInjectedProvider(provider);
+    }
   }
 }

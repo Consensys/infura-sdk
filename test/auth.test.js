@@ -3,9 +3,12 @@ import { ethers } from 'ethers';
 import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKey } from './__mocks__/utils.js';
+import ganache from 'ganache';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
 
 loadEnv();
+
+class FakeProvider {}
 
 describe('Auth', () => {
   it('should throw when args are missing (privateKey)', () => {
@@ -19,7 +22,36 @@ describe('Auth', () => {
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
         }),
-    ).toThrow('[Auth.constructor] privateKey is missing!');
+    ).toThrow('[Auth.constructor] privateKey or provider missing');
+  });
+
+  it('should throw when passing both privateKey and provider', () => {
+    expect(
+      () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
+        new Auth({
+          privateKey: generateTestPrivateKey(),
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          provider: ethers.providers.Provider,
+        }),
+    ).toThrow('[Auth.constructor] please provide only privateKey or provider');
+  });
+
+  it('should throw when passing invalid provider', () => {
+    expect(
+      () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
+        new Auth({
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          provider: new FakeProvider(),
+        }),
+    ).toThrow('[Provider] Invalid provider given');
   });
 
   it('should throw when args are missing (projectId)', () => {
@@ -74,37 +106,19 @@ describe('Auth', () => {
     ).toThrow('[Auth.constructor] chainId: 6 is not supported!');
   });
 
-  describe('setInjectedProvider', () => {
-    it("Should throw when we don't pass the injectedProvider parameter", () => {
-      const account = new Auth({
-        privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
-        chainId: 5,
-      });
-
-      expect(() => account.setInjectedProvider()).toThrow(
-        '[Auth.setInjectedProvider] You need to pass an injected provider to this function!',
-      );
-    });
-    it("Should return default provider when we don't pass the injectedProvider parameter", () => {
-      const account = new Auth({
-        privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
-        chainId: 5,
-      });
-
-      expect(account.setInjectedProvider(ethers.providers.Provider)).toStrictEqual(
-        new ethers.providers.Web3Provider(ethers.providers.Provider),
-      );
-    });
-  });
-
   describe('getSigner', () => {
-    it('should return the signer', () => {
+    let ganacheProvider;
+    beforeAll(async () => {
+      ganacheProvider = ganache.provider();
+      await ganacheProvider.once('connect');
+    });
+
+    afterAll(async () => {
+      ganacheProvider.clearListeners();
+      await ganacheProvider.disconnect();
+    });
+
+    it('should return the signer using private key and rpc_url', async () => {
       const privateKey = generateTestPrivateKey();
       const account = new Auth({
         privateKey,
@@ -114,21 +128,33 @@ describe('Auth', () => {
         chainId: 5,
       });
       const provider = Provider.getProvider(process.env.EVM_RPC_URL);
+      const signer = await account.getSigner();
 
-      // eslint-disable-next-line new-cap
-      expect(provider).toStrictEqual(
-        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-      );
-      expect(JSON.stringify(account.getSigner())).toStrictEqual(
+      expect(JSON.stringify(signer)).toStrictEqual(
         JSON.stringify(new ethers.Wallet(privateKey, provider)),
       );
+    });
+
+    it('should return the signer using passed provider', async () => {
+      const account = new Auth({
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+        provider: ganacheProvider,
+      });
+
+      const signer = await new ethers.providers.Web3Provider(ganacheProvider).getSigner();
+      const authSigner = await account.getSigner();
+
+      expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
     });
   });
 
   describe('getApiAuth', () => {
     it('should return the apiAuth key', () => {
       const account = new Auth({
-        privateKey: 'privateKey',
+        privateKey: generateTestPrivateKey(),
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
@@ -146,7 +172,7 @@ describe('Auth', () => {
   describe('getChainId', () => {
     it('should return the chainId', () => {
       const account = new Auth({
-        privateKey: 'privateKey',
+        privateKey: generateTestPrivateKey(),
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
@@ -181,7 +207,6 @@ describe('Auth', () => {
         privateKey: 'privateKey',
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
-        // rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
 
@@ -192,7 +217,7 @@ describe('Auth', () => {
   describe('getApiAuthHeader', () => {
     it('should return the chainId', () => {
       const account = new Auth({
-        privateKey: 'privateKey',
+        privateKey: generateTestPrivateKey(),
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,

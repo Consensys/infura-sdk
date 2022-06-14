@@ -24,6 +24,19 @@
     chainId: 4,
   });
 
+  ///////// Alternative Auth Instantiation with MetaMask /////////
+  // When using SDK in a browser
+  //
+  // const accWithProvider = new Auth({
+  //   projectId: process.env.INFURA_PROJECT_ID,
+  //   secretId: process.env.INFURA_PROJECT_SECRET,
+  //   rpcUrl: process.env.EVM_RPC_URL,
+  //   chainId: 5,
+  //   provider: window.ethereum,
+  // });
+  //
+  //////////////////////////////////////////////////////////////
+
   const sdk = new SDK(acc);
 
   // Create a new contract

@@ -1,7 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import Provider from '../src/lib/Provider/Provider.js';
-import { generateTestPrivateKey } from './__mocks__/utils.js';
 
 loadEnv();
 
@@ -22,8 +21,6 @@ describe('Provider', () => {
   });
 
   it('should return the injected provider', () => {
-    const rpcUrl = process.env.EVM_RPC_URL;
-
     expect(JSON.stringify(Provider.getInjectedProvider(ethers.providers.Provider))).toStrictEqual(
       JSON.stringify(new ethers.providers.Web3Provider(ethers.providers.Provider)),
     );

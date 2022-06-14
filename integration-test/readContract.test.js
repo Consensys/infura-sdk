@@ -71,7 +71,7 @@ describe('E2E Test: Sdk (read)', () => {
   });
 
   describe('As an account I should be able to get the account ETH balance', () => {
-    it('should return account ETH balance', async () => {
+    it.skip('should return account ETH balance', async () => {
       const ethBalance = await sdk.getEthBalance({
         publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
       });
@@ -80,7 +80,7 @@ describe('E2E Test: Sdk (read)', () => {
   });
 
   describe('As an account I should be able to get the account ERC20 balances', () => {
-    it('should return account ERC20 balances', async () => {
+    it.skip('should return account ERC20 balances', async () => {
       const erc20Balance = await sdk.getERC20Balances({
         publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
       });
