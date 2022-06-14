@@ -144,38 +144,4 @@ export default class SDK {
     const { data } = await this.#httpClient.get(apiUrl);
     return data;
   }
-
-  /** Get ETH balance
-   * @param  {string} publicAddress Account address
-   * @returns {Promise<number>} Account balance object
-   */
-  async getEthBalance({ publicAddress }) {
-    if (!publicAddress || !utils.isAddress(publicAddress)) {
-      throw new Error('[SDK.getEthBalance] You need to pass a valid account address as parameter');
-    }
-
-    const apiUrl = `${this.#apiPath}/accounts/${publicAddress}/assets/eth`;
-
-    const {
-      data: { balance },
-    } = await this.#httpClient.get(apiUrl);
-    return balance;
-  }
-
-  /** Get ERC20 balances
-   * @param  {string} publicAddress Account address
-   * @returns {Promise<object>} ERC20 balance object
-   */
-  async getERC20Balances({ publicAddress }) {
-    if (!publicAddress || !utils.isAddress(publicAddress)) {
-      throw new Error(
-        '[SDK.getERC20Balances] You need to pass a valid account address as parameter',
-      );
-    }
-
-    const apiUrl = `${this.#apiPath}/accounts/${publicAddress}/assets/erc20`;
-
-    const { data } = await this.#httpClient.get(apiUrl);
-    return data;
-  }
 }

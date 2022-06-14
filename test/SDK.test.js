@@ -149,47 +149,4 @@ describe('Sdk', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
-
-  describe('getEthBalance', () => {
-    it('should throw when args are missing (address)', async () => {
-      await expect(() => sdk.getEthBalance({})).rejects.toThrow(
-        '[SDK.getEthBalance] You need to pass a valid account address as parameter',
-      );
-    });
-
-    it('should throw when "address" is not a valid address', async () => {
-      await expect(() => sdk.getEthBalance({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
-        '[SDK.getEthBalance] You need to pass a valid account address as parameter',
-      );
-    });
-
-    it('should return ETH balance', async () => {
-      HttpServiceMock.mockResolvedValueOnce(ethBalanceMock);
-      const accountBalance = await sdk.getEthBalance({ publicAddress: ACCOUNT_ADDRESS });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect(accountBalance).toStrictEqual(10);
-    });
-  });
-
-  describe('getERC20Balances', () => {
-    it('should throw when args are missing (address)', async () => {
-      await expect(() => sdk.getERC20Balances({})).rejects.toThrow(
-        '[SDK.getERC20Balances] You need to pass a valid account address as parameter',
-      );
-    });
-
-    it('should throw when "address" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getERC20Balances({ publicAddress: 'notAValidAddress' }),
-      ).rejects.toThrow(
-        '[SDK.getERC20Balances] You need to pass a valid account address as parameter',
-      );
-    });
-
-    it('should return ERC20 balances', async () => {
-      HttpServiceMock.mockResolvedValueOnce(erc20BalanceMock);
-      await sdk.getERC20Balances({ publicAddress: ACCOUNT_ADDRESS });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-    });
-  });
 });

@@ -50,18 +50,6 @@
   });
 
   // READ API
-  // Get ERC20 Balance
-  // const erc20Balance = await sdk.getERC20Balances({
-  //   publicAddress: '0xAc7cdddB692c7265CA896c1a7fCa85F30f576570',
-  // });
-  // console.log(typeof erc20Balance);
-
-  // Get ETH Balance
-  // const ethBalance = await sdk.getEthBalance({
-  //   publicAddress: '0xAc7cdddB692c7265CA896c1a7fCa85F30f576570',
-  // });
-  // console.log(typeof ethBalance);
-
   // Get contract metadata
   // const contractMetadata = await sdk.getContractMetadata({
   //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',

@@ -69,39 +69,4 @@ describe('E2E Test: Sdk (read)', () => {
       expect(tokenMetadata).toStrictEqual(expectedTokenMetadata);
     });
   });
-
-  describe('As an account I should be able to get the account ETH balance', () => {
-    it.skip('should return account ETH balance', async () => {
-      const ethBalance = await sdk.getEthBalance({
-        publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-      });
-      expect(ethBalance).toEqual(expect.any(Number));
-    });
-  });
-
-  describe('As an account I should be able to get the account ERC20 balances', () => {
-    it.skip('should return account ERC20 balances', async () => {
-      const erc20Balance = await sdk.getERC20Balances({
-        publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-      });
-
-      const expectedERC20Balance = {
-        account: process.env.WALLET_PUBLIC_ADDRESS,
-        assets: expect.arrayContaining([
-          {
-            balance: expect.any(Number),
-            contract: '0x0000000000000000000000000000000000000000',
-            decimals: 18,
-            name: 'Ethereum',
-            rawBalance: expect.any(String),
-            symbol: 'ETH',
-          },
-        ]),
-        network: 'Ethereum',
-        type: 'ERC20',
-      };
-
-      expect(erc20Balance).toStrictEqual(expectedERC20Balance);
-    });
-  });
 });
