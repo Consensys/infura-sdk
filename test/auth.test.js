@@ -107,6 +107,16 @@ describe('Auth', () => {
   });
 
   describe('getSigner', () => {
+    let ganacheProvider;
+    beforeAll(async () => {
+      ganacheProvider = ganache.provider();
+      await ganacheProvider.once('connect');
+    });
+
+    afterAll(async () => {
+      await ganacheProvider.disconnect();
+    });
+
     it('should return the signer using private key and rpc_url', async () => {
       const privateKey = generateTestPrivateKey();
       const account = new Auth({
@@ -119,25 +129,21 @@ describe('Auth', () => {
       const provider = Provider.getProvider(process.env.EVM_RPC_URL);
       const signer = await account.getSigner();
 
-      expect(provider).toStrictEqual(
-        new ethers.providers.getDefaultProvider(process.env.EVM_RPC_URL),
-      );
       expect(JSON.stringify(signer)).toStrictEqual(
         JSON.stringify(new ethers.Wallet(privateKey, provider)),
       );
     });
 
     it('should return the signer using passed provider', async () => {
-      const provider = ganache.provider();
       const account = new Auth({
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
-        provider,
+        provider: ganacheProvider,
       });
 
-      const signer = await new ethers.providers.Web3Provider(provider).getSigner();
+      const signer = await new ethers.providers.Web3Provider(ganacheProvider).getSigner();
       const authSigner = await account.getSigner();
 
       expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
