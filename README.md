@@ -93,7 +93,7 @@ const newContract = await sdk.deploy({
    params: {
      name: 'NFT contract',
      symbol: 'CNSYS',
-     contractURI: 'link-to-public-hosted-metadata.json',
+     contractURI: 'https://link-to-public-hosted-metadata.json',
    },
  });
 console.log(`Contract address is: ${newContract.contractAddress}`);
