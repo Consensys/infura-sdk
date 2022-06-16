@@ -33,9 +33,13 @@ Add `"type":"module"` to the `package.json` file to run it as an ESmodule.
 ## Install the libraries
 
 ```bash
-npm install -S @infura/sdk --registry https://registry.nft.consensys-solutions.net
-npm install dotenv #optional
+npm install -S @infura/sdk --registry https://registry.nft.consensys-solutions.net /
+npm install dotenv 
 ```
+
+> **Note**
+> `dotenv` is optional.
+
 
 ## Authentication
 
@@ -89,7 +93,7 @@ const newContract = await sdk.deploy({
    params: {
      name: 'NFT contract',
      symbol: 'CNSYS',
-     contractURI: 'linktoametadata.json',
+     contractURI: 'link-to-public-hosted-metadata.json',
    },
  });
 console.log(`Contract address is: ${newContract.contractAddress}`);
@@ -110,7 +114,7 @@ Check out [this demo file](usage.js) for example method calls such as minting an
 - Username: `PROJECT-ID`
 - Password: `PROJECT-SECRET`
 
-https://staging.nft.consensys-solutions.net/docs/
+https://nft.consensys-solutions.net/docs/
 
 ## SDK methods
 
@@ -118,4 +122,4 @@ https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/SDK/sdk.js
 
 ## ERC721 template methods
 
-https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC721Mintable/ERC721Mintable.js
+https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC721Mintable.js
