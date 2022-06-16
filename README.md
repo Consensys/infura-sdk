@@ -114,7 +114,7 @@ Check out [this demo file](usage.js) for example method calls such as minting an
 - Username: `PROJECT-ID`
 - Password: `PROJECT-SECRET`
 
-https://nft.consensys-solutions.net/docs/
+https://docs.api.infura.io/nft/
 
 ## SDK methods
 
