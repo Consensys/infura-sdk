@@ -64,6 +64,7 @@ jobs:
       - uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
+          access: 'public'
       #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
       #    registry: https://registry.nft.consensys-solutions.net
 
