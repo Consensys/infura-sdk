@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=test jest '/test'",
-    "test:integration": "NODE_ENV=test jest '/integration-test'",
-    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test": "jest '/test'",
+    "test:integration": "jest '/integration-test'",
+    "test:coverage": "jest --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
     "lint": "eslint .",
@@ -41,6 +41,7 @@
     "src/",
     "index.js",
     "usage.js",
+    "jsconfig.json",
     "LICENSE",
     "README.MD"
   ],
