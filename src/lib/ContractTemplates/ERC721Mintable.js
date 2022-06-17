@@ -1,5 +1,5 @@
 import { ethers, utils } from 'ethers';
-import * as smartContractArtifact from './artifacts/ERC721Mintable.js';
+import smartContractArtifact from './artifacts/ERC721Mintable.js';
 import { isBoolean, isDefined } from '../utils.js';
 import { TEMPLATES } from '../NFT/constants.js';
 

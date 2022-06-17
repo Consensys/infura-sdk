@@ -9,7 +9,7 @@
 import axios from 'axios';
 
 export class HttpService {
-  constructor(baseURL, apiKey, apiVersion = 1) {
+  constructor(baseURL, apiKey) {
     if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
     if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');
 
@@ -17,7 +17,6 @@ export class HttpService {
       baseURL: baseURL,
       headers: {
         Authorization: `Basic ${apiKey}`,
-        'X-Csi-Version': apiVersion,
       },
     });
   }
