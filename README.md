@@ -93,7 +93,7 @@ const newContract = await sdk.deploy({
    params: {
      name: 'NFT contract',
      symbol: 'CNSYS',
-     contractURI: 'link-to-public-hosted-metadata.json',
+     contractURI: 'https://link-to-public-hosted-metadata.json',
    },
  });
 console.log(`Contract address is: ${newContract.contractAddress}`);
@@ -114,7 +114,7 @@ Check out [this demo file](usage.js) for example method calls such as minting an
 - Username: `PROJECT-ID`
 - Password: `PROJECT-SECRET`
 
-https://nft.consensys-solutions.net/docs/
+https://docs.api.infura.io/nft/
 
 ## SDK methods
 
