@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   contractName: 'ERC721Mintable',
   abi: [
     {
