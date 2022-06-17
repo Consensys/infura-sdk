@@ -6,19 +6,12 @@ The library allows you to deploy and call methods on common Ethereum smart-contr
 
 The current alpha version of the SDK defines common ERC721 read and write methods. The read methods are also available for interactive testing on a Swagger doc.
 
-Contact us on slack channel #nft-infura-alpha-testing with any questions, or if you haven't yet received a username/password.
+Contact us if you have any trouble or questions on the SDK [contact](https://infura.io/contact).
 
 ## Prerequisites
 
-In a terminal window: 
-
-* Log into the [registry](https://registry.nft.consensys-solutions.net) with the username and password we gave you for private alpha access.
-
-```bash
-npm login --registry https://registry.nft.consensys-solutions.net
-```
-
-* Input your email address.
+Sign in for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
+Once accepted, you will be able to use the NFT API and the NFT SDK.
 
 ## Initialize a new project
 
@@ -33,7 +26,7 @@ Add `"type":"module"` to the `package.json` file to run it as an ESmodule.
 ## Install the libraries
 
 ```bash
-npm install -S @infura/sdk --registry https://registry.nft.consensys-solutions.net /
+npm install -S @infura/sdk
 npm install dotenv 
 ```
 
@@ -79,6 +72,9 @@ const auth = new Auth({
 });
 ```
 
+> **Note**
+> `rpcUrl` is optional if you provide the chainId and the projectId
+
 ### Instantiate the SDK
 
 ```js
@@ -107,7 +103,7 @@ node index.js
 
 ## Examples
 
-Check out [this demo file](usage.js) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
+Check out [this demo file](https://github.com/ConsenSys/infura-sdk/blob/main/usage.js) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
 
 ## Swagger READ methods
 

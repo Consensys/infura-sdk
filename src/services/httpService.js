@@ -17,6 +17,7 @@ export class HttpService {
       baseURL: baseURL,
       headers: {
         Authorization: `Basic ${apiKey}`,
+        'User-Agent': 'Infura SDK 1.0.1',
       },
     });
   }
