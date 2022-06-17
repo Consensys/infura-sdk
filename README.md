@@ -105,7 +105,9 @@ node index.js
 
 Check out [this demo file](https://github.com/ConsenSys/infura-sdk/blob/main/usage.js) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
 
-## Swagger READ methods
+## Swagger API methods
+
+Authenticate using your infura project's information:
 
 - Username: `PROJECT-ID`
 - Password: `PROJECT-SECRET`
