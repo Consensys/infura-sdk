@@ -93,6 +93,15 @@ describe('E2E Test: User Payable NFT (write)', () => {
     expect(receipt.status).toEqual(1);
   });
 
+  it('should reserve an nft', async () => {
+    const tx = await contractObject.reserve({
+      quantity: 1,
+    });
+
+    const receipt = await tx.wait();
+    expect(receipt.status).toEqual(1);
+  });
+
   it('should transfer nft', async () => {
     const tx = await contractObject.transfer({
       from: owner,
@@ -107,8 +116,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
 
   it('should set base URI', async () => {
     const tx = await contractObject.setBaseURI({
-      contractURI:
-        'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+      baseURI: 'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
     });
     const receipt = await tx.wait();
     expect(receipt.status).toEqual(1);
@@ -120,7 +128,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
       contractAddress: contractObject.contractAddress,
     });
     const tx = await loadedContractObject.setPrice({
-      price: ethers.utils.parseEther('0.00002'),
+      price: '0.00002',
     });
     const receipt = await tx.wait();
 
@@ -128,6 +136,30 @@ describe('E2E Test: User Payable NFT (write)', () => {
 
     const price = await contractObject.price();
     expect(price).toEqual(ethers.utils.parseEther('0.00002'));
+  });
+
+  it('should toggle sale', async () => {
+    const loadedContractObject = await sdk.loadContract({
+      template: TEMPLATES.ERC721UserMintable,
+      contractAddress: contractObject.contractAddress,
+    });
+    const tx = await loadedContractObject.toggleSale();
+    const receipt = await tx.wait();
+
+    expect(receipt.status).toEqual(1);
+  });
+
+  it('should reveal the contract base URI', async () => {
+    const loadedContractObject = await sdk.loadContract({
+      template: TEMPLATES.ERC721UserMintable,
+      contractAddress: contractObject.contractAddress,
+    });
+    const tx = await loadedContractObject.reveal({
+      baseURI: 'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+    });
+    const receipt = await tx.wait();
+
+    expect(receipt.status).toEqual(1);
   });
 
   it('should set approval for all', async () => {
@@ -147,8 +179,8 @@ describe('E2E Test: User Payable NFT (write)', () => {
   it('should transfer nft with approval', async () => {
     // owner mints a token to themselves
     const tx = await contractObject.mint({
-      publicAddress: owner,
-      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+      quantity: 1,
+      cost: ethers.utils.parseEther('0.00001'),
     });
 
     await tx.wait();
