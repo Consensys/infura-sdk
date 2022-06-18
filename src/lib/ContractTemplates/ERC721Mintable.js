@@ -128,7 +128,7 @@ export default class ERC721Mintable {
     try {
       return await this.#contractDeployed.royaltyInfo(tokenId, sellPrice);
     } catch (error) {
-      throw new Error(`[ERC721Mintable. royaltyInfo] An error occured: ${error}`);
+      throw new Error(`[ERC721Mintable.royaltyInfo] An error occured: ${error}`);
     }
   }
 
