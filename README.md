@@ -6,7 +6,7 @@ The library allows you to deploy and call methods on common Ethereum smart-contr
 
 The current alpha version of the SDK defines common ERC721 read and write methods. The read methods are also available for interactive testing on a Swagger doc.
 
-[Contact us]((https://infura.io/contact)) if you have any questions.
+[Contact us](https://infura.io/contact) if you have any questions.
 
 ## Prerequisites
 
