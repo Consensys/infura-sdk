@@ -10,7 +10,7 @@ Contact us if you have any trouble or questions on the SDK [contact](https://inf
 
 ## Prerequisites
 
-Sign in for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
+Sign up for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
 Once accepted, you will be able to use the NFT API and the NFT SDK.
 
 ## Initialize a new project
