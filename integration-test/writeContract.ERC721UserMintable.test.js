@@ -83,16 +83,6 @@ describe('E2E Test: User Payable NFT (write)', () => {
     expect(loadedContract).not.toBe(null);
   });
 
-  it('should mint nft', async () => {
-    const tx = await contractObject.mint({
-      quantity: 1,
-      cost: ethers.utils.parseEther('0.00001'),
-    });
-
-    const receipt = await tx.wait();
-    expect(receipt.status).toEqual(1);
-  });
-
   it('should reserve an nft', async () => {
     const tx = await contractObject.reserve({
       quantity: 1,
@@ -135,15 +125,11 @@ describe('E2E Test: User Payable NFT (write)', () => {
     expect(receipt.status).toEqual(1);
 
     const price = await contractObject.price();
-    expect(price).toEqual(ethers.utils.parseEther('0.00002'));
+    expect(price).toEqual('0.00002');
   });
 
   it('should toggle sale', async () => {
-    const loadedContractObject = await sdk.loadContract({
-      template: TEMPLATES.ERC721UserMintable,
-      contractAddress: contractObject.contractAddress,
-    });
-    const tx = await loadedContractObject.toggleSale();
+    const tx = await contractObject.toggleSale();
     const receipt = await tx.wait();
 
     expect(receipt.status).toEqual(1);
@@ -159,6 +145,16 @@ describe('E2E Test: User Payable NFT (write)', () => {
     });
     const receipt = await tx.wait();
 
+    expect(receipt.status).toEqual(1);
+  });
+
+  it('should mint nft', async () => {
+    const tx = await contractObject.mint({
+      quantity: 1,
+      cost: ethers.utils.parseEther('0.00002'),
+    });
+
+    const receipt = await tx.wait();
     expect(receipt.status).toEqual(1);
   });
 
@@ -180,7 +176,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
     // owner mints a token to themselves
     const tx = await contractObject.mint({
       quantity: 1,
-      cost: ethers.utils.parseEther('0.00001'),
+      cost: ethers.utils.parseEther('0.00002'),
     });
 
     await tx.wait();
