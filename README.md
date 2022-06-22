@@ -6,11 +6,11 @@ The library allows you to deploy and call methods on common Ethereum smart-contr
 
 The current alpha version of the SDK defines common ERC721 read and write methods. The read methods are also available for interactive testing on a Swagger doc.
 
-Contact us if you have any trouble or questions on the SDK [contact](https://infura.io/contact).
+[Contact us](https://infura.io/contact) if you have any questions.
 
 ## Prerequisites
 
-Sign in for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
+Sign up for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
 Once accepted, you will be able to use the NFT API and the NFT SDK.
 
 ## Initialize a new project
