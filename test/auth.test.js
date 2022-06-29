@@ -2,7 +2,7 @@ import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
-import { generateTestPrivateKey } from './__mocks__/utils.js';
+import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 import ganache from 'ganache';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
 
@@ -30,7 +30,7 @@ describe('Auth', () => {
       () =>
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
-          privateKey: generateTestPrivateKey(),
+          privateKey: generateTestPrivateKeyOrHash(),
           projectId: process.env.INFURA_PROJECT_ID,
           secretId: process.env.INFURA_PROJECT_SECRET,
           rpcUrl: process.env.EVM_RPC_URL,
@@ -119,7 +119,7 @@ describe('Auth', () => {
     });
 
     it('should return the signer using private key and rpc_url', async () => {
-      const privateKey = generateTestPrivateKey();
+      const privateKey = generateTestPrivateKeyOrHash();
       const account = new Auth({
         privateKey,
         projectId: process.env.INFURA_PROJECT_ID,
@@ -154,7 +154,7 @@ describe('Auth', () => {
   describe('getApiAuth', () => {
     it('should return the apiAuth key', () => {
       const account = new Auth({
-        privateKey: generateTestPrivateKey(),
+        privateKey: generateTestPrivateKeyOrHash(),
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
@@ -172,7 +172,7 @@ describe('Auth', () => {
   describe('getChainId', () => {
     it('should return the chainId', () => {
       const account = new Auth({
-        privateKey: generateTestPrivateKey(),
+        privateKey: generateTestPrivateKeyOrHash(),
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,
@@ -217,7 +217,7 @@ describe('Auth', () => {
   describe('getApiAuthHeader', () => {
     it('should return the chainId', () => {
       const account = new Auth({
-        privateKey: generateTestPrivateKey(),
+        privateKey: generateTestPrivateKeyOrHash(),
         projectId: process.env.INFURA_PROJECT_ID,
         secretId: process.env.INFURA_PROJECT_SECRET,
         rpcUrl: process.env.EVM_RPC_URL,

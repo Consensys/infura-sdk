@@ -81,6 +81,17 @@ describe('SDK', () => {
     expect(contract).rejects.toThrow('[ERC721Mintable.deploy] contractURI cannot be undefined');
   });
 
+  it('[Deploy] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => {
+      throw new Error('test error');
+    });
+
+    const contract = async () =>
+      eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+
+    expect(contract).rejects.toThrow('code: UNKNOWN_ERROR, message: Error: test error');
+  });
+
   it('[Deploy] - should return a contract', async () => {
     eRC721Mintable = new ERC721Mintable(signer, contractAddress);
 
@@ -128,6 +139,28 @@ describe('SDK', () => {
     expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A tokenURI is required to mint.');
   });
 
+  it('[Mint] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        mintWithTokenURI: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const myNFT = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.mint({
+        publicAddress: ACCOUNT_ADDRESS,
+        tokenURI: 'https://infura.io/images/404.png',
+      });
+    };
+    expect(myNFT).rejects.toThrow(
+      '[ERC721Mintable.mint] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[Mint] - should mint a token', async () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -169,6 +202,20 @@ describe('SDK', () => {
     await eRC721Mintable.loadContract({ contractAddress: CONTRACT_ADDRESS });
 
     expect(ethers.Contract).toHaveBeenCalledTimes(1);
+  });
+
+  it('[LoadContract] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ethers, 'Contract').mockImplementationOnce(() => {
+      throw new Error('test error');
+    });
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const contract = async () => {
+      await eRC721Mintable.loadContract({ contractAddress: CONTRACT_ADDRESS });
+    };
+    expect(contract).rejects.toThrow(
+      '[ERC721Mintable.loadContract] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
   });
 
   it('[Transfer] - should return an Error if contract is not deployed', () => {
@@ -240,6 +287,29 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
+  it('[Transfer] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        'safeTransferFrom(address,address,uint256)': () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const transferNft = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.transfer({
+        from: ACCOUNT_ADDRESS,
+        to: ACCOUNT_ADDRESS_2,
+        tokenId: 1,
+      });
+    };
+    expect(transferNft).rejects.toThrow(
+      '[ERC721Mintable.transfer] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[SetContractURI] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -277,6 +347,28 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
+  it('[SetContractURI] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        setContractURI: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const setContractURI = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setContractURI({
+        contractURI:
+          'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+      });
+    };
+    expect(setContractURI).rejects.toThrow(
+      '[ERC721Mintable.setContractURI] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[addMinter] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -305,6 +397,25 @@ describe('SDK', () => {
     await eRC721Mintable.addMinter({ publicAddress: ACCOUNT_ADDRESS });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[addMinter] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        grantRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const addMinter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.addMinter({ publicAddress: ACCOUNT_ADDRESS });
+    };
+    expect(addMinter).rejects.toThrow(
+      '[ERC721Mintable.addMinter] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
   });
 
   it('[removeMinter] - should return an Error if contract is not deployed', () => {
@@ -367,6 +478,25 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
+  it('[renounceMinter] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        renounceRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const renounceMinter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
+    };
+    expect(renounceMinter).rejects.toThrow(
+      '[ERC721Mintable.renounceMinter] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[isMinter] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -395,6 +525,25 @@ describe('SDK', () => {
     await eRC721Mintable.isMinter({ publicAddress: ACCOUNT_ADDRESS });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[isMinter] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        hasRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const isMinter = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.isMinter({ publicAddress: ACCOUNT_ADDRESS });
+    };
+    expect(isMinter).rejects.toThrow(
+      '[ERC721Mintable.isMinter] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
   });
 
   it('[SetApprovalForAll] - should return an Error if contract is not deployed', () => {
@@ -443,6 +592,25 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
+  it('[SetApprovalForAll] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        setApprovalForAll: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const setApprovalForAll = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setApprovalForAll({ to: ACCOUNT_ADDRESS, approvalStatus: true });
+    };
+    expect(setApprovalForAll).rejects.toThrow(
+      '[ERC721Mintable.setApprovalForAll] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[addAdmin] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -469,6 +637,27 @@ describe('SDK', () => {
     await eRC721Mintable.addAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[addAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        grantRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const addAdmin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.addAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
+    };
+    expect(addAdmin).rejects.toThrow(
+      '[ERC721Mintable.addAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
   });
 
   it('[removeAdmin] - should return an Error if contract is not deployed', () => {
@@ -503,6 +692,27 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
+  it('[removeAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        revokeRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const removeAdmin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.removeAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
+    };
+    expect(removeAdmin).rejects.toThrow(
+      '[ERC721Mintable.removeAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[renounceAdmin] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -535,6 +745,27 @@ describe('SDK', () => {
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
+  it('[renounceAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        renounceRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const renounceAdmin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.renounceAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
+    };
+    expect(renounceAdmin).rejects.toThrow(
+      '[ERC721Mintable.renounceAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[isAdmin] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -561,6 +792,26 @@ describe('SDK', () => {
     await eRC721Mintable.isAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
+
+  it('[isAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        hasRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const isAdmin = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.isAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
+    };
+    expect(isAdmin).rejects.toThrow(
+      '[ERC721Mintable.isAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[ApproveTransfer] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 
@@ -604,6 +855,25 @@ describe('SDK', () => {
     await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[ApproveTransfer] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        approve: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const approveTransfer = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
+    };
+    expect(approveTransfer).rejects.toThrow(
+      '[ERC721Mintable.approveTransfer] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+    );
   });
 
   describe('setRoyalties', () => {
@@ -659,6 +929,25 @@ describe('SDK', () => {
       contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
       await expect(contractFactoryMock).toHaveBeenCalledTimes(1);
     });
+
+    it('[setRoyalties] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          setRoyalties: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      eRC721Mintable = new ERC721Mintable(signer);
+
+      const setRoyalties = async () => {
+        await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+        await eRC721Mintable.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      };
+      expect(setRoyalties).rejects.toThrow(
+        '[ERC721Mintable.setRoyalties] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
   });
 
   describe('royaltyInfo', () => {
@@ -703,6 +992,25 @@ describe('SDK', () => {
 
       await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: 0 })).toBeTruthy();
     });
+
+    it('[royaltyInfo] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          royaltyInfo: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      eRC721Mintable = new ERC721Mintable(signer);
+
+      const royaltyInfo = async () => {
+        await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+        await eRC721Mintable.royaltyInfo({ tokenId: 1, sellPrice: 100 });
+      };
+      expect(royaltyInfo).rejects.toThrow(
+        '[ERC721Mintable.royaltyInfo] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
   });
   describe('renounceOwnership', () => {
     it('[renounceOwnership] - should throw if contract not deployed', async () => {
@@ -721,6 +1029,25 @@ describe('SDK', () => {
       await eRC721Mintable.renounceOwnership();
 
       expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('[renounceOwnership] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          renounceOwnership: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      eRC721Mintable = new ERC721Mintable(signer);
+
+      const renounceOwnership = async () => {
+        await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+        await eRC721Mintable.renounceOwnership();
+      };
+      expect(renounceOwnership).rejects.toThrow(
+        '[ERC721Mintable.renounceOwnership] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      );
     });
   });
 });
