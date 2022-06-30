@@ -3,6 +3,8 @@ import Auth from '../Auth/Auth.js';
 import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
+import { ERROR_MESSAGE, ERROR_LOCATION } from '../errorMessages.js';
+import { formatErrorMsg } from '../utils.js';
 
 export default class SDK {
   /* Private property */
@@ -14,7 +16,9 @@ export default class SDK {
 
   constructor(auth) {
     if (!(auth instanceof Auth)) {
-      throw new Error('[SDK.constructor] You need to pass a valid instance of Auth class!');
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_constructor, ERROR_MESSAGE.invalid_auth_instance),
+      );
     }
     this.#auth = auth;
 
@@ -37,10 +41,14 @@ export default class SDK {
    */
   async deploy({ template, params }) {
     if (!template) {
-      throw new Error('[SDK.deploy] Template type is required to deploy a new contract.');
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_deploy, ERROR_MESSAGE.no_template_type_supplied),
+      );
     }
     if (Object.keys(params).length === 0) {
-      throw new Error('[SDK.deploy] A set of parameters are required to deploy a new contract.');
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_deploy, ERROR_MESSAGE.no_parameters_supplied),
+      );
     }
 
     const signer = await this.getProvider();
@@ -57,8 +65,17 @@ export default class SDK {
    * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async loadContract({ template, contractAddress }) {
-    if (!template) throw new Error('Template type is required to load a contract.');
-    if (!contractAddress) throw new Error('A Contract address is required to load a contract.');
+    if (!template) {
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_loadContract, ERROR_MESSAGE.no_template_type_supplied),
+      );
+    }
+
+    if (!contractAddress) {
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_loadContract, ERROR_MESSAGE.no_address_supplied),
+      );
+    }
 
     const signer = await this.getProvider();
     const contract = ContractFactory.factory(template, signer);
@@ -75,7 +92,10 @@ export default class SDK {
   async getContractMetadata({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+        formatErrorMsg(
+          ERROR_LOCATION.SDK_getContractMetadata,
+          ERROR_MESSAGE.invalid_contract_address,
+        ),
       );
     }
 
@@ -95,7 +115,9 @@ export default class SDK {
    */
   async getNFTs({ publicAddress, includeMetadata = false }) {
     if (!publicAddress || !utils.isAddress(publicAddress)) {
-      throw new Error('[SDK.getNFTs] You need to pass a valid account address as parameter');
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_getNFTs, ERROR_MESSAGE.invalid_account_address),
+      );
     }
 
     const apiUrl = `${this.#apiPath}/accounts/${publicAddress}/assets/nfts`;
@@ -122,7 +144,10 @@ export default class SDK {
   async getNFTsForCollection({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+        formatErrorMsg(
+          ERROR_LOCATION.SDK_getNFTsForCollection,
+          ERROR_MESSAGE.invalid_contract_address,
+        ),
       );
     }
     const apiUrl = `${this.#apiPath}/nfts/${contractAddress}/tokens`;
@@ -139,12 +164,14 @@ export default class SDK {
   async getTokenMetadata({ contractAddress, tokenId }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.invalid_contract_address),
       );
     }
 
     if (!Number.isFinite(tokenId)) {
-      throw new Error('[SDK.getTokenMetadata] You need to pass the tokenId as second parameter');
+      throw new Error(
+        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.no_tokenId_supplied),
+      );
     }
 
     const apiUrl = `${this.#apiPath}/nfts/${contractAddress}/tokens/${tokenId}`;

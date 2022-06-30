@@ -2,6 +2,9 @@ import { config as loadEnv } from 'dotenv';
 import Sdk from '../src/lib/SDK/sdk';
 import Auth from '../src/lib/Auth/Auth';
 import { HttpService } from '../src/services/httpService';
+import { ERROR_MESSAGE, ERROR_LOCATION } from '../src/lib/errorMessages';
+import { formatErrorMsg } from '../src/lib/utils';
+
 import {
   accountNFTsMock,
   collectionNFTsMock,
@@ -53,14 +56,17 @@ describe('Sdk', () => {
 
   it('should throw when args are missing auth instance', () => {
     expect(() => new Sdk(1)).toThrow(
-      '[SDK.constructor] You need to pass a valid instance of Auth class!',
+      formatErrorMsg(ERROR_LOCATION.SDK_constructor, ERROR_MESSAGE.invalid_auth_instance),
     );
   });
 
   describe('getContractMetadata', () => {
     it('should throw when args are missing (contractAddress)', async () => {
       await expect(() => sdk.getContractMetadata({})).rejects.toThrow(
-        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+        formatErrorMsg(
+          ERROR_LOCATION.SDK_getContractMetadata,
+          ERROR_MESSAGE.invalid_contract_address,
+        ),
       );
     });
 
@@ -68,7 +74,10 @@ describe('Sdk', () => {
       await expect(() =>
         sdk.getContractMetadata({ contractAddress: 'notAValidAddress' }),
       ).rejects.toThrow(
-        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+        formatErrorMsg(
+          ERROR_LOCATION.SDK_getContractMetadata,
+          ERROR_MESSAGE.invalid_contract_address,
+        ),
       );
     });
 
@@ -85,13 +94,13 @@ describe('Sdk', () => {
   describe('getNFTs', () => {
     it('should throw when args are missing (address)', async () => {
       await expect(() => sdk.getNFTs({})).rejects.toThrow(
-        '[SDK.getNFTs] You need to pass a valid account address as parameter',
+        formatErrorMsg(ERROR_LOCATION.SDK_getNFTs, ERROR_MESSAGE.invalid_account_address),
       );
     });
 
     it('should throw when "address" is not a valid address', async () => {
       await expect(() => sdk.getNFTs({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
-        '[SDK.getNFTs] You need to pass a valid account address as parameter',
+        formatErrorMsg(ERROR_LOCATION.SDK_getNFTs, ERROR_MESSAGE.invalid_account_address),
       );
     });
 
@@ -116,7 +125,10 @@ describe('Sdk', () => {
   describe('getNFTsForCollection', () => {
     it('should throw when args are missing (contractAddress)', async () => {
       await expect(() => sdk.getNFTsForCollection({})).rejects.toThrow(
-        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+        formatErrorMsg(
+          ERROR_LOCATION.SDK_getNFTsForCollection,
+          ERROR_MESSAGE.invalid_contract_address,
+        ),
       );
     });
 
@@ -124,7 +136,10 @@ describe('Sdk', () => {
       await expect(() =>
         sdk.getNFTsForCollection({ contractAddress: 'notAValidAddress' }),
       ).rejects.toThrow(
-        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+        formatErrorMsg(
+          ERROR_LOCATION.SDK_getNFTsForCollection,
+          ERROR_MESSAGE.invalid_contract_address,
+        ),
       );
     });
 
@@ -138,7 +153,7 @@ describe('Sdk', () => {
   describe('getTokenMetadata', () => {
     it('should throw when args are missing (contractAddress)', async () => {
       await expect(() => sdk.getTokenMetadata({})).rejects.toThrow(
-        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.invalid_contract_address),
       );
     });
 
@@ -146,7 +161,7 @@ describe('Sdk', () => {
       await expect(() =>
         sdk.getTokenMetadata({ contractAddress: 'notAValidAddress', tokenId: '' }),
       ).rejects.toThrow(
-        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.invalid_contract_address),
       );
     });
 
@@ -156,7 +171,9 @@ describe('Sdk', () => {
           contractAddress: '0x97ed63533c9f4f50521d78e58caeb94b175f5d35',
           tokenId: '',
         }),
-      ).rejects.toThrow('[SDK.getTokenMetadata] You need to pass the tokenId as second parameter');
+      ).rejects.toThrow(
+        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.no_tokenId_supplied),
+      );
     });
 
     it('should return token metadata', async () => {
