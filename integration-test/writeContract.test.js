@@ -14,6 +14,7 @@ let publicAddress;
 let owner;
 let thirdUser;
 let privateKeyPublicAddress;
+let successfulTx;
 
 describe('E2E Test: Basic NFT (write)', () => {
   jest.setTimeout(120 * 1000);
@@ -88,7 +89,27 @@ describe('E2E Test: Basic NFT (write)', () => {
     });
 
     const receipt = await tx.wait();
+
+    successfulTx = receipt.transactionHash;
+
     expect(receipt.status).toEqual(1);
+  });
+
+  it('should return details of transaction', async () => {
+    const txStatus = await sdk.getStatus({ txHash: successfulTx });
+    expect(txStatus.status).toEqual(1);
+  });
+
+  it('should not transfer nft if your are not the owner', async () => {
+    const tx = await contractObject.transfer({
+      from: thirdUser,
+      to: publicAddress,
+      tokenId: 0,
+    });
+
+    const txDetails = await sdk.getStatus({ txHash: tx.hash });
+
+    expect(txDetails.status).toEqual(0);
   });
 
   it('should transfer nft', async () => {

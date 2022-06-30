@@ -6,15 +6,17 @@ import {
   accountNFTsMock,
   collectionNFTsMock,
   contractMetadataMock,
-  erc20BalanceMock,
-  ethBalanceMock,
   tokenMetadataMock,
 } from './__mocks__/api';
-import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, generateTestPrivateKey } from './__mocks__/utils';
+import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import { TEMPLATES } from '../src/lib/NFT/constants';
+import ContractFactory from '../src/lib/NFT/contractFactory';
 
 loadEnv();
 
 describe('Sdk', () => {
+  let signerMock;
+  let contractFactoryMock;
   jest.setTimeout(120 * 1000);
   const HttpServiceMock = jest
     .spyOn(HttpService.prototype, 'get')
@@ -22,17 +24,31 @@ describe('Sdk', () => {
   let sdk;
   beforeAll(() => {
     const account = new Auth({
-      privateKey: generateTestPrivateKey(),
+      privateKey: generateTestPrivateKeyOrHash(),
       projectId: process.env.INFURA_PROJECT_ID,
       secretId: process.env.INFURA_PROJECT_SECRET,
       rpcUrl: process.env.EVM_RPC_URL,
       chainId: 5,
     });
     sdk = new Sdk(account);
+
+    signerMock = jest.spyOn(account, 'getSigner').mockImplementation(() => ({
+      provider: {
+        getTransactionReceipt: () => ({
+          status: 1,
+        }),
+      },
+    }));
+
+    contractFactoryMock = jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
+      deploy: () => ({}),
+    }));
   });
 
   afterEach(() => {
     HttpServiceMock.mockClear();
+    contractFactoryMock.mockClear();
+    signerMock.mockClear();
   });
 
   it('should throw when args are missing auth instance', () => {
@@ -147,6 +163,73 @@ describe('Sdk', () => {
       HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock);
       await sdk.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: 1 });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getStatus', () => {
+    it('should throw when transaction hash argument is not valid', async () => {
+      await expect(() => sdk.getStatus({ txHash: 'test' })).rejects.toThrow(
+        '[SDK.GetStatus] You need to pass a valid tx hash as parameter',
+      );
+    });
+
+    it('should return transaction status and details', async () => {
+      await sdk.getStatus({ txHash: generateTestPrivateKeyOrHash() });
+      expect(signerMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('deploy', () => {
+    it('should throw error when template is not provided', async () => {
+      await expect(() =>
+        sdk.deploy({
+          template: null,
+          params: {
+            name: 'TestContractFinal',
+            symbol: 'TOC',
+            contractURI: {
+              attributes: [{ trait_type: 'Background', value: 'Black' }],
+              description: 'Sample NFT used for demo at the NFT.NYC Event',
+              image: 'https://ipfs.io/ipfs/QmbPgLdcKK3Tmc7EcfDnTuWTKTacsyHBHyKRxeGiEDR7mp',
+              name: 'Hello NFT.NYC',
+            },
+          },
+        }),
+      ).rejects.toThrow('[SDK.deploy] Template type is required to deploy a new contract.');
+    });
+
+    it('should throw error params is empty', async () => {
+      await expect(() =>
+        sdk.deploy({
+          template: TEMPLATES.ERC721Mintable,
+          params: {},
+        }),
+      ).rejects.toThrow('[SDK.deploy] A set of parameters are required to deploy a new contract.');
+    });
+
+    it('should deploy contract', async () => {
+      await sdk.deploy({
+        template: TEMPLATES.ERC721Mintable,
+        params: {
+          name: 'TestContractFinal',
+          symbol: 'TOC',
+          contractURI: {
+            attributes: [{ trait_type: 'Background', value: 'Black' }],
+            description: 'Sample NFT used for demo at the NFT.NYC Event',
+            image: 'https://ipfs.io/ipfs/QmbPgLdcKK3Tmc7EcfDnTuWTKTacsyHBHyKRxeGiEDR7mp',
+            name: 'Hello NFT.NYC',
+          },
+        },
+      });
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getProvider', () => {
+    it('should return the provider', async () => {
+      await sdk.getProvider();
+
+      expect(signerMock).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -22,6 +22,13 @@ export default class SDK {
     this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
   }
 
+  /** Get provider
+   * @returns {Promise<object>} return the provider
+   */
+  async getProvider() {
+    return this.#auth.getSigner();
+  }
+
   /**
    * Deploy Contract on the blockchain
    * @param {string} template name of the template to use (ERC721Mintable, ...)
@@ -29,12 +36,14 @@ export default class SDK {
    * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async deploy({ template, params }) {
-    if (!template) throw new Error('Template type is required to deploy a new contract.');
+    if (!template) {
+      throw new Error('[SDK.deploy] Template type is required to deploy a new contract.');
+    }
     if (Object.keys(params).length === 0) {
-      throw new Error('A set of parameters are required to deploy a new contract.');
+      throw new Error('[SDK.deploy] A set of parameters are required to deploy a new contract.');
     }
 
-    const signer = await this.#auth.getSigner();
+    const signer = await this.getProvider();
     const contract = ContractFactory.factory(template, signer);
 
     await contract.deploy(params);
@@ -51,7 +60,7 @@ export default class SDK {
     if (!template) throw new Error('Template type is required to load a contract.');
     if (!contractAddress) throw new Error('A Contract address is required to load a contract.');
 
-    const signer = await this.#auth.getSigner();
+    const signer = await this.getProvider();
     const contract = ContractFactory.factory(template, signer);
 
     await contract.loadContract({ contractAddress });
@@ -142,5 +151,19 @@ export default class SDK {
 
     const { data } = await this.#httpClient.get(apiUrl);
     return data;
+  }
+
+  /** Get tx status
+   * @param {string} txHash hash of the transaction
+   * @param {number} tokenId ID of the token
+   * @returns {Promise<object>} Transaction information
+   */
+  async getStatus({ txHash }) {
+    if (!utils.isHexString(txHash)) {
+      throw new Error('[SDK.GetStatus] You need to pass a valid tx hash as parameter');
+    }
+
+    const signer = await this.getProvider();
+    return signer.provider.getTransactionReceipt(txHash);
   }
 }

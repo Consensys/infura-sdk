@@ -1,7 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import Signer from '../src/lib/Signer/Signer.js';
-import { generateTestPrivateKey } from './__mocks__/utils.js';
+import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 
 loadEnv();
 
@@ -20,7 +20,7 @@ describe('Signer', () => {
     });
 
     it('should return the signer', () => {
-      const privateKey = generateTestPrivateKey();
+      const privateKey = generateTestPrivateKeyOrHash();
       const provider = new ethers.providers.Web3Provider(ethers.providers.Provider);
 
       expect(JSON.stringify(Signer.getWallet(privateKey, provider))).toStrictEqual(
