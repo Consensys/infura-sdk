@@ -2,6 +2,8 @@ import { config as loadEnv } from 'dotenv';
 import Sdk from '../src/lib/SDK/sdk';
 import Auth from '../src/lib/Auth/Auth';
 import { HttpService } from '../src/services/httpService';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler';
+
 import {
   accountNFTsMock,
   collectionNFTsMock,
@@ -53,14 +55,20 @@ describe('Sdk', () => {
 
   it('should throw when args are missing auth instance', () => {
     expect(() => new Sdk(1)).toThrow(
-      '[SDK.constructor] You need to pass a valid instance of Auth class!',
+      errorLogger({
+        location: ERROR_LOG.location.SDK_constructor,
+        message: ERROR_LOG.message.invalid_auth_instance,
+      }),
     );
   });
 
   describe('getContractMetadata', () => {
     it('should throw when args are missing (contractAddress)', async () => {
       await expect(() => sdk.getContractMetadata({})).rejects.toThrow(
-        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getContractMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     });
 
@@ -68,7 +76,10 @@ describe('Sdk', () => {
       await expect(() =>
         sdk.getContractMetadata({ contractAddress: 'notAValidAddress' }),
       ).rejects.toThrow(
-        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getContractMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     });
 
@@ -85,13 +96,19 @@ describe('Sdk', () => {
   describe('getNFTs', () => {
     it('should throw when args are missing (address)', async () => {
       await expect(() => sdk.getNFTs({})).rejects.toThrow(
-        '[SDK.getNFTs] You need to pass a valid account address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTs,
+          message: ERROR_LOG.message.invalid_account_address,
+        }),
       );
     });
 
     it('should throw when "address" is not a valid address', async () => {
       await expect(() => sdk.getNFTs({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
-        '[SDK.getNFTs] You need to pass a valid account address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTs,
+          message: ERROR_LOG.message.invalid_account_address,
+        }),
       );
     });
 
@@ -116,7 +133,10 @@ describe('Sdk', () => {
   describe('getNFTsForCollection', () => {
     it('should throw when args are missing (contractAddress)', async () => {
       await expect(() => sdk.getNFTsForCollection({})).rejects.toThrow(
-        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTsForCollection,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     });
 
@@ -124,7 +144,10 @@ describe('Sdk', () => {
       await expect(() =>
         sdk.getNFTsForCollection({ contractAddress: 'notAValidAddress' }),
       ).rejects.toThrow(
-        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTsForCollection,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     });
 
@@ -138,7 +161,10 @@ describe('Sdk', () => {
   describe('getTokenMetadata', () => {
     it('should throw when args are missing (contractAddress)', async () => {
       await expect(() => sdk.getTokenMetadata({})).rejects.toThrow(
-        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     });
 
@@ -146,7 +172,10 @@ describe('Sdk', () => {
       await expect(() =>
         sdk.getTokenMetadata({ contractAddress: 'notAValidAddress', tokenId: '' }),
       ).rejects.toThrow(
-        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     });
 
@@ -156,7 +185,12 @@ describe('Sdk', () => {
           contractAddress: '0x97ed63533c9f4f50521d78e58caeb94b175f5d35',
           tokenId: '',
         }),
-      ).rejects.toThrow('[SDK.getTokenMetadata] You need to pass the tokenId as second parameter');
+      ).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.no_tokenId_supplied,
+        }),
+      );
     });
 
     it('should return token metadata', async () => {
@@ -169,7 +203,10 @@ describe('Sdk', () => {
   describe('getStatus', () => {
     it('should throw when transaction hash argument is not valid', async () => {
       await expect(() => sdk.getStatus({ txHash: 'test' })).rejects.toThrow(
-        '[SDK.GetStatus] You need to pass a valid tx hash as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getStatus,
+          message: ERROR_LOG.message.invalid_transaction_hash,
+        }),
       );
     });
 
@@ -195,7 +232,12 @@ describe('Sdk', () => {
             },
           },
         }),
-      ).rejects.toThrow('[SDK.deploy] Template type is required to deploy a new contract.');
+      ).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_deploy,
+          message: ERROR_LOG.message.no_template_type_supplied,
+        }),
+      );
     });
 
     it('should throw error params is empty', async () => {
@@ -204,7 +246,12 @@ describe('Sdk', () => {
           template: TEMPLATES.ERC721Mintable,
           params: {},
         }),
-      ).rejects.toThrow('[SDK.deploy] A set of parameters are required to deploy a new contract.');
+      ).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_deploy,
+          message: ERROR_LOG.message.no_parameters_supplied,
+        }),
+      );
     });
 
     it('should deploy contract', async () => {
