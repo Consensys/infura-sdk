@@ -3,8 +3,7 @@ import Auth from '../Auth/Auth.js';
 import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
-import { ERROR_MESSAGE, ERROR_LOCATION } from '../errorMessages.js';
-import { formatErrorMsg } from '../utils.js';
+import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class SDK {
   /* Private property */
@@ -17,7 +16,10 @@ export default class SDK {
   constructor(auth) {
     if (!(auth instanceof Auth)) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_constructor, ERROR_MESSAGE.invalid_auth_instance),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_constructor,
+          message: ERROR_LOG.message.invalid_auth_instance,
+        }),
       );
     }
     this.#auth = auth;
@@ -42,12 +44,18 @@ export default class SDK {
   async deploy({ template, params }) {
     if (!template) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_deploy, ERROR_MESSAGE.no_template_type_supplied),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_deploy,
+          message: ERROR_LOG.message.no_template_type_supplied,
+        }),
       );
     }
     if (Object.keys(params).length === 0) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_deploy, ERROR_MESSAGE.no_parameters_supplied),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_deploy,
+          message: ERROR_LOG.message.no_parameters_supplied,
+        }),
       );
     }
 
@@ -67,13 +75,19 @@ export default class SDK {
   async loadContract({ template, contractAddress }) {
     if (!template) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_loadContract, ERROR_MESSAGE.no_template_type_supplied),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_loadContract,
+          message: ERROR_LOG.message.no_template_type_supplied,
+        }),
       );
     }
 
     if (!contractAddress) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_loadContract, ERROR_MESSAGE.no_address_supplied),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_loadContract,
+          message: ERROR_LOG.message.no_address_supplied,
+        }),
       );
     }
 
@@ -92,10 +106,10 @@ export default class SDK {
   async getContractMetadata({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        formatErrorMsg(
-          ERROR_LOCATION.SDK_getContractMetadata,
-          ERROR_MESSAGE.invalid_contract_address,
-        ),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getContractMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
 
@@ -116,7 +130,10 @@ export default class SDK {
   async getNFTs({ publicAddress, includeMetadata = false }) {
     if (!publicAddress || !utils.isAddress(publicAddress)) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_getNFTs, ERROR_MESSAGE.invalid_account_address),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTs,
+          message: ERROR_LOG.message.invalid_account_address,
+        }),
       );
     }
 
@@ -144,10 +161,10 @@ export default class SDK {
   async getNFTsForCollection({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        formatErrorMsg(
-          ERROR_LOCATION.SDK_getNFTsForCollection,
-          ERROR_MESSAGE.invalid_contract_address,
-        ),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTsForCollection,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
     const apiUrl = `${this.#apiPath}/nfts/${contractAddress}/tokens`;
@@ -164,13 +181,19 @@ export default class SDK {
   async getTokenMetadata({ contractAddress, tokenId }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.invalid_contract_address),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
 
     if (!Number.isFinite(tokenId)) {
       throw new Error(
-        formatErrorMsg(ERROR_LOCATION.SDK_getTokenMetadata, ERROR_MESSAGE.no_tokenId_supplied),
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.no_tokenId_supplied,
+        }),
       );
     }
 
@@ -187,7 +210,12 @@ export default class SDK {
    */
   async getStatus({ txHash }) {
     if (!utils.isHexString(txHash)) {
-      throw new Error('[SDK.GetStatus] You need to pass a valid tx hash as parameter');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getStatus,
+          message: ERROR_LOG.message.invalid_transaction_hash,
+        }),
+      );
     }
 
     const signer = await this.getProvider();

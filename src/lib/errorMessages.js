@@ -23,6 +23,7 @@ export const ERROR_MESSAGE = {
   invalid_to_address: 'Invalid to address.',
   invalid_contractURI: 'Invalid contractURI.',
   invalid_template: 'Invalid template.',
+  invalid_transaction_hash: 'Invalid transaction hash.',
 
   contract_already_deployed: 'Contract already deployed.',
   contract_already_loaded: 'Contract already loaded.',
@@ -43,4 +44,5 @@ export const ERROR_LOCATION = {
   SDK_getNFTs: '[SDK.getNFTs]',
   SDK_getNFTsForCollection: '[SDK.getNFTsForCollection]',
   SDK_getTokenMetadata: '[SDK.getTokenMetadata]',
+  SDK_getStatus: '[SDK.GetStatus]',
 };
