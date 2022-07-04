@@ -1,4 +1,4 @@
-import { networkErrorHandler } from '../src/lib/error/handler';
+import { networkErrorHandler, errorLogger } from '../src/lib/error/handler';
 
 describe('handlerError', () => {
   const networkError = {
@@ -15,5 +15,17 @@ describe('handlerError', () => {
   it('should return unknown error', () => {
     const result = networkErrorHandler(unknownError);
     expect(result).toEqual(`code: UNKNOWN_ERROR, message: ${unknownError}`);
+  });
+
+  it('should return correct error logger - options provided', () => {
+    const errorLoggerFormat = errorLogger({ location: 'Test', message: 'test', options: 'test' });
+
+    expect(errorLoggerFormat).toEqual('Test test | test');
+  });
+
+  it('should return correct error logger - no options provided', () => {
+    const errorLoggerFormat = errorLogger({ location: 'Test', message: 'test' });
+
+    expect(errorLoggerFormat).toEqual('Test test');
   });
 });
