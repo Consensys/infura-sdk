@@ -9,12 +9,18 @@ describe('handlerError', () => {
   it('should return error with message and code', () => {
     const result = networkErrorHandler(networkError);
 
-    expect(result).toEqual(`code: ${networkError.code}, message: ${networkError.reason}`);
+    expect(result).toEqual({
+      message: `code: ${networkError.code}, message: ${networkError.reason}`,
+      type: '[NETWORK.ERROR]',
+    });
   });
 
-  it('should return unknown error', () => {
+  it('should return runtime error', () => {
     const result = networkErrorHandler(unknownError);
-    expect(result).toEqual(`code: UNKNOWN_ERROR, message: ${unknownError}`);
+    expect(result).toEqual({
+      message: `code: UNKNOWN_ERROR, message: ${unknownError}`,
+      type: '[RUNTIME.ERROR]',
+    });
   });
 
   it('should return correct error logger - options provided', () => {
