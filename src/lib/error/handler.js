@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { ERROR_MESSAGE, ERROR_LOCATION } from '../errorMessages';
+import { ERROR_MESSAGE, ERROR_LOCATION } from '../errorMessages.js';
 
 export const networkErrorHandler = error => {
   if (error['code'] !== undefined && error['reason'] !== undefined) {
