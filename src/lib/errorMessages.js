@@ -39,7 +39,7 @@ export const ERROR_MESSAGE = {
 export const ERROR_LOCATION = {
   SDK_constructor: '[SDK.constructor]',
   SDK_deploy: '[SDK.deploy]',
-  SDK_loadContract: ['SDK.loadContract'],
+  SDK_loadContract: '[SDK.loadContract]',
   SDK_getContractMetadata: '[SDK.getContractMetadata]',
   SDK_getNFTs: '[SDK.getNFTs]',
   SDK_getNFTsForCollection: '[SDK.getNFTsForCollection]',
