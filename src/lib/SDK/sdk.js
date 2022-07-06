@@ -3,6 +3,7 @@ import Auth from '../Auth/Auth.js';
 import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
+import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class SDK {
   /* Private property */
@@ -14,12 +15,24 @@ export default class SDK {
 
   constructor(auth) {
     if (!(auth instanceof Auth)) {
-      throw new Error('[SDK.constructor] You need to pass a valid instance of Auth class!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_constructor,
+          message: ERROR_LOG.message.invalid_auth_instance,
+        }),
+      );
     }
     this.#auth = auth;
 
     this.#apiPath = `/networks/${this.#auth.getChainId()}`;
     this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
+  }
+
+  /** Get provider
+   * @returns {Promise<object>} return the provider
+   */
+  async getProvider() {
+    return this.#auth.getSigner();
   }
 
   /**
@@ -29,12 +42,24 @@ export default class SDK {
    * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async deploy({ template, params }) {
-    if (!template) throw new Error('Template type is required to deploy a new contract.');
+    if (!template) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_deploy,
+          message: ERROR_LOG.message.no_template_type_supplied,
+        }),
+      );
+    }
     if (Object.keys(params).length === 0) {
-      throw new Error('A set of parameters are required to deploy a new contract.');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_deploy,
+          message: ERROR_LOG.message.no_parameters_supplied,
+        }),
+      );
     }
 
-    const signer = await this.#auth.getSigner();
+    const signer = await this.getProvider();
     const contract = ContractFactory.factory(template, signer);
 
     await contract.deploy(params);
@@ -48,10 +73,25 @@ export default class SDK {
    * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async loadContract({ template, contractAddress }) {
-    if (!template) throw new Error('Template type is required to load a contract.');
-    if (!contractAddress) throw new Error('A Contract address is required to load a contract.');
+    if (!template) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_loadContract,
+          message: ERROR_LOG.message.no_template_type_supplied,
+        }),
+      );
+    }
 
-    const signer = await this.#auth.getSigner();
+    if (!contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_loadContract,
+          message: ERROR_LOG.message.no_address_supplied,
+        }),
+      );
+    }
+
+    const signer = await this.getProvider();
     const contract = ContractFactory.factory(template, signer);
 
     await contract.loadContract({ contractAddress });
@@ -66,7 +106,10 @@ export default class SDK {
   async getContractMetadata({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        '[SDK.getContractMetadata] You need to pass a valid contract address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getContractMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
 
@@ -86,7 +129,12 @@ export default class SDK {
    */
   async getNFTs({ publicAddress, includeMetadata = false }) {
     if (!publicAddress || !utils.isAddress(publicAddress)) {
-      throw new Error('[SDK.getNFTs] You need to pass a valid account address as parameter');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTs,
+          message: ERROR_LOG.message.invalid_account_address,
+        }),
+      );
     }
 
     const apiUrl = `${this.#apiPath}/accounts/${publicAddress}/assets/nfts`;
@@ -113,7 +161,10 @@ export default class SDK {
   async getNFTsForCollection({ contractAddress }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        '[SDK.getNFTsForCollection] You need to pass a valid contract address as parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getNFTsForCollection,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
     const apiUrl = `${this.#apiPath}/nfts/${contractAddress}/tokens`;
@@ -130,17 +181,44 @@ export default class SDK {
   async getTokenMetadata({ contractAddress, tokenId }) {
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
-        '[SDK.getTokenMetadata] You need to pass a valid contract address as first parameter',
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
 
     if (!Number.isFinite(tokenId)) {
-      throw new Error('[SDK.getTokenMetadata] You need to pass the tokenId as second parameter');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getTokenMetadata,
+          message: ERROR_LOG.message.no_tokenId_supplied,
+        }),
+      );
     }
 
     const apiUrl = `${this.#apiPath}/nfts/${contractAddress}/tokens/${tokenId}`;
 
     const { data } = await this.#httpClient.get(apiUrl);
     return data;
+  }
+
+  /** Get tx status
+   * @param {string} txHash hash of the transaction
+   * @param {number} tokenId ID of the token
+   * @returns {Promise<object>} Transaction information
+   */
+  async getStatus({ txHash }) {
+    if (!utils.isHexString(txHash)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_getStatus,
+          message: ERROR_LOG.message.invalid_transaction_hash,
+        }),
+      );
+    }
+
+    const signer = await this.getProvider();
+    return signer.provider.getTransactionReceipt(txHash);
   }
 }

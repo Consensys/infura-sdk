@@ -13,11 +13,12 @@ export class HttpService {
     if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
     if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');
 
+    // TODO: read from pkg.json the version info
     this.instance = axios.create({
       baseURL: baseURL,
       headers: {
         Authorization: `Basic ${apiKey}`,
-        'User-Agent': 'Infura SDK 1.0.1',
+        'X-Infura-User-Agent': `infura/sdk-js 1.0.2`,
       },
     });
   }
@@ -26,7 +27,7 @@ export class HttpService {
     try {
       return await this.instance.get(uri);
     } catch (error) {
-      throw new Error(`[httpService.get] An error occured: ${error}`);
+      throw new Error(`[API.ERROR][httpService.get] An error occured: ${error}`);
     }
   }
 
