@@ -369,6 +369,28 @@ describe('SDK', () => {
     );
   });
 
+  it('[SetContractURI] - should return an Error if there is runtime error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        setContractURI: () => {
+          throw new RuntimeException('runtime exception');
+        },
+      }),
+    }));
+    eRC721Mintable = new ERC721Mintable(signer);
+
+    const setContractURI = async () => {
+      await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+      await eRC721Mintable.setContractURI({
+        contractURI:
+          'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+      });
+    };
+    expect(setContractURI).rejects.toThrow(
+      '[RUNTIME.ERROR][ERC721Mintable.setContractURI] An error occured: code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
+    );
+  });
+
   it('[addMinter] - should return an Error if contract is not deployed', () => {
     eRC721Mintable = new ERC721Mintable(signer);
 

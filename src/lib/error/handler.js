@@ -3,9 +3,15 @@ import { ERROR_MESSAGE, ERROR_LOCATION } from '../errorMessages.js';
 
 export const networkErrorHandler = error => {
   if (error['code'] !== undefined && error['reason'] !== undefined) {
-    return `code: ${error.code}, message: ${error.reason}`;
+    return {
+      type: `[NETWORK.ERROR]`,
+      message: `code: ${error.code}, message: ${error.reason}`,
+    };
   }
-  return `code: UNKNOWN_ERROR, message: ${error}`;
+  return {
+    type: `[RUNTIME.ERROR]`,
+    message: `code: UNKNOWN_ERROR, message: ${error}`,
+  };
 };
 
 export const ERROR_LOG = {
