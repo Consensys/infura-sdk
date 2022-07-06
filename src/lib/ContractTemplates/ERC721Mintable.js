@@ -33,6 +33,7 @@ export default class ERC721Mintable {
    * @param {string} symbol Symbol of the contract
    * @param {string} contractURI ContractURI for the contract
    * (link to a JSON file describing the contract's metadata)
+   * @notice Warning: This method will consume gas (4000000 gas estimated)
    * @returns void
    */
   async deploy({ name, symbol, contractURI }) {
@@ -81,6 +82,7 @@ export default class ERC721Mintable {
    * Set royalties information for the receiver address with the provided fee
    * @param {string} - address
    * @param {number} - fee
+   * @notice Warning: This method will consume gas (49000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} - Transaction
    */
   async setRoyalties({ publicAddress, fee }) {
@@ -140,6 +142,7 @@ export default class ERC721Mintable {
    * Mint function: Mint a token for publicAddress with the tokenURI provided
    * @param {string} publicAddress destination address of the minted token
    * @param {string} tokenURI link to the JSON object containing metadata about the token
+   * @notice Warning: This method will consume gas (120000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async mint({ publicAddress, tokenURI }) {
@@ -167,6 +170,7 @@ export default class ERC721Mintable {
   /**
    * Add minter function: Grant the 'minter' role to an address
    * @param {string} publicAddress the address to be elevated at 'minter' role
+   * @notice Warning: This method will consume gas (30000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async addMinter({ publicAddress }) {
@@ -191,6 +195,7 @@ export default class ERC721Mintable {
   /**
    * Renounce minter function: Renounce the 'minter' role
    * @param {string} publicAddress the address that will renounce its 'minter' role
+   * @notice Warning: This method will consume gas (40000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async renounceMinter({ publicAddress }) {
@@ -217,6 +222,7 @@ export default class ERC721Mintable {
   /**
    * Remove minter function: Remove the 'minter' role to an address
    * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (30000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async removeMinter({ publicAddress }) {
@@ -299,6 +305,7 @@ export default class ERC721Mintable {
    * @param {string} from Address who will transfer the token
    * @param {string} to Address that will receive the token
    * @param {number} tokenId ID of the token that will be transfered
+   * @notice Warning: This method will consume gas (62000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async transfer({ from, to, tokenId }) {
@@ -337,6 +344,7 @@ export default class ERC721Mintable {
    * setContractURI function: Set the "contractURI" metadata for the specified contract
    * @param {string} contractURI ContractURI for the contract
    * (URI to a JSON file describing the contract's metadata)
+   * @notice Warning: This method will consume gas (xx gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setContractURI({ contractURI }) {
@@ -362,6 +370,7 @@ export default class ERC721Mintable {
    * Add Admin function: Add the 'admin' role to an address. Only callable by
    * addresses with the admin role.
    * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (30000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async addAdmin({ publicAddress }) {
@@ -387,6 +396,7 @@ export default class ERC721Mintable {
    * Remove Admin function: Remove the 'admin' role to an address. Only callable by
    * addresses with the admin role.
    * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (40000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async removeAdmin({ publicAddress }) {
@@ -414,6 +424,7 @@ export default class ERC721Mintable {
    * Renounce Admin function: Remove the 'admin' role to an address. Only callable by
    * address invoking the request.
    * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (30000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async renounceAdmin({ publicAddress }) {
@@ -466,6 +477,7 @@ export default class ERC721Mintable {
    * @param {string} to Address which will receive the approval rights
    * @param {boolean} approvalStatus Boolean representing the approval to be given (true)
    *  or revoked (false)
+   * @notice Warning: This method will consume gas (46000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setApprovalForAll({ to, approvalStatus }) {
@@ -499,6 +511,7 @@ export default class ERC721Mintable {
    * Gives permission to to to transfer tokenId token to another address.
    * @param {string} to the address that will be approved to do the transfer.
    * @param {number} tokenId tokenId the nft id to transfer.
+   * @notice Warning: This method will consume gas (50000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async approveTransfer({ to, tokenId }) {
@@ -528,6 +541,7 @@ export default class ERC721Mintable {
 
   /**
    * Renouncing ownership of the smart contract (will leave the contract without an owner).
+   * @notice Warning: This method will consume gas (25000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async renounceOwnership() {
