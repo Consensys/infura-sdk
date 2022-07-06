@@ -123,8 +123,13 @@ export default class ERC721UserMintable {
       );
     }
 
+    const parsedCost = ethers.utils.parseEther(cost);
+
     try {
-      return await this.#contractDeployed.mint(quantity, { value: cost, gasLimit: this.#gasLimit });
+      return await this.#contractDeployed.mint(quantity, {
+        value: parsedCost,
+        gasLimit: this.#gasLimit,
+      });
     } catch (error) {
       throw new Error(`[ERC721UserMintable.mint] An error occured: ${error}`);
     }

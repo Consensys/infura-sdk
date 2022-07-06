@@ -151,7 +151,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
   it('should mint nft', async () => {
     const tx = await contractObject.mint({
       quantity: 1,
-      cost: ethers.utils.parseEther('0.00002'),
+      cost: '0.00002',
     });
 
     const receipt = await tx.wait();
