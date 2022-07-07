@@ -73,7 +73,7 @@ export default class ERC721Mintable {
       this.contractAddress = contract.address;
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.deploy] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.deploy] An error occured: ${message}`);
     }
   }
 
@@ -104,7 +104,7 @@ export default class ERC721Mintable {
       });
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.setRoyalties] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.setRoyalties] An error occured: ${message}`);
     }
   }
 
@@ -132,7 +132,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.royaltyInfo(tokenId, sellPrice);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.royaltyInfo] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.royaltyInfo] An error occured: ${message}`);
     }
   }
 
@@ -160,7 +160,7 @@ export default class ERC721Mintable {
       });
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.mint] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.mint] An error occured: ${message}`);
     }
   }
 
@@ -184,7 +184,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.grantRole(this.MINTER_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.addMinter] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.addMinter] An error occured: ${message}`);
     }
   }
 
@@ -210,7 +210,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.renounceRole(this.MINTER_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.renounceMinter] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.renounceMinter] An error occured: ${message}`);
     }
   }
 
@@ -236,7 +236,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.revokeRole(this.MINTER_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.removeMinter] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.removeMinter] An error occured: ${message}`);
     }
   }
 
@@ -260,7 +260,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.hasRole(this.MINTER_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.isMinter] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.isMinter] An error occured: ${message}`);
     }
   }
 
@@ -290,7 +290,7 @@ export default class ERC721Mintable {
       this.contractAddress = contractAddress;
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.loadContract] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.loadContract] An error occured: ${message}`);
     }
   }
 
@@ -329,7 +329,7 @@ export default class ERC721Mintable {
       );
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.transfer] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.transfer] An error occured: ${message}`);
     }
   }
 
@@ -354,7 +354,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.setContractURI(contractURI);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.setContractURI] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.setContractURI] An error occured: ${message}`);
     }
   }
 
@@ -379,7 +379,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.grantRole(this.ADMIN_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.addAdmin] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.addAdmin] An error occured: ${message}`);
     }
   }
 
@@ -406,7 +406,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.revokeRole(this.ADMIN_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.removeAdmin] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.removeAdmin] An error occured: ${message}`);
     }
   }
 
@@ -433,7 +433,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.renounceRole(this.ADMIN_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.renounceAdmin] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.renounceAdmin] An error occured: ${message}`);
     }
   }
 
@@ -457,7 +457,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.hasRole(this.ADMIN_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.isAdmin] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.isAdmin] An error occured: ${message}`);
     }
   }
 
@@ -491,7 +491,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.setApprovalForAll(to, approvalStatus);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.setApprovalForAll] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.setApprovalForAll] An error occured: ${message}`);
     }
   }
 
@@ -522,7 +522,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.approve(to, tokenId);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.approveTransfer] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.approveTransfer] An error occured: ${message}`);
     }
   }
 
@@ -539,7 +539,7 @@ export default class ERC721Mintable {
       return await this.#contractDeployed.renounceOwnership();
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721Mintable.renounceOwnership] An error occured: ${message}`);
+      throw new Error(`${type}[ERC721Mintable.renounceOwnership] An error occured: ${message}`);
     }
   }
 }
