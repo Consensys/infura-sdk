@@ -1,18 +1,18 @@
 const Chains = {
   mainnet: 1,
   goerli: 5,
-  rinkeby: 4,
-  ropsten: 3,
+  polygon: 137,
+  binance: 56,
 };
 
 const chainsName = {
   1: 'mainnet',
   5: 'goerli',
-  4: 'rinkeby',
-  3: 'ropsten',
+  56: 'binance',
+  137: 'polygon',
 };
 
-const availableChains = [Chains.mainnet, Chains.goerli, Chains.rinkeby, Chains.ropsten];
+const availableChains = [Chains.mainnet, Chains.goerli, Chains.polygon, Chains.binance];
 
 const getChainName = chainId => chainsName[chainId];
 
