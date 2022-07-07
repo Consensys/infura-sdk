@@ -344,7 +344,7 @@ export default class ERC721Mintable {
    * setContractURI function: Set the "contractURI" metadata for the specified contract
    * @param {string} contractURI ContractURI for the contract
    * (URI to a JSON file describing the contract's metadata)
-   * @notice Warning: This method will consume gas (xx gas estimated)
+   * @notice Warning: This method will consume gas (35000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setContractURI({ contractURI }) {
