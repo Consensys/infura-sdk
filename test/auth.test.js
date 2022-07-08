@@ -4,7 +4,7 @@ import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 import ganache from 'ganache';
-import { getChainName } from '../src/lib/Auth/availableChains.js';
+import { Chains, getChainName } from '../src/lib/Auth/availableChains.js';
 
 loadEnv();
 
@@ -91,6 +91,21 @@ describe('Auth', () => {
           rpcUrl: process.env.EVM_RPC_URL,
         }),
     ).toThrow('[Auth.constructor] chainId is missing!');
+  });
+
+  it('should throw when args are missing (rpcUrl) when chainId is BSC', () => {
+    expect(
+      () =>
+        // eslint-disable-next-line implicit-arrow-linebreak
+        new Auth({
+          privateKey: 'privateKey',
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          chainId: Chains.binance,
+        }),
+    ).toThrow(
+      '[Auth.constructor] You must provide your own RPC URL when using Binance Smart Chain',
+    );
   });
 
   it('should throw when chainId is not supported', () => {
