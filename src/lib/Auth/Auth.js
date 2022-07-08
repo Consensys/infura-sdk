@@ -41,7 +41,7 @@ export default class Auth {
     this.#chainId = chainId;
     this.#rpcUrl = rpcUrl;
 
-    if (chainId !== Chains.binance && !rpcUrl) {
+    if (chainId === Chains.binance && !rpcUrl) {
       throw new Error(
         '[Auth.constructor] You must provide your own RPC URL when using Binance Smart Chain',
       );
