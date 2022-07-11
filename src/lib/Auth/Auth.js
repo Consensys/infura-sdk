@@ -3,7 +3,7 @@
  * Copyright(c) https://consensys.net/
  * MIT Licensed
  */
-import { availableChains, Chains, getChainName } from './availableChains.js';
+import { availableChains, getChainName } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
 import { isValidString } from '../utils.js';
@@ -40,12 +40,6 @@ export default class Auth {
     this.#secretId = secretId;
     this.#chainId = chainId;
     this.#rpcUrl = rpcUrl;
-
-    if (chainId === Chains.binance && !rpcUrl) {
-      throw new Error(
-        '[Auth.constructor] You must provide your own RPC URL when using Binance Smart Chain',
-      );
-    }
 
     if (!isValidString(this.#rpcUrl)) {
       this.#rpcUrl = `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;

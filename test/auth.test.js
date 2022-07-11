@@ -93,21 +93,6 @@ describe('Auth', () => {
     ).toThrow('[Auth.constructor] chainId is missing!');
   });
 
-  it('should throw when args are missing (rpcUrl) when chainId is BSC', () => {
-    expect(
-      () =>
-        // eslint-disable-next-line implicit-arrow-linebreak
-        new Auth({
-          privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          chainId: Chains.binance,
-        }),
-    ).toThrow(
-      '[Auth.constructor] You must provide your own RPC URL when using Binance Smart Chain',
-    );
-  });
-
   it('should throw when chainId is not supported', () => {
     expect(
       () =>
