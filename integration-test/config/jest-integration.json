@@ -1,0 +1,11 @@
+{
+    "moduleFileExtensions": ["js"],
+    "rootDir": "../",
+    "transform": {
+      "\\.[jt]sx?$": "esbuild-jest"
+    },
+    "setupFilesAfterEnv": ["<rootDir>/config/setupTests.js"],
+    "testEnvironment": "node",
+    "testRegex": ".*\\.test-integration\\.js$",
+    "verbose": true
+  }
