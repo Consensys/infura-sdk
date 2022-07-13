@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "jest '/test'",
-    "test:integration": "jest '/integration-test'",
+    "test:integration": "jest --config ./integration-test/config/jest-integration.json --maxWorkers=1",
     "test:coverage": "jest --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
@@ -55,6 +55,7 @@
     "@babel/preset-env": "^7.17.10",
     "babel-jest": "^28.1.0",
     "babel-plugin-transform-import-meta": "^2.1.1",
+    "esbuild-jest": "^0.5.0",
     "eslint": "^8.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
