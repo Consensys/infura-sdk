@@ -7,3 +7,6 @@ export const isValidString = variable =>
   variable !== undefined && variable !== null && variable !== '' && typeof variable === 'string';
 
 export const isDefined = variable => variable !== undefined && variable !== null && variable !== '';
+
+export const formatRpcUrl = (chainName, projectId) =>
+  `https://${chainName}.infura.io/v3/${projectId}`;

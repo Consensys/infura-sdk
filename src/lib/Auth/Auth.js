@@ -6,7 +6,7 @@
 import { availableChains, getChainName } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
-import { isValidString } from '../utils.js';
+import { isValidString, formatRpcUrl } from '../utils.js';
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class Auth {
@@ -79,7 +79,7 @@ export default class Auth {
     this.#rpcUrl = rpcUrl;
 
     if (!isValidString(this.#rpcUrl)) {
-      this.#rpcUrl = `https://${getChainName(chainId)}.infura.io/v3/${this.#projectId}`;
+      this.#rpcUrl = formatRpcUrl(getChainName(chainId), this.#projectId);
     }
 
     this.setProvider(provider);
