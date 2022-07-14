@@ -5,6 +5,7 @@ import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 import ganache from 'ganache';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 loadEnv();
 
@@ -22,7 +23,12 @@ describe('Auth', () => {
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
         }),
-    ).toThrow('[Auth.constructor] privateKey or provider missing');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.no_parameters_supplied,
+      }),
+    );
   });
 
   it('should throw when passing both privateKey and provider', () => {
@@ -37,7 +43,12 @@ describe('Auth', () => {
           chainId: 5,
           provider: ethers.providers.Provider,
         }),
-    ).toThrow('[Auth.constructor] please provide only privateKey or provider');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.only_privateKey_or_provider_required,
+      }),
+    );
   });
 
   it('should throw when passing invalid provider', () => {
@@ -64,7 +75,12 @@ describe('Auth', () => {
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
         }),
-    ).toThrow('[Auth.constructor] projectId is missing!');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.no_projectId_supplied,
+      }),
+    );
   });
 
   it('should throw when args are missing (secretId)', () => {
@@ -77,7 +93,12 @@ describe('Auth', () => {
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
         }),
-    ).toThrow('[Auth.constructor] secretId is missing!');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.no_secretId_supplied,
+      }),
+    );
   });
 
   it('should throw when args are missing (chainId)', () => {
@@ -90,7 +111,12 @@ describe('Auth', () => {
           secretId: process.env.INFURA_PROJECT_SECRET,
           rpcUrl: process.env.EVM_RPC_URL,
         }),
-    ).toThrow('[Auth.constructor] chainId is missing!');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.no_chainId_supplied,
+      }),
+    );
   });
 
   it('should throw when chainId is not supported', () => {
@@ -103,7 +129,12 @@ describe('Auth', () => {
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 6,
         }),
-    ).toThrow('[Auth.constructor] chainId: 6 is not supported!');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.chain_not_supported,
+      }),
+    );
   });
 
   describe('getSigner', () => {

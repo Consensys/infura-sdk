@@ -24,7 +24,6 @@ export default class Auth {
 
   constructor({ privateKey, projectId, secretId, rpcUrl, chainId, provider }) {
     if (!privateKey && !provider) {
-      // throw new Error('[Auth.constructor] privateKey or provider missing');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Auth_constructor,
@@ -33,7 +32,6 @@ export default class Auth {
       );
     }
     if (privateKey && provider) {
-      // throw new Error('[Auth.constructor] please provide only privateKey or provider');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Auth_constructor,
@@ -42,7 +40,6 @@ export default class Auth {
       );
     }
     if (!projectId) {
-      // throw new Error('[Auth.constructor] projectId is missing!');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Auth_constructor,
@@ -51,7 +48,6 @@ export default class Auth {
       );
     }
     if (!secretId) {
-      // throw new Error('[Auth.constructor] secretId is missing!')
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Auth_constructor,
@@ -60,7 +56,6 @@ export default class Auth {
       );
     }
     if (!chainId) {
-      // throw new Error('[Auth.constructor] chainId is missing!')
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Auth_constructor,
@@ -69,7 +64,6 @@ export default class Auth {
       );
     }
     if (!availableChains.includes(chainId)) {
-      // throw new Error(`[Auth.constructor] chainId: ${chainId} is not supported!`);
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Auth_constructor,
