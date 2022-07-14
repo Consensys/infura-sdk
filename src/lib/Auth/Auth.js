@@ -7,6 +7,7 @@ import { availableChains, getChainName } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
 import { isValidString } from '../utils.js';
+import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class Auth {
   #privateKey;
@@ -23,16 +24,58 @@ export default class Auth {
 
   constructor({ privateKey, projectId, secretId, rpcUrl, chainId, provider }) {
     if (!privateKey && !provider) {
-      throw new Error('[Auth.constructor] privateKey or provider missing');
+      // throw new Error('[Auth.constructor] privateKey or provider missing');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Auth_constructor,
+          message: ERROR_LOG.message.no_parameters_supplied,
+        }),
+      );
     }
     if (privateKey && provider) {
-      throw new Error('[Auth.constructor] please provide only privateKey or provider');
+      // throw new Error('[Auth.constructor] please provide only privateKey or provider');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Auth_constructor,
+          message: ERROR_LOG.message.only_privateKey_or_provider_required,
+        }),
+      );
     }
-    if (!projectId) throw new Error('[Auth.constructor] projectId is missing!');
-    if (!secretId) throw new Error('[Auth.constructor] secretId is missing!');
-    if (!chainId) throw new Error('[Auth.constructor] chainId is missing!');
+    if (!projectId) {
+      // throw new Error('[Auth.constructor] projectId is missing!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Auth_constructor,
+          message: ERROR_LOG.message.no_projectId_supplied,
+        }),
+      );
+    }
+    if (!secretId) {
+      // throw new Error('[Auth.constructor] secretId is missing!')
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Auth_constructor,
+          message: ERROR_LOG.message.no_secretId_supplied,
+        }),
+      );
+    }
+    if (!chainId) {
+      // throw new Error('[Auth.constructor] chainId is missing!')
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Auth_constructor,
+          message: ERROR_LOG.message.no_chainId_supplied,
+        }),
+      );
+    }
     if (!availableChains.includes(chainId)) {
-      throw new Error(`[Auth.constructor] chainId: ${chainId} is not supported!`);
+      // throw new Error(`[Auth.constructor] chainId: ${chainId} is not supported!`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Auth_constructor,
+          message: ERROR_LOG.message.chain_not_supported,
+        }),
+      );
     }
 
     this.#privateKey = privateKey;
