@@ -79,7 +79,7 @@ export default class Auth {
     this.#rpcUrl = rpcUrl;
 
     if (!isValidString(this.#rpcUrl)) {
-      this.#rpcUrl = formatRpcUrl(getChainName(chainId), this.#projectId);
+      this.#rpcUrl = formatRpcUrl({ chainName: getChainName(chainId), projectId: this.#projectId });
     }
 
     this.setProvider(provider);

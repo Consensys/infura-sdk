@@ -8,5 +8,5 @@ export const isValidString = variable =>
 
 export const isDefined = variable => variable !== undefined && variable !== null && variable !== '';
 
-export const formatRpcUrl = (chainName, projectId) =>
+export const formatRpcUrl = ({ chainName, projectId }) =>
   `https://${chainName}.infura.io/v3/${projectId}`;
