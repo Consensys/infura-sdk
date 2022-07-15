@@ -1,6 +1,6 @@
 import { ethers, utils } from 'ethers';
 import smartContractArtifact from './artifacts/ERC721Mintable.js';
-import { isBoolean, isDefined } from '../utils.js';
+import { isBoolean, isDefined, isURI } from '../utils.js';
 import { TEMPLATES } from '../NFT/constants.js';
 import { networkErrorHandler } from '../error/handler.js';
 
@@ -57,6 +57,11 @@ export default class ERC721Mintable {
 
     if (contractURI === undefined) {
       throw new Error('[ERC721Mintable.deploy] contractURI cannot be undefined');
+    }
+
+    if (!isURI(contractURI)) {
+      console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
+      console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
     }
 
     try {
@@ -157,6 +162,12 @@ export default class ERC721Mintable {
     if (!tokenURI) {
       throw new Error('[ERC721Mintable.mint] A tokenURI is required to mint.');
     }
+
+    if (!isURI(tokenURI)) {
+      console.warn(`WARNING: The TokenURI "${tokenURI}" is not a link.`);
+      console.warn('WARNING: TokenURI should be a public link to a valid JSON metadata file');
+    }
+
     try {
       return await this.#contractDeployed.mintWithTokenURI(publicAddress, tokenURI, {
         gasLimit: this.#gasLimit,
@@ -356,6 +367,11 @@ export default class ERC721Mintable {
 
     if (!contractURI) {
       throw new Error('[ERC721Mintable.setContractURI] A valid contract uri is required!');
+    }
+
+    if (!isURI(contractURI)) {
+      console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
+      console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
     }
 
     try {
