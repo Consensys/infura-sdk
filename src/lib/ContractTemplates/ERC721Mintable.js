@@ -59,6 +59,7 @@ export default class ERC721Mintable {
       throw new Error('[ERC721Mintable.deploy] contractURI cannot be undefined');
     }
 
+    /* eslint-disable no-console */
     if (!isURI(contractURI)) {
       console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
       console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
@@ -163,6 +164,7 @@ export default class ERC721Mintable {
       throw new Error('[ERC721Mintable.mint] A tokenURI is required to mint.');
     }
 
+    /* eslint-disable no-console */
     if (!isURI(tokenURI)) {
       console.warn(`WARNING: The TokenURI "${tokenURI}" is not a link.`);
       console.warn('WARNING: TokenURI should be a public link to a valid JSON metadata file');
@@ -369,6 +371,7 @@ export default class ERC721Mintable {
       throw new Error('[ERC721Mintable.setContractURI] A valid contract uri is required!');
     }
 
+    /* eslint-disable no-console */
     if (!isURI(contractURI)) {
       console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
       console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
