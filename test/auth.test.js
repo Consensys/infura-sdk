@@ -4,7 +4,7 @@ import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 import ganache from 'ganache';
-import { Chains, getChainName } from '../src/lib/Auth/availableChains.js';
+import { getChainName } from '../src/lib/Auth/availableChains.js';
 
 loadEnv();
 
