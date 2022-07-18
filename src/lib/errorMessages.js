@@ -6,6 +6,9 @@ export const ERROR_MESSAGE = {
   no_template_type_supplied: 'No template type supplied.',
   no_tokenId_supplied: 'No tokenId supplied.',
   no_tokenURI_supplied: 'No tokenURI supplied.',
+  no_projectId_supplied: 'No project id supplied.',
+  no_secretId_supplied: 'No secret id supplied.',
+  no_chainId_supplied: 'No chain id supplied.',
   no_signer_instance_supplied: 'No signer instance supplied.',
   no_name_supplied: 'No name supplied.',
   no_symbol_supplied: 'No symbol supplied.',
@@ -34,6 +37,8 @@ export const ERROR_MESSAGE = {
 
   tokenId_must_be_integer: 'TokenId must be integer.',
   approvalStatus_must_be_boolean: 'approvalStatus must be boolean.',
+  only_privateKey_or_provider_required: 'Only privateKey or provider required',
+  chain_not_supported: 'Chain not supported.',
 };
 
 export const ERROR_LOCATION = {
@@ -45,4 +50,5 @@ export const ERROR_LOCATION = {
   SDK_getNFTsForCollection: '[SDK.getNFTsForCollection]',
   SDK_getTokenMetadata: '[SDK.getTokenMetadata]',
   SDK_getStatus: '[SDK.GetStatus]',
+  Auth_constructor: '[Auth.constructor]',
 };
