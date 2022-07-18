@@ -56,6 +56,18 @@ describe('SDK', () => {
     );
   });
 
+  it('[Deploy] - should console.warn if URI is not a link ', async () => {
+    eRC721Mintable = new ERC721Mintable(signer, contractAddress);
+    const logSpy = jest.spyOn(console, 'warn');
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+
+    expect(logSpy).toHaveBeenCalledWith('WARNING: The ContractURI "URI" is not a link.');
+    expect(logSpy).toHaveBeenCalledWith(
+      'WARNING: ContractURI should be a public link to a valid JSON metadata file',
+    );
+  });
+
   it('[Deploy] - should return an Error if Name is empty', () => {
     eRC721Mintable = new ERC721Mintable(signer, contractAddress);
 
@@ -110,6 +122,22 @@ describe('SDK', () => {
       });
     expect(myNFT).rejects.toThrow(
       '[ERC721Mintable.mint] A contract should be deployed or loaded first',
+    );
+  });
+
+  it('[Mint] - should console.warn if tokenURI is not a link ', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+    const logSpy = jest.spyOn(console, 'warn');
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'ipfs://URI' });
+    await eRC721Mintable.mint({
+      publicAddress: '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+      tokenURI: 'URI',
+    });
+
+    expect(logSpy).toHaveBeenCalledWith('WARNING: The TokenURI "URI" is not a link.');
+    expect(logSpy).toHaveBeenCalledWith(
+      'WARNING: TokenURI should be a public link to a valid JSON metadata file',
     );
   });
 
@@ -320,6 +348,19 @@ describe('SDK', () => {
       }),
     ).rejects.toThrow(
       '[ERC721Mintable.setContractURI] A contract should be deployed or loaded first!',
+    );
+  });
+
+  it('[SetContractURI] - should console.warn if contractURI is not a link ', async () => {
+    eRC721Mintable = new ERC721Mintable(signer);
+    const logSpy = jest.spyOn(console, 'warn');
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'ipfs://URI' });
+    await eRC721Mintable.setContractURI({ contractURI: 'URI' });
+
+    expect(logSpy).toHaveBeenCalledWith('WARNING: The ContractURI "URI" is not a link.');
+    expect(logSpy).toHaveBeenCalledWith(
+      'WARNING: ContractURI should be a public link to a valid JSON metadata file',
     );
   });
 
