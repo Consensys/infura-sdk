@@ -43,6 +43,7 @@ const newContract = await sdk.deploy({
     contractURI: 'URI',
   },
 });
+console.log('contract address: \n', newContract.contractAddress);
 
 // READ API
 // Get contract metadata
@@ -85,6 +86,14 @@ const mint = await newContract.mint({
 const minted = await mint.wait();
 console.log(minted);
 
+const mint2 = await newContract.mint({
+  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+  tokenURI: 'localfile',
+});
+
+const minted2 = await mint2.wait();
+console.log(minted2);
+
 // // Transfer a NFT
 // const transfer = await existingContract.transfer({
 //   from: ownerOfToken,
@@ -117,12 +126,12 @@ console.log(minted);
 
 // // Transfer NFT with approval
 // // 1. owner mints a token
-const tx = await newContract.mint({
-  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-  tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
-});
-const receipt = await tx.wait();
-console.log(receipt);
+// const tx = await newContract.mint({
+//   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+//   tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+// });
+// const receipt = await tx.wait();
+// console.log(receipt);
 
 // // 2. owner approves publicAddress to transfer token that he owns
 // const txApprove = await existingContract.approveTransfer({ to: publicAddress, tokenId: 1 });
@@ -161,5 +170,5 @@ console.log(receipt);
 // const infos = await newContract.royaltyInfo({ tokenId: 1, sellPrice: 100000 });
 // console.log(infos);
 
-const isMinter = await newContract.isMinter({ publicAddress: process.env.WALLET_PUBLIC_ADDRESS });
-console.log(isMinter);
+// const isMinter = await newContract.isMinter({ publicAddress: process.env.WALLET_PUBLIC_ADDRESS });
+// console.log(isMinter);
