@@ -14,6 +14,14 @@ const chainsName = {
   137: 'polygon',
 };
 
+const chainUrls = {
+  [Chains.mainnet]: 'https://mainnet.infura.io',
+  [Chains.ropsten]: 'https://ropsten.infura.io',
+  [Chains.rinkeby]: 'https://rinkeby.infura.io',
+  [Chains.goerli]: 'https://goerli.infura.io',
+  [Chains.polygon]: 'https://polygon-mainnet.infura.io',
+};
+
 const availableChains = [
   Chains.mainnet,
   Chains.goerli,
@@ -24,4 +32,4 @@ const availableChains = [
 
 const getChainName = chainId => chainsName[chainId];
 
-export { availableChains, Chains, getChainName };
+export { availableChains, Chains, getChainName, chainUrls };
