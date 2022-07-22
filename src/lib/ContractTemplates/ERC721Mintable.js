@@ -120,7 +120,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_deploy,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -177,7 +177,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_setRoyalties,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -230,7 +230,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_royaltyInfo,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -291,7 +291,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_mint,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -335,7 +335,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_addMinter,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -379,7 +379,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_renounceMinter,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -425,7 +425,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_removeMinter,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -468,7 +468,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_isMinter,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -517,7 +517,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_loadContract,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -588,7 +588,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_transfer,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -639,7 +639,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_setContractURI,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -684,7 +684,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_addAdmin,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -731,7 +731,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_removeAdmin,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -778,7 +778,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_renounceAdmin,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -821,7 +821,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_isAdmin,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -881,7 +881,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_setApprovalForAll,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -938,7 +938,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_approveTransfer,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
@@ -969,7 +969,7 @@ export default class ERC721Mintable {
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_renounceOwnership,
           message: ERROR_LOG.message.an_error_occured,
-          options: ` ${type}. ${message}`,
+          options: `${type} ${message}`,
         }),
       );
     }
