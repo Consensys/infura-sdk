@@ -9,14 +9,15 @@
 // Use this in "module" type nodejs projects
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, TEMPLATES } from './index.js';
+import { ethers } from 'ethers';
 loadEnv();
 
 const acc = new Auth({
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
-  rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 4,
+  rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/cyKpdJC2AHsuKa_NfKJ21rS-qmM2bQwP',
+  chainId: 137,
 });
 
 ///////// Alternative Auth Instantiation with MetaMask /////////
@@ -35,15 +36,15 @@ const acc = new Auth({
 const sdk = new SDK(acc);
 
 // Create a new contract
-const newContract = await sdk.deploy({
-  template: TEMPLATES.ERC721Mintable,
-  params: {
-    name: '1507Contract',
-    symbol: 'TOC',
-    contractURI: 'URI',
-  },
-});
-console.log('contract address: \n', newContract.contractAddress);
+// const newContract = await sdk.deploy({
+//   template: TEMPLATES.ERC721Mintable,
+//   params: {
+//     name: '1507Contract',
+//     symbol: 'TOC',
+//     contractURI: 'URI',
+//   },
+// });
+// console.log('contract address: \n', newContract.contractAddress);
 
 // READ API
 // Get contract metadata
@@ -70,29 +71,31 @@ console.log('contract address: \n', newContract.contractAddress);
 // console.log(tokenMetadata);
 
 // Load an existing contract
-// const existingContract = await sdk.loadContract({
-//   template: TEMPLATES.ERC721Mintable,
-//   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
-// });
+const existingContract = await sdk.loadContract({
+  template: TEMPLATES.ERC721Mintable,
+  contractAddress: '0x5a5e0044123913dBFb32fB3706edFF5116D9B036',
+});
 
-// console.log('contract address: \n', existingContract.contractAddress);
+console.log('contract address: \n', existingContract.contractAddress);
 
 // // mint a NFT
-const mint = await newContract.mint({
+const gas = await sdk.getGasPrice();
+const mint = await existingContract.mint({
   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
   tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
+  gas,
 });
 
 const minted = await mint.wait();
 console.log(minted);
 
-const mint2 = await newContract.mint({
-  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-  tokenURI: 'localfile',
-});
+// const mint2 = await newContract.mint({
+//   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+//   tokenURI: 'localfile',
+// });
 
-const minted2 = await mint2.wait();
-console.log(minted2);
+// const minted2 = await mint2.wait();
+// console.log(minted2);
 
 // // Transfer a NFT
 // const transfer = await existingContract.transfer({

@@ -151,7 +151,7 @@ export default class ERC721Mintable {
    * @notice Warning: This method will consume gas (120000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async mint({ publicAddress, tokenURI }) {
+  async mint({ publicAddress, tokenURI, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error('[ERC721Mintable.mint] A contract should be deployed or loaded first');
     }
@@ -171,9 +171,12 @@ export default class ERC721Mintable {
     }
 
     try {
-      return await this.#contractDeployed.mintWithTokenURI(publicAddress, tokenURI, {
-        gasLimit: this.#gasLimit,
-      });
+      const options = { gasLimit: this.#gasLimit };
+      if (gas) {
+        const gasPrice = ethers.utils.bigNumberify(gas);
+        options.gasPrice = gasPrice;
+      }
+      return await this.#contractDeployed.mintWithTokenURI(publicAddress, tokenURI, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(`${type}[ERC721Mintable.mint] An error occured: ${message}`);

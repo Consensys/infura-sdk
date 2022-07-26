@@ -122,6 +122,15 @@ export default class SDK {
   }
 
   /**
+   * Returns the current network's gas price in Gwei for transactions
+   * @returns Current price of gas in Gwei
+   */
+  async getGasPrice() {
+    const gasPrice = await this.#auth.getSigner().getGasPrice();
+    return utils.formatUnits(gasPrice, 'gwei');
+  }
+
+  /**
    * Get NFTs by an account address
    * @param  {string} address Account address
    * @param  {string} [includeMetadata=false] flag to include the metadata object in the results
