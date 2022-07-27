@@ -40,6 +40,7 @@ describe('Sdk', () => {
           status: 1,
         }),
       },
+      getGasPrice: () => ({ _hex: '0x3a35294400', _isBigNumber: true }),
     }));
 
     contractFactoryMock = jest.spyOn(ContractFactory, 'factory').mockImplementation(() => ({
@@ -277,6 +278,13 @@ describe('Sdk', () => {
       await sdk.getSigner();
 
       expect(signerMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return the current gas price', async () => {
+      const result = await sdk.getGasPrice();
+
+      expect(signerMock).toHaveBeenCalledTimes(1);
+      expect(result).toBe('250.0');
     });
   });
 });

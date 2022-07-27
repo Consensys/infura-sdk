@@ -126,7 +126,7 @@ export default class SDK {
    * @returns Current price of gas in Gwei
    */
   async getGasPrice() {
-    const signer = await this.#auth.getSigner();
+    const signer = await this.getSigner();
     const gasPrice = await signer.getGasPrice();
     return utils.formatUnits(gasPrice, 'gwei');
   }

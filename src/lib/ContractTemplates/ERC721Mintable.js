@@ -31,7 +31,7 @@ export default class ERC721Mintable {
   addGasPriceToOptions(options, gas) {
     const newOptions = options;
     if (gas) {
-      if (!(typeof gas === 'number')) {
+      if (typeof parseFloat(gas) !== 'number') {
         throw new Error('[ERC721Mintable] Invalid value for gas provided');
       }
       const gasPrice = ethers.utils.parseUnits(gas, 'gwei');
@@ -212,7 +212,8 @@ export default class ERC721Mintable {
     }
 
     try {
-      return await this.#contractDeployed.grantRole(this.MINTER_ROLE, publicAddress);
+      const options = this.addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.grantRole(this.MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(`${type}[ERC721Mintable.addMinter] An error occured: ${message}`);
