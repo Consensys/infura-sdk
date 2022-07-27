@@ -30,6 +30,9 @@ describe('SDK', () => {
 
   jest.spyOn(ethers.utils, 'isAddress').mockImplementation(() => true);
   jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
+  jest
+    .spyOn(ethers.utils, 'parseUnits')
+    .mockImplementation(() => ({ _hex: '0x3a35294400', _isBigNumber: true }));
 
   beforeAll(() => {
     signer = 'signer';
@@ -110,6 +113,23 @@ describe('SDK', () => {
     await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
 
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Deploy] - should deploy with gas passed', async () => {
+    eRC721Mintable = new ERC721Mintable(signer, contractAddress);
+
+    await eRC721Mintable.deploy({
+      name: 'name',
+      symbol: 'symbol',
+      contractURI: 'URI',
+      gas: 250,
+    });
+    const gasPrice = { _hex: '0x3a35294400', _isBigNumber: true }; // 250 in BigNumber
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledWith('name', 'symbol', 'URI', {
+      gasPrice,
+    });
   });
 
   it('[Mint] - should return an Error if contract is not deployed', () => {

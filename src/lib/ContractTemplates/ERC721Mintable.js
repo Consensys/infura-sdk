@@ -27,13 +27,14 @@ export default class ERC721Mintable {
     return this.#template;
   }
 
+  /* eslint-disable class-methods-use-this */
   addGasPriceToOptions(options, gas) {
     const newOptions = options;
     if (gas) {
       if (!(typeof gas === 'number')) {
         throw new Error('[ERC721Mintable] Invalid value for gas provided');
       }
-      const gasPrice = ethers.utils.bigNumberify(gas);
+      const gasPrice = ethers.utils.parseUnits(gas, 'gwei');
       newOptions.gasPrice = gasPrice;
     }
     return newOptions;
