@@ -272,9 +272,9 @@ describe('Sdk', () => {
     });
   });
 
-  describe('getProvider', () => {
+  describe('getSigner', () => {
     it('should return the provider', async () => {
-      await sdk.getProvider();
+      await sdk.getSigner();
 
       expect(signerMock).toHaveBeenCalledTimes(1);
     });

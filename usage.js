@@ -80,14 +80,15 @@ console.log('contract address: \n', existingContract.contractAddress);
 
 // // mint a NFT
 const gas = await sdk.getGasPrice();
-const mint = await existingContract.mint({
-  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-  tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
-  gas,
-});
+console.log(gas);
+// const mint = await existingContract.mint({
+//   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+//   tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
+//   gas,
+// });
 
-const minted = await mint.wait();
-console.log(minted);
+// const minted = await mint.wait();
+// console.log(minted);
 
 // const mint2 = await newContract.mint({
 //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,

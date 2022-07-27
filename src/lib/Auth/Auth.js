@@ -114,6 +114,10 @@ export default class Auth {
     return this.#provider.getSigner();
   }
 
+  getProvider() {
+    return this.#provider;
+  }
+
   setProvider(provider) {
     if (this.#privateKey) {
       this.#provider = Provider.getProvider(this.#rpcUrl);
