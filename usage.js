@@ -9,15 +9,14 @@
 // Use this in "module" type nodejs projects
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, TEMPLATES } from './index.js';
-import { ethers } from 'ethers';
 loadEnv();
 
 const acc = new Auth({
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
-  rpcUrl: 'https://polygon-mainnet.g.alchemy.com/v2/cyKpdJC2AHsuKa_NfKJ21rS-qmM2bQwP',
-  chainId: 137,
+  rpcUrl: process.env.EVM_RPC_URL,
+  chainId: 5,
 });
 
 ///////// Alternative Auth Instantiation with MetaMask /////////
@@ -78,17 +77,27 @@ const existingContract = await sdk.loadContract({
 
 console.log('contract address: \n', existingContract.contractAddress);
 
-// // mint a NFT
-const gas = await sdk.getGasPrice();
-console.log(gas);
-// const mint = await existingContract.mint({
+// mint a NFT
+const mint = await existingContract.mint({
+  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+  tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
+});
+
+const minted = await mint.wait();
+console.log(minted);
+
+///////// Alternative Mint with Gas Specified (useful for Polygon network) /////////
+// mint a NFT with gas specified
+// const gas = await sdk.getGasPrice();
+// const mintGas = await existingContract.mint({
 //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
 //   tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
 //   gas,
 // });
 
-// const minted = await mint.wait();
-// console.log(minted);
+// const mintedGas = await mintGas.wait();
+// console.log(mintedGas);
+////////////////////////////////////////////////////////////////////////////////////
 
 // const mint2 = await newContract.mint({
 //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,

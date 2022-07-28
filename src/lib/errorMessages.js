@@ -27,6 +27,7 @@ export const ERROR_MESSAGE = {
   invalid_contractURI: 'Invalid contractURI.',
   invalid_template: 'Invalid template.',
   invalid_transaction_hash: 'Invalid transaction hash.',
+  invalid_gas_price_supplied: 'Invalid value for gas provided',
 
   contract_already_deployed: 'Contract already deployed.',
   contract_already_loaded: 'Contract already loaded.',
@@ -51,4 +52,5 @@ export const ERROR_LOCATION = {
   SDK_getTokenMetadata: '[SDK.getTokenMetadata]',
   SDK_getStatus: '[SDK.GetStatus]',
   Auth_constructor: '[Auth.constructor]',
+  ERC721Mintable_addGasPriceToOptions: '[ERC721Mintable.addGasPriceToOptions]',
 };

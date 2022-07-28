@@ -2,7 +2,7 @@ import { ethers, utils } from 'ethers';
 import smartContractArtifact from './artifacts/ERC721Mintable.js';
 import { isBoolean, isDefined, isURI } from '../utils.js';
 import { TEMPLATES } from '../NFT/constants.js';
-import { networkErrorHandler } from '../error/handler.js';
+import { errorLogger, ERROR_LOG, networkErrorHandler } from '../error/handler.js';
 
 export default class ERC721Mintable {
   #gasLimit = 6000000;
@@ -32,10 +32,22 @@ export default class ERC721Mintable {
     const newOptions = options;
     if (gas) {
       if (typeof parseFloat(gas) !== 'number') {
-        throw new Error('[ERC721Mintable] Invalid value for gas provided');
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.ERC721Mintable_addGasPriceToOptions,
+            message: ERROR_LOG.message.invalid_gas_price_supplied,
+          }),
+        );
       }
-      const gasPrice = ethers.utils.parseUnits(gas, 'gwei');
-      newOptions.gasPrice = gasPrice;
+      try {
+        const gasPrice = ethers.utils.parseUnits(gas, 'gwei');
+        newOptions.gasPrice = gasPrice;
+      } catch (error) {
+        const { message, type } = networkErrorHandler(error);
+        throw new Error(
+          `${type}[ERC721Mintable.addGasPriceToOptions] An error occured: ${message}`,
+        );
+      }
     }
     return newOptions;
   }
