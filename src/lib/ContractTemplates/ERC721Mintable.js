@@ -3,18 +3,14 @@ import smartContractArtifact from './artifacts/ERC721Mintable.js';
 import { isBoolean, isDefined, isURI } from '../utils.js';
 import { TEMPLATES } from '../NFT/constants.js';
 import { networkErrorHandler, errorLogger, ERROR_LOG } from '../error/handler.js';
-import {
-  GAS_LIMIT,
-  DEFAULT_ADMIN_ROLE_PUBLIC_ADDRESS,
-  DEFAULT_MINTER_ROLE_PUBLIC_ADDRESS,
-} from '../constants.js';
+import { GAS_LIMIT, DEFAULT_ADMIN_ROLE, DEFAULT_MINTER_ROLE } from '../constants.js';
 
 export default class ERC721Mintable {
   #gasLimit = GAS_LIMIT;
 
-  ADMIN_ROLE = DEFAULT_ADMIN_ROLE_PUBLIC_ADDRESS;
+  ADMIN_ROLE = DEFAULT_ADMIN_ROLE;
 
-  MINTER_ROLE = DEFAULT_MINTER_ROLE_PUBLIC_ADDRESS;
+  MINTER_ROLE = DEFAULT_MINTER_ROLE;
 
   contractAddress;
 
