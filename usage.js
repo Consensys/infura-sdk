@@ -86,7 +86,10 @@ const mint = await existingContract.mint({
 const minted = await mint.wait();
 console.log(minted);
 
-///////// Alternative Mint with Gas Specified (useful for Polygon network) /////////
+///////// Alternative Mint with Gas Specified (can be used with any tx that consumes gas ///////////
+///////// If network returns 'transaction underpriced' you may retrieve the current gas price using
+///////// the SDK and then passing said gas amount to the methods in order for the transaction to
+///////// go through. See EIP-1559.
 // mint a NFT with gas specified
 // const gas = await sdk.getGasPrice();
 // const mintGas = await existingContract.mint({

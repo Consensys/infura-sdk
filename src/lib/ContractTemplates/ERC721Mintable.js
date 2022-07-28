@@ -28,7 +28,7 @@ export default class ERC721Mintable {
   }
 
   /* eslint-disable class-methods-use-this */
-  addGasPriceToOptions(options, gas) {
+  #addGasPriceToOptions(options, gas) {
     const newOptions = options;
     if (gas) {
       if (typeof parseFloat(gas) !== 'number') {
@@ -97,7 +97,7 @@ export default class ERC721Mintable {
         this.#signer,
       );
 
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       // TODO remove rest parameter for destructuring (more secure)
       const contract = await factory.deploy(name, symbol, contractURI, options);
 
@@ -134,7 +134,7 @@ export default class ERC721Mintable {
 
     try {
       let options = { gasLimit: this.#gasLimit };
-      options = this.addGasPriceToOptions(options, gas);
+      options = this.#addGasPriceToOptions(options, gas);
       return await this.#contractDeployed.setRoyalties(publicAddress, fee, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -198,7 +198,7 @@ export default class ERC721Mintable {
 
     try {
       let options = { gasLimit: this.#gasLimit };
-      options = this.addGasPriceToOptions(options, gas);
+      options = this.#addGasPriceToOptions(options, gas);
       return await this.#contractDeployed.mintWithTokenURI(publicAddress, tokenURI, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -224,7 +224,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.grantRole(this.MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -252,7 +252,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.renounceRole(this.MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -280,7 +280,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.revokeRole(this.MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -369,7 +369,7 @@ export default class ERC721Mintable {
 
     try {
       let options = { gasLimit: this.#gasLimit };
-      options = this.addGasPriceToOptions(options, gas);
+      options = this.#addGasPriceToOptions(options, gas);
       return await this.#contractDeployed['safeTransferFrom(address,address,uint256)'](
         from,
         to,
@@ -407,7 +407,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.setContractURI(contractURI, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -434,7 +434,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.grantRole(this.ADMIN_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -463,7 +463,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.revokeRole(this.ADMIN_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -492,7 +492,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.renounceRole(this.ADMIN_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -552,7 +552,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.setApprovalForAll(to, approvalStatus, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -585,7 +585,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.approve(to, tokenId, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -604,7 +604,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      const options = this.addGasPriceToOptions({}, gas);
+      const options = this.#addGasPriceToOptions({}, gas);
       return await this.#contractDeployed.renounceOwnership(options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
