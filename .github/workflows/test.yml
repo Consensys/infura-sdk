@@ -1,15 +1,7 @@
 ---
 name: Test
 
-on:
-  push:
-    branches:
-      - main
-    tags:
-      - v*.*.*
-  pull_request:
-    branches:
-      - main
+on: [push]
 
 jobs:
   test:
@@ -45,47 +37,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  release:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-        with:
-          node-version: v18.1.0
-          cache: npm
-
-      - name: Install packages
-        run: npm ci
-
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: 'public'
-      #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
-      #    registry: https://registry.nft.consensys-solutions.net
-
-      # uncomment to publish publicly
-      # - name: Publish on NPM
-      #   run: |
-      #     echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-      #     npm publish --registry https://registry.npmjs.org/
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # bump version manually (e.g., before creating the tag)
-      # - name: Setup git info
-      #   run: |
-      #     git config --global user.email "johannbich@gmail.com"
-      #     git config --global user.name "kalote"
-
-      # - name: Bump npm version
-      #   run: npm version ${{ github.ref_name }} -m "bump version to %s"
-
-      # - name: Commit version 
-      #   run: |
-      #     git status
-      #     git push

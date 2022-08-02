@@ -1,0 +1,85 @@
+---
+name: Release
+
+concurrency: production
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: v18.1.0
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Create changelog
+        run: echo "create changelog"
+
+      - name: Get number of feature
+        run: echo "number of feature"
+
+      - name: Set release kind (minor, patch)
+        run: echo "release kind"
+
+      - name: Bump version in package.json
+        run: echo "bump version"
+
+      - name: Update files (sonar-project.properties, _version.js, ...)
+        run: echo "update files"
+
+      - name: Update documentation (gitbook infura, ...)
+        run: echo "update documentation"
+
+      - name: Git add & commit
+        run: echo "git add & commit"
+
+      - name: Create git tag
+        run: echo "create git tag"
+
+      - name: Push files & tag
+        run: echo "push files & tag"
+
+      - name: Release NPM
+        run: echo "release NPM"
+      
+      - name: Merge changes back to dev
+        run: echo "merge back to dev"
+
+      # - uses: JS-DevTools/npm-publish@v1
+      #   with:
+      #     token: ${{ secrets.NPM_TOKEN }}
+      #     access: 'public'
+      #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
+      #    registry: https://registry.nft.consensys-solutions.net
+
+      # uncomment to publish publicly
+      # - name: Publish on NPM
+      #   run: |
+      #     echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+      #     npm publish --registry https://registry.npmjs.org/
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # bump version manually (e.g., before creating the tag)
+      # - name: Setup git info
+      #   run: |
+      #     git config --global user.email "johannbich@gmail.com"
+      #     git config --global user.name "kalote"
+
+      # - name: Bump npm version
+      #   run: npm version ${{ github.ref_name }} -m "bump version to %s"
+
+      # - name: Commit version 
+      #   run: |
+      #     git status
+      #     git push

@@ -1,15 +1,7 @@
 ---
 name: Action Lint
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-    paths:
-      - '.github/**'
+on: [push]
 
 jobs:
   lint:
