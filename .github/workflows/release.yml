@@ -1,4 +1,5 @@
 ---
+# Heavily inspired by ganache's release workflow: https://github.com/trufflesuite/ganache/blob/develop/.github/workflows/release.yml
 name: Release
 
 concurrency: production
