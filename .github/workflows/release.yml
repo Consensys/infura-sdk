@@ -23,16 +23,18 @@ jobs:
         run: npm ci
 
       - name: Create changelog
-        run: echo "create changelog"
+        run: npm run generate:changelog
 
-      - name: Get number of feature
-        run: echo "number of feature"
+      - name: Set number of features (NB_OF_FEAT)
+        run: |
+          LAST_TAG=$(git tag --sort=-version:refname --no-contains HEAD | grep -E '^v([0-9]).([0-9]).([0-9]*)$' | head -1) &&
+          echo NB_OF_FEAT=$(git log ^"${LAST_TAG}" HEAD --pretty=format:%s | grep -oE '^(feat((.?))?:|PTP-\d)' | wc -l) >> "${GITHUB_ENV}"
 
-      - name: Set release kind (minor, patch)
-        run: echo "release kind"
+      - name: Set release kind (minor, patch) based on NB_OF_FEAT
+        run: echo KIND=$(if [ "$NB_OF_FEAT" -gt 3 ]; then echo "minor"; else echo "patch"; fi) >> "${GITHUB_ENV}"
 
       - name: Bump version in package.json
-        run: echo "bump version"
+        run: npm version $KIND
 
       - name: Update files (sonar-project.properties, _version.js, ...)
         run: echo "update files"
