@@ -5,16 +5,18 @@ concurrency: production
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2
+      - name: Setup Node
+        uses: actions/setup-node@v2
         with:
           node-version: v18.1.0
           cache: npm
@@ -30,37 +32,52 @@ jobs:
           LAST_TAG=$(git tag --sort=-version:refname --no-contains HEAD | grep -E '^v([0-9]).([0-9]).([0-9]*)$' | head -1) &&
           echo NB_OF_FEAT=$(git log ^"${LAST_TAG}" HEAD --pretty=format:%s | grep -oE '^(feat((.?))?:|PTP-\d)' | wc -l) >> "${GITHUB_ENV}"
 
+      # Release kind: 
+      # More than 3 feature == minor (inc Y in "X.Y.Z")
+      # Otherwise, "patch" (inc Z in "X.Y.Z")
+      # TODO: implement "major" kind (inc X in "X.Y.Z")
       - name: Set release kind (minor, patch) based on NB_OF_FEAT
         run: echo KIND=$(if [ "$NB_OF_FEAT" -gt 3 ]; then echo "minor"; else echo "patch"; fi) >> "${GITHUB_ENV}"
 
+      # Will increase package.json without running commit hooks, without creating a git tag
       - name: Bump version in package.json
-        run: npm version $KIND
+        run: npm version $KIND --commit-hooks=false --git-tag-version=false
 
-      - name: Update files (sonar-project.properties, _version.js, ...)
-        run: echo "update files"
+      # - name: Update files (sonar-project.properties, _version.js, ...)
+      #   run: echo "update files"
 
-      - name: Update documentation (gitbook infura, ...)
-        run: echo "update documentation"
+      # - name: Update documentation (gitbook infura, ...)
+      #   run: echo "update documentation"
+
+      - name: Set VERSION
+        run: |
+          echo "VERSION=$(node -e 'console.log(require("./package.json").version)')" >> $GITHUB_ENV"
 
       - name: Git add & commit
-        run: echo "git add & commit"
+        run: |
+          git add . && git commit -m "chore(release): publish v${VERSION}"
 
       - name: Create git tag
-        run: echo "create git tag"
+        run: |
+          git tag -a "v${VERSION}" -m "v${VERSION}"
 
       - name: Push files & tag
-        run: echo "push files & tag"
+        run: |
+          git push
+          git push --tags
 
       - name: Release NPM
-        run: echo "release NPM"
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: 'public'
       
       - name: Merge changes back to dev
-        run: echo "merge back to dev"
+        run: |
+          git checkout dev
+          git merge origin/main
+          git push origin develop
 
-      # - uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN }}
-      #     access: 'public'
       #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
       #    registry: https://registry.nft.consensys-solutions.net
 
