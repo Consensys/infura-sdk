@@ -2,6 +2,7 @@ import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import Signer from '../src/lib/Signer/Signer.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 loadEnv();
 
@@ -9,13 +10,19 @@ describe('Signer', () => {
   describe('getWallet', () => {
     it('should throw when args are missing (privateKey)', () => {
       expect(() => Signer.getWallet(null, ethers.providers.Provider)).toThrow(
-        '[Signer.constructor] privateKey is missing!',
+        errorLogger({
+          location: ERROR_LOG.location.Signer_constructor,
+          message: ERROR_LOG.message.no_privateKey,
+        }),
       );
     });
 
     it('should throw when args are missing (provider)', () => {
       expect(() => Signer.getWallet('privateKey', null)).toThrow(
-        '[Signer.constructor] provider is missing!',
+        errorLogger({
+          location: ERROR_LOG.location.Signer_constructor,
+          message: ERROR_LOG.message.no_provider,
+        }),
       );
     });
 

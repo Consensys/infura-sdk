@@ -10,7 +10,6 @@ import { errorLogger, ERROR_LOG } from '../error/handler.js';
 export default class Provider {
   static getProvider(rpcUrl) {
     if (!rpcUrl) {
-      // throw new Error('[Provider.getProvider] rpcUrl is missing!');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Provider_getProvider,

@@ -28,7 +28,6 @@ export const ERROR_MESSAGE = {
   invalid_contractURI: 'Invalid contractURI.',
   invalid_template: 'Invalid template.',
   invalid_transaction_hash: 'Invalid transaction hash.',
-  invalid_template: 'Invalid template.',
   invalid_provider: 'Invalid provider.',
 
   contract_already_deployed: 'Contract already deployed.',
