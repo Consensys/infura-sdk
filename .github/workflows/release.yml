@@ -4,7 +4,8 @@ name: Release
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   release:
@@ -37,7 +38,7 @@ jobs:
 
       # Will increase package.json without running commit hooks, without creating a git tag
       - name: Bump version in package.json
-        run: npm version $KIND --commit-hooks=false --git-tag-version=false
+        run: npm version "$KIND" --commit-hooks=false --git-tag-version=false
 
       # - name: Update files (sonar-project.properties, _version.js, ...)
       #   run: echo "update files"
@@ -55,10 +56,7 @@ jobs:
           access: 'public'
       
       - name: Merge changes back to dev
-        run: |
-          git checkout dev
-          git merge main
-          git push dev
+        run: ./scripts/merge.sh
 
       #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
       #    registry: https://registry.nft.consensys-solutions.net

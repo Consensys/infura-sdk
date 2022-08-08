@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky install",
-    "generate:changelog": "auto-changelog"
+    "generate:changelog": "npx auto-changelog"
   },
   "repository": {
     "type": "git",
