@@ -8,6 +8,7 @@
 
 // Use this in "module" type nodejs projects
 import { config as loadEnv } from 'dotenv';
+import IPFS from 'src/lib/IPFS/IPFS.js';
 import { SDK, Auth, TEMPLATES } from './index.js';
 loadEnv();
 
@@ -18,6 +19,12 @@ const acc = new Auth({
   rpcUrl: process.env.EVM_RPC_URL,
   chainId: 5,
 });
+
+///// IPFS ////
+// const ipfs = new IPFS({ projectId, projectSecret, ipfsUrl });
+// const image = await ipfs.saveMedia({name: 'file_name', data: 'local_image_path_or_http_image_url'}); // returns full url with image hash
+// const metadata = await ipfs.saveMetadata({name: 'file_name', data: 'local_file_path_or_http_json_url_or_js_object'}); // input only json, returns metadata hash
+//////////////
 
 ///////// Alternative Auth Instantiation with MetaMask /////////
 // When using SDK in a browser
