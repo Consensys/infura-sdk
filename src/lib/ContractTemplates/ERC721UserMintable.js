@@ -2,7 +2,7 @@ import { ethers, utils } from 'ethers';
 import { TEMPLATES } from '../NFT/constants.js';
 import smartContractArtifact from './artifacts/ERC721UserMintable.js';
 import { isBoolean, isDefined } from '../utils.js';
-import { networkErrorHandler } from '../error/handler.js';
+import { networkErrorHandler, errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class ERC721UserMintable {
   #gasLimit = 6000000;
@@ -35,33 +35,66 @@ export default class ERC721UserMintable {
    */
   async deploy({ name, symbol, baseURI, maxSupply, price }) {
     if (this.contractAddress || this.#contractDeployed) {
-      throw new Error('[ERC721UserMintable.deploy] The contract has already been deployed!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.contract_already_deployed,
+        }),
+      );
     }
 
     if (!this.#signer) {
       throw new Error(
-        '[ERC721UserMintable.deploy] Signer instance is required to interact with contract.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.no_signer_instance_supplied,
+        }),
       );
     }
 
     if (!name) {
-      throw new Error('[ERC721UserMintable.deploy] Name cannot be empty');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.no_name_supplied,
+        }),
+      );
     }
 
     if (symbol === undefined) {
-      throw new Error('[ERC721UserMintable.deploy] symbol cannot be undefined');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.no_symbol_supplied,
+        }),
+      );
     }
 
     if (baseURI === undefined) {
-      throw new Error('[ERC721UserMintable.deploy] baseURI cannot be undefined');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.no_contractURI_supplied,
+        }),
+      );
     }
 
     if (maxSupply === undefined) {
-      throw new Error('[ERC721UserMintable.deploy] maxSupply cannot be undefined');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.invalid_max_supply,
+        }),
+      );
     }
 
     if (price === undefined) {
-      throw new Error('[ERC721UserMintable.deploy] price cannot be undefined');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.invalid_price,
+        }),
+      );
     }
 
     try {
@@ -92,12 +125,20 @@ export default class ERC721UserMintable {
    */
   async loadContract({ contractAddress }) {
     if (this.contractAddress || this.#contractDeployed) {
-      throw new Error('[ERC721UserMintable.loadContract] The contract has already been loaded!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_loadContract,
+          message: ERROR_LOG.message.contract_already_loaded,
+        }),
+      );
     }
 
     if (!contractAddress || !ethers.utils.isAddress(contractAddress)) {
       throw new Error(
-        '[ERC721UserMintable.loadContract] A valid contract address is required to load a contract.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_loadContract,
+          message: ERROR_LOG.message.invalid_contract_address,
+        }),
       );
     }
 
@@ -117,9 +158,15 @@ export default class ERC721UserMintable {
 
   async mint({ quantity, cost }) {
     if (!this.#contractDeployed && !this.contractAddress) {
-      throw new Error('[ERC721UserMintable.mint] A contract should be deployed or loaded first');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_mint,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
     }
 
+    // TODO: Review!!!
     if (!quantity || !Number.isInteger(quantity) || !(quantity > 0 && quantity <= 20)) {
       throw new Error(
         '[ERC721UserMintable.mint] Quantity as integer value between 1 and 20 is required',
@@ -208,15 +255,30 @@ export default class ERC721UserMintable {
    */
   async royaltyInfo({ tokenId, sellPrice }) {
     if (!this.#contractDeployed && !this.contractAddress) {
-      throw new Error('[ERC721UserMintable.royaltyInfo] Contract needs to be deployed');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_royaltyInfo,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
+      );
     }
 
     if (!isDefined(tokenId)) {
-      throw new Error('[ERC721UserMintable.royaltyInfo] TokenId is required');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_royaltyInfo,
+          message: ERROR_LOG.message.no_tokenId_supplied,
+        }),
+      );
     }
 
     if (!sellPrice) {
-      throw new Error('[ERC721UserMintable.royaltyInfo] Sell price is required');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_royaltyInfo,
+          message: ERROR_LOG.message.no_sell_price_supplied,
+        }),
+      );
     }
 
     try {
@@ -236,12 +298,20 @@ export default class ERC721UserMintable {
   async setBaseURI({ baseURI }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
-        '[ERC721UserMintable.setBaseURI] A contract should be deployed or loaded first!',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setContractURI,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
       );
     }
 
     if (!baseURI) {
-      throw new Error('[ERC721UserMintable.setBaseURI] A valid base uri is required!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setContractURI,
+          message: ERROR_LOG.message.invalid_contractURI,
+        }),
+      );
     }
 
     try {
@@ -260,7 +330,10 @@ export default class ERC721UserMintable {
   async setPrice({ price }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
-        '[ERC721UserMintable.setPrice] A contract should be deployed or loaded first',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setPrice,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
       );
     }
 
@@ -285,16 +358,29 @@ export default class ERC721UserMintable {
    */
   async setRoyalties({ publicAddress, fee }) {
     if (!this.#contractDeployed && !this.contractAddress) {
-      throw new Error('[ERC721UserMintable.setRoyalties] Contract needs to be deployed');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setRoyalties,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
+      );
     }
 
     if (!publicAddress || !utils.isAddress(publicAddress)) {
-      throw new Error('[ERC721UserMintable.setRoyalties] Address is required');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setRoyalties,
+          message: ERROR_LOG.message.no_address_supplied,
+        }),
+      );
     }
 
     if (!fee || !Number.isInteger(fee) || !(fee > 0 && fee < 10000)) {
       throw new Error(
-        '[ERC721UserMintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setRoyalties,
+          message: ERROR_LOG.message.fee_must_be_between_0_and_10000,
+        }),
       );
     }
 
@@ -315,7 +401,10 @@ export default class ERC721UserMintable {
   async toggleSale() {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
-        '[ERC721UserMintable.toggleSale] A contract should be deployed or loaded first',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_toggleSale,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
       );
     }
 
@@ -337,24 +426,38 @@ export default class ERC721UserMintable {
   async transfer({ from, to, tokenId }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
-        '[ERC721UserMintable.transfer] A contract should be deployed or loaded first',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_transfer,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
       );
     }
 
     if (!from || !ethers.utils.isAddress(from)) {
       throw new Error(
-        '[ERC721UserMintable.transfer] A valid address "from" is required to transfer.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_transfer,
+          message: ERROR_LOG.message.invalid_from_address,
+        }),
       );
     }
 
     if (!to || !ethers.utils.isAddress(to)) {
       throw new Error(
-        '[ERC721UserMintable.transfer] A valid address "to" is required to transfer.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_transfer,
+          message: ERROR_LOG.message.invalid_to_address,
+        }),
       );
     }
 
     if (!Number.isInteger(tokenId)) {
-      throw new Error('[ERC721UserMintable.transfer] TokenId should be an integer.');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_transfer,
+          message: ERROR_LOG.message.tokenId_must_be_integer,
+        }),
+      );
     }
 
     try {
@@ -382,19 +485,28 @@ export default class ERC721UserMintable {
   async setApprovalForAll({ to, approvalStatus }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
-        '[ERC721UserMintable.setApprovalForAll] A contract should be deployed or loaded first.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setApprovalForAll,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
       );
     }
 
     if (!to || !ethers.utils.isAddress(to)) {
       throw new Error(
-        '[ERC721UserMintable.setApprovalForAll] An address is required to setApprovalForAll.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setApprovalForAll,
+          message: ERROR_LOG.message.no_to_address,
+        }),
       );
     }
 
     if (!isBoolean(approvalStatus)) {
       throw new Error(
-        '[ERC721UserMintable.setApprovalForAll] approvalStatus param should be a boolean.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setApprovalForAll,
+          message: ERROR_LOG.message.approvalStatus_must_be_boolean,
+        }),
       );
     }
 
@@ -417,18 +529,29 @@ export default class ERC721UserMintable {
   async approveTransfer({ to, tokenId }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
-        '[ERC721UserMintable.approveTransfer] A contract should be deployed or loaded first',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_approveTransfer,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
       );
     }
 
     if (!to || !ethers.utils.isAddress(to)) {
       throw new Error(
-        '[ERC721UserMintable.approveTransfer] A valid address "to" is required to transfer.',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_approveTransfer,
+          message: ERROR_LOG.message.invalid_to_address,
+        }),
       );
     }
 
     if (!Number.isInteger(tokenId)) {
-      throw new Error('[ERC721UserMintable.approveTransfer] TokenId should be an integer.');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_approveTransfer,
+          message: ERROR_LOG.message.tokenId_must_be_integer,
+        }),
+      );
     }
 
     try {
@@ -445,7 +568,12 @@ export default class ERC721UserMintable {
    */
   async renounceOwnership() {
     if (!this.contractAddress && !this.#contractDeployed) {
-      throw new Error('[ERC721UserMintable.renounceOwnership] Contract needs to be deployed');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_renounceOwnership,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
+      );
     }
 
     try {
@@ -465,7 +593,10 @@ export default class ERC721UserMintable {
   async withdraw() {
     if (!this.contractAddress && !this.#contractDeployed) {
       throw new Error(
-        '[ERC721UserMintable.withdraw] A contract should be deployed or loaded first',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_withdraw,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
       );
     }
 
