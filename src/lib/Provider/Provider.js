@@ -27,7 +27,7 @@ export default class Provider {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Provider_getInjectedProvider,
-          message: ERROR_LOG.message.no_privateKey,
+          message: ERROR_LOG.message.no_provider,
         }),
       );
     }
