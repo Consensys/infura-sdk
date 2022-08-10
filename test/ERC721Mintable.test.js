@@ -1,6 +1,7 @@
 import { ContractFactory, ethers } from 'ethers';
 import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 let eRC721Mintable;
 let signer;
@@ -55,7 +56,10 @@ describe('SDK', () => {
       eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
 
     expect(contract).rejects.toThrow(
-      '[ERC721Mintable.deploy] Signer instance is required to interact with contract.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_deploy,
+        message: ERROR_LOG.message.no_signer_instance_supplied,
+      }),
     );
   });
 
@@ -77,7 +81,12 @@ describe('SDK', () => {
     const contract = async () =>
       eRC721Mintable.deploy({ name: '', symbol: 'symbol', contractURI: 'URI' });
 
-    expect(contract).rejects.toThrow('[ERC721Mintable.deploy] Name cannot be empty');
+    expect(contract).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_deploy,
+        message: ERROR_LOG.message.no_name_supplied,
+      }),
+    );
   });
 
   it('[Deploy] - should return an Error if symbol is undefined', () => {
@@ -85,7 +94,12 @@ describe('SDK', () => {
 
     const contract = async () => eRC721Mintable.deploy({ name: 'name', contractURI: 'URI' });
 
-    expect(contract).rejects.toThrow('[ERC721Mintable.deploy] symbol cannot be undefined');
+    expect(contract).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_deploy,
+        message: ERROR_LOG.message.no_symbol_supplied,
+      }),
+    );
   });
 
   it('[Deploy] - should return an Error if contractURI is undefined', () => {
@@ -93,7 +107,12 @@ describe('SDK', () => {
 
     const contract = async () => eRC721Mintable.deploy({ name: 'name', symbol: 'symbol' });
 
-    expect(contract).rejects.toThrow('[ERC721Mintable.deploy] contractURI cannot be undefined');
+    expect(contract).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_deploy,
+        message: ERROR_LOG.message.no_contractURI_supplied,
+      }),
+    );
   });
 
   it('[Deploy] - should return an Error if there is a network error', async () => {
@@ -141,7 +160,10 @@ describe('SDK', () => {
         tokenURI: 'https://infura.io/images/404.png',
       });
     expect(myNFT).rejects.toThrow(
-      '[ERC721Mintable.mint] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_mint,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -171,7 +193,12 @@ describe('SDK', () => {
         tokenURI: 'https://infura.io/images/404.png',
       });
     };
-    expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A valid address is required to mint.');
+    expect(myNFT).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_mint,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
+    );
   });
 
   it('[Mint] - should return an Error if the tokenURI is empty', () => {
@@ -184,7 +211,12 @@ describe('SDK', () => {
         tokenURI: '',
       });
     };
-    expect(myNFT).rejects.toThrow('[ERC721Mintable.mint] A tokenURI is required to mint.');
+    expect(myNFT).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_mint,
+        message: ERROR_LOG.message.no_tokenURI_supplied,
+      }),
+    );
   });
 
   it('[Mint] - should return an Error if there is a network error', async () => {
@@ -205,7 +237,7 @@ describe('SDK', () => {
       });
     };
     expect(myNFT).rejects.toThrow(
-      '[ERC721Mintable.mint] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.mint] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -229,7 +261,10 @@ describe('SDK', () => {
       await eRC721Mintable.loadContract({ contractAddress: CONTRACT_ADDRESS });
     };
     expect(contract).rejects.toThrow(
-      '[ERC721Mintable.loadContract] The contract has already been loaded!',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_loadContract,
+        message: ERROR_LOG.message.contract_already_loaded,
+      }),
     );
   });
 
@@ -240,7 +275,10 @@ describe('SDK', () => {
       await eRC721Mintable.loadContract({ contractAddress: '' });
     };
     expect(contract).rejects.toThrow(
-      '[ERC721Mintable.loadContract] A valid contract address is required to load a contract.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_loadContract,
+        message: ERROR_LOG.message.invalid_contract_address,
+      }),
     );
   });
 
@@ -262,7 +300,7 @@ describe('SDK', () => {
       await eRC721Mintable.loadContract({ contractAddress: CONTRACT_ADDRESS });
     };
     expect(contract).rejects.toThrow(
-      '[ERC721Mintable.loadContract] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.loadContract] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -272,7 +310,10 @@ describe('SDK', () => {
     const transferNft = async () =>
       eRC721Mintable.transfer({ from: ACCOUNT_ADDRESS, to: ACCOUNT_ADDRESS_2, tokenId: 1 });
     expect(transferNft).rejects.toThrow(
-      '[ERC721Mintable.transfer] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_transfer,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -288,7 +329,10 @@ describe('SDK', () => {
       });
     };
     expect(transferNft).rejects.toThrow(
-      '[ERC721Mintable.transfer] A valid address "from" is required to transfer.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_transfer,
+        message: ERROR_LOG.message.invalid_from_address,
+      }),
     );
   });
 
@@ -304,7 +348,10 @@ describe('SDK', () => {
       });
     };
     expect(transferNft).rejects.toThrow(
-      '[ERC721Mintable.transfer] A valid address "to" is required to transfer.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_transfer,
+        message: ERROR_LOG.message.invalid_to_address,
+      }),
     );
   });
 
@@ -319,7 +366,12 @@ describe('SDK', () => {
         tokenId: 'test',
       });
     };
-    expect(transferNft).rejects.toThrow('[ERC721Mintable.transfer] TokenId should be an integer.');
+    expect(transferNft).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_transfer,
+        message: ERROR_LOG.message.tokenId_must_be_integer,
+      }),
+    );
   });
 
   it('[Transfer] - should transfer nft', async () => {
@@ -354,7 +406,7 @@ describe('SDK', () => {
       });
     };
     expect(transferNft).rejects.toThrow(
-      '[ERC721Mintable.transfer] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.transfer] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -367,7 +419,10 @@ describe('SDK', () => {
           'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
       }),
     ).rejects.toThrow(
-      '[ERC721Mintable.setContractURI] A contract should be deployed or loaded first!',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_setContractURI,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -392,7 +447,10 @@ describe('SDK', () => {
       await eRC721Mintable.setContractURI({ contractURI: '' });
     };
     expect(uri).rejects.toThrow(
-      '[ERC721Mintable.setContractURI] A valid contract uri is required!',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_setContractURI,
+        message: ERROR_LOG.message.invalid_contractURI,
+      }),
     );
   });
 
@@ -426,7 +484,7 @@ describe('SDK', () => {
       });
     };
     expect(setContractURI).rejects.toThrow(
-      '[ERC721Mintable.setContractURI] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -448,7 +506,7 @@ describe('SDK', () => {
       });
     };
     expect(setContractURI).rejects.toThrow(
-      '[RUNTIME.ERROR][ERC721Mintable.setContractURI] An error occured: code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
+      '[ERC721Mintable.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
     );
   });
 
@@ -457,7 +515,10 @@ describe('SDK', () => {
 
     const minter = async () => eRC721Mintable.addMinter({ publicAddress: ACCOUNT_ADDRESS });
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.addMinter] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_addMinter,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -469,7 +530,10 @@ describe('SDK', () => {
       await eRC721Mintable.addMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.addMinter] A valid address is required to add the minter role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_addMinter,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -497,7 +561,7 @@ describe('SDK', () => {
       await eRC721Mintable.addMinter({ publicAddress: ACCOUNT_ADDRESS });
     };
     expect(addMinter).rejects.toThrow(
-      '[ERC721Mintable.addMinter] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.addMinter] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -506,7 +570,10 @@ describe('SDK', () => {
 
     const minter = async () => eRC721Mintable.removeMinter({ publicAddress: ACCOUNT_ADDRESS });
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.removeMinter] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_removeMinter,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -518,7 +585,10 @@ describe('SDK', () => {
       await eRC721Mintable.removeMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.removeMinter] A valid address is required to remove the minter role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_removeMinter,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -536,7 +606,10 @@ describe('SDK', () => {
 
     const minter = async () => eRC721Mintable.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.renounceMinter] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_renounceMinter,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -548,7 +621,10 @@ describe('SDK', () => {
       await eRC721Mintable.renounceMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.renounceMinter] A valid address is required to renounce the minter role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_renounceMinter,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -576,7 +652,7 @@ describe('SDK', () => {
       await eRC721Mintable.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
     };
     expect(renounceMinter).rejects.toThrow(
-      '[ERC721Mintable.renounceMinter] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.renounceMinter] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -585,7 +661,10 @@ describe('SDK', () => {
 
     const minter = async () => eRC721Mintable.isMinter({ publicAddress: ACCOUNT_ADDRESS });
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.isMinter] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_isMinter,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -597,7 +676,10 @@ describe('SDK', () => {
       await eRC721Mintable.isMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
-      '[ERC721Mintable.isMinter] A valid address is required to check the minter role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_isMinter,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -625,7 +707,7 @@ describe('SDK', () => {
       await eRC721Mintable.isMinter({ publicAddress: ACCOUNT_ADDRESS });
     };
     expect(isMinter).rejects.toThrow(
-      '[ERC721Mintable.isMinter] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.isMinter] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -635,7 +717,10 @@ describe('SDK', () => {
     expect(() =>
       eRC721Mintable.setApprovalForAll({ to: ACCOUNT_ADDRESS, approvalStatus: true }),
     ).rejects.toThrow(
-      '[ERC721Mintable.setApprovalForAll] A contract should be deployed or loaded first.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_setApprovalForAll,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -647,7 +732,10 @@ describe('SDK', () => {
       await eRC721Mintable.setApprovalForAll({ to: '', approvalStatus: true });
     };
     expect(approval).rejects.toThrow(
-      '[ERC721Mintable.setApprovalForAll] An address is required to setApprovalForAll.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_setApprovalForAll,
+        message: ERROR_LOG.message.no_to_address,
+      }),
     );
   });
 
@@ -659,7 +747,10 @@ describe('SDK', () => {
       await eRC721Mintable.setApprovalForAll({ to: ACCOUNT_ADDRESS, approvalStatus: '' });
     };
     expect(approval).rejects.toThrow(
-      '[ERC721Mintable.setApprovalForAll] approvalStatus param should be a boolean.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_setApprovalForAll,
+        message: ERROR_LOG.message.approvalStatus_must_be_boolean,
+      }),
     );
   });
 
@@ -690,7 +781,7 @@ describe('SDK', () => {
       await eRC721Mintable.setApprovalForAll({ to: ACCOUNT_ADDRESS, approvalStatus: true });
     };
     expect(setApprovalForAll).rejects.toThrow(
-      '[ERC721Mintable.setApprovalForAll] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.setApprovalForAll] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -699,7 +790,12 @@ describe('SDK', () => {
 
     expect(() =>
       eRC721Mintable.addAdmin({ publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94' }),
-    ).rejects.toThrow('[ERC721Mintable.addAdmin] A contract should be deployed or loaded first!');
+    ).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_addAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
+    );
   });
 
   it('[addAdmin] - should return an Error because of bad address', () => {
@@ -709,7 +805,10 @@ describe('SDK', () => {
       await eRC721Mintable.addAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
-      '[ERC721Mintable.addAdmin] A valid address is required to add the admin role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_addAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -739,7 +838,7 @@ describe('SDK', () => {
       });
     };
     expect(addAdmin).rejects.toThrow(
-      '[ERC721Mintable.addAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.addAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -749,7 +848,10 @@ describe('SDK', () => {
     expect(() =>
       eRC721Mintable.removeAdmin({ publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94' }),
     ).rejects.toThrow(
-      '[ERC721Mintable.removeAdmin] A contract should be deployed or loaded first!',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_removeAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -760,7 +862,10 @@ describe('SDK', () => {
       await eRC721Mintable.removeAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
-      '[ERC721Mintable.removeAdmin] A valid address is required to remove the admin role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_removeAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -792,7 +897,7 @@ describe('SDK', () => {
       });
     };
     expect(removeAdmin).rejects.toThrow(
-      '[ERC721Mintable.removeAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.removeAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -802,7 +907,10 @@ describe('SDK', () => {
     expect(() =>
       eRC721Mintable.renounceAdmin({ publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94' }),
     ).rejects.toThrow(
-      '[ERC721Mintable.renounceAdmin] A contract should be deployed or loaded first!',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_renounceAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -813,7 +921,10 @@ describe('SDK', () => {
       await eRC721Mintable.renounceAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
-      '[ERC721Mintable.renounceAdmin] A valid address is required to renounce the admin role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_renounceAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -845,7 +956,7 @@ describe('SDK', () => {
       });
     };
     expect(renounceAdmin).rejects.toThrow(
-      '[ERC721Mintable.renounceAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.renounceAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -854,7 +965,12 @@ describe('SDK', () => {
 
     expect(() =>
       eRC721Mintable.isAdmin({ publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94' }),
-    ).rejects.toThrow('[ERC721Mintable.isAdmin] A contract should be deployed or loaded first!');
+    ).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_isAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
+    );
   });
 
   it('[isAdmin] - should return an Error because of bad address', () => {
@@ -864,7 +980,10 @@ describe('SDK', () => {
       await eRC721Mintable.isAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
-      '[ERC721Mintable.isAdmin] A valid address is required to check the admin role.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_isAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
     );
   });
 
@@ -891,7 +1010,7 @@ describe('SDK', () => {
       await eRC721Mintable.isAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
     };
     expect(isAdmin).rejects.toThrow(
-      '[ERC721Mintable.isAdmin] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.isAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -901,7 +1020,10 @@ describe('SDK', () => {
     const approveTransfer = async () =>
       eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS_2, tokenId: 1 });
     expect(approveTransfer).rejects.toThrow(
-      '[ERC721Mintable.approveTransfer] A contract should be deployed or loaded first',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_approveTransfer,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
     );
   });
 
@@ -914,7 +1036,10 @@ describe('SDK', () => {
     };
 
     expect(approveTransfer).rejects.toThrow(
-      '[ERC721Mintable.approveTransfer] A valid address "to" is required to transfer.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_approveTransfer,
+        message: ERROR_LOG.message.invalid_to_address,
+      }),
     );
   });
 
@@ -927,7 +1052,10 @@ describe('SDK', () => {
     };
 
     expect(approveTransfer).rejects.toThrow(
-      '[ERC721Mintable.approveTransfer] TokenId should be an integer.',
+      errorLogger({
+        location: ERROR_LOG.location.ERC721Mintable_approveTransfer,
+        message: ERROR_LOG.message.tokenId_must_be_integer,
+      }),
     );
   });
 
@@ -955,7 +1083,7 @@ describe('SDK', () => {
       await eRC721Mintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
     };
     expect(approveTransfer).rejects.toThrow(
-      '[ERC721Mintable.approveTransfer] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+      '[ERC721Mintable.approveTransfer] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -965,14 +1093,22 @@ describe('SDK', () => {
 
       await expect(() =>
         contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 }),
-      ).rejects.toThrow('[ERC721Mintable.setRoyalties] Contract needs to be deployed');
+      ).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_setRoyalties,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
+      );
     });
     it('[setRoyalties] - should throw when args are missing (address)', async () => {
       const contract = new ERC721Mintable(signer);
       contract.contractAddress = CONTRACT_ADDRESS;
 
       await expect(() => contract.setRoyalties({ publicAddress: null, fee: 1 })).rejects.toThrow(
-        '[ERC721Mintable.setRoyalties] Address is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_setRoyalties,
+          message: ERROR_LOG.message.no_address_supplied,
+        }),
       );
     });
     it('[setRoyalties] - should throw when args are missing (fee)', async () => {
@@ -982,7 +1118,10 @@ describe('SDK', () => {
       await expect(() =>
         contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: null }),
       ).rejects.toThrow(
-        '[ERC721Mintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_setRoyalties,
+          message: ERROR_LOG.message.fee_must_be_between_0_and_10000,
+        }),
       );
     });
     it('[setRoyalties] - should throw when "fee" is not a number', async () => {
@@ -992,7 +1131,10 @@ describe('SDK', () => {
       await expect(() =>
         contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 'number' }),
       ).rejects.toThrow(
-        '[ERC721Mintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_setRoyalties,
+          message: ERROR_LOG.message.fee_must_be_between_0_and_10000,
+        }),
       );
     });
     it('[setRoyalties] - should throw when "fee" is not a number larger than 0 and less than 10000', async () => {
@@ -1002,7 +1144,10 @@ describe('SDK', () => {
       await expect(() =>
         contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 0 }),
       ).rejects.toThrow(
-        '[ERC721Mintable.setRoyalties] Fee as numeric value between 0 and 10000 is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_setRoyalties,
+          message: ERROR_LOG.message.fee_must_be_between_0_and_10000,
+        }),
       );
     });
 
@@ -1028,7 +1173,7 @@ describe('SDK', () => {
         await eRC721Mintable.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
       };
       expect(setRoyalties).rejects.toThrow(
-        '[ERC721Mintable.setRoyalties] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+        '[ERC721Mintable.setRoyalties] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
       );
     });
   });
@@ -1040,7 +1185,10 @@ describe('SDK', () => {
       contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: null })).rejects.toThrow(
-        '[ERC721Mintable.royaltyInfo] Sell price is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_royaltyInfo,
+          message: ERROR_LOG.message.no_sell_price_supplied,
+        }),
       );
     });
     it('[royaltyInfo] - should throw when args are missing (tokenId)', async () => {
@@ -1049,7 +1197,10 @@ describe('SDK', () => {
       contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() => contract.royaltyInfo({ tokenId: null, sellPrice: null })).rejects.toThrow(
-        '[ERC721Mintable.royaltyInfo] TokenId is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_royaltyInfo,
+          message: ERROR_LOG.message.no_tokenId_supplied,
+        }),
       );
     });
     it('[royaltyInfo] - should throw when args are missing (sellPrice)', async () => {
@@ -1058,7 +1209,10 @@ describe('SDK', () => {
       contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() => contract.royaltyInfo({ tokenId: 1, sellPrice: null })).rejects.toThrow(
-        '[ERC721Mintable.royaltyInfo] Sell price is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_royaltyInfo,
+          message: ERROR_LOG.message.no_sell_price_supplied,
+        }),
       );
     });
     it('[royaltyInfo] - should not throw if TokenId is 0', async () => {
@@ -1091,7 +1245,7 @@ describe('SDK', () => {
         await eRC721Mintable.royaltyInfo({ tokenId: 1, sellPrice: 100 });
       };
       expect(royaltyInfo).rejects.toThrow(
-        '[ERC721Mintable.royaltyInfo] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+        '[ERC721Mintable.royaltyInfo] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
       );
     });
   });
@@ -1101,7 +1255,10 @@ describe('SDK', () => {
       const renounceOwnership = async () => eRC721Mintable.renounceOwnership();
 
       expect(renounceOwnership).rejects.toThrow(
-        '[ERC721Mintable.renounceOwnership] Contract needs to be deployed',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721Mintable_renounceOwnership,
+          message: ERROR_LOG.message.contract_not_deployed,
+        }),
       );
     });
 
@@ -1129,7 +1286,7 @@ describe('SDK', () => {
         await eRC721Mintable.renounceOwnership();
       };
       expect(renounceOwnership).rejects.toThrow(
-        '[ERC721Mintable.renounceOwnership] An error occured: code: UNKNOWN_ERROR, message: Error: test error',
+        '[ERC721Mintable.renounceOwnership] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
       );
     });
   });
