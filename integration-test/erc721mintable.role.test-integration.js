@@ -1,6 +1,5 @@
 import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
-import { BigNumber, utils } from 'ethers';
 import Auth from '../src/lib/Auth/Auth';
 import SDK from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/NFT/constants';
@@ -14,24 +13,11 @@ let publicAddress;
 let owner;
 let thirdUser;
 let privateKeyPublicAddress;
-let successfulTx;
 
-describe('E2E Test: Basic NFT (write)', () => {
+describe('E2E Test: Basic NFT (mint)', () => {
   jest.setTimeout(120 * 1000);
 
   beforeAll(async () => {
-    const options = {
-      wallet: {
-        accountKeysPath: 'integration-test/keys.json',
-      },
-      logging: {
-        quiet: true,
-      },
-    };
-
-    server = ganache.server(options);
-    await server.listen(8545);
-
     // grab the first account
     // eslint-disable-next-line global-require
     const { addresses: addr, private_keys: pk } = require('./keys.json');
@@ -63,74 +49,6 @@ describe('E2E Test: Basic NFT (write)', () => {
         contractURI: 'URI',
       },
     });
-  });
-
-  afterAll(async () => {
-    await server.close();
-  });
-
-  it('should return deployed contract', async () => {
-    expect(contractObject.contractAddress).not.toBe(null);
-  });
-
-  it('should return loaded contract', async () => {
-    const loadedContract = await sdk.loadContract({
-      template: TEMPLATES.ERC721Mintable,
-      contractAddress: contractObject.contractAddress,
-    });
-
-    expect(loadedContract).not.toBe(null);
-  });
-
-  it('should mint nft', async () => {
-    const tx = await contractObject.mint({
-      publicAddress: owner,
-      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
-    });
-
-    const receipt = await tx.wait();
-
-    successfulTx = receipt.transactionHash;
-
-    expect(receipt.status).toEqual(1);
-  });
-
-  it('should return details of transaction', async () => {
-    const txStatus = await sdk.getStatus({ txHash: successfulTx });
-    expect(txStatus.status).toEqual(1);
-  });
-
-  it('should not transfer nft if your are not the owner', async () => {
-    const tx = await contractObject.transfer({
-      from: thirdUser,
-      to: publicAddress,
-      tokenId: 0,
-    });
-
-    const txDetails = await sdk.getStatus({ txHash: tx.hash });
-
-    expect(txDetails.status).toEqual(0);
-  });
-
-  it('should transfer nft', async () => {
-    const tx = await contractObject.transfer({
-      from: owner,
-      to: publicAddress,
-      tokenId: 0,
-    });
-
-    const receipt = await tx.wait();
-
-    expect(receipt.status).toEqual(1);
-  });
-
-  it('should set contract URI', async () => {
-    const tx = await contractObject.setContractURI({
-      contractURI:
-        'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
-    });
-    const receipt = await tx.wait();
-    expect(receipt.status).toEqual(1);
   });
 
   it('should Grant & check Minter role', async () => {
@@ -257,57 +175,6 @@ describe('E2E Test: Basic NFT (write)', () => {
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
     expect(isAdmin).toEqual(false);
-  });
-
-  it('should transfer nft with approval', async () => {
-    // owner mints a token to themselves
-    const tx = await contractObject.mint({
-      publicAddress: owner,
-      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
-    });
-
-    await tx.wait();
-
-    // owner approves publicAddress to transfer token that he owns
-    const txApprove = await contractObject.approveTransfer({ to: publicAddress, tokenId: 1 });
-
-    await txApprove.wait();
-
-    const accountPublic = new Auth({
-      privateKey: privateKeyPublicAddress,
-      projectId: process.env.INFURA_PROJECT_ID,
-      secretId: process.env.INFURA_PROJECT_SECRET,
-      rpcUrl: 'http://0.0.0.0:8545',
-      chainId: 5,
-    });
-
-    const sdkPublic = new SDK(accountPublic);
-
-    const existing = await sdkPublic.loadContract({
-      template: TEMPLATES.ERC721Mintable,
-      contractAddress: contractObject.contractAddress,
-    });
-
-    // publicAddress transfers token of owner
-    const txTransfer = await existing.transfer({ from: owner, to: thirdUser, tokenId: 1 });
-
-    const receipt = await txTransfer.wait();
-
-    expect(receipt.status).toEqual(1);
-  });
-
-  it('should return setRoyalties', async () => {
-    await contractObject.setRoyalties({ publicAddress, fee: 1000 });
-    const infos = await contractObject.royaltyInfo({ tokenId: 1, sellPrice: 10 });
-
-    expect(infos).toStrictEqual([utils.getAddress(publicAddress), BigNumber.from('1')]);
-  });
-
-  it('should return setRoyalties when tokenId is zero', async () => {
-    await contractObject.setRoyalties({ publicAddress, fee: 1000 });
-    const infos = await contractObject.royaltyInfo({ tokenId: 0, sellPrice: 10 });
-
-    expect(infos).toStrictEqual([utils.getAddress(publicAddress), BigNumber.from('1')]);
   });
 
   it('should renounce contract ownership', async () => {
