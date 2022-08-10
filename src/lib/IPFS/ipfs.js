@@ -19,19 +19,7 @@ export default class IPFS {
     this.#ipfsUrl = ipfsUrl;
   }
 
-  saveMedia({ name, data }) {
-    // check media type by extension (check for npm package for validating extensions)
-    // this.#save()
-  }
+  saveMedia({ name, data }) {}
 
-  saveMetadata({ name, data }) {
-    // check if file is json
-    // this.#save()
-  }
-
-  #save({ name, data }) {
-    // check if data is local file or http via startsWith
-    // convert file to buffer and create stream
-    // post to ipfs url
-  }
+  saveMetadata({ name, data }) {}
 }
