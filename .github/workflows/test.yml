@@ -5,11 +5,11 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*.*.*
+      - dev
   pull_request:
     branches:
       - main
+      - dev
 
 jobs:
   test:
@@ -85,7 +85,7 @@ jobs:
       # - name: Bump npm version
       #   run: npm version ${{ github.ref_name }} -m "bump version to %s"
 
-      # - name: Commit version 
+      # - name: Commit version
       #   run: |
       #     git status
       #     git push
