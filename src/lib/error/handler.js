@@ -2,7 +2,13 @@
 import { ERROR_MESSAGE, ERROR_LOCATION } from '../errorMessages.js';
 
 export const networkErrorHandler = error => {
-  if (error['code'] !== undefined && error['reason'] !== undefined) {
+  if (error['code'] !== undefined && error['body'] !== undefined) {
+    const body = JSON.parse(error['body']);
+    return {
+      type: `[NETWORK.ERROR]`,
+      message: `code: ${error.code}, message: ${body.error?.message}`,
+    };
+  } else if (error['code'] !== undefined && error['reason'] !== undefined) {
     return {
       type: `[NETWORK.ERROR]`,
       message: `code: ${error.code}, message: ${error.reason}`,
