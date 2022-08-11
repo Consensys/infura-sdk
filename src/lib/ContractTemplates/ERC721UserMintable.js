@@ -33,7 +33,7 @@ export default class ERC721UserMintable {
    * (link to a JSON file describing the contract's metadata)
    * @returns void
    */
-  async deploy({ name, symbol, baseURI, maxSupply, price }) {
+  async deploy({ name, symbol, baseURI, maxSupply, price, maxTokenRequest }) {
     if (this.contractAddress || this.#contractDeployed) {
       throw new Error(
         errorLogger({
@@ -74,7 +74,7 @@ export default class ERC721UserMintable {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721UserMintable_deploy,
-          message: ERROR_LOG.message.no_contractURI_supplied,
+          message: ERROR_LOG.message.no_baseURI_supplied,
         }),
       );
     }
@@ -97,6 +97,15 @@ export default class ERC721UserMintable {
       );
     }
 
+    if (maxTokenRequest === undefined) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.invalid_max_token_request,
+        }),
+      );
+    }
+
     try {
       const factory = new ethers.ContractFactory(
         smartContractArtifact.abi,
@@ -107,14 +116,27 @@ export default class ERC721UserMintable {
       const priceInWei = utils.parseEther(price);
 
       // TODO remove rest parameter for destructuring (more secure)
-      const contract = await factory.deploy(name, symbol, baseURI, maxSupply, priceInWei);
+      const contract = await factory.deploy(
+        name,
+        symbol,
+        baseURI,
+        maxSupply,
+        priceInWei,
+        maxTokenRequest,
+      );
 
       this.#contractDeployed = await contract.deployed();
 
       this.contractAddress = contract.address;
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.deploy] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -152,7 +174,13 @@ export default class ERC721UserMintable {
       this.contractAddress = contractAddress;
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.loadContract] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_loadContract,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -166,10 +194,12 @@ export default class ERC721UserMintable {
       );
     }
 
-    // TODO: Review!!!
-    if (!quantity || !Number.isInteger(quantity) || !(quantity > 0 && quantity <= 20)) {
+    if (!quantity || !Number.isInteger(quantity) || !(quantity > 0)) {
       throw new Error(
-        '[ERC721UserMintable.mint] Quantity as integer value between 1 and 20 is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_mint,
+          message: ERROR_LOG.message.invalid_mint_quantity,
+        }),
       );
     }
 
@@ -182,7 +212,13 @@ export default class ERC721UserMintable {
       });
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.mint] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_mint,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -196,7 +232,13 @@ export default class ERC721UserMintable {
       return utils.formatEther(price);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.price] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_price,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -207,12 +249,20 @@ export default class ERC721UserMintable {
    */
   async reserve({ quantity }) {
     if (!this.#contractDeployed && !this.contractAddress) {
-      throw new Error('[ERC721UserMintable.reserve] A contract should be deployed or loaded first');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_reserve,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
     }
 
-    if (!quantity || !Number.isInteger(quantity) || !(quantity > 0 && quantity <= 20)) {
+    if (!quantity || !Number.isInteger(quantity) || !(quantity > 0 && quantity)) {
       throw new Error(
-        '[ERC721UserMintable.reserve] Quantity as integer value between 1 and 20 is required',
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_reserve,
+          message: ERROR_LOG.message.invalid_mint_quantity,
+        }),
       );
     }
 
@@ -220,7 +270,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.reserve(quantity);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.reserve] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_reserve,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -231,18 +287,34 @@ export default class ERC721UserMintable {
    */
   async reveal({ baseURI }) {
     if (!this.#contractDeployed && !this.contractAddress) {
-      throw new Error('[ERC721UserMintable.reveal] A contract should be deployed or loaded first!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_reveal,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
     }
 
     if (!baseURI) {
-      throw new Error('[ERC721UserMintable.reveal] A valid base uri is required!');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_reveal,
+          message: ERROR_LOG.message.invalid_baseURI,
+        }),
+      );
     }
 
     try {
       return await this.#contractDeployed.reveal(baseURI);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.reveal] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_reveal,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -285,7 +357,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.royaltyInfo(tokenId, sellPrice);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.royaltyInfo] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_royaltyInfo,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -299,7 +377,7 @@ export default class ERC721UserMintable {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.ERC721UserMintable_setContractURI,
+          location: ERROR_LOG.location.ERC721UserMintable_setBaseURI,
           message: ERROR_LOG.message.contract_not_deployed_or_loaded,
         }),
       );
@@ -308,8 +386,8 @@ export default class ERC721UserMintable {
     if (!baseURI) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.ERC721UserMintable_setContractURI,
-          message: ERROR_LOG.message.invalid_contractURI,
+          location: ERROR_LOG.location.ERC721UserMintable_setBaseURI,
+          message: ERROR_LOG.message.invalid_baseURI,
         }),
       );
     }
@@ -318,7 +396,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.setBaseURI(baseURI);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.setBaseURI] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setBaseURI,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -338,7 +422,12 @@ export default class ERC721UserMintable {
     }
 
     if (price === undefined) {
-      throw new Error('[ERC721UserMintable.setPrice] price cannot be undefined');
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setPrice,
+          message: ERROR_LOG.message.invalid_price,
+        }),
+      );
     }
 
     try {
@@ -346,7 +435,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.setPrice(priceInWei);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.setPrice] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setPrice,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -390,7 +485,13 @@ export default class ERC721UserMintable {
       });
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.setRoyalties] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setRoyalties,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -412,7 +513,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.toggleSale();
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.toggleSale] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_toggleSale,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -471,7 +578,13 @@ export default class ERC721UserMintable {
       );
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.transfer] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_transfer,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -515,7 +628,11 @@ export default class ERC721UserMintable {
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
-        `[${type}[ERC721UserMintable.setApprovalForAll] An error occured: ${message}`,
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_setApprovalForAll,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
       );
     }
   }
@@ -558,7 +675,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.approve(to, tokenId);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.approveTransfer] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_approveTransfer,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 
@@ -581,7 +704,11 @@ export default class ERC721UserMintable {
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
-        `[${type}[ERC721UserMintable.renounceOwnership] An error occured: ${message}`,
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_renounceOwnership,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
       );
     }
   }
@@ -604,7 +731,13 @@ export default class ERC721UserMintable {
       return await this.#contractDeployed.withdraw();
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
-      throw new Error(`[${type}[ERC721UserMintable.withdraw] An error occured: ${message}`);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_withdraw,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
     }
   }
 }

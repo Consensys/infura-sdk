@@ -62,6 +62,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
         baseURI: 'URI',
         maxSupply: 10,
         price: '0.00001',
+        maxTokenRequest: 1,
       },
     });
   });
