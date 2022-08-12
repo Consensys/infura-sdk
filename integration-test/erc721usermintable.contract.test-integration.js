@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import ganache from 'ganache';
-import { BigNumber, ethers, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 import Auth from '../src/lib/Auth/Auth';
 import SDK from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/NFT/constants';
@@ -177,7 +177,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
     // owner mints a token to themselves
     const tx = await contractObject.mint({
       quantity: 1,
-      cost: ethers.utils.parseEther('0.00002'),
+      cost: '0.00002',
     });
 
     await tx.wait();
