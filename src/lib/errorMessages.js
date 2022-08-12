@@ -80,6 +80,7 @@ export const ERROR_LOCATION = {
   ERC721Mintable_approveTransfer: '[ERC721Mintable.approveTransfer]',
   ERC721Mintable_renounceOwnership: '[ERC721Mintable.renounceOwnership]',
 
+  ERC721UserMintable_addGasPriceToOptions: '[ERC721UserMintable.addGasPriceToOptions]',
   ERC721UserMintable_deploy: '[ERC721UserMintable.deploy]',
   ERC721UserMintable_setRoyalties: '[ERC721UserMintable.setRoyalties]',
   ERC721UserMintable_royaltyInfo: '[ERC721UserMintable.royaltyInfo]',

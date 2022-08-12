@@ -30,7 +30,7 @@ export default class ERC721UserMintable {
       if (typeof parseFloat(gas) !== 'number') {
         throw new Error(
           errorLogger({
-            location: ERROR_LOG.location.ERC721Mintable_addGasPriceToOptions,
+            location: ERROR_LOG.location.ERC721UserMintable_addGasPriceToOptions,
             message: ERROR_LOG.message.invalid_gas_price_supplied,
           }),
         );
@@ -41,7 +41,11 @@ export default class ERC721UserMintable {
       } catch (error) {
         const { message, type } = networkErrorHandler(error);
         throw new Error(
-          `${type}[ERC721Mintable.addGasPriceToOptions] An error occured: ${message}`,
+          errorLogger({
+            location: ERROR_LOG.location.ERC721UserMintable_addGasPriceToOptions,
+            message: ERROR_LOG.message.an_error_occured,
+            options: `${type} ${message}`,
+          }),
         );
       }
     }
