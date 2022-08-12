@@ -177,8 +177,7 @@ export default class ERC721Mintable {
     }
 
     try {
-      let options = { gasLimit: this.#gasLimit };
-      options = this.#addGasPriceToOptions(options, gas);
+      const options = this.#addGasPriceToOptions({ gasLimit: this.#gasLimit }, gas);
       return await this.#contractDeployed.setRoyalties(publicAddress, fee, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);

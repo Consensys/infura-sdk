@@ -59,6 +59,7 @@ export const ERROR_LOCATION = {
   SDK_getTokenMetadata: '[SDK.getTokenMetadata]',
   SDK_getStatus: '[SDK.GetStatus]',
   Auth_constructor: '[Auth.constructor]',
+
   ERC721Mintable_addGasPriceToOptions: '[ERC721Mintable.addGasPriceToOptions]',
   ERC721Mintable_deploy: '[ERC721Mintable.deploy]',
   ERC721Mintable_setRoyalties: '[ERC721Mintable.setRoyalties]',
@@ -78,6 +79,7 @@ export const ERROR_LOCATION = {
   ERC721Mintable_setApprovalForAll: '[ERC721Mintable.setApprovalForAll]',
   ERC721Mintable_approveTransfer: '[ERC721Mintable.approveTransfer]',
   ERC721Mintable_renounceOwnership: '[ERC721Mintable.renounceOwnership]',
+
   ERC721UserMintable_deploy: '[ERC721UserMintable.deploy]',
   ERC721UserMintable_setRoyalties: '[ERC721UserMintable.setRoyalties]',
   ERC721UserMintable_royaltyInfo: '[ERC721UserMintable.royaltyInfo]',

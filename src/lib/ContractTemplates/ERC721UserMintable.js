@@ -23,6 +23,31 @@ export default class ERC721UserMintable {
     return this.#template;
   }
 
+  /* eslint-disable class-methods-use-this */
+  #addGasPriceToOptions(options, gas) {
+    const newOptions = options;
+    if (gas) {
+      if (typeof parseFloat(gas) !== 'number') {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.ERC721Mintable_addGasPriceToOptions,
+            message: ERROR_LOG.message.invalid_gas_price_supplied,
+          }),
+        );
+      }
+      try {
+        const gasPrice = ethers.utils.parseUnits(gas, 'gwei');
+        newOptions.gasPrice = gasPrice;
+      } catch (error) {
+        const { message, type } = networkErrorHandler(error);
+        throw new Error(
+          `${type}[ERC721Mintable.addGasPriceToOptions] An error occured: ${message}`,
+        );
+      }
+    }
+    return newOptions;
+  }
+
   /**
    * Deploy ERC721UserMintable Contract. Used by the SDK class
    * @param {string} name Name of the contract
@@ -33,7 +58,7 @@ export default class ERC721UserMintable {
    * (link to a JSON file describing the contract's metadata)
    * @returns void
    */
-  async deploy({ name, symbol, baseURI, maxSupply, price, maxTokenRequest }) {
+  async deploy({ name, symbol, baseURI, maxSupply, price, maxTokenRequest, gas = null }) {
     if (this.contractAddress || this.#contractDeployed) {
       throw new Error(
         errorLogger({
@@ -115,7 +140,7 @@ export default class ERC721UserMintable {
 
       const priceInWei = utils.parseEther(price);
 
-      // TODO remove rest parameter for destructuring (more secure)
+      const options = this.#addGasPriceToOptions({}, gas);
       const contract = await factory.deploy(
         name,
         symbol,
@@ -123,6 +148,7 @@ export default class ERC721UserMintable {
         maxSupply,
         priceInWei,
         maxTokenRequest,
+        options,
       );
 
       this.#contractDeployed = await contract.deployed();
@@ -247,7 +273,7 @@ export default class ERC721UserMintable {
    * @param quantity The quantity of tokens to mint to the owner (1-20)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async reserve({ quantity }) {
+  async reserve({ quantity, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -267,7 +293,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.reserve(quantity);
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.reserve(quantity, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -285,7 +312,7 @@ export default class ERC721UserMintable {
    * @param baseURI The baseURI of the contract
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async reveal({ baseURI }) {
+  async reveal({ baseURI, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -305,7 +332,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.reveal(baseURI);
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.reveal(baseURI, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -373,7 +401,7 @@ export default class ERC721UserMintable {
    * (URI to a JSON file describing the contract's metadata)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async setBaseURI({ baseURI }) {
+  async setBaseURI({ baseURI, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -393,7 +421,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.setBaseURI(baseURI);
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.setBaseURI(baseURI, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -411,7 +440,7 @@ export default class ERC721UserMintable {
    * @param price Price of the mint (per token) in Ether as a string
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async setPrice({ price }) {
+  async setPrice({ price, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -432,7 +461,8 @@ export default class ERC721UserMintable {
 
     try {
       const priceInWei = utils.parseEther(price);
-      return await this.#contractDeployed.setPrice(priceInWei);
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.setPrice(priceInWei, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -451,7 +481,7 @@ export default class ERC721UserMintable {
    * @param {number} - fee
    * @returns {Promise<ethers.providers.TransactionResponse>} - Transaction
    */
-  async setRoyalties({ publicAddress, fee }) {
+  async setRoyalties({ publicAddress, fee, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -480,9 +510,9 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.setRoyalties(publicAddress, fee, {
-        gasLimit: this.#gasLimit,
-      });
+      let options = { gasLimit: this.#gasLimit };
+      options = this.#addGasPriceToOptions(options, gas);
+      return await this.#contractDeployed.setRoyalties(publicAddress, fee, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -499,7 +529,7 @@ export default class ERC721UserMintable {
    * Toggles the sale status of the contract
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async toggleSale() {
+  async toggleSale(gas = null) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -510,7 +540,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.toggleSale();
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.toggleSale(options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -530,7 +561,7 @@ export default class ERC721UserMintable {
    * @param {number} tokenId ID of the token that will be transfered
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async transfer({ from, to, tokenId }) {
+  async transfer({ from, to, tokenId, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -568,13 +599,12 @@ export default class ERC721UserMintable {
     }
 
     try {
+      const options = this.#addGasPriceToOptions({ gasLimit: this.#gasLimit }, gas);
       return await this.#contractDeployed['safeTransferFrom(address,address,uint256)'](
         from,
         to,
         tokenId,
-        {
-          gasLimit: this.#gasLimit,
-        },
+        options,
       );
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
@@ -595,7 +625,7 @@ export default class ERC721UserMintable {
    *  or revoked (false)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async setApprovalForAll({ to, approvalStatus }) {
+  async setApprovalForAll({ to, approvalStatus, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -624,7 +654,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.setApprovalForAll(to, approvalStatus);
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.setApprovalForAll(to, approvalStatus, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -643,7 +674,7 @@ export default class ERC721UserMintable {
    * @param {number} tokenId tokenId the nft id to transfer.
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async approveTransfer({ to, tokenId }) {
+  async approveTransfer({ to, tokenId, gas = null }) {
     if (!this.#contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -672,7 +703,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.approve(to, tokenId);
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.approve(to, tokenId, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -689,7 +721,7 @@ export default class ERC721UserMintable {
    * Renouncing ownership of the smart contract (will leave the contract without an owner).
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async renounceOwnership() {
+  async renounceOwnership(gas = null) {
     if (!this.contractAddress && !this.#contractDeployed) {
       throw new Error(
         errorLogger({
@@ -700,7 +732,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.renounceOwnership();
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.renounceOwnership(options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -717,7 +750,7 @@ export default class ERC721UserMintable {
    * Withdraws ether balance to owner address
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async withdraw() {
+  async withdraw(gas = null) {
     if (!this.contractAddress && !this.#contractDeployed) {
       throw new Error(
         errorLogger({
@@ -728,7 +761,8 @@ export default class ERC721UserMintable {
     }
 
     try {
-      return await this.#contractDeployed.withdraw();
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.withdraw(options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
