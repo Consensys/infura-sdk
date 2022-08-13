@@ -224,7 +224,7 @@ export default class ERC721UserMintable {
       );
     }
 
-    if (!quantity || !Number.isInteger(quantity) || !(quantity > 0)) {
+    if (!quantity || !Number.isInteger(quantity) || quantity < 1) {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721UserMintable_mint,
@@ -432,6 +432,167 @@ export default class ERC721UserMintable {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721UserMintable_setBaseURI,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * Add Admin function: Add the 'admin' role to an address. Only callable by
+   * addresses with the admin role.
+   * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (30000 gas estimated)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
+  async addAdmin({ publicAddress, gas = null }) {
+    if (!this.#contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_addAdmin,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!publicAddress || !ethers.utils.isAddress(publicAddress)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_addAdmin,
+          message: ERROR_LOG.message.invalid_public_address,
+        }),
+      );
+    }
+
+    try {
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.grantRole(this.ADMIN_ROLE, publicAddress, options);
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_addAdmin,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * Remove Admin function: Remove the 'admin' role to an address. Only callable by
+   * addresses with the admin role.
+   * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (40000 gas estimated)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
+  async removeAdmin({ publicAddress, gas = null }) {
+    if (!this.#contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_removeAdmin,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!publicAddress || !ethers.utils.isAddress(publicAddress)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_removeAdmin,
+          message: ERROR_LOG.message.invalid_public_address,
+        }),
+      );
+    }
+
+    try {
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.revokeRole(this.ADMIN_ROLE, publicAddress, options);
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_removeAdmin,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * Renounce Admin function: Remove the 'admin' role to an address. Only callable by
+   * address invoking the request.
+   * @param {string} publicAddress the address that will loose the 'minter' role
+   * @notice Warning: This method will consume gas (30000 gas estimated)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
+  async renounceAdmin({ publicAddress, gas = null }) {
+    if (!this.#contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_renounceAdmin,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!publicAddress || !ethers.utils.isAddress(publicAddress)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_renounceAdmin,
+          message: ERROR_LOG.message.invalid_public_address,
+        }),
+      );
+    }
+
+    try {
+      const options = this.#addGasPriceToOptions({}, gas);
+      return await this.#contractDeployed.renounceRole(this.ADMIN_ROLE, publicAddress, options);
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_renounceAdmin,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * Is Admin function: Check whether an address has the 'admin' role
+   * @param {string} publicAddress the address to check
+   * @returns {Promise<boolean>} Promise that will return a boolean
+   */
+  async isAdmin({ publicAddress }) {
+    if (!this.#contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_isAdmin,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!publicAddress || !ethers.utils.isAddress(publicAddress)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_isAdmin,
+          message: ERROR_LOG.message.invalid_public_address,
+        }),
+      );
+    }
+
+    try {
+      return await this.#contractDeployed.hasRole(this.ADMIN_ROLE, publicAddress);
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_isAdmin,
           message: ERROR_LOG.message.an_error_occured,
           options: `${type} ${message}`,
         }),

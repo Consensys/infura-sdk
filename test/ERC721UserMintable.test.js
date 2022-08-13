@@ -1,6 +1,7 @@
 import { ContractFactory, ethers } from 'ethers';
 import ERC721UserMintable from '../src/lib/ContractTemplates/ERC721UserMintable';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 let eRC721UserMintable;
 let signer;
@@ -18,6 +19,10 @@ describe('SDK', () => {
         setBaseURI: jest.fn(),
         setApprovalForAll: jest.fn(),
         approve: jest.fn(),
+        grantRole: jest.fn(),
+        hasRole: jest.fn(),
+        renounceRole: jest.fn(),
+        revokeRole: jest.fn(),
         setRoyalties: jest.fn(),
         royaltyInfo: jest.fn(),
         renounceOwnership: jest.fn(),
@@ -34,6 +39,9 @@ describe('SDK', () => {
   jest.spyOn(ethers, 'Contract').mockImplementation(() => ({}));
   jest.spyOn(ethers.utils, 'parseEther').mockImplementation(() => 1000000000000000000);
   jest.spyOn(ethers.utils, 'formatEther').mockImplementation(() => 1);
+  jest
+    .spyOn(ethers.utils, 'parseUnits')
+    .mockImplementation(() => ({ _hex: '0x3a35294400', _isBigNumber: true }));
 
   beforeAll(() => {
     signer = 'signer';
@@ -131,6 +139,34 @@ describe('SDK', () => {
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
   });
 
+  it('[Deploy] - should deploy with gas passed', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer, contractAddress);
+
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'symbol',
+      baseURI: 'URI',
+      maxSupply: 10,
+      price: ethers.utils.parseEther(1),
+      maxTokenRequest: 1,
+      gas: 250,
+    });
+    const gasPrice = { _hex: '0x3a35294400', _isBigNumber: true }; // 250 in BigNumber
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledWith(
+      'name',
+      'symbol',
+      'URI',
+      10,
+      ethers.utils.parseEther(1),
+      1,
+      {
+        gasPrice,
+      },
+    );
+  });
+
   it('[Mint] - should return an Error if contract is not deployed', () => {
     eRC721UserMintable = new ERC721UserMintable(signer);
 
@@ -161,6 +197,35 @@ describe('SDK', () => {
     };
     expect(myNFT).rejects.toThrow(
       '[ERC721UserMintable.mint] Quantity as integer value greater than 0 required.',
+    );
+  });
+
+  it('[Mint] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        mint: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const myNFT = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.mint({
+        quantity: 1,
+        value: 100,
+      });
+    };
+    expect(myNFT).rejects.toThrow(
+      '[ERC721UserMintable.mint] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -209,12 +274,26 @@ describe('SDK', () => {
     expect(contract).rejects.toThrow('[ERC721UserMintable.loadContract] Invalid contract address.');
   });
 
+  it('[LoadContract] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ethers, 'Contract').mockImplementationOnce(() => {
+      throw new Error('test error');
+    });
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const contract = async () => {
+      await eRC721UserMintable.loadContract({ contractAddress: CONTRACT_ADDRESS });
+    };
+    expect(contract).rejects.toThrow(
+      '[ERC721UserMintable.loadContract] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
   it('[LoadContract] - should load the contract', async () => {
     eRC721UserMintable = new ERC721UserMintable(signer);
 
     await eRC721UserMintable.loadContract({ contractAddress: CONTRACT_ADDRESS });
 
-    expect(ethers.Contract).toHaveBeenCalledTimes(1);
+    expect(ethers.Contract).toHaveBeenCalledTimes(2);
   });
 
   it('[Transfer] - should return an Error if contract is not deployed', () => {
@@ -224,6 +303,36 @@ describe('SDK', () => {
       eRC721UserMintable.transfer({ from: ACCOUNT_ADDRESS, to: ACCOUNT_ADDRESS_2, tokenId: 1 });
     expect(transferNft).rejects.toThrow(
       '[ERC721UserMintable.transfer] Contract not deployed or loaded.',
+    );
+  });
+
+  it('[Transfer] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        'safeTransferFrom(address,address,uint256)': () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const transferNft = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.transfer({
+        from: ACCOUNT_ADDRESS,
+        to: ACCOUNT_ADDRESS_2,
+        tokenId: 1,
+      });
+    };
+    expect(transferNft).rejects.toThrow(
+      '[ERC721UserMintable.transfer] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -483,6 +592,293 @@ describe('SDK', () => {
     await eRC721UserMintable.approveTransfer({ to: ACCOUNT_ADDRESS, tokenId: 1 });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[addadmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        grantRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const addAdmin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.addAdmin({ publicAddress: ACCOUNT_ADDRESS });
+    };
+    expect(addAdmin).rejects.toThrow(
+      '[ERC721UserMintable.addAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
+  it('[addAdmin] - should add admin', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'sumbol',
+      baseURI: 'URI',
+      maxSupply: 10,
+      price: ethers.utils.parseEther(1),
+      maxTokenRequest: 1,
+    });
+    await eRC721UserMintable.addAdmin({
+      publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+    });
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[removeAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    expect(() =>
+      eRC721UserMintable.removeAdmin({
+        publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94',
+      }),
+    ).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721UserMintable_removeAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
+    );
+  });
+
+  it('[removeAdmin] - should return an Error because of bad address', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const admin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.removeAdmin({ publicAddress: '' });
+    };
+    expect(admin).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721UserMintable_removeAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
+    );
+  });
+
+  it('[removeAdmin] - should remove admin', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'sumbol',
+      baseURI: 'URI',
+      maxSupply: 10,
+      price: ethers.utils.parseEther(1),
+      maxTokenRequest: 1,
+    });
+    await eRC721UserMintable.removeAdmin({
+      publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+    });
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[removeAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        revokeRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const removeAdmin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+
+      await eRC721UserMintable.removeAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
+    };
+    expect(removeAdmin).rejects.toThrow(
+      '[ERC721UserMintable.removeAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
+  it('[renounceAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    expect(() =>
+      eRC721UserMintable.renounceAdmin({
+        publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94',
+      }),
+    ).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721UserMintable_renounceAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
+    );
+  });
+
+  it('[renounceAdmin] - should return an Error because of bad address', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+    const admin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.renounceAdmin({ publicAddress: '' });
+    };
+    expect(admin).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721UserMintable_renounceAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
+    );
+  });
+
+  it('[renounceAdmin] - should renounce admin', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'sumbol',
+      baseURI: 'URI',
+      maxSupply: 10,
+      price: ethers.utils.parseEther(1),
+      maxTokenRequest: 1,
+    });
+    await eRC721UserMintable.renounceAdmin({
+      publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+    });
+
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[renounceAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        renounceRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721UserMintable = new ERC721UserMintable(signer);
+    const renounceAdmin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+
+      await eRC721UserMintable.renounceAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
+    };
+    expect(renounceAdmin).rejects.toThrow(
+      '[ERC721UserMintable.renounceAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+    );
+  });
+
+  it('[isAdmin] - should return an Error if contract is not deployed', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    expect(() =>
+      eRC721UserMintable.isAdmin({ publicAddress: '0xB3C24BB465b682225F8C87b29a031921B764Ed94' }),
+    ).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721UserMintable_isAdmin,
+        message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+      }),
+    );
+  });
+
+  it('[isAdmin] - should return an Error because of bad address', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+    const admin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.isAdmin({ publicAddress: '' });
+    };
+    expect(admin).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC721UserMintable_isAdmin,
+        message: ERROR_LOG.message.invalid_public_address,
+      }),
+    );
+  });
+
+  it('[isAdmin] - should renounce admin', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'sumbol',
+      baseURI: 'URI',
+      maxSupply: 10,
+      price: ethers.utils.parseEther(1),
+      maxTokenRequest: 1,
+    });
+    await eRC721UserMintable.isAdmin({
+      publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+    });
+    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('[isAdmin] - should return an Error if there is a network error', async () => {
+    jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+      deployed: () => ({
+        hasRole: () => {
+          throw new Error('test error');
+        },
+      }),
+    }));
+    eRC721UserMintable = new ERC721UserMintable(signer);
+    const isAdmin = async () => {
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'sumbol',
+        baseURI: 'URI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+
+      await eRC721UserMintable.isAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
+    };
+    expect(isAdmin).rejects.toThrow(
+      '[ERC721UserMintable.isAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+    );
   });
 
   describe('setRoyalties', () => {
