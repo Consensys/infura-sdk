@@ -29,6 +29,7 @@ export const ERROR_MESSAGE = {
   invalid_template: 'Invalid template.',
   invalid_transaction_hash: 'Invalid transaction hash.',
   invalid_provider: 'Invalid provider.',
+  invalid_gas_price_supplied: 'Invalid value for gas provided',
 
   contract_already_deployed: 'Contract already deployed.',
   contract_already_loaded: 'Contract already loaded.',
@@ -54,6 +55,7 @@ export const ERROR_LOCATION = {
   SDK_getTokenMetadata: '[SDK.getTokenMetadata]',
   SDK_getStatus: '[SDK.GetStatus]',
   Auth_constructor: '[Auth.constructor]',
+  ERC721Mintable_addGasPriceToOptions: '[ERC721Mintable.addGasPriceToOptions]',
   ERC721Mintable_deploy: '[ERC721Mintable.deploy]',
   ERC721Mintable_setRoyalties: '[ERC721Mintable.setRoyalties]',
   ERC721Mintable_royaltyInfo: '[ERC721Mintable.royaltyInfo]',
