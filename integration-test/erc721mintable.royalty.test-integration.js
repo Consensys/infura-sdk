@@ -1,14 +1,13 @@
 import { config as loadEnv } from 'dotenv';
-import ganache from 'ganache';
 import { BigNumber, utils } from 'ethers';
 import Auth from '../src/lib/Auth/Auth';
 import SDK from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/NFT/constants';
+import { faker } from '@faker-js/faker';
 
 loadEnv();
 let sdk;
 let account;
-let server;
 let contractObject;
 let publicAddress;
 let owner;
@@ -56,7 +55,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
       params: {
         name: 'Cool Contract',
         symbol: 'CC',
-        contractURI: 'URI',
+        contractURI: faker.internet.url(),
       },
     });
   });

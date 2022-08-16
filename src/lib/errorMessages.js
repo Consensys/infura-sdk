@@ -43,6 +43,7 @@ export const ERROR_MESSAGE = {
   only_privateKey_or_provider_required: 'Only privateKey or provider required.',
   chain_not_supported: 'Chain not supported.',
   an_error_occured: 'An error occured',
+  an_error_occured_with_ipfs_api: 'An error occured with infura ipfs api',
 };
 
 export const ERROR_LOCATION = {
@@ -56,6 +57,8 @@ export const ERROR_LOCATION = {
   SDK_getStatus: '[SDK.GetStatus]',
   Auth_constructor: '[Auth.constructor]',
   ERC721Mintable_addGasPriceToOptions: '[ERC721Mintable.addGasPriceToOptions]',
+  Ipfs_constructor: '[IPFS.constructor]',
+  Ipfs_uploadFile: '[IPFS.uploadFile]',
   ERC721Mintable_deploy: '[ERC721Mintable.deploy]',
   ERC721Mintable_setRoyalties: '[ERC721Mintable.setRoyalties]',
   ERC721Mintable_royaltyInfo: '[ERC721Mintable.royaltyInfo]',

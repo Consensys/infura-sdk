@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+import axios from 'axios';
 import { HttpService } from '../src/services/httpService';
 
 // Constant
@@ -34,5 +36,14 @@ describe('httpService', () => {
     const instance = new HttpService(BASEURL, APIKEY);
     await instance.post('/api/people/1');
     expect(pushHttpService).toHaveBeenCalled();
+  });
+
+  it('should get stream using axios', async () => {
+    jest.spyOn(axios, 'get').mockImplementation(async () => ({
+      status: 200,
+    }));
+
+    const res = await HttpService.getImageStream(faker.internet.url());
+    expect(res.status).toBe(200);
   });
 });
