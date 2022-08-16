@@ -18,6 +18,7 @@ export const ERROR_MESSAGE = {
   no_to_address: 'No to address.',
   no_rpcURL: 'No rpcURL.',
   no_privateKey: 'No privateKey.',
+  no_provider: 'No provider.',
 
   invalid_contract_address: 'Invalid contract address.',
   invalid_account_address: 'Invalid account address.',
@@ -27,6 +28,7 @@ export const ERROR_MESSAGE = {
   invalid_contractURI: 'Invalid contractURI.',
   invalid_template: 'Invalid template.',
   invalid_transaction_hash: 'Invalid transaction hash.',
+  invalid_provider: 'Invalid provider.',
   invalid_gas_price_supplied: 'Invalid value for gas provided',
 
   contract_already_deployed: 'Contract already deployed.',
@@ -38,7 +40,7 @@ export const ERROR_MESSAGE = {
 
   tokenId_must_be_integer: 'TokenId must be integer.',
   approvalStatus_must_be_boolean: 'approvalStatus must be boolean.',
-  only_privateKey_or_provider_required: 'Only privateKey or provider required',
+  only_privateKey_or_provider_required: 'Only privateKey or provider required.',
   chain_not_supported: 'Chain not supported.',
   an_error_occured: 'An error occured',
 };
@@ -72,4 +74,8 @@ export const ERROR_LOCATION = {
   ERC721Mintable_setApprovalForAll: '[ERC721Mintable.setApprovalForAll]',
   ERC721Mintable_approveTransfer: '[ERC721Mintable.approveTransfer]',
   ERC721Mintable_renounceOwnership: '[ERC721Mintable.renounceOwnership]',
+  ContractFactory_factory: '[ContractFactory.factory]',
+  Provider_getProvider: '[Provider.getProvider]',
+  Provider_getInjectedProvider: '[Provider.getInjectedProvider]',
+  Signer_constructor: '[Signer.constructor]',
 };
