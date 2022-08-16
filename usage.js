@@ -20,12 +20,6 @@ const acc = new Auth({
   chainId: 5,
 });
 
-///// IPFS ////
-// const ipfs = new IPFS({ projectId, projectSecret, ipfsUrl });
-// const image = await ipfs.saveMedia({name: 'file_name', data: 'local_image_path_or_http_image_url'}); // returns full url with image hash
-// const metadata = await ipfs.saveMetadata({name: 'file_name', data: 'local_file_path_or_http_json_url_or_js_object'}); // input only json, returns metadata hash
-//////////////
-
 ///////// Alternative Auth Instantiation with MetaMask /////////
 // When using SDK in a browser
 //
@@ -40,6 +34,17 @@ const acc = new Auth({
 //////////////////////////////////////////////////////////////
 
 const sdk = new SDK(acc);
+
+const ipfs = new IPFS({
+  projectId: process.env.INFURA_IPFS_PROJECT_ID,
+  projectSecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+  ipfsUrl: process.env.INFURA_IPFS_ENDPOINT,
+});
+
+const { Hash: hashContractImage } = ipfs.uploadFile({
+  name: 'contract',
+  source: 'https://cdn.consensys.net/uploads/2018/10/featured-infura.jpg',
+});
 
 // Create a new contract
 // const newContract = await sdk.deploy({
