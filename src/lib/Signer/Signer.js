@@ -5,11 +5,28 @@
  */
 
 import { ethers } from 'ethers';
+import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class Signer {
   static getWallet(privateKey, provider) {
-    if (!privateKey) throw new Error('[Signer.constructor] privateKey is missing!');
-    if (!provider) throw new Error('[Signer.constructor] provider is missing!');
+    if (!privateKey) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Signer_constructor,
+          message: ERROR_LOG.message.no_privateKey,
+        }),
+      );
+    }
+
+    if (!provider) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Signer_constructor,
+          message: ERROR_LOG.message.no_provider,
+        }),
+      );
+    }
+
     return new ethers.Wallet(privateKey, provider);
   }
 }
