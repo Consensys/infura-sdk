@@ -15,3 +15,5 @@ export const isURI = URI => !!URI.match(/^(ipfs|http|https):\/\//gi);
 export const formatRpcUrl = ({ chainId, projectId }) => {
   return `${chainUrls[chainId]}/v3/${projectId}`;
 };
+
+export const toBase64 = ({ projectId, secretId }) => btoa(`${projectId}:${secretId}`);

@@ -34,6 +34,16 @@ const acc = new Auth({
 
 const sdk = new SDK(acc);
 
+const ipfs = new IPFS({
+  projectId: process.env.INFURA_IPFS_PROJECT_ID,
+  projectSecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+  ipfsUrl: process.env.INFURA_IPFS_ENDPOINT,
+});
+
+const hash = ipfs.uploadFile({
+  source: './integration-test/ipfs-test/infura.png',
+});
+
 // Create a new contract
 // const newContract = await sdk.deploy({
 //   template: TEMPLATES.ERC721Mintable,

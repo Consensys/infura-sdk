@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+import axios from 'axios';
 import { HttpService } from '../src/services/httpService';
 
 // Constant
