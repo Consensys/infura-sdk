@@ -28,10 +28,10 @@ export default class SDK {
     this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
   }
 
-  /** Get provider
-   * @returns {Promise<object>} return the provider
+  /** Get signer
+   * @returns {Promise<object>} return the signer
    */
-  async getProvider() {
+  async getSigner() {
     return this.#auth.getSigner();
   }
 
@@ -59,7 +59,7 @@ export default class SDK {
       );
     }
 
-    const signer = await this.getProvider();
+    const signer = await this.getSigner();
     const contract = ContractFactory.factory(template, signer);
 
     await contract.deploy(params);
@@ -91,7 +91,7 @@ export default class SDK {
       );
     }
 
-    const signer = await this.getProvider();
+    const signer = await this.getSigner();
     const contract = ContractFactory.factory(template, signer);
 
     await contract.loadContract({ contractAddress });
@@ -119,6 +119,16 @@ export default class SDK {
     } = await this.#httpClient.get(apiUrl);
 
     return { symbol, name, tokenType };
+  }
+
+  /**
+   * Returns the current network's gas price in Gwei for transactions
+   * @returns Current price of gas in Gwei
+   */
+  async getGasPrice() {
+    const signer = await this.getSigner();
+    const gasPrice = await signer.getGasPrice();
+    return utils.formatUnits(gasPrice, 'gwei');
   }
 
   /**
@@ -218,7 +228,7 @@ export default class SDK {
       );
     }
 
-    const signer = await this.getProvider();
+    const signer = await this.getSigner();
     return signer.provider.getTransactionReceipt(txHash);
   }
 }

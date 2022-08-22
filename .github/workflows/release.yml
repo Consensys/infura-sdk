@@ -1,0 +1,62 @@
+---
+# Heavily inspired by ganache's release workflow: https://github.com/trufflesuite/ganache/blob/develop/.github/workflows/release.yml
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: v18.1.0
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Create changelog
+        run: npm run generate:changelog
+
+      # Release kind: 
+      # More than 3 feature == minor (inc Y in "X.Y.Z")
+      # Otherwise, "patch" (inc Z in "X.Y.Z")
+      # TODO: implement "major" kind (inc X in "X.Y.Z")
+      - name: Set release kind (minor, patch) based on number of features
+        run: ./scripts/releaseKind.sh
+
+      # Will increase package.json without running commit hooks, without creating a git tag
+      - name: Bump version in package.json
+        run: npm version "$KIND" --commit-hooks=false --git-tag-version=false
+
+      # - name: Update files (sonar-project.properties, _version.js, ...)
+      #   run: echo "update files"
+
+      # - name: Update documentation (gitbook infura, ...)
+      #   run: echo "update documentation"
+
+      - name: Setup git info / add & commit / create tag
+        run: ./scripts/releaseGit.sh
+
+      - name: Release NPM
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: 'public'
+      
+      - name: Merge changes back to dev
+        run: ./scripts/merge.sh
+
+      #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
+      #    registry: https://registry.nft.consensys-solutions.net

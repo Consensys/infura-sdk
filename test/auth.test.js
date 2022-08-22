@@ -62,7 +62,12 @@ describe('Auth', () => {
           chainId: 5,
           provider: new FakeProvider(),
         }),
-    ).toThrow('[Provider] Invalid provider given');
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Provider_getInjectedProvider,
+        message: ERROR_LOG.message.invalid_provider,
+      }),
+    );
   });
 
   it('should throw when args are missing (projectId)', () => {
