@@ -57,9 +57,10 @@ export default class ERC721UserMintable {
    * @param {string} name Name of the contract
    * @param {string} symbol Symbol of the contract
    * @param {string} baseURI baseURI for the contract
-   * @param {string} maxSupply Maximum supply of tokens for the contract
-   * @param {string} maxSupply Price to mint one token
    * (link to a JSON file describing the contract's metadata)
+   * @param {string} maxSupply Maximum supply of tokens for the contract
+   * @param {string} price Price to mint one token
+   * @param {string} maxTokenRequest Maximum tokens that can be requested per tx
    * @returns void
    */
   async deploy({ name, symbol, baseURI, maxSupply, price, maxTokenRequest, gas = null }) {
@@ -90,7 +91,7 @@ export default class ERC721UserMintable {
       );
     }
 
-    if (symbol === undefined) {
+    if (!symbol) {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721UserMintable_deploy,
@@ -602,7 +603,7 @@ export default class ERC721UserMintable {
 
   /**
    * Sets the price (in Ether) of the mint
-   * @param price Price of the mint (per token) in Ether as a string
+   * @param {string} price Price of the mint (per token) in Ether as a string
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setPrice({ price, gas = null }) {

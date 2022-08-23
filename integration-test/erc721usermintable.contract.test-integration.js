@@ -50,7 +50,6 @@ describe('E2E Test: User Payable NFT (write)', () => {
       secretId,
       rpcUrl,
       chainId,
-      IPFS,
     });
 
     sdk = new SDK(account);
@@ -65,10 +64,6 @@ describe('E2E Test: User Payable NFT (write)', () => {
         maxTokenRequest: 1,
       },
     });
-  });
-
-  afterAll(async () => {
-    await server.close();
   });
 
   it('should return deployed contract', async () => {
