@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import Provider from '../src/lib/Provider/Provider.js';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 loadEnv();
 
@@ -9,7 +10,12 @@ describe('Provider', () => {
   //   jest.spyOn(ethers.providers, 'getDefaultProvider').mockImplementation(() => ({}));
 
   it('should throw when args are missing (rpcUrl)', () => {
-    expect(() => Provider.getProvider(null)).toThrow('[Provider.getProvider] rpcUrl is missing!');
+    expect(() => Provider.getProvider(null)).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Provider_getProvider,
+        message: ERROR_LOG.message.no_rpcURL,
+      }),
+    );
   });
 
   it('should return the provider', () => {

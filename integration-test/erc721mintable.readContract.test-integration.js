@@ -60,6 +60,7 @@ describe('E2E Test: Sdk (read)', () => {
       });
       const expectedTokenMetadata = {
         contract: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
+        attributes: [],
         tokenId: '0',
         name: '',
         description: '',

@@ -1,6 +1,7 @@
 import ERC721Mintable from '../ContractTemplates/ERC721Mintable.js';
 import ERC721UserMintable from '../ContractTemplates/ERC721UserMintable.js';
 import { TEMPLATES } from './constants.js';
+import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class ContractFactory {
   static factory(template, signer) {
@@ -10,7 +11,12 @@ export default class ContractFactory {
       case TEMPLATES.ERC721UserMintable:
         return new ERC721UserMintable(signer);
       default:
-        throw new Error('Invalid template provided');
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.ContractFactory_factory,
+            message: ERROR_LOG.message.invalid_template,
+          }),
+        );
     }
   }
 }
