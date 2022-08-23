@@ -43,6 +43,6 @@ describe('ContractFactory', () => {
 
     const contract = () => ContractFactory.factory(template, signer);
 
-    expect(contract).toThrow('Invalid template provided');
+    expect(contract).toThrow('[ContractFactory.factory] Invalid template.');
   });
 });
