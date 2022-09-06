@@ -126,6 +126,7 @@ export default class ERC721Mintable extends BaseERC721 {
     }
 
     if (!publicAddress || !ethers.utils.isAddress(publicAddress)) {
+      // throw new Error('[ERC721Mintable.mint] A valid address is required to mint.');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_mint,
@@ -135,6 +136,7 @@ export default class ERC721Mintable extends BaseERC721 {
     }
 
     if (!tokenURI) {
+      // throw new Error('[ERC721Mintable.mint] A tokenURI is required to mint.');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721Mintable_mint,
