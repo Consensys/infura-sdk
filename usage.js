@@ -188,3 +188,48 @@ console.log(minted);
 
 // const isMinter = await newContract.isMinter({ publicAddress: process.env.WALLET_PUBLIC_ADDRESS });
 // console.log(isMinter);
+
+// ------------------------------ IPFS -------------------------------------
+
+// const metadata = new MetaData({
+//   projectId: process.env.INFURA_IPFS_PROJECT_ID,
+//   projectSecret: process.env.INFURA_IPFS_PROJECT_SECRET
+// });
+
+// const hashNft = await metadata.storeNftMetadata({
+//   description: "consensys logo",
+//   external_url: "https://getvectorlogo.com/wp-content/uploads/2019/10/consensys-vector-logo.png",
+//   image: "./consensys-1.png",
+//   name: "Consensys",
+//   attributes: [
+//       {
+//           traitType: "Background",
+//           value: "white"
+//       }
+//   ]
+//   }
+// });
+
+// const hashCollection = await metadata.storeCollectionMetadata({
+//   name: "OpenSea Creatures",
+//   description: "OpenSea Creatures are adorable aquatic beings primarily for demonstrating what can be done using the OpenSea platform. Adopt one today to try out all the OpenSea buying, selling, and bidding feature set.",
+//   image: "external-link-url/image.png",
+//   external_link: "external-link-url",
+//   seller_fee_basis_points: 100,
+//   fee_recipient: "0xA97F337c39cccE66adfeCB2BF99C1DdC54C2D721"
+// });
+
+// const hashBaseUrl = await metadata.storeBaseURI([
+//   {
+//   description: "consensys logo",
+//   external_url: "https://getvectorlogo.com/wp-content/uploads/2019/10/consensys-vector-logo.png",
+//   image: "localile or url",
+//   name: "Consensys",
+//   attributes: [
+//       {
+//           traitType: "Background",
+//           value: "white"
+//       }
+//   ]
+//   }
+// },{} ...]);
