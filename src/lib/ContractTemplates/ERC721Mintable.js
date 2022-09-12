@@ -195,7 +195,7 @@ export default class ERC721Mintable extends BaseERC721 {
         smartContractArtifact.abi,
         this.#signer,
       );
-      await this.#setContracts();
+      this.#setContracts();
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
