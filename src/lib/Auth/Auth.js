@@ -6,7 +6,7 @@
 import { availableChains } from './availableChains.js';
 import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
-import { isValidString, formatRpcUrl } from '../utils.js';
+import { isValidString, formatRpcUrl, toBase64 } from '../utils.js';
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class Auth {
@@ -100,7 +100,7 @@ export default class Auth {
   }
 
   #base64encode() {
-    return btoa(`${this.#projectId}:${this.#secretId}`);
+    return toBase64({ projectId: this.#projectId, secretId: this.#secretId });
   }
 
   getApiAuth() {
