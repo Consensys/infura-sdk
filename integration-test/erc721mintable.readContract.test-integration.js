@@ -1,4 +1,5 @@
 import { config as loadEnv } from 'dotenv';
+
 import SDK from '../src/lib/SDK/sdk.js';
 import Auth from '../src/lib/Auth/Auth.js';
 

@@ -1,5 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
+
 import Signer from '../src/lib/Signer/Signer.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';

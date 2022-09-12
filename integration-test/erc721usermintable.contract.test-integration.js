@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
-import ganache from 'ganache';
+import { faker } from '@faker-js/faker';
 import { BigNumber, utils } from 'ethers';
+
 import Auth from '../src/lib/Auth/Auth';
 import SDK from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/NFT/constants';
@@ -8,7 +9,6 @@ import { TEMPLATES } from '../src/lib/NFT/constants';
 loadEnv();
 let sdk;
 let account;
-let server;
 let contractObject;
 let publicAddress;
 let owner;
@@ -19,18 +19,6 @@ describe('E2E Test: User Payable NFT (write)', () => {
   jest.setTimeout(120 * 1000);
 
   beforeAll(async () => {
-    const options = {
-      wallet: {
-        accountKeysPath: 'integration-test/keys.json',
-      },
-      logging: {
-        quiet: true,
-      },
-    };
-
-    server = ganache.server(options);
-    await server.listen(8545);
-
     // grab the first account
     // eslint-disable-next-line global-require
     const { addresses: addr, private_keys: pk } = require('./keys.json');
@@ -58,7 +46,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
       params: {
         name: 'Payable Mint Contract',
         symbol: 'PYMC',
-        baseURI: 'URI',
+        baseURI: faker.internet.url(),
         maxSupply: 10,
         price: '0.00001',
         maxTokenRequest: 1,

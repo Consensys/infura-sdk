@@ -1,4 +1,5 @@
 import { config as loadEnv } from 'dotenv';
+
 import Sdk from '../src/lib/SDK/sdk';
 import Auth from '../src/lib/Auth/Auth';
 import { HttpService } from '../src/services/httpService';

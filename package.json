@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "jest '/test'",
-    "test:integration": "jest --config ./integration-test/config/jest-integration.json --maxWorkers=1",
+    "test:integration": "jest --config ./integration-test/config/jest-integration.json --maxWorkers=1 --forceExit",
     "test:coverage": "jest --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
@@ -58,6 +58,7 @@
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
     "@commitlint/cz-commitlint": "^17.0.3",
+    "@faker-js/faker": "^7.5.0",
     "auto-changelog": "^2.4.0",
     "babel-jest": "^28.1.0",
     "babel-plugin-transform-import-meta": "^2.1.1",
