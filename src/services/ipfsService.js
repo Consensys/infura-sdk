@@ -9,8 +9,8 @@
 import fs from 'fs';
 import { create as ipfsClient, globSource } from 'ipfs-http-client';
 
-import { ERROR_LOG, errorLogger } from '../error/handler.js';
-import { toBase64 } from '../src/utils.js';
+import { ERROR_LOG, errorLogger } from '../lib/error/handler.js';
+import { toBase64 } from '../lib/utils.js';
 
 export default class IPFS {
   ipfsClient;
