@@ -2,10 +2,11 @@ import { config as loadEnv } from 'dotenv';
 import { faker } from '@faker-js/faker';
 import path from 'path';
 
-import IPFS from '../src/lib/IPFS/ipfs';
+import IPFS from '../src/services/ipfsService';
 
 const file = path.join(__dirname, 'ipfs-test/consensys.png');
 const folder = path.join(__dirname, '__mocks__');
+
 loadEnv();
 
 const myAsyncIterable = {

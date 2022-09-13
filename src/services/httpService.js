@@ -4,9 +4,11 @@
  * MIT Licensed
  */
 
+/* eslint-disable */
+
 import axios from 'axios';
 
-export default class HttpService {
+export class HttpService {
   constructor(baseURL, apiKey) {
     if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
     if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');

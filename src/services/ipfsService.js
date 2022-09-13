@@ -4,6 +4,8 @@
  * MIT Licensed
  */
 
+/* eslint-disable */
+
 import fs from 'fs';
 import { create as ipfsClient, globSource } from 'ipfs-http-client';
 
