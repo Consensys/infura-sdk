@@ -6,14 +6,42 @@
 
 import { readFileSync } from 'fs';
 import IPFS from '../../services/ipfsService.js';
+import { ERROR_LOG, errorLogger } from '../error/handler.js';
 
 export default class Metadata {
   DEFAULT_ERROR = 'Image / Metadata input has not been uploaded: ';
 
   VALIDATION_ERROR = 'Input should be a valid JSON or a filepath: ';
 
+  UNSUPPORTED_ERROR = 'Input is not supported (not JSON or filepath): ';
+
   constructor({ ipfsInfuraProjectId, ipfsInfuraSecetKey }) {
-    this.client = new IPFS('ipfs.infura.io:5001', ipfsInfuraProjectId, ipfsInfuraSecetKey);
+    // TODO: change location for logger
+    if (!ipfsInfuraProjectId) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Ipfs_constructor,
+          message: ERROR_LOG.message.no_infura_projectID_supplied,
+        }),
+      );
+    }
+
+    // TODO: change location for logger
+    if (!ipfsInfuraSecetKey) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Ipfs_constructor,
+          message: ERROR_LOG.message.no_infura_projectSecret_supplied,
+        }),
+      );
+    }
+
+    // Hardcoded url?
+    this.client = new IPFS({
+      ipfsUrl: 'ipfs.infura.io:5001',
+      projectId: ipfsInfuraProjectId,
+      projectSecret: ipfsInfuraSecetKey,
+    });
   }
 
   async storeNftMetadata(metadataInput) {
@@ -71,12 +99,20 @@ export default class Metadata {
   parseInput(candidateInput) {
     let metadata;
     try {
-      // JSON object
-      if (typeof candidateInput === 'object') {
-        metadata = JSON.parse(candidateInput);
-        // string == file path
-      } else if (typeof candidateInput === 'string') {
-        metadata = JSON.parse(readFileSync(candidateInput));
+      switch (typeof candidateInput) {
+        // file path
+        case 'string':
+          metadata = JSON.parse(readFileSync(candidateInput));
+          break;
+
+        // JSON object
+        case 'object':
+          metadata = JSON.parse(candidateInput);
+          break;
+
+        // unsupported input
+        default:
+          throw new Error(this.UNSUPPORTED_ERROR);
       }
     } catch (error) {
       throw new Error(this.VALIDATION_ERROR, error);

@@ -43,12 +43,10 @@ export default class IPFS {
       );
     }
 
-    const auth = `Basic ${toBase64({ projectId, secretId: projectSecret })}`;
-
     this.ipfsClient = ipfsClient({
       url: ipfsUrl,
       headers: {
-        authorization: auth,
+        authorization: `Basic ${toBase64({ projectId, secretId: projectSecret })}`,
       },
     });
   }
