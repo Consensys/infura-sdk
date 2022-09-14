@@ -5,6 +5,7 @@
  */
 
 import { readFileSync } from 'fs';
+
 import IPFS from '../../services/ipfsService.js';
 import { ERROR_LOG, errorLogger } from '../error/handler.js';
 
@@ -15,9 +16,9 @@ export default class Metadata {
 
   UNSUPPORTED_ERROR = 'Input is not supported (not JSON or filepath): ';
 
-  constructor({ ipfsInfuraProjectId, ipfsInfuraSecetKey }) {
+  constructor({ projectId, projectSecret, ipfsUrl = 'ipfs.infura.io:5001' }) {
     // TODO: change location for logger
-    if (!ipfsInfuraProjectId) {
+    if (!projectId) {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Ipfs_constructor,
@@ -27,7 +28,7 @@ export default class Metadata {
     }
 
     // TODO: change location for logger
-    if (!ipfsInfuraSecetKey) {
+    if (!projectSecret) {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Ipfs_constructor,
@@ -36,11 +37,10 @@ export default class Metadata {
       );
     }
 
-    // Hardcoded url?
     this.client = new IPFS({
-      ipfsUrl: 'ipfs.infura.io:5001',
-      projectId: ipfsInfuraProjectId,
-      projectSecret: ipfsInfuraSecetKey,
+      ipfsUrl,
+      projectId,
+      projectSecret,
     });
   }
 
@@ -107,7 +107,7 @@ export default class Metadata {
 
         // JSON object
         case 'object':
-          metadata = JSON.parse(candidateInput);
+          metadata = candidateInput;
           break;
 
         // unsupported input
