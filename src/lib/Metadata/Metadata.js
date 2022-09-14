@@ -44,7 +44,7 @@ export default class Metadata {
     });
   }
 
-  async storeNftMetadata(metadataInput) {
+  async createTokenURI(metadataInput) {
     let result;
     const metadata = this.parseInput(metadataInput);
 
@@ -59,12 +59,7 @@ export default class Metadata {
         const cidAnim = await this.client.uploadFile({ source: metadata?.animation_url });
         metadata.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
       }
-    } catch (error) {
-      throw new Error(this.DEFAULT_ERROR, error);
-    }
-
-    // upload metadata file to IPFS
-    try {
+      // upload metadata file to IPFS
       const cidFile = await this.client.uploadFile({ source: metadata });
       result = {
         type: 'nftMetadata',
@@ -74,23 +69,21 @@ export default class Metadata {
     } catch (error) {
       throw new Error(this.DEFAULT_ERROR, error);
     }
+
     return result;
   }
 
-  async storeCollectionMetadata(metadataInput) {
+  async createContractURI(metadataInput) {
     let result;
     const metadata = this.parseInput(metadataInput);
 
-    // upload 'image' property to IPFS
     try {
-      const cidImg = await this.client.uploadFile({ source: metadata?.image });
-      metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
-    } catch (error) {
-      throw new Error(this.DEFAULT_ERROR, error);
-    }
-
-    // upload complete metadata to IPFS
-    try {
+      // upload 'image' property to IPFS
+      if (metadata.image) {
+        const cidImg = await this.client.uploadFile({ source: metadata?.image });
+        metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
+      }
+      // upload metadata file to IPFS
       const cidFile = await this.client.uploadFile({ source: metadata });
       result = {
         type: 'collectionMetadata',
