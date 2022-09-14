@@ -10,6 +10,7 @@ import IPFS from '../../services/ipfsService.js';
 import { ERROR_LOG, errorLogger } from '../error/handler.js';
 
 export default class Metadata {
+  // TODO: implement logger
   DEFAULT_ERROR = 'Image / Metadata input has not been uploaded: ';
 
   VALIDATION_ERROR = 'Input should be a valid JSON or a filepath: ';

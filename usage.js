@@ -6,7 +6,6 @@
 
 /* eslint-disable */
 
-// Use this in "module" type nodejs projects
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, TEMPLATES } from './index.js';
 loadEnv();
