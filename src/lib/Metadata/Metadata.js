@@ -48,21 +48,28 @@ export default class Metadata {
     let result;
     const metadata = this.parseInput(metadataInput);
 
-    // upload 'image' property to IPFS
     try {
-      const cidImg = await this.client.uploadFile({ source: metadata?.image });
-      metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
+      // upload 'image' property to IPFS
+      if (metadata.image) {
+        const cidImg = await this.client.uploadFile({ source: metadata?.image });
+        metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
+      }
+      // upload 'animation_url' property to IPFS
+      if (metadata.animation_url) {
+        const cidAnim = await this.client.uploadFile({ source: metadata?.animation_url });
+        metadata.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
+      }
     } catch (error) {
       throw new Error(this.DEFAULT_ERROR, error);
     }
 
-    // upload complete metadata to IPFS
+    // upload metadata file to IPFS
     try {
       const cidFile = await this.client.uploadFile({ source: metadata });
       result = {
         type: 'nftMetadata',
         cid: cidFile,
-        name: metadata?.name,
+        ...metadata,
       };
     } catch (error) {
       throw new Error(this.DEFAULT_ERROR, error);
@@ -88,7 +95,7 @@ export default class Metadata {
       result = {
         type: 'collectionMetadata',
         cid: cidFile,
-        name: metadata?.name,
+        ...metadata,
       };
     } catch (error) {
       throw new Error(this.DEFAULT_ERROR, error);
