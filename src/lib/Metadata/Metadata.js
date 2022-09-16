@@ -62,7 +62,7 @@ export default class Metadata {
         metadata.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       throw (this.DEFAULT_MEDIA_ERROR, error);
     }
 
@@ -75,7 +75,7 @@ export default class Metadata {
         ...metadata,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       throw new Error(this.DEFAULT_METADATA_ERROR, error);
     }
 
@@ -93,7 +93,7 @@ export default class Metadata {
         metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       throw new Error(this.DEFAULT_MEDIA_ERROR, error);
     }
 
@@ -106,7 +106,7 @@ export default class Metadata {
         ...metadata,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       throw new Error(this.DEFAULT_METADATA_ERROR, error);
     }
     return result;
@@ -131,7 +131,7 @@ export default class Metadata {
           throw new Error(this.UNSUPPORTED_ERROR);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error); // eslint-disable-line no-console
       throw new Error(this.VALIDATION_ERROR, error);
     }
     return metadata;
