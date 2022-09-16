@@ -10,31 +10,20 @@ import IPFS from '../../services/ipfsService.js';
 import { ERROR_LOG, errorLogger } from '../error/handler.js';
 
 export default class Metadata {
-  // TODO: implement logger
-  DEFAULT_MEDIA_ERROR = 'Image files has not been uploaded: ';
-
-  DEFAULT_METADATA_ERROR = 'Metadata file has not been uploaded: ';
-
-  VALIDATION_ERROR = 'Input should be a valid JSON or a filepath: ';
-
-  UNSUPPORTED_ERROR = 'Input is not supported (not JSON or filepath): ';
-
   constructor({ projectId, projectSecret, ipfsUrl = 'ipfs.infura.io:5001' }) {
-    // TODO: change location for logger
     if (!projectId) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.Ipfs_constructor,
+          location: ERROR_LOG.location.Metadata_constructor,
           message: ERROR_LOG.message.no_infura_projectID_supplied,
         }),
       );
     }
 
-    // TODO: change location for logger
     if (!projectSecret) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.Ipfs_constructor,
+          location: ERROR_LOG.location.Metadata_constructor,
           message: ERROR_LOG.message.no_infura_projectSecret_supplied,
         }),
       );
@@ -47,72 +36,64 @@ export default class Metadata {
     });
   }
 
-  async createTokenURI(metadataInput) {
-    let result;
-    const metadata = this.parseInput(metadataInput);
+  createTokenURI(metadataInput) {
+    return this.upload({
+      metadataObject: Metadata.parseInput(metadataInput),
+      isContract: false,
+      includeAnimation: true,
+    });
+  }
+
+  createContractURI(metadataInput) {
+    return this.upload({
+      metadataObject: Metadata.parseInput(metadataInput),
+      isContract: true,
+    });
+  }
+
+  async upload({ metadataObject, isContract, includeAnimation = false }) {
+    let result = { ...metadataObject };
     try {
       // upload 'image' property to IPFS
-      if (metadata.image) {
-        const cidImg = await this.client.uploadFile({ source: metadata.image });
-        metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
+      if (metadataObject.image) {
+        const cidImg = await this.client.uploadFile({ source: metadataObject.image });
+        result.image = `https://ipfs.io/ipfs/${cidImg}`;
       }
+
       // upload 'animation_url' property to IPFS
-      if (metadata.animation_url) {
-        const cidAnim = await this.client.uploadFile({ source: metadata.animation_url });
-        metadata.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
+      if (includeAnimation && metadataObject.animation_url) {
+        const cidAnim = await this.client.uploadFile({ source: metadataObject.animation_url });
+        result.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
       }
     } catch (error) {
-      console.log(error); // eslint-disable-line no-console
-      throw (this.DEFAULT_MEDIA_ERROR, error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Metadata_upload,
+          message: error.message || ERROR_LOG.message.media_upload_failed,
+        }),
+      );
     }
 
     try {
       // upload metadata file to IPFS
-      const cidFile = await this.client.uploadObject({ source: metadata });
+      const cidFile = await this.client.uploadObject({ source: metadataObject });
       result = {
-        type: 'nftMetadata',
+        type: isContract ? 'collectionMetadata' : 'nftMetadata',
         cid: cidFile,
-        ...metadata,
+        ...result,
       };
     } catch (error) {
-      console.log(error); // eslint-disable-line no-console
-      throw new Error(this.DEFAULT_METADATA_ERROR, error);
-    }
-
-    return result;
-  }
-
-  async createContractURI(metadataInput) {
-    let result;
-    const metadata = this.parseInput(metadataInput);
-
-    try {
-      // upload 'image' property to IPFS
-      if (metadata.image) {
-        const cidImg = await this.client.uploadFile({ source: metadata.image });
-        metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
-      }
-    } catch (error) {
-      console.log(error); // eslint-disable-line no-console
-      throw new Error(this.DEFAULT_MEDIA_ERROR, error);
-    }
-
-    try {
-      // upload metadata file to IPFS
-      const cidFile = await this.client.uploadObject({ source: metadata });
-      result = {
-        type: 'collectionMetadata',
-        cid: cidFile,
-        ...metadata,
-      };
-    } catch (error) {
-      console.log(error); // eslint-disable-line no-console
-      throw new Error(this.DEFAULT_METADATA_ERROR, error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Metadata_upload,
+          message: error.message || ERROR_LOG.message.metadata_upload_failed,
+        }),
+      );
     }
     return result;
   }
 
-  parseInput(candidateInput) {
+  static parseInput(candidateInput) {
     let metadata;
     try {
       switch (typeof candidateInput) {
@@ -128,11 +109,20 @@ export default class Metadata {
 
         // unsupported input
         default:
-          throw new Error(this.UNSUPPORTED_ERROR);
+          throw new Error(
+            errorLogger({
+              location: ERROR_LOG.location.Metadata_parseInput,
+              message: ERROR_LOG.message.unsupported_input,
+            }),
+          );
       }
     } catch (error) {
-      console.log(error); // eslint-disable-line no-console
-      throw new Error(this.VALIDATION_ERROR, error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Metadata_parseInput,
+          message: ERROR_LOG.message.invalid_input,
+        }),
+      );
     }
     return metadata;
   }

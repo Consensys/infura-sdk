@@ -25,6 +25,7 @@ const mockedAddAllCall = jest.fn().mockImplementation(() => myAsyncIterable);
 
 jest.mock('ipfs-http-client', () => ({
   globSource: () => [],
+  urlSource: () => [],
   create: jest.fn(() => ({
     add: jest.fn(() => ({
       cid: {
@@ -68,9 +69,28 @@ describe('ipfs', () => {
     expect(() => new IPFS({ projectId: null, projectSecret, ipfsUrl: null })).toThrow();
   });
 
-  it('should upload file', async () => {
-    const data = await ipfs.uploadFile({
+  it('should upload local file', async () => {
+    await ipfs.uploadFile({
       source: file,
+    });
+
+    expect(mockedCall).toHaveBeenCalledTimes(1);
+  });
+
+  it('should upload remote file', async () => {
+    await ipfs.uploadFile({
+      source: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    });
+
+    expect(mockedCall).toHaveBeenCalledTimes(1);
+  });
+
+  it('should upload object', async () => {
+    await ipfs.uploadObject({
+      source: {
+        name: 'my object',
+        description: 'My description',
+      },
     });
 
     expect(mockedCall).toHaveBeenCalledTimes(1);

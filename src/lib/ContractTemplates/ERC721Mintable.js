@@ -124,7 +124,6 @@ export default class ERC721Mintable {
       );
 
       const options = this.#addGasPriceToOptions({}, gas);
-      // TODO remove rest parameter for destructuring (more secure)
       const contract = await factory.deploy(name, symbol, contractURI, options);
 
       this.#contractDeployed = await contract.deployed();

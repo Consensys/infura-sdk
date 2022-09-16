@@ -54,6 +54,11 @@ export const ERROR_MESSAGE = {
   no_infura_ipfsUrl_supplied: 'No ipfsUrl supplied.',
   no_infura_projectID_supplied: 'No projectId supplied.',
   no_infura_projectSecret_supplied: 'No projectSecret supplied.',
+
+  media_upload_failed: 'Image files not uploaded: ',
+  metadata_upload_failed: 'Metadata file not uploaded: ',
+  unsupported_input: 'Input is not supported (not JSON object or filepath): ',
+  invalid_input: 'Input should be a valid JSON object or a filepath: ',
 };
 
 export const ERROR_LOCATION = {
@@ -116,6 +121,11 @@ export const ERROR_LOCATION = {
 
   Ipfs_constructor: '[IPFS.constructor]',
   Ipfs_uploadFile: '[IPFS.uploadFile]',
+  Ipfs_uploadObject: '[IPFS.uploadObject]',
   Ipfs_uploadDirectory: '[IPFS.uploadDirectory]',
   Ipfs_unPinFile: '[IPFS.unPinFile]',
+
+  Metadata_constructor: '[Metadata.constructor]',
+  Metadata_upload: '[Metadata.upload]',
+  Metadata_parseInput: '[Metadata.parseInput]',
 };

@@ -82,10 +82,9 @@ export default class IPFS {
         })
       ).cid.toString();
     } catch (error) {
-      // TODO: update logger
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.Ipfs_uploadFile,
+          location: ERROR_LOG.location.Ipfs_uploadObject,
           message: error.message || ERROR_LOG.message.an_error_occured_with_ipfs_api,
         }),
       );
@@ -111,7 +110,7 @@ export default class IPFS {
     } catch (error) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.Ipfs_uploadFile,
+          location: ERROR_LOG.location.Ipfs_uploadDirectory,
           message: error.message || ERROR_LOG.message.an_error_occured_with_ipfs_api,
         }),
       );

@@ -22,13 +22,35 @@ describe('E2E Test: IPFS Service', () => {
     });
   });
 
-  it('should upload image from local file', async () => {
+  it('should upload local file', async () => {
     const hash = await ipfs.uploadFile({
       source: file,
     });
     uploadedFileHash = hash;
 
     expect(hash).toBe('QmbuNrChRcADV4NVvDo2yctWu4Gt9atpVUC74ZsVqRw5uJ');
+  });
+
+  it('should upload remote file', async () => {
+    const hash = await ipfs.uploadFile({
+      source: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    });
+
+    expect(hash).toBe('QmeoHozGjjBhdVEXfxBiawPYM5gkuBn1abKZXmNMdz87n1');
+  });
+
+  it('should upload object', async () => {
+    const hash = await ipfs.uploadObject({
+      source: {
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        name: 'Dave Starbelly',
+        attributes: [],
+      },
+    });
+
+    expect(hash).toBe('QmVDoC4ceuL7pDvRcU31eoc7ZB3ZZXHUgjsEneXZVePf4P');
   });
 
   it('should upload a directory', async () => {
