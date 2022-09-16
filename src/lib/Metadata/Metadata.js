@@ -11,7 +11,9 @@ import { ERROR_LOG, errorLogger } from '../error/handler.js';
 
 export default class Metadata {
   // TODO: implement logger
-  DEFAULT_ERROR = 'Image / Metadata input has not been uploaded: ';
+  DEFAULT_MEDIA_ERROR = 'Image files has not been uploaded: ';
+
+  DEFAULT_METADATA_ERROR = 'Metadata file has not been uploaded: ';
 
   VALIDATION_ERROR = 'Input should be a valid JSON or a filepath: ';
 
@@ -48,27 +50,33 @@ export default class Metadata {
   async createTokenURI(metadataInput) {
     let result;
     const metadata = this.parseInput(metadataInput);
-
     try {
       // upload 'image' property to IPFS
       if (metadata.image) {
-        const cidImg = await this.client.uploadFile({ source: metadata?.image });
+        const cidImg = await this.client.uploadFile({ source: metadata.image });
         metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
       }
       // upload 'animation_url' property to IPFS
       if (metadata.animation_url) {
-        const cidAnim = await this.client.uploadFile({ source: metadata?.animation_url });
+        const cidAnim = await this.client.uploadFile({ source: metadata.animation_url });
         metadata.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
       }
+    } catch (error) {
+      console.log(error);
+      throw (this.DEFAULT_MEDIA_ERROR, error);
+    }
+
+    try {
       // upload metadata file to IPFS
-      const cidFile = await this.client.uploadFile({ source: metadata });
+      const cidFile = await this.client.uploadObject({ source: metadata });
       result = {
         type: 'nftMetadata',
         cid: cidFile,
         ...metadata,
       };
     } catch (error) {
-      throw new Error(this.DEFAULT_ERROR, error);
+      console.log(error);
+      throw new Error(this.DEFAULT_METADATA_ERROR, error);
     }
 
     return result;
@@ -81,18 +89,25 @@ export default class Metadata {
     try {
       // upload 'image' property to IPFS
       if (metadata.image) {
-        const cidImg = await this.client.uploadFile({ source: metadata?.image });
+        const cidImg = await this.client.uploadFile({ source: metadata.image });
         metadata.image = `https://ipfs.io/ipfs/${cidImg}`;
       }
+    } catch (error) {
+      console.log(error);
+      throw new Error(this.DEFAULT_MEDIA_ERROR, error);
+    }
+
+    try {
       // upload metadata file to IPFS
-      const cidFile = await this.client.uploadFile({ source: metadata });
+      const cidFile = await this.client.uploadObject({ source: metadata });
       result = {
         type: 'collectionMetadata',
         cid: cidFile,
         ...metadata,
       };
     } catch (error) {
-      throw new Error(this.DEFAULT_ERROR, error);
+      console.log(error);
+      throw new Error(this.DEFAULT_METADATA_ERROR, error);
     }
     return result;
   }
@@ -116,6 +131,7 @@ export default class Metadata {
           throw new Error(this.UNSUPPORTED_ERROR);
       }
     } catch (error) {
+      console.log(error);
       throw new Error(this.VALIDATION_ERROR, error);
     }
     return metadata;

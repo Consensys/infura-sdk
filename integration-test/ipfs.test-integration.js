@@ -38,7 +38,7 @@ describe('E2E Test: IPFS Service', () => {
 
     uploadedDirectoryHash = hash;
 
-    expect(hash).toBe('Qmd3oKEr4c3QA2QGXfanxSnY37XKrtqCzhon1XoV9a1YbR');
+    expect(hash).toBe('QmVy1i6MxNecetvi4N3iorGTdkvUwnRDHo31tc8Fs2U84r');
   });
 
   it('should not upload image from an unexisting local file', () => {

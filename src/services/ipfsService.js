@@ -7,10 +7,10 @@
 /* eslint-disable */
 
 import fs from 'fs';
-import { create as ipfsClient, globSource } from 'ipfs-http-client';
+import { create as ipfsClient, globSource, urlSource } from 'ipfs-http-client';
 
 import { ERROR_LOG, errorLogger } from '../lib/error/handler.js';
-import { toBase64 } from '../lib/utils.js';
+import { isURI, toBase64 } from '../lib/utils.js';
 
 export default class IPFS {
   ipfsClient;
@@ -53,14 +53,36 @@ export default class IPFS {
 
   async uploadFile({ source }) {
     try {
-      const isFile = fs.lstatSync(source).isFile();
-      if (!isFile) {
-        throw new Error('Source should be a file');
+      // input can be a local file (absolute path) or a URL
+      const inputSrc = isURI(source)
+        ? urlSource(source)
+        : fs.lstatSync(source).isFile()
+        ? fs.createReadStream(source)
+        : '';
+      if (!inputSrc) {
+        throw new Error('Source should be a file or a valid URL');
       }
-      const stream = fs.createReadStream(source);
 
-      return (await this.ipfsClient.add(stream)).cid.toString();
+      return (await this.ipfsClient.add(inputSrc)).cid.toString();
     } catch (error) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Ipfs_uploadFile,
+          message: error.message || ERROR_LOG.message.an_error_occured_with_ipfs_api,
+        }),
+      );
+    }
+  }
+
+  async uploadObject({ source }) {
+    try {
+      return (
+        await this.ipfsClient.add({
+          content: JSON.stringify(source),
+        })
+      ).cid.toString();
+    } catch (error) {
+      // TODO: update logger
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Ipfs_uploadFile,

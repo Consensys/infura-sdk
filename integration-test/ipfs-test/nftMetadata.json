@@ -1,0 +1,13 @@
+{
+  "name": "My awesome image",
+  "description": "This awesome image has been created manually, and it's gorgeous",
+  "external_url": "https://infura.io",
+  "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+  "animation_url": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/2.png",
+  "attributes": [
+    {
+      "traitType": "Background",
+      "value": "Orange"
+    }
+  ]
+}

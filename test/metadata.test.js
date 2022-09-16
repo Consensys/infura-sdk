@@ -5,12 +5,14 @@ import Metadata from '../src/lib/Metadata/Metadata.js';
 loadEnv();
 
 // Mock Endpoint
-const mockedUploadFile = jest.fn().mockImplementation(() => 'mocked');
+const mockedUploadFile = jest.fn().mockImplementation(() => 'mockedFile');
+const mockedUploadObject = jest.fn().mockImplementation(() => 'mockedObject');
 
 jest.mock('../src/services/ipfsService.js', () => {
   return function () {
     return {
       uploadFile: mockedUploadFile,
+      uploadObject: mockedUploadObject,
     };
   };
 });
@@ -70,9 +72,10 @@ describe('Metadata', () => {
       // act
       const res = await met.createTokenURI(tokenMetadataImage);
       // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(2);
+      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
+      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
       expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mocked');
+      expect(res.cid).toBe('mockedObject');
     });
 
     it('should upload image & file in IPFS (file)', async () => {
@@ -81,9 +84,10 @@ describe('Metadata', () => {
       // act
       const res = await met.createTokenURI(file);
       // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(2);
+      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
+      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
       expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mocked');
+      expect(res.cid).toBe('mockedObject');
     });
 
     it('should upload image & animation_url & file in IPFS', async () => {
@@ -99,10 +103,11 @@ describe('Metadata', () => {
       // act
       const res = await met.createTokenURI(tokenMetadataImageWithAnimatioUrl);
       // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(3);
+      expect(mockedUploadFile).toHaveBeenCalledTimes(2);
+      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
       expect(res.image.startsWith('https://')).toBe(true);
       expect(res.animation_url.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mocked');
+      expect(res.cid).toBe('mockedObject');
     });
   });
 
@@ -117,15 +122,16 @@ describe('Metadata', () => {
         name: 'OpenSea Creatures',
         description:
           'OpenSea Creatures are adorable aquatic beings primarily for demonstrating what can be done using the OpenSea platform. Adopt one today to try out all the OpenSea buying, selling, and bidding feature set.',
-        image: '../0.jpg',
+        image: '/full/path/to/0.jpg',
         external_link: 'external-link-url',
       };
       // act
       const res = await met.createContractURI(collectionMetadata);
       // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(2);
+      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
+      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
       expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mocked');
+      expect(res.cid).toBe('mockedObject');
     });
 
     it('should upload image & file in IPFS (file)', async () => {
@@ -134,9 +140,10 @@ describe('Metadata', () => {
       // act
       const res = await met.createContractURI(file);
       // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(2);
+      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
+      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
       expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mocked');
+      expect(res.cid).toBe('mockedObject');
     });
   });
 });

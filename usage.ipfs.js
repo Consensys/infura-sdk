@@ -14,16 +14,22 @@ const projectId = process.env.INFURA_IPFS_PROJECT_ID;
 const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
 const ipfsUrl = process.env.INFURA_IPFS_ENDPOINT;
 
+const myMetadataStorage = new Metadata({ projectId, projectSecret, ipfsUrl });
+
+// upload collection metadata from JSON object
 const collectionMetadata = {
   name: 'My awesome collection',
   description: "A long description explaining why it's awesome",
   image: './collection_cover.png',
   external_link: 'https://myawesomewebsite.net',
 };
+const contractURI = await myMetadataStorage.createContractURI(collectionMetadata);
 
-const myMetadataStorage = new Metadata({ projectId, projectSecret, ipfsUrl });
-const contractURI = myMetadataStorage.createContractURI(collectionMetadata);
-
+/**
+ *
+ * SDK
+ *
+ */
 const acc = new Auth({
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
