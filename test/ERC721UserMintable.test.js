@@ -18,6 +18,7 @@ describe('SDK', () => {
         mint: jest.fn(),
         'safeTransferFrom(address,address,uint256)': jest.fn(),
         setBaseURI: jest.fn(),
+        setContractURI: jest.fn(),
         setApprovalForAll: jest.fn(),
         approve: jest.fn(),
         grantRole: jest.fn(),
@@ -92,11 +93,29 @@ describe('SDK', () => {
     expect(contract).rejects.toThrow('[ERC721UserMintable.deploy] No baseURI supplied.');
   });
 
+  it('[Deploy] - should return an Error if contractURI is undefined', () => {
+    eRC721UserMintable = new ERC721UserMintable(signer);
+
+    const contract = async () =>
+      eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+      });
+
+    expect(contract).rejects.toThrow('[ERC721UserMintable.deploy] No contractURI supplied.');
+  });
+
   it('[Deploy] - should return an Error if maxSupply is undefined', () => {
     eRC721UserMintable = new ERC721UserMintable(signer);
 
     const contract = async () =>
-      eRC721UserMintable.deploy({ name: 'name', symbol: 'symbol', baseURI: 'URI' });
+      eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+        contractURI: '',
+      });
 
     expect(contract).rejects.toThrow('[ERC721UserMintable.deploy] Invalid maximum supply.');
   });
@@ -105,7 +124,13 @@ describe('SDK', () => {
     eRC721UserMintable = new ERC721UserMintable(signer);
 
     const contract = async () =>
-      eRC721UserMintable.deploy({ name: 'name', symbol: 'symbol', baseURI: 'URI', maxSupply: 10 });
+      eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+        contractURI: '',
+        maxSupply: 10,
+      });
 
     expect(contract).rejects.toThrow('[ERC721UserMintable.deploy] Invalid price');
   });
@@ -118,6 +143,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: '',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
       });
@@ -132,6 +158,7 @@ describe('SDK', () => {
       name: 'name',
       symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -147,6 +174,7 @@ describe('SDK', () => {
       name: 'name',
       symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -159,6 +187,7 @@ describe('SDK', () => {
       'name',
       'symbol',
       'URI',
+      'contractURI',
       10,
       ethers.utils.parseEther(1),
       1,
@@ -187,6 +216,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -217,6 +247,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -238,6 +269,7 @@ describe('SDK', () => {
       name: 'name',
       symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -258,6 +290,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -322,6 +355,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -343,8 +377,9 @@ describe('SDK', () => {
     const transferNft = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -364,8 +399,9 @@ describe('SDK', () => {
     const transferNft = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -385,8 +421,9 @@ describe('SDK', () => {
     const transferNft = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -405,8 +442,9 @@ describe('SDK', () => {
 
     await eRC721UserMintable.deploy({
       name: 'name',
-      symbol: 'sumbol',
+      symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -439,6 +477,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -455,6 +494,7 @@ describe('SDK', () => {
       name: 'name',
       symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -482,6 +522,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -499,6 +540,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -518,6 +560,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -545,8 +588,9 @@ describe('SDK', () => {
     const approveTransfer = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -563,8 +607,9 @@ describe('SDK', () => {
     const approveTransfer = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -582,8 +627,9 @@ describe('SDK', () => {
 
     await eRC721UserMintable.deploy({
       name: 'name',
-      symbol: 'sumbol',
+      symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -608,8 +654,9 @@ describe('SDK', () => {
     const addAdmin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -626,8 +673,9 @@ describe('SDK', () => {
 
     await eRC721UserMintable.deploy({
       name: 'name',
-      symbol: 'sumbol',
+      symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -661,8 +709,9 @@ describe('SDK', () => {
     const admin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -684,8 +733,9 @@ describe('SDK', () => {
 
     await eRC721UserMintable.deploy({
       name: 'name',
-      symbol: 'sumbol',
+      symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -712,8 +762,9 @@ describe('SDK', () => {
     const removeAdmin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -748,8 +799,9 @@ describe('SDK', () => {
     const admin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -768,8 +820,9 @@ describe('SDK', () => {
     eRC721UserMintable = new ERC721UserMintable(signer);
     await eRC721UserMintable.deploy({
       name: 'name',
-      symbol: 'sumbol',
+      symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -794,8 +847,9 @@ describe('SDK', () => {
     const renounceAdmin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -830,8 +884,9 @@ describe('SDK', () => {
     const admin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -850,8 +905,9 @@ describe('SDK', () => {
     eRC721UserMintable = new ERC721UserMintable(signer);
     await eRC721UserMintable.deploy({
       name: 'name',
-      symbol: 'sumbol',
+      symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -875,8 +931,9 @@ describe('SDK', () => {
     const isAdmin = async () => {
       await eRC721UserMintable.deploy({
         name: 'name',
-        symbol: 'sumbol',
+        symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -901,18 +958,19 @@ describe('SDK', () => {
     });
 
     it('[setRoyalties] - should throw when args are missing (address)', async () => {
-      const contract = new ERC721UserMintable(signer);
-      await contract.deploy({
+      const eRC721UserMintable = new ERC721UserMintable(signer);
+      await eRC721UserMintable.deploy({
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
       });
 
       await expect(() =>
-        contract.royalties.setRoyalties({ publicAddress: null, fee: 1 }),
+        eRC721UserMintable.royalties.setRoyalties({ publicAddress: null, fee: 1 }),
       ).rejects.toThrow('[Royalties.setRoyalties] No address supplied.');
     });
 
@@ -922,6 +980,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -938,6 +997,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -954,6 +1014,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -970,6 +1031,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -985,6 +1047,7 @@ describe('SDK', () => {
       name: 'name',
       symbol: 'symbol',
       baseURI: 'URI',
+      contractURI: 'contractURI',
       maxSupply: 10,
       price: ethers.utils.parseEther(1),
       maxTokenRequest: 1,
@@ -1000,6 +1063,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1017,6 +1081,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1034,6 +1099,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1051,6 +1117,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1068,6 +1135,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1095,6 +1163,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1123,6 +1192,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1143,6 +1213,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1173,6 +1244,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1191,6 +1263,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1213,12 +1286,13 @@ describe('SDK', () => {
         });
       expect(setPrice).rejects.toThrow('[ERC721UserMintable.setPrice] Contract not deployed.');
     });
-    it('[setPrice] - should throw error because of invalid URI', async () => {
+    it('[setPrice] - should throw error because of invalid price', async () => {
       const contract = new ERC721UserMintable(signer);
       await contract.deploy({
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1237,6 +1311,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1264,6 +1339,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1289,6 +1365,7 @@ describe('SDK', () => {
         name: 'name',
         symbol: 'symbol',
         baseURI: 'URI',
+        contractURI: 'contractURI',
         maxSupply: 10,
         price: ethers.utils.parseEther(1),
         maxTokenRequest: 1,
@@ -1296,6 +1373,148 @@ describe('SDK', () => {
       await eRC721UserMintable.withdraw();
 
       expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('setContractURI', () => {
+    it('[SetContractURI] - should return an Error if contract is not deployed', () => {
+      eRC721UserMintable = new ERC721UserMintable(signer);
+
+      expect(() =>
+        eRC721UserMintable.setContractURI({
+          contractURI:
+            'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+        }),
+      ).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.BaseERC721_setContractURI,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    });
+
+    it('[SetContractURI] - should console.warn if contractURI is not a link ', async () => {
+      eRC721UserMintable = new ERC721UserMintable(signer);
+      const logSpy = jest.spyOn(console, 'warn');
+
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+        contractURI: 'contractURI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.setContractURI({ contractURI: 'URI' });
+
+      expect(logSpy).toHaveBeenCalledWith('WARNING: The ContractURI "URI" is not a link.');
+      expect(logSpy).toHaveBeenCalledWith(
+        'WARNING: ContractURI should be a public link to a valid JSON metadata file',
+      );
+    });
+
+    it('[SetContractURI] - should return an Error if the contractURI is empty', () => {
+      eRC721UserMintable = new ERC721UserMintable(signer);
+
+      const uri = async () => {
+        await eRC721UserMintable.deploy({
+          name: 'name',
+          symbol: 'symbol',
+          baseURI: 'URI',
+          contractURI: 'contractURI',
+          maxSupply: 10,
+          price: ethers.utils.parseEther(1),
+          maxTokenRequest: 1,
+        });
+        await eRC721UserMintable.setContractURI({ contractURI: '' });
+      };
+      expect(uri).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.BaseERC721_setContractURI,
+          message: ERROR_LOG.message.invalid_contractURI,
+        }),
+      );
+    });
+
+    it('[SetContractURI] - should set the contractURI', async () => {
+      eRC721UserMintable = new ERC721UserMintable(signer);
+
+      await eRC721UserMintable.deploy({
+        name: 'name',
+        symbol: 'symbol',
+        baseURI: 'URI',
+        contractURI: 'contractURI',
+        maxSupply: 10,
+        price: ethers.utils.parseEther(1),
+        maxTokenRequest: 1,
+      });
+      await eRC721UserMintable.setContractURI({
+        contractURI:
+          'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+      });
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('[SetContractURI] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          setContractURI: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      eRC721UserMintable = new ERC721UserMintable(signer);
+
+      const setContractURI = async () => {
+        await eRC721UserMintable.deploy({
+          name: 'name',
+          symbol: 'symbol',
+          baseURI: 'URI',
+          contractURI: 'contractURI',
+          maxSupply: 10,
+          price: ethers.utils.parseEther(1),
+          maxTokenRequest: 1,
+        });
+        await eRC721UserMintable.setContractURI({
+          contractURI:
+            'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+        });
+      };
+      expect(setContractURI).rejects.toThrow(
+        '[BaseERC721.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
+
+    it('[SetContractURI] - should return an Error if there is runtime error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          setContractURI: () => {
+            throw new RuntimeException('runtime exception');
+          },
+        }),
+      }));
+      eRC721UserMintable = new ERC721UserMintable(signer);
+
+      const setContractURI = async () => {
+        await eRC721UserMintable.deploy({
+          name: 'name',
+          symbol: 'symbol',
+          baseURI: 'URI',
+          contractURI: 'contractURI',
+          maxSupply: 10,
+          price: ethers.utils.parseEther(1),
+          maxTokenRequest: 1,
+        });
+        await eRC721UserMintable.setContractURI({
+          contractURI:
+            'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+        });
+      };
+      expect(setContractURI).rejects.toThrow(
+        '[BaseERC721.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
+      );
     });
   });
 });

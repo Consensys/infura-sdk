@@ -75,6 +75,7 @@ export const ERROR_LOCATION = {
   BaseERC721_addGasPriceToOptions: '[BaseERC721.addGasPriceToOptions]',
   BaseERC721_approveTransfer: '[BaseERC721.approveTransfer]',
   BaseERC721_setApprovalForAll: '[BaseERC721.setApprovalForAll]',
+  BaseERC721_setContractURI: '[BaseERC721.setContractURI]',
   BaseERC721_transfer: '[BaseERC721.transfer]',
 
   Royalties_setRoyalties: '[Royalties.setRoyalties]',
@@ -83,7 +84,6 @@ export const ERROR_LOCATION = {
   ERC721Mintable_deploy: '[ERC721Mintable.deploy]',
   ERC721Mintable_mint: '[ERC721Mintable.mint]',
   ERC721Mintable_loadContract: '[ERC721Mintable.loadContract]',
-  ERC721Mintable_setContractURI: '[ERC721Mintable.setContractURI]',
 
   ERC721UserMintable_deploy: '[ERC721UserMintable.deploy]',
   ERC721UserMintable_mint: '[ERC721UserMintable.mint]',

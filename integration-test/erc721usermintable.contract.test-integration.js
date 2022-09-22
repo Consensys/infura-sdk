@@ -100,6 +100,15 @@ describe('E2E Test: User Payable NFT (write)', () => {
     expect(receipt.status).toEqual(1);
   });
 
+  it('should set contract URI', async () => {
+    const tx = await contractObject.setContractURI({
+      contractURI:
+        'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+    });
+    const receipt = await tx.wait();
+    expect(receipt.status).toEqual(1);
+  });
+
   it('should set base URI', async () => {
     const tx = await contractObject.setBaseURI({
       baseURI: 'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',

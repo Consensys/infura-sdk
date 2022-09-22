@@ -208,53 +208,6 @@ export default class ERC721Mintable extends BaseERC721 {
     }
   }
 
-  /**
-   * setContractURI function: Set the "contractURI" metadata for the specified contract
-   * @param {string} contractURI ContractURI for the contract
-   * (URI to a JSON file describing the contract's metadata)
-   * @notice Warning: This method will consume gas (35000 gas estimated)
-   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
-   */
-  async setContractURI({ contractURI, gas = null }) {
-    if (!this._contractDeployed && !this.contractAddress) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.ERC721Mintable_setContractURI,
-          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
-        }),
-      );
-    }
-
-    if (!contractURI) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.ERC721Mintable_setContractURI,
-          message: ERROR_LOG.message.invalid_contractURI,
-        }),
-      );
-    }
-
-    /* eslint-disable no-console */
-    if (!isURI(contractURI)) {
-      console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
-      console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
-    }
-
-    try {
-      const options = addGasPriceToOptions({}, gas);
-      return await this._contractDeployed.setContractURI(contractURI, options);
-    } catch (error) {
-      const { message, type } = networkErrorHandler(error);
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.ERC721Mintable_setContractURI,
-          message: ERROR_LOG.message.an_error_occured,
-          options: `${type} ${message}`,
-        }),
-      );
-    }
-  }
-
   #setContracts() {
     this.contractAddress = this._contractDeployed.address;
     this.accessControl.setContract(this._contractDeployed);
