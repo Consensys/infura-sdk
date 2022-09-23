@@ -20,21 +20,18 @@ jest.mock('../src/services/ipfsService.js', () => {
 describe('Metadata', () => {
   const projectId = process.env.INFURA_IPFS_PROJECT_ID;
   const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
-  const ipfsUrl = process.env.INFURA_IPFS_ENDPOINT;
   let met;
 
   beforeAll(() => {
-    met = new Metadata({ ipfsUrl, projectId, projectSecret });
+    met = new Metadata({ projectId, projectSecret });
   });
 
   it('should throw when args are missing (ipfsInfuraProjectId)', () => {
-    expect(
-      () => new Metadata({ ipfsUrl, projectId: null, projectSecret: projectSecret }),
-    ).toThrow();
+    expect(() => new Metadata({ projectId: null, projectSecret: projectSecret })).toThrow();
   });
 
   it('should throw when args are missing (ipfsInfuraSecreId)', () => {
-    expect(() => new Metadata({ ipfsUrl, projectId: projectId, projectSecret: null })).toThrow();
+    expect(() => new Metadata({ projectId: projectId, projectSecret: null })).toThrow();
   });
 
   describe('createTokenURI', () => {

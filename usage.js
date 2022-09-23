@@ -39,7 +39,7 @@ const sdk = new SDK(acc);
 //   params: {
 //     name: '1507Contract',
 //     symbol: 'TOC',
-//     contractURI: 'URI',
+//     contractURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
 //   },
 // });
 // console.log('contract address: \n', newContract.contractAddress);

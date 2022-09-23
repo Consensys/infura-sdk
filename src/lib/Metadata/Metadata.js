@@ -10,7 +10,9 @@ import IPFS from '../../services/ipfsService.js';
 import { ERROR_LOG, errorLogger } from '../error/handler.js';
 
 export default class Metadata {
-  constructor({ projectId, projectSecret, ipfsUrl = 'ipfs.infura.io:5001' }) {
+  IPFS_BASE_URL = 'https://ipfs.io/ipfs/';
+
+  constructor({ projectId, projectSecret }) {
     if (!projectId) {
       throw new Error(
         errorLogger({
@@ -30,7 +32,6 @@ export default class Metadata {
     }
 
     this.client = new IPFS({
-      ipfsUrl,
       projectId,
       projectSecret,
     });
@@ -40,7 +41,6 @@ export default class Metadata {
     return this.upload({
       metadataObject: Metadata.parseInput(metadataInput),
       isContract: false,
-      includeAnimation: true,
     });
   }
 
@@ -51,32 +51,22 @@ export default class Metadata {
     });
   }
 
-  async upload({ metadataObject, isContract, includeAnimation = false }) {
+  async upload({ metadataObject, isContract }) {
     let result = { ...metadataObject };
-    try {
-      // upload 'image' property to IPFS
-      if (metadataObject.image) {
-        const cidImg = await this.client.uploadFile({ source: metadataObject.image });
-        result.image = `https://ipfs.io/ipfs/${cidImg}`;
-      }
-
-      // upload 'animation_url' property to IPFS
-      if (includeAnimation && metadataObject.animation_url) {
-        const cidAnim = await this.client.uploadFile({ source: metadataObject.animation_url });
-        result.animation_url = `https://ipfs.io/ipfs/${cidAnim}`;
-      }
-    } catch (error) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.Metadata_upload,
-          message: error.message || ERROR_LOG.message.media_upload_failed,
-        }),
-      );
-    }
+    result = {
+      image: await this.uploadFileAndGetLink({
+        obj: metadataObject,
+        field: 'image',
+      }),
+      animation_url: await this.uploadFileAndGetLink({
+        obj: metadataObject,
+        field: 'animation_url',
+      }),
+    };
 
     try {
       // upload metadata file to IPFS
-      const cidFile = await this.client.uploadObject({ source: metadataObject });
+      const cidFile = await this.client.uploadObject({ source: result });
       result = {
         type: isContract ? 'collectionMetadata' : 'nftMetadata',
         cid: cidFile,
@@ -91,6 +81,23 @@ export default class Metadata {
       );
     }
     return result;
+  }
+
+  async uploadFileAndGetLink({ obj, field }) {
+    let res;
+    try {
+      res = obj[field]
+        ? this.IPFS_BASE_URL + (await this.client.uploadFile({ source: obj[field] }))
+        : '';
+    } catch (error) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Metadata_uploadFileAndGetLink,
+          message: error.message || ERROR_LOG.message.media_upload_failed,
+        }),
+      );
+    }
+    return res;
   }
 
   static parseInput(candidateInput) {

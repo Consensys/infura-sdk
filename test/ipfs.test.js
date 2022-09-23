@@ -47,10 +47,9 @@ describe('ipfs', () => {
   let ipfs;
   const projectId = process.env.INFURA_IPFS_PROJECT_ID;
   const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
-  const ipfsUrl = process.env.INFURA_IPFS_ENDPOINT;
 
   beforeAll(async () => {
-    ipfs = new IPFS({ projectId, projectSecret, ipfsUrl });
+    ipfs = new IPFS({ projectId, projectSecret });
   });
 
   afterEach(() => {
@@ -58,15 +57,11 @@ describe('ipfs', () => {
   });
 
   it('should not instanciate ipfs without project id', async () => {
-    expect(() => new IPFS({ projectId: null, projectSecret, ipfsUrl })).toThrow();
+    expect(() => new IPFS({ projectId: null, projectSecret })).toThrow();
   });
 
   it('should not instanciate ipfs without project secret', async () => {
-    expect(() => new IPFS({ projectId, projectSecret: null, ipfsUrl })).toThrow();
-  });
-
-  it('should not instanciate ipfs without ipfs url', async () => {
-    expect(() => new IPFS({ projectId: null, projectSecret, ipfsUrl: null })).toThrow();
+    expect(() => new IPFS({ projectId, projectSecret: null })).toThrow();
   });
 
   it('should upload local file', async () => {

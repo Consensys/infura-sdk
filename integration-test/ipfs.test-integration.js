@@ -18,7 +18,6 @@ describe('E2E Test: IPFS Service', () => {
     ipfs = new IPFS({
       projectId: process.env.INFURA_IPFS_PROJECT_ID,
       projectSecret: process.env.INFURA_IPFS_PROJECT_SECRET,
-      ipfsUrl: process.env.INFURA_IPFS_ENDPOINT,
     });
   });
 

@@ -13,9 +13,8 @@ loadEnv();
 
 const projectId = process.env.INFURA_IPFS_PROJECT_ID;
 const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
-const ipfsUrl = process.env.INFURA_IPFS_ENDPOINT;
 
-const myMetadataStorage = new Metadata({ projectId, projectSecret, ipfsUrl });
+const myMetadataStorage = new Metadata({ projectId, projectSecret });
 
 /**
  * METADATA

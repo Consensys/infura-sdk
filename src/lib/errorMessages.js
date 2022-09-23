@@ -36,6 +36,7 @@ export const ERROR_MESSAGE = {
   invalid_mint_quantity: 'Quantity as integer value greater than 0 required.',
   invalid_provider: 'Invalid provider.',
   invalid_gas_price_supplied: 'Invalid value for gas provided',
+  invalid_source: 'Source should be a file or a valid URL',
 
   contract_already_deployed: 'Contract already deployed.',
   contract_already_loaded: 'Contract already loaded.',
@@ -51,7 +52,6 @@ export const ERROR_MESSAGE = {
   an_error_occured: 'An error occured',
   an_error_occured_with_ipfs_api: 'An error occured with infura ipfs api',
 
-  no_infura_ipfsUrl_supplied: 'No ipfsUrl supplied.',
   no_infura_projectID_supplied: 'No projectId supplied.',
   no_infura_projectSecret_supplied: 'No projectSecret supplied.',
 
@@ -127,5 +127,6 @@ export const ERROR_LOCATION = {
 
   Metadata_constructor: '[Metadata.constructor]',
   Metadata_upload: '[Metadata.upload]',
+  Metadata_uploadFileAndGetLink: '[Metadata.uploadFileAndGetLink]',
   Metadata_parseInput: '[Metadata.parseInput]',
 };

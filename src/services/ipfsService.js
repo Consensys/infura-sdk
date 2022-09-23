@@ -15,16 +15,7 @@ import { isURI, toBase64 } from '../lib/utils.js';
 export default class IPFS {
   ipfsClient;
 
-  constructor({ ipfsUrl, projectId, projectSecret }) {
-    if (!ipfsUrl) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.Ipfs_constructor,
-          message: ERROR_LOG.message.no_infura_ipfsUrl_supplied,
-        }),
-      );
-    }
-
+  constructor({ projectId, projectSecret }) {
     if (!projectId) {
       throw new Error(
         errorLogger({
@@ -44,7 +35,7 @@ export default class IPFS {
     }
 
     this.ipfsClient = ipfsClient({
-      url: ipfsUrl,
+      url: 'https://ipfs.infura.io:5001',
       headers: {
         authorization: `Basic ${toBase64({ projectId, secretId: projectSecret })}`,
       },
@@ -60,7 +51,10 @@ export default class IPFS {
         ? fs.createReadStream(source)
         : '';
       if (!inputSrc) {
-        throw new Error('Source should be a file or a valid URL');
+        errorLogger({
+          location: ERROR_LOG.location.Ipfs_uploadFile,
+          message: ERROR_LOG.message.invalid_source,
+        });
       }
 
       return (await this.ipfsClient.add(inputSrc)).cid.toString();

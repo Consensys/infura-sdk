@@ -11,11 +11,10 @@ describe('E2E Test: Metadata', () => {
   jest.setTimeout(120 * 1000);
   const projectId = process.env.INFURA_IPFS_PROJECT_ID;
   const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
-  const ipfsUrl = process.env.INFURA_IPFS_ENDPOINT;
   let met;
 
   beforeAll(() => {
-    met = new Metadata({ ipfsUrl, projectId, projectSecret });
+    met = new Metadata({ projectId, projectSecret });
   });
 
   it('should create token URI from JSON (img + animation_url)', async () => {
