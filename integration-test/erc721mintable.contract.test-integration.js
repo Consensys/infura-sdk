@@ -74,7 +74,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
   });
 
   it('should renounce contract ownership', async () => {
-    const result = await contractObject.renounceOwnership();
+    const result = await contractObject.accessControl.renounceOwnership();
     const receipt = await result.wait();
 
     expect(receipt.status).toBe(1);

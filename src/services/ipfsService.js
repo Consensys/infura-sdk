@@ -51,7 +51,7 @@ export default class IPFS {
         ? fs.createReadStream(source)
         : '';
       if (!inputSrc) {
-        errorLogger({
+        throw errorLogger({
           location: ERROR_LOG.location.Ipfs_uploadFile,
           message: ERROR_LOG.message.invalid_source,
         });

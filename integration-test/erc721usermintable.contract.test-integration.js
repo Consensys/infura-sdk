@@ -194,21 +194,21 @@ describe('E2E Test: User Payable NFT (write)', () => {
   });
 
   it('should return setRoyalties', async () => {
-    await contractObject.setRoyalties({ publicAddress, fee: 1000 });
-    const infos = await contractObject.royaltyInfo({ tokenId: 1, sellPrice: 10 });
+    await contractObject.royalties.setRoyalties({ publicAddress, fee: 1000 });
+    const infos = await contractObject.royalties.royaltyInfo({ tokenId: 1, sellPrice: 10 });
 
     expect(infos).toStrictEqual([utils.getAddress(publicAddress), BigNumber.from('1')]);
   });
 
   it('should return setRoyalties when tokenId is zero', async () => {
-    await contractObject.setRoyalties({ publicAddress, fee: 1000 });
-    const infos = await contractObject.royaltyInfo({ tokenId: 0, sellPrice: 10 });
+    await contractObject.royalties.setRoyalties({ publicAddress, fee: 1000 });
+    const infos = await contractObject.royalties.royaltyInfo({ tokenId: 0, sellPrice: 10 });
 
     expect(infos).toStrictEqual([utils.getAddress(publicAddress), BigNumber.from('1')]);
   });
 
   it('should renounce contract ownership', async () => {
-    const result = await contractObject.renounceOwnership();
+    const result = await contractObject.accessControl.renounceOwnership();
     const receipt = await result.wait();
 
     expect(receipt.status).toBe(1);

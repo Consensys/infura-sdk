@@ -600,7 +600,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.addMinter({ publicAddress: '' });
+      await eRC721Mintable.accessControl.addMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
       errorLogger({
@@ -618,7 +618,7 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.addMinter({ publicAddress: ACCOUNT_ADDRESS });
+    await eRC721Mintable.accessControl.addMinter({ publicAddress: ACCOUNT_ADDRESS });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
@@ -639,7 +639,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.addMinter({ publicAddress: ACCOUNT_ADDRESS });
+      await eRC721Mintable.accessControl.addMinter({ publicAddress: ACCOUNT_ADDRESS });
     };
     expect(addMinter).rejects.toThrow(
       '[AccessControl.addMinter] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
@@ -668,7 +668,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.removeMinter({ publicAddress: '' });
+      await eRC721Mintable.accessControl.removeMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
       errorLogger({
@@ -686,7 +686,7 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.removeMinter({ publicAddress: ACCOUNT_ADDRESS });
+    await eRC721Mintable.accessControl.removeMinter({ publicAddress: ACCOUNT_ADDRESS });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
@@ -713,7 +713,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.renounceMinter({ publicAddress: '' });
+      await eRC721Mintable.accessControl.renounceMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
       errorLogger({
@@ -731,7 +731,7 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
+    await eRC721Mintable.accessControl.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
@@ -752,7 +752,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
+      await eRC721Mintable.accessControl.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
     };
     expect(renounceMinter).rejects.toThrow(
       '[AccessControl.renounceMinter] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
@@ -781,7 +781,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.isMinter({ publicAddress: '' });
+      await eRC721Mintable.accessControl.isMinter({ publicAddress: '' });
     };
     expect(minter).rejects.toThrow(
       errorLogger({
@@ -799,7 +799,7 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.isMinter({ publicAddress: ACCOUNT_ADDRESS });
+    await eRC721Mintable.accessControl.isMinter({ publicAddress: ACCOUNT_ADDRESS });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
@@ -820,7 +820,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.isMinter({ publicAddress: ACCOUNT_ADDRESS });
+      await eRC721Mintable.accessControl.isMinter({ publicAddress: ACCOUNT_ADDRESS });
     };
     expect(isMinter).rejects.toThrow(
       '[AccessControl.isMinter] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
@@ -940,7 +940,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.addAdmin({ publicAddress: '' });
+      await eRC721Mintable.accessControl.addAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
       errorLogger({
@@ -958,7 +958,9 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.addAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
+    await eRC721Mintable.accessControl.addAdmin({
+      publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+    });
 
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
@@ -979,7 +981,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.addAdmin({
+      await eRC721Mintable.accessControl.addAdmin({
         publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
       });
     };
@@ -1011,7 +1013,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.removeAdmin({ publicAddress: '' });
+      await eRC721Mintable.accessControl.removeAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
       errorLogger({
@@ -1029,7 +1031,7 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.removeAdmin({
+    await eRC721Mintable.accessControl.removeAdmin({
       publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
     });
 
@@ -1052,7 +1054,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.removeAdmin({
+      await eRC721Mintable.accessControl.removeAdmin({
         publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
       });
     };
@@ -1084,7 +1086,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.renounceAdmin({ publicAddress: '' });
+      await eRC721Mintable.accessControl.renounceAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
       errorLogger({
@@ -1102,7 +1104,7 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.renounceAdmin({
+    await eRC721Mintable.accessControl.renounceAdmin({
       publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
     });
 
@@ -1125,7 +1127,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.renounceAdmin({
+      await eRC721Mintable.accessControl.renounceAdmin({
         publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
       });
     };
@@ -1157,7 +1159,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.isAdmin({ publicAddress: '' });
+      await eRC721Mintable.accessControl.isAdmin({ publicAddress: '' });
     };
     expect(admin).rejects.toThrow(
       errorLogger({
@@ -1175,7 +1177,9 @@ describe('SDK', () => {
       symbol: 'symbol',
       contractURI: faker.internet.url(),
     });
-    await eRC721Mintable.isAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
+    await eRC721Mintable.accessControl.isAdmin({
+      publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+    });
     expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
@@ -1195,7 +1199,9 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.isAdmin({ publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67' });
+      await eRC721Mintable.accessControl.isAdmin({
+        publicAddress: '0x417C0309d43C27593F8a4DFEC427894306f6CE67',
+      });
     };
     expect(isAdmin).rejects.toThrow(
       '[AccessControl.isAdmin] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
@@ -1362,7 +1368,7 @@ describe('SDK', () => {
     it('[setRoyalties] - should set royalties', async () => {
       const contract = new ERC721Mintable(signer);
       await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: faker.internet.url() });
-      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
       await expect(contractFactoryMock).toHaveBeenCalledTimes(1);
     });
 
@@ -1382,7 +1388,7 @@ describe('SDK', () => {
           symbol: 'symbol',
           contractURI: faker.internet.url(),
         });
-        await eRC721Mintable.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+        await eRC721Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
       };
       expect(setRoyalties).rejects.toThrow(
         '[Royalties.setRoyalties] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
@@ -1394,7 +1400,7 @@ describe('SDK', () => {
     it('[royaltyInfo] - should throw if contract not deployed', async () => {
       const contract = new ERC721Mintable(signer);
       await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: faker.internet.url() });
-      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
         contract.royalties.royaltyInfo({ tokenId: 1, sellPrice: null }),
@@ -1408,7 +1414,7 @@ describe('SDK', () => {
     it('[royaltyInfo] - should throw when args are missing (tokenId)', async () => {
       const contract = new ERC721Mintable(signer);
       await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: faker.internet.url() });
-      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
         contract.royalties.royaltyInfo({ tokenId: null, sellPrice: null }),
@@ -1422,7 +1428,7 @@ describe('SDK', () => {
     it('[royaltyInfo] - should throw when args are missing (sellPrice)', async () => {
       const contract = new ERC721Mintable(signer);
       await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: faker.internet.url() });
-      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
         contract.royalties.royaltyInfo({ tokenId: 1, sellPrice: null }),
@@ -1436,7 +1442,7 @@ describe('SDK', () => {
     it('[royaltyInfo] - should not throw if TokenId is 0', async () => {
       const contract = new ERC721Mintable(signer);
       await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: faker.internet.url() });
-      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
         contract.royalties.royaltyInfo({ tokenId: 0, sellPrice: 10 }),
@@ -1445,7 +1451,7 @@ describe('SDK', () => {
     it('[royaltyInfo] - should not throw if SalePrice is 0', async () => {
       const contract = new ERC721Mintable(signer);
       await contract.deploy({ name: 'name', symbol: 'symbol', contractURI: faker.internet.url() });
-      contract.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() => contract.royalties.royaltyInfo({ tokenId: 1, sellPrice: 0 })).toBeTruthy();
     });
@@ -1466,7 +1472,7 @@ describe('SDK', () => {
           symbol: 'symbol',
           contractURI: faker.internet.url(),
         });
-        await eRC721Mintable.royaltyInfo({ tokenId: 1, sellPrice: 100 });
+        await eRC721Mintable.royalties.royaltyInfo({ tokenId: 1, sellPrice: 100 });
       };
       expect(royaltyInfo).rejects.toThrow(
         '[Royalties.royaltyInfo] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
@@ -1494,7 +1500,7 @@ describe('SDK', () => {
         symbol: 'symbol',
         contractURI: faker.internet.url(),
       });
-      await eRC721Mintable.renounceOwnership();
+      await eRC721Mintable.accessControl.renounceOwnership();
 
       expect(contractFactoryMock).toHaveBeenCalledTimes(1);
     });
@@ -1515,7 +1521,7 @@ describe('SDK', () => {
           symbol: 'symbol',
           contractURI: faker.internet.url(),
         });
-        await eRC721Mintable.renounceOwnership();
+        await eRC721Mintable.accessControl.renounceOwnership();
       };
       expect(renounceOwnership).rejects.toThrow(
         '[AccessControl.renounceOwnership] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',

@@ -53,11 +53,13 @@ describe('E2E Test: Basic NFT (mint)', () => {
 
   it('should Grant & check Minter role', async () => {
     // grant minter role
-    const tx = await contractObject.addMinter({ publicAddress });
+    const tx = await contractObject.accessControl.addMinter({ publicAddress });
+    console.log('TX: ', tx);
     const receipt = await tx.wait();
+    console.log('receipt: ', receipt);
 
     // // check minter role
-    const isMinter = await contractObject.isMinter({ publicAddress });
+    const isMinter = await contractObject.accessControl.isMinter({ publicAddress });
 
     expect(receipt.status).toEqual(1);
     expect(isMinter).toEqual(true);
@@ -65,15 +67,15 @@ describe('E2E Test: Basic NFT (mint)', () => {
 
   it('should Grant & revoke & check Minter role', async () => {
     // grant minter role
-    const tx = await contractObject.addMinter({ publicAddress });
+    const tx = await contractObject.accessControl.addMinter({ publicAddress });
     const receipt = await tx.wait();
 
     // revoke minter role
-    const tx2 = await contractObject.removeMinter({ publicAddress });
+    const tx2 = await contractObject.accessControl.removeMinter({ publicAddress });
     const receipt2 = await tx2.wait();
 
     // // check minter role
-    const isMinter = await contractObject.isMinter({ publicAddress });
+    const isMinter = await contractObject.accessControl.isMinter({ publicAddress });
 
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
@@ -82,7 +84,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
 
   it('should Grant & renounce & check Minter role', async () => {
     // grant minter role
-    const tx = await contractObject.addMinter({ publicAddress });
+    const tx = await contractObject.accessControl.addMinter({ publicAddress });
     const receipt = await tx.wait();
 
     // renounce minter role
@@ -100,11 +102,11 @@ describe('E2E Test: Basic NFT (mint)', () => {
       contractAddress: contractObject.contractAddress,
     });
 
-    const tx2 = await existing.renounceMinter({ publicAddress });
+    const tx2 = await existing.accessControl.renounceMinter({ publicAddress });
     const receipt2 = await tx2.wait();
 
     // // check minter role
-    const isMinter = await contractObject.isMinter({ publicAddress });
+    const isMinter = await contractObject.accessControl.isMinter({ publicAddress });
 
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
@@ -126,23 +128,23 @@ describe('E2E Test: Basic NFT (mint)', () => {
   });
 
   it('should grant & check Admin role', async () => {
-    const tx = await contractObject.addAdmin({ publicAddress });
+    const tx = await contractObject.accessControl.addAdmin({ publicAddress });
     const receipt = await tx.wait();
 
-    const isAdmin = await contractObject.isAdmin({ publicAddress });
+    const isAdmin = await contractObject.accessControl.isAdmin({ publicAddress });
 
     expect(receipt.status).toEqual(1);
     expect(isAdmin).toEqual(true);
   });
 
   it('should grant & revoke & check Admin role', async () => {
-    const tx = await contractObject.addAdmin({ publicAddress });
+    const tx = await contractObject.accessControl.addAdmin({ publicAddress });
     const receipt = await tx.wait();
 
-    const tx2 = await contractObject.removeAdmin({ publicAddress });
+    const tx2 = await contractObject.accessControl.removeAdmin({ publicAddress });
     const receipt2 = await tx2.wait();
 
-    const isAdmin = await contractObject.isAdmin({ publicAddress });
+    const isAdmin = await contractObject.accessControl.isAdmin({ publicAddress });
 
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
@@ -150,7 +152,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
   });
 
   it('should grant & renounce & check Admin role', async () => {
-    const tx = await contractObject.addAdmin({ publicAddress });
+    const tx = await contractObject.accessControl.addAdmin({ publicAddress });
     const receipt = await tx.wait();
 
     const accountPublic = new Auth({
@@ -167,10 +169,10 @@ describe('E2E Test: Basic NFT (mint)', () => {
       contractAddress: contractObject.contractAddress,
     });
 
-    const tx2 = await existing.renounceAdmin({ publicAddress });
+    const tx2 = await existing.accessControl.renounceAdmin({ publicAddress });
     const receipt2 = await tx2.wait();
 
-    const isAdmin = await contractObject.isAdmin({ publicAddress });
+    const isAdmin = await contractObject.accessControl.isAdmin({ publicAddress });
 
     expect(receipt.status).toEqual(1);
     expect(receipt2.status).toEqual(1);
@@ -178,7 +180,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
   });
 
   it('should renounce contract ownership', async () => {
-    const result = await contractObject.renounceOwnership();
+    const result = await contractObject.accessControl.renounceOwnership();
     const receipt = await result.wait();
 
     expect(receipt.status).toBe(1);
