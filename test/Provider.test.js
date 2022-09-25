@@ -1,5 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
+
 import Provider from '../src/lib/Provider/Provider.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 

@@ -1,4 +1,5 @@
 import { ContractFactory, ethers } from 'ethers';
+
 import ERC721UserMintable from '../src/lib/ContractTemplates/ERC721UserMintable';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';

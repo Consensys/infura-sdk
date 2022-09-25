@@ -18,6 +18,8 @@ export const formatRpcUrl = ({ chainId, projectId }) => {
   return `${chainUrls[chainId]}/v3/${projectId}`;
 };
 
+export const toBase64 = ({ projectId, secretId }) => btoa(`${projectId}:${secretId}`);
+
 export const addGasPriceToOptions = (options, gas) => {
   const newOptions = options;
   if (gas) {

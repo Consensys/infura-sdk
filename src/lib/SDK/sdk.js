@@ -1,4 +1,5 @@
 import { utils } from 'ethers';
+
 import Auth from '../Auth/Auth.js';
 import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';

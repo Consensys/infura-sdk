@@ -15,10 +15,10 @@ export class HttpService {
 
     // TODO: read from pkg.json the version info
     this.instance = axios.create({
-      baseURL: baseURL,
+      baseURL,
       headers: {
         Authorization: `Basic ${apiKey}`,
-        'X-Infura-User-Agent': `infura/sdk-js 1.0.2`,
+        'X-Infura-User-Agent': 'infura/sdk-js 1.0.2',
       },
     });
   }

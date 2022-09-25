@@ -5,6 +5,7 @@
  */
 
 import { ethers } from 'ethers';
+
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
 
 export default class Provider {

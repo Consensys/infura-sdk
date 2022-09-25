@@ -6,7 +6,6 @@
 
 /* eslint-disable */
 
-// Use this in "module" type nodejs projects
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, TEMPLATES } from './index.js';
 loadEnv();
@@ -40,7 +39,7 @@ const sdk = new SDK(acc);
 //   params: {
 //     name: '1507Contract',
 //     symbol: 'TOC',
-//     contractURI: 'URI',
+//     contractURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
 //   },
 // });
 // console.log('contract address: \n', newContract.contractAddress);
