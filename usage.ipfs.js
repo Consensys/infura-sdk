@@ -33,7 +33,7 @@ const { cid } = await myMetadataStorage.createContractURI(collectionMetadata);
 const myjson = path.join(__dirname, 'test', 'ipfs-test/collectionMetadata.json');
 const contractURI_file = await myMetadataStorage.createContractURI(myjson);
 
-// CREATE METADATA URI
+// CREATE TOKEN URI
 // upload token metadata from JSON object
 const tokenMetadata = {
   description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
@@ -43,7 +43,7 @@ const tokenMetadata = {
   name: 'Dave Starbelly',
   attributes: [],
 };
-const { cid: cidFile } = await myMetadataStorage.createTokenURI(tokenMetadata);
+const { cid: cidToken } = await myMetadataStorage.createTokenURI(tokenMetadata);
 
 // upload token metadata from JSON file
 const mynftjson = path.join(__dirname, 'test', 'ipfs-test/nftMetadata.json');
@@ -73,3 +73,11 @@ const newContract = await sdk.deploy({
   },
 });
 console.log('contract address: \n', newContract.contractAddress);
+
+const mint = await newContract.mint({
+  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+  tokenUri: `https://ipfs.io/ipfs/${cidToken}`,
+});
+
+const minted = await mint.wait();
+console.log(minted);
