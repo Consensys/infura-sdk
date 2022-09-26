@@ -7,18 +7,18 @@
 /* eslint-disable */
 
 import axios from 'axios';
+const version = require('../../package.json').version;
 
 export class HttpService {
   constructor(baseURL, apiKey) {
     if (!baseURL) throw new Error('[httpService.constructor] baseURL is missing!');
     if (!apiKey) throw new Error('[httpService.constructor] apiKey is missing!');
 
-    // TODO: read from pkg.json the version info
     this.instance = axios.create({
       baseURL: baseURL,
       headers: {
         Authorization: `Basic ${apiKey}`,
-        'X-Infura-User-Agent': `infura/sdk-js 1.0.2`,
+        'X-Infura-User-Agent': `infura/sdk-js ${version}`,
       },
     });
   }
