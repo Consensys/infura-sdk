@@ -1,9 +1,10 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
+import ganache from 'ganache';
+
 import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
-import ganache from 'ganache';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 

@@ -1,4 +1,5 @@
 import { ethers, utils } from 'ethers';
+
 import smartContractArtifact from './artifacts/ERC721UserMintable.js';
 import { addGasPriceToOptions, isURI } from '../utils.js';
 import { networkErrorHandler, errorLogger, ERROR_LOG } from '../error/handler.js';
