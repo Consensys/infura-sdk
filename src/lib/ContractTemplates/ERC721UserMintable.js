@@ -1,7 +1,7 @@
 import { ethers, utils } from 'ethers';
 
 import smartContractArtifact from './artifacts/ERC721UserMintable.js';
-import { addGasPriceToOptions } from '../utils.js';
+import { addGasPriceToOptions, isURI } from '../utils.js';
 import { networkErrorHandler, errorLogger, ERROR_LOG } from '../error/handler.js';
 import BaseERC721 from './components/BaseERC721.js';
 import AccessControl from './components/AccessControl.js';
@@ -34,7 +34,16 @@ export default class ERC721UserMintable extends BaseERC721 {
    * @param {string} maxTokenRequest Maximum tokens that can be requested per tx
    * @returns void
    */
-  async deploy({ name, symbol, baseURI, maxSupply, price, maxTokenRequest, gas = null }) {
+  async deploy({
+    name,
+    symbol,
+    baseURI,
+    contractURI,
+    maxSupply,
+    price,
+    maxTokenRequest,
+    gas = null,
+  }) {
     if (this.contractAddress || this._contractDeployed) {
       throw new Error(
         errorLogger({
@@ -80,6 +89,27 @@ export default class ERC721UserMintable extends BaseERC721 {
       );
     }
 
+    /* eslint-disable no-console */
+    if (!isURI(baseURI)) {
+      console.warn(`WARNING: The ContractURI "${baseURI}" is not a link.`);
+      console.warn('WARNING: BaseURI should be a link to a valid folder.');
+    }
+
+    if (contractURI === undefined) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC721UserMintable_deploy,
+          message: ERROR_LOG.message.no_contractURI_supplied,
+        }),
+      );
+    }
+
+    /* eslint-disable no-console */
+    if (!isURI(contractURI)) {
+      console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
+      console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
+    }
+
     if (maxSupply === undefined) {
       throw new Error(
         errorLogger({
@@ -121,6 +151,7 @@ export default class ERC721UserMintable extends BaseERC721 {
         name,
         symbol,
         baseURI,
+        contractURI,
         maxSupply,
         priceInWei,
         maxTokenRequest,
@@ -349,6 +380,12 @@ export default class ERC721UserMintable extends BaseERC721 {
           message: ERROR_LOG.message.invalid_baseURI,
         }),
       );
+    }
+
+    /* eslint-disable no-console */
+    if (!isURI(baseURI)) {
+      console.warn(`WARNING: The ContractURI "${baseURI}" is not a link.`);
+      console.warn('WARNING: BaseURI should be a link to a valid folder.');
     }
 
     try {

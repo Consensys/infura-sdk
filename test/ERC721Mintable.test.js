@@ -472,7 +472,7 @@ describe('SDK', () => {
       }),
     ).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.ERC721Mintable_setContractURI,
+        location: ERROR_LOG.location.BaseERC721_setContractURI,
         message: ERROR_LOG.message.contract_not_deployed_or_loaded,
       }),
     );
@@ -504,7 +504,7 @@ describe('SDK', () => {
     };
     expect(uri).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.ERC721Mintable_setContractURI,
+        location: ERROR_LOG.location.BaseERC721_setContractURI,
         message: ERROR_LOG.message.invalid_contractURI,
       }),
     );
@@ -548,7 +548,7 @@ describe('SDK', () => {
       });
     };
     expect(setContractURI).rejects.toThrow(
-      '[ERC721Mintable.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      '[BaseERC721.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -574,7 +574,7 @@ describe('SDK', () => {
       });
     };
     expect(setContractURI).rejects.toThrow(
-      '[ERC721Mintable.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
+      '[BaseERC721.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
     );
   });
 

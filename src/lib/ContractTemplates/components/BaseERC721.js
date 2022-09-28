@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { isBoolean, addGasPriceToOptions } from '../../utils.js';
+import { isBoolean, addGasPriceToOptions, isURI } from '../../utils.js';
 import { networkErrorHandler, errorLogger, ERROR_LOG } from '../../error/handler.js';
 import { GAS_LIMIT } from '../../constants.js';
 
@@ -169,6 +169,53 @@ export default class BaseERC721 {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.BaseERC721_approveTransfer,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * setContractURI function: Set the "contractURI" metadata for the specified contract
+   * @param {string} contractURI ContractURI for the contract
+   * (URI to a JSON file describing the contract's metadata)
+   * @notice Warning: This method will consume gas (35000 gas estimated)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
+  async setContractURI({ contractURI, gas = null }) {
+    if (!this._contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.BaseERC721_setContractURI,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!contractURI) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.BaseERC721_setContractURI,
+          message: ERROR_LOG.message.invalid_contractURI,
+        }),
+      );
+    }
+
+    /* eslint-disable no-console */
+    if (!isURI(contractURI)) {
+      console.warn(`WARNING: The ContractURI "${contractURI}" is not a link.`);
+      console.warn('WARNING: ContractURI should be a public link to a valid JSON metadata file');
+    }
+
+    try {
+      const options = addGasPriceToOptions({}, gas);
+      return await this._contractDeployed.setContractURI(contractURI, options);
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.BaseERC721_setContractURI,
           message: ERROR_LOG.message.an_error_occured,
           options: `${type} ${message}`,
         }),
