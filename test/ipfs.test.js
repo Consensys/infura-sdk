@@ -22,16 +22,20 @@ const myAsyncIterable = {
 const mockedCall = jest.fn().mockImplementation(() => 'test');
 const mockedRemoveCall = jest.fn().mockImplementation(() => 'test');
 const mockedAddAllCall = jest.fn().mockImplementation(() => myAsyncIterable);
+const mockedTickCall = jest.fn().mockImplementation(() => 'test');
 
 jest.mock('ipfs-http-client', () => ({
   globSource: () => [],
   urlSource: () => [],
   create: jest.fn(() => ({
-    add: jest.fn(() => ({
-      cid: {
-        toString: mockedCall,
-      },
-    })),
+    add: jest.fn((inputSrc, { progress }) => {
+      progress();
+      return {
+        cid: {
+          toString: mockedCall,
+        },
+      };
+    }),
 
     addAll: mockedAddAllCall,
 
@@ -39,6 +43,12 @@ jest.mock('ipfs-http-client', () => ({
       rm: mockedRemoveCall,
     },
   })),
+}));
+
+jest.mock('../src/services/utils', () => ({
+  progressBar: () => ({
+    tick: mockedTickCall,
+  }),
 }));
 
 const unexistingFile = path.join(__dirname, 'infura-fake.png');
@@ -57,11 +67,15 @@ describe('ipfs', () => {
   });
 
   it('should not instanciate ipfs without project id', async () => {
-    expect(() => new IPFS({ projectId: null, projectSecret })).toThrow();
+    expect(() => new IPFS({ projectId: null, projectSecret })).toThrow(
+      '[IPFS.constructor] No projectId supplied.',
+    );
   });
 
   it('should not instanciate ipfs without project secret', async () => {
-    expect(() => new IPFS({ projectId, projectSecret: null })).toThrow();
+    expect(() => new IPFS({ projectId, projectSecret: null })).toThrow(
+      '[IPFS.constructor] No projectSecret supplied.',
+    );
   });
 
   it('should upload local file', async () => {
@@ -70,6 +84,7 @@ describe('ipfs', () => {
     });
 
     expect(mockedCall).toHaveBeenCalledTimes(1);
+    expect(mockedTickCall).toHaveBeenCalledTimes(1);
   });
 
   it('should upload remote file', async () => {
@@ -78,6 +93,7 @@ describe('ipfs', () => {
     });
 
     expect(mockedCall).toHaveBeenCalledTimes(1);
+    expect(mockedTickCall).toHaveBeenCalledTimes(1);
   });
 
   it('should upload object', async () => {
@@ -89,6 +105,7 @@ describe('ipfs', () => {
     });
 
     expect(mockedCall).toHaveBeenCalledTimes(1);
+    expect(mockedTickCall).toHaveBeenCalledTimes(1);
   });
 
   it('should upload folder', async () => {
@@ -105,6 +122,18 @@ describe('ipfs', () => {
     });
 
     expect(mockedRemoveCall).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not unpin unexisting file', async () => {
+    mockedRemoveCall.mockImplementationOnce(() => {
+      throw new Error();
+    });
+    expect(
+      async () =>
+        await ipfs.unPinFile({
+          hash: faker.datatype.string(),
+        }),
+    ).rejects.toThrow();
   });
 
   it('should not upload unexisting file', async () => {

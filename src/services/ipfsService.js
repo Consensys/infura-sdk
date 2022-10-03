@@ -8,6 +8,7 @@
 
 import fs from 'fs';
 import { create as ipfsClient, globSource, urlSource } from 'ipfs-http-client';
+import { progressBar } from './utils.js';
 
 import { ERROR_LOG, errorLogger } from '../lib/error/handler.js';
 import { isURI, toBase64 } from '../lib/utils.js';
@@ -57,7 +58,26 @@ export default class IPFS {
         });
       }
 
-      return (await this.ipfsClient.add(inputSrc)).cid.toString();
+      return (
+        await this.ipfsClient.add(inputSrc, {
+          progress: (prog, path) => {
+            if (!isURI(source)) {
+              const size = fs.statSync(source).size;
+              const bar = progressBar(size);
+              return bar.tick(prog, {
+                path: inputSrc.path.split('/').pop(),
+                received: `received: ${Math.round((prog * 100) / size)}% \n`,
+              });
+            }
+            const size = prog;
+            const bar = progressBar(size);
+            return bar.tick(prog, {
+              path,
+              received: `received: ${Math.round((prog * 100) / size)}% \n`,
+            });
+          },
+        })
+      ).cid.toString();
     } catch (error) {
       throw new Error(
         errorLogger({
@@ -70,10 +90,23 @@ export default class IPFS {
 
   async uploadObject({ source }) {
     try {
+      const size = JSON.stringify(source).length;
+      const bar = progressBar(size);
+
       return (
-        await this.ipfsClient.add({
-          content: JSON.stringify(source),
-        })
+        await this.ipfsClient.add(
+          {
+            content: JSON.stringify(source),
+          },
+          {
+            progress: prog => {
+              bar.tick(prog, {
+                path: 'json object',
+                received: `received: ${Math.round((prog * 100) / size)}% \n`,
+              });
+            },
+          },
+        )
       ).cid.toString();
     } catch (error) {
       throw new Error(

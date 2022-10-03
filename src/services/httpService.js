@@ -32,6 +32,10 @@ export class HttpService {
   }
 
   async post(uri, params) {
-    return this.instance.post(uri, params);
+    try {
+      return await this.instance.post(uri, params);
+    } catch (error) {
+      throw new Error(`[API.ERROR][httpService.get] An error occured: ${error}`);
+    }
   }
 }

@@ -9,6 +9,7 @@ let signer;
 const address = '0x0';
 
 jest.mock('ethers');
+jest.spyOn(console, 'warn').mockImplementation();
 
 describe('SDK', () => {
   const contractFactoryMock = jest
