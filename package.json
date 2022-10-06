@@ -42,6 +42,7 @@
     "src/",
     "index.js",
     "usage.js",
+    "usage.ipfs.js",
     "jsconfig.json",
     "LICENSE",
     "README.MD"
