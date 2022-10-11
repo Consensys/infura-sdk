@@ -37,6 +37,7 @@ export const ERROR_MESSAGE = {
   invalid_provider: 'Invalid provider.',
   invalid_gas_price_supplied: 'Invalid value for gas provided',
   invalid_source: 'Source should be a file or a valid URL',
+  invalid_ids: 'List of IDs provided cannot be empty',
 
   contract_already_deployed: 'Contract already deployed.',
   contract_already_loaded: 'Contract already loaded.',
@@ -59,6 +60,8 @@ export const ERROR_MESSAGE = {
   metadata_upload_failed: 'Metadata file not uploaded: ',
   unsupported_input: 'Input is not supported (not JSON object or filepath): ',
   invalid_input: 'Input should be a valid JSON object or a filepath: ',
+
+  different_array_lengths: 'IDs and quantities arrays must be of same length',
 };
 
 export const ERROR_LOCATION = {
@@ -105,6 +108,13 @@ export const ERROR_LOCATION = {
   ERC721UserMintable_setPrice: '[ERC721UserMintable.setPrice]',
   ERC721UserMintable_toggleSale: '[ERC721UserMintable.toggleSale]',
   ERC721UserMintable_withdraw: '[ERC721UserMintable.withdraw]',
+
+  ERC1155Mintable_deploy: '[ERC721UserMintable.deploy]',
+  ERC1155Mintable_mint: '[ERC721UserMintable.mint]',
+  ERC1155Mintable_mintBatch: '[ERC721UserMintable.mintBatch]',
+  ERC1155Mintable_loadContract: '[ERC721UserMintable.loadContract]',
+  ERC1155Mintable_setBaseURI: '[ERC1155Mintable.setBaseURI]',
+  ERC1155Mintable_addIds: '[ERC721UserMintable.addIds]',
 
   ContractFactory_factory: '[ContractFactory.factory]',
   Provider_getProvider: '[Provider.getProvider]',
