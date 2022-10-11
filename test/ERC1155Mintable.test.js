@@ -11,7 +11,7 @@ const address = '0x0';
 
 jest.mock('ethers');
 
-describe('SDK', () => {
+describe('ERC1155Mintable SDK', () => {
   const contractFactoryMock = jest
     .spyOn(ContractFactory.prototype, 'deploy')
     .mockImplementation(() => ({
@@ -79,7 +79,7 @@ describe('SDK', () => {
 
     await erc1155Mintable.deploy({
       baseURI: faker.internet.url(),
-      contractURI: 'this is not a URI',
+      contractURI: 'URI',
       ids: [],
     });
 
@@ -94,14 +94,14 @@ describe('SDK', () => {
     const logSpy = jest.spyOn(console, 'warn');
 
     await erc1155Mintable.deploy({
+      baseURI: 'URI',
       contractURI: faker.internet.url(),
-      baseURI: 'this is not a URI',
       ids: [],
     });
 
     expect(logSpy).toHaveBeenCalledWith('WARNING: The BaseURI "URI" is not a link.');
     expect(logSpy).toHaveBeenCalledWith(
-      'WARNING: BaseURI should be a public link to a valid JSON metadata file',
+      'WARNING: BaseURI should be a public link to a valid folder.',
     );
   });
 
@@ -160,24 +160,21 @@ describe('SDK', () => {
 
   it('[Deploy] - should deploy with gas passed', async () => {
     erc1155Mintable = new ERC1155Mintable(signer);
+    const baseURI = faker.internet.url();
+    const contractURI = faker.internet.url();
 
     await erc1155Mintable.deploy({
-      baseURI: faker.internet.url(),
-      contractURI: faker.internet.url(),
+      baseURI,
+      contractURI,
       ids: [],
       gas: 250,
     });
     const gasPrice = { _hex: '0x3a35294400', _isBigNumber: true }; // 250 in BigNumber
 
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
-    expect(ContractFactory.prototype.deploy).toHaveBeenCalledWith(
-      faker.internet.url(),
-      faker.internet.url(),
-      [],
-      {
-        gasPrice,
-      },
-    );
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledWith(baseURI, contractURI, [], {
+      gasPrice,
+    });
   });
 
   it('[Mint] - should return an Error if contract is not deployed', () => {
@@ -237,7 +234,7 @@ describe('SDK', () => {
     expect(myNFT).rejects.toThrow(
       errorLogger({
         location: ERROR_LOG.location.ERC1155Mintable_mint,
-        message: ERROR_LOG.message.no_tokenURI_supplied,
+        message: ERROR_LOG.message.invalid_mint_quantity,
       }),
     );
   });
@@ -245,7 +242,7 @@ describe('SDK', () => {
   it('[Mint] - should return an Error if there is a network error', async () => {
     jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
       deployed: () => ({
-        mintWithTokenURI: () => {
+        mint: () => {
           throw new Error('test error');
         },
       }),
@@ -351,7 +348,7 @@ describe('SDK', () => {
       }),
     ).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.BaseERC721_setContractURI,
+        location: ERROR_LOG.location.BaseERC1155_setContractURI,
         message: ERROR_LOG.message.contract_not_deployed_or_loaded,
       }),
     );
@@ -387,7 +384,7 @@ describe('SDK', () => {
     };
     expect(uri).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.BaseERC721_setContractURI,
+        location: ERROR_LOG.location.BaseERC1155_setContractURI,
         message: ERROR_LOG.message.invalid_contractURI,
       }),
     );
@@ -431,7 +428,7 @@ describe('SDK', () => {
       });
     };
     expect(setContractURI).rejects.toThrow(
-      '[BaseERC721.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      '[BaseERC1155.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -457,7 +454,7 @@ describe('SDK', () => {
       });
     };
     expect(setContractURI).rejects.toThrow(
-      '[BaseERC721.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
+      '[BaseERC1155.setContractURI] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: ReferenceError: RuntimeException is not defined',
     );
   });
 
@@ -578,7 +575,7 @@ describe('SDK', () => {
     erc1155Mintable = new ERC1155Mintable(signer);
 
     const minter = async () =>
-      ERC1155Mintable.accessControl.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
+      erc1155Mintable.accessControl.renounceMinter({ publicAddress: ACCOUNT_ADDRESS });
     expect(minter).rejects.toThrow(
       errorLogger({
         location: ERROR_LOG.location.AccessControl_renounceMinter,
@@ -622,6 +619,7 @@ describe('SDK', () => {
   it('[renounceMinter] - should return an Error if there is a network error', async () => {
     jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
       deployed: () => ({
+        address,
         renounceRole: () => {
           throw new Error('test error');
         },
@@ -717,7 +715,7 @@ describe('SDK', () => {
       erc1155Mintable.setApprovalForAll({ to: ACCOUNT_ADDRESS, approvalStatus: true }),
     ).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.BaseERC721_setApprovalForAll,
+        location: ERROR_LOG.location.BaseERC1155_setApprovalForAll,
         message: ERROR_LOG.message.contract_not_deployed_or_loaded,
       }),
     );
@@ -736,7 +734,7 @@ describe('SDK', () => {
     };
     expect(approval).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.BaseERC721_setApprovalForAll,
+        location: ERROR_LOG.location.BaseERC1155_setApprovalForAll,
         message: ERROR_LOG.message.no_to_address,
       }),
     );
@@ -755,7 +753,7 @@ describe('SDK', () => {
     };
     expect(approval).rejects.toThrow(
       errorLogger({
-        location: ERROR_LOG.location.BaseERC721_setApprovalForAll,
+        location: ERROR_LOG.location.BaseERC1155_setApprovalForAll,
         message: ERROR_LOG.message.approvalStatus_must_be_boolean,
       }),
     );
@@ -796,7 +794,7 @@ describe('SDK', () => {
       await erc1155Mintable.setApprovalForAll({ to: ACCOUNT_ADDRESS, approvalStatus: true });
     };
     expect(setApprovalForAll).rejects.toThrow(
-      '[BaseERC721.setApprovalForAll] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      '[BaseERC1155.setApprovalForAll] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
     );
   });
 
@@ -1105,7 +1103,7 @@ describe('SDK', () => {
       );
     });
     it('[setRoyalties] - should throw when args are missing (address)', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
@@ -1113,7 +1111,7 @@ describe('SDK', () => {
       });
 
       await expect(() =>
-        contract.royalties.setRoyalties({ publicAddress: null, fee: 1 }),
+        erc1155Mintable.royalties.setRoyalties({ publicAddress: null, fee: 1 }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_setRoyalties,
@@ -1122,7 +1120,7 @@ describe('SDK', () => {
       );
     });
     it('[setRoyalties] - should throw when args are missing (fee)', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
@@ -1130,7 +1128,7 @@ describe('SDK', () => {
       });
 
       await expect(() =>
-        contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: null }),
+        erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: null }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_setRoyalties,
@@ -1140,7 +1138,7 @@ describe('SDK', () => {
     });
 
     it('[setRoyalties] - should throw when "fee" is not a number', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
@@ -1148,7 +1146,7 @@ describe('SDK', () => {
       });
 
       await expect(() =>
-        contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 'number' }),
+        erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 'number' }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_setRoyalties,
@@ -1158,7 +1156,7 @@ describe('SDK', () => {
     });
 
     it('[setRoyalties] - should throw when "fee" is not a number larger than 0 and less than 10000', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
@@ -1166,7 +1164,7 @@ describe('SDK', () => {
       });
 
       await expect(() =>
-        contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 0 }),
+        erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 0 }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_setRoyalties,
@@ -1176,13 +1174,13 @@ describe('SDK', () => {
     });
 
     it('[setRoyalties] - should set royalties', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
         ids: [],
       });
-      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
       await expect(contractFactoryMock).toHaveBeenCalledTimes(1);
     });
 
@@ -1212,16 +1210,16 @@ describe('SDK', () => {
 
   describe('royaltyInfo', () => {
     it('[royaltyInfo] - should throw if contract not deployed', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
         ids: [],
       });
-      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
-        contract.royalties.royaltyInfo({ tokenId: 1, sellPrice: null }),
+        erc1155Mintable.royalties.royaltyInfo({ tokenId: 1, sellPrice: null }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_royaltyInfo,
@@ -1230,16 +1228,16 @@ describe('SDK', () => {
       );
     });
     it('[royaltyInfo] - should throw when args are missing (tokenId)', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
         ids: [],
       });
-      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
-        contract.royalties.royaltyInfo({ tokenId: null, sellPrice: null }),
+        erc1155Mintable.royalties.royaltyInfo({ tokenId: null, sellPrice: null }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_royaltyInfo,
@@ -1248,16 +1246,16 @@ describe('SDK', () => {
       );
     });
     it('[royaltyInfo] - should throw when args are missing (sellPrice)', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
         ids: [],
       });
-      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
-        contract.royalties.royaltyInfo({ tokenId: 1, sellPrice: null }),
+        erc1155Mintable.royalties.royaltyInfo({ tokenId: 1, sellPrice: null }),
       ).rejects.toThrow(
         errorLogger({
           location: ERROR_LOG.location.Royalties_royaltyInfo,
@@ -1266,28 +1264,30 @@ describe('SDK', () => {
       );
     });
     it('[royaltyInfo] - should not throw if TokenId is 0', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
         ids: [],
       });
-      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
       await expect(() =>
-        contract.royalties.royaltyInfo({ tokenId: 0, sellPrice: 10 }),
+        erc1155Mintable.royalties.royaltyInfo({ tokenId: 0, sellPrice: 10 }),
       ).toBeTruthy();
     });
     it('[royaltyInfo] - should not throw if SalePrice is 0', async () => {
-      const contract = new ERC1155Mintable(signer);
+      const erc1155Mintable = new ERC1155Mintable(signer);
       await erc1155Mintable.deploy({
         baseURI: faker.internet.url(),
         contractURI: faker.internet.url(),
         ids: [],
       });
-      contract.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
+      erc1155Mintable.royalties.setRoyalties({ publicAddress: ACCOUNT_ADDRESS, fee: 1 });
 
-      await expect(() => contract.royalties.royaltyInfo({ tokenId: 1, sellPrice: 0 })).toBeTruthy();
+      await expect(() =>
+        erc1155Mintable.royalties.royaltyInfo({ tokenId: 1, sellPrice: 0 }),
+      ).toBeTruthy();
     });
 
     it('[royaltyInfo] - should return an Error if there is a network error', async () => {
@@ -1316,7 +1316,7 @@ describe('SDK', () => {
   describe('renounceOwnership', () => {
     it('[renounceOwnership] - should throw if contract not deployed', async () => {
       erc1155Mintable = new ERC1155Mintable(signer);
-      const renounceOwnership = async () => ERC1155Mintable.accessControl.renounceOwnership();
+      const renounceOwnership = async () => erc1155Mintable.accessControl.renounceOwnership();
 
       expect(renounceOwnership).rejects.toThrow(
         errorLogger({
