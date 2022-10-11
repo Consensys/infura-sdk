@@ -8,13 +8,27 @@
 
 import { config as loadEnv } from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { SDK, Auth, TEMPLATES, Metadata } from './index.js';
 loadEnv();
 
-const projectId = process.env.INFURA_IPFS_PROJECT_ID;
-const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const myMetadataStorage = new Metadata({ projectId, projectSecret });
+const myMetadataStorage = new Metadata({
+  projectId: process.env.INFURA_IPFS_PROJECT_ID,
+  projectSecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+});
+
+const acc = new Auth({
+  privateKey: process.env.WALLET_PRIVATE_KEY,
+  projectId: process.env.INFURA_PROJECT_ID,
+  secretId: process.env.INFURA_PROJECT_SECRET,
+  rpcUrl: process.env.EVM_RPC_URL,
+  chainId: 5,
+});
+
+const sdk = new SDK(acc);
 
 /**
  * METADATA
@@ -29,9 +43,9 @@ const collectionMetadata = {
 };
 const { cid } = await myMetadataStorage.createContractURI(collectionMetadata);
 
-// upload collection metadata from JSON file
-const myjson = path.join(__dirname, 'test', 'ipfs-test/collectionMetadata.json');
-const contractURI_file = await myMetadataStorage.createContractURI(myjson);
+// Or upload collection metadata from JSON file
+//const myjson = path.join(__dirname, 'test', 'ipfs-test/collectionMetadata.json');
+//const contractURI_file = await myMetadataStorage.createContractURI(myjson);
 
 // CREATE TOKEN URI
 // upload token metadata from JSON object
@@ -45,25 +59,16 @@ const tokenMetadata = {
 };
 const { cid: cidToken } = await myMetadataStorage.createTokenURI(tokenMetadata);
 
-// upload token metadata from JSON file
-const mynftjson = path.join(__dirname, 'test', 'ipfs-test/nftMetadata.json');
-const tokenURI_file = await myMetadataStorage.createTokenURI(mynftjson);
+// Or upload token metadata from JSON file
+//const mynftjson = path.join(__dirname, 'test', 'ipfs-test/nftMetadata.json');
+//const tokenURI_file = await myMetadataStorage.createTokenURI(mynftjson);
 
 /**
  *
  * SDK
  *
  */
-const acc = new Auth({
-  privateKey: process.env.WALLET_PRIVATE_KEY,
-  projectId: process.env.INFURA_PROJECT_ID,
-  secretId: process.env.INFURA_PROJECT_SECRET,
-  rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 5,
-});
-
-const sdk = new SDK(acc);
-
+console.log('Deploying the smart contract...');
 const newContract = await sdk.deploy({
   template: TEMPLATES.ERC721Mintable,
   params: {
@@ -72,12 +77,14 @@ const newContract = await sdk.deploy({
     contractURI: `https://ipfs.io/ipfs/${cid}`,
   },
 });
-console.log('contract address: \n', newContract.contractAddress);
+console.log('Contract deployed! Contract address: ', newContract.contractAddress);
 
+console.log('Minting an NFT...');
 const mint = await newContract.mint({
   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
   tokenUri: `https://ipfs.io/ipfs/${cidToken}`,
 });
 
 const minted = await mint.wait();
+console.log('NFT minted!');
 console.log(minted);

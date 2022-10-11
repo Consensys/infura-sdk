@@ -53,16 +53,14 @@ export default class Metadata {
 
   async upload({ metadataObject, isContract }) {
     let result = { ...metadataObject };
-    result = {
-      image: await this.uploadFileAndGetLink({
-        obj: metadataObject,
-        field: 'image',
-      }),
-      animation_url: await this.uploadFileAndGetLink({
-        obj: metadataObject,
-        field: 'animation_url',
-      }),
-    };
+    result.image = await this.uploadFileAndGetLink({
+      obj: metadataObject,
+      field: 'image',
+    });
+    result.animation_url = await this.uploadFileAndGetLink({
+      obj: metadataObject,
+      field: 'animation_url',
+    });
 
     try {
       // upload metadata file to IPFS
