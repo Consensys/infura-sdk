@@ -33,7 +33,7 @@ export const ERROR_MESSAGE = {
   invalid_max_supply: 'Invalid maximum supply.',
   invalid_max_token_request: 'Invalid maximum token request.',
   invalid_price: 'Invalid price',
-  invalid_mint_quantity: 'Quantity as integer value greater than 0 required.',
+  invalid_quantity: 'Quantity as integer value greater than 0 required.',
   invalid_provider: 'Invalid provider.',
   invalid_gas_price_supplied: 'Invalid value for gas provided',
   invalid_source: 'Source should be a file or a valid URL',
@@ -118,6 +118,8 @@ export const ERROR_LOCATION = {
   ERC1155Mintable_loadContract: '[ERC1155Mintable.loadContract]',
   ERC1155Mintable_setBaseURI: '[ERC1155Mintable.setBaseURI]',
   ERC1155Mintable_addIds: '[ERC1155Mintable.addIds]',
+  ERC1155Mintable_transfer: '[ERC1155Mintable.transfer]',
+  ERC1155Mintable_transferBatch: '[ERC1155Mintable.transferBatch]',
 
   ContractFactory_factory: '[ContractFactory.factory]',
   Provider_getProvider: '[Provider.getProvider]',

@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import smartContractArtifact from './artifacts/ERC1155Mintable.js';
 import { addGasPriceToOptions, isURI, isBoolean } from '../utils.js';
 import { networkErrorHandler, errorLogger, ERROR_LOG } from '../error/handler.js';
+import { GAS_LIMIT } from '../constants.js';
 import AccessControl from './components/AccessControl.js';
 import Royalties from './components/Royalties.js';
 
@@ -175,7 +176,7 @@ export default class ERC1155Mintable {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC1155Mintable_mint,
-          message: ERROR_LOG.message.invalid_mint_quantity,
+          message: ERROR_LOG.message.invalid_quantity,
         }),
       );
     }
@@ -206,7 +207,7 @@ export default class ERC1155Mintable {
     if (!this._contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.ERC1155Mintable_mint,
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
           message: ERROR_LOG.message.contract_not_deployed_or_loaded,
         }),
       );
@@ -215,7 +216,7 @@ export default class ERC1155Mintable {
     if (!to || !ethers.utils.isAddress(to)) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.ERC1155Mintable_mint,
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
           message: ERROR_LOG.message.invalid_public_address,
         }),
       );
@@ -235,7 +236,7 @@ export default class ERC1155Mintable {
         throw new Error(
           errorLogger({
             location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
-            message: ERROR_LOG.message.invalid_mint_quantity,
+            message: ERROR_LOG.message.invalid_quantity,
           }),
         );
       }
@@ -247,7 +248,7 @@ export default class ERC1155Mintable {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.ERC1155Mintable_mint,
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
           message: ERROR_LOG.message.an_error_occured,
           options: `${type} ${message}`,
         }),
@@ -265,7 +266,7 @@ export default class ERC1155Mintable {
       );
     }
 
-    if (!ids) {
+    if (!ids || ids.length < 1) {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC1155Mintable_addIds,
@@ -322,7 +323,7 @@ export default class ERC1155Mintable {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this._contractDeployed.setBaseURI(baseURI, options);
+      return await this._contractDeployed.setURI(baseURI, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -375,6 +376,167 @@ export default class ERC1155Mintable {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.BaseERC1155_setContractURI,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * SafeTransfer function: safeTransfer the token 'tokenId' between 'from' and 'to addresses.
+   * @param {string} from Address who will transfer the token
+   * @param {string} to Address that will receive the token
+   * @param {number} tokenId ID of the token that will be transfered
+   * @param {number} quantity quantity of the given tokenId to be transferred
+   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
+  async transfer({ from, to, tokenId, quantity, gas = null }) {
+    if (!this._contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transfer,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!from || !ethers.utils.isAddress(from)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transfer,
+          message: ERROR_LOG.message.invalid_from_address,
+        }),
+      );
+    }
+
+    if (!to || !ethers.utils.isAddress(to)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transfer,
+          message: ERROR_LOG.message.invalid_to_address,
+        }),
+      );
+    }
+
+    if (!Number.isInteger(tokenId)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transfer,
+          message: ERROR_LOG.message.tokenId_must_be_integer,
+        }),
+      );
+    }
+
+    if (!quantity || !Number.isInteger(quantity) || quantity < 1) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transfer,
+          message: ERROR_LOG.message.invalid_quantity,
+        }),
+      );
+    }
+
+    try {
+      let options = { gasLimit: GAS_LIMIT };
+      options = addGasPriceToOptions(options, gas);
+      return await this._contractDeployed.safeTransferFrom(from, to, tokenId, quantity, options);
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transfer,
+          message: ERROR_LOG.message.an_error_occured,
+          options: `${type} ${message}`,
+        }),
+      );
+    }
+  }
+
+  /**
+   * TransferBatch function: safeBatchTransfer the 'tokenIds' between 'from' and 'to addresses.
+   * @param {string} from Address who will transfer the token
+   * @param {string} to Address that will receive the token
+   * @param {number} tokenIds IDs of the tokens that will be transferred
+   * @param {number} quantities quantities of the given tokenId to be transferred
+   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
+  async transferBatch({ from, to, tokenIds, quantities, gas = null }) {
+    if (!this._contractDeployed && !this.contractAddress) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    }
+
+    if (!from || !ethers.utils.isAddress(from)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
+          message: ERROR_LOG.message.invalid_from_address,
+        }),
+      );
+    }
+
+    if (!to || !ethers.utils.isAddress(to)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
+          message: ERROR_LOG.message.invalid_to_address,
+        }),
+      );
+    }
+
+    if (tokenIds.length !== quantities.length) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
+          message: ERROR_LOG.message.different_array_lengths,
+        }),
+      );
+    }
+
+    tokenIds.forEach(tokenId => {
+      if (!Number.isInteger(tokenId)) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
+            message: ERROR_LOG.message.tokenId_must_be_integer,
+          }),
+        );
+      }
+    });
+
+    quantities.forEach(quantity => {
+      if (!quantity || !Number.isInteger(quantity) || quantity < 1) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
+            message: ERROR_LOG.message.invalid_quantity,
+          }),
+        );
+      }
+    });
+
+    try {
+      let options = { gasLimit: GAS_LIMIT };
+      options = addGasPriceToOptions(options, gas);
+      return await this._contractDeployed.safeBatchTransferFrom(
+        from,
+        to,
+        tokenIds,
+        quantities,
+        options,
+      );
+    } catch (error) {
+      const { message, type } = networkErrorHandler(error);
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_transferBatch,
           message: ERROR_LOG.message.an_error_occured,
           options: `${type} ${message}`,
         }),

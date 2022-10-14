@@ -17,6 +17,7 @@ describe('ERC1155Mintable SDK', () => {
     .mockImplementation(() => ({
       deployed: () => ({
         address,
+        addIds: jest.fn(),
         mint: jest.fn(),
         mintBatch: jest.fn(),
         safeTransferFrom: jest.fn(),
@@ -146,6 +147,30 @@ describe('ERC1155Mintable SDK', () => {
     expect(contract).rejects.toThrow('code: UNKNOWN_ERROR, message: Error: test error');
   });
 
+  it('[Deploy] - should return an Error if already deployed', async () => {
+    erc1155Mintable = new ERC1155Mintable(signer);
+
+    await erc1155Mintable.deploy({
+      baseURI: faker.internet.url(),
+      contractURI: faker.internet.url(),
+      ids: [],
+    });
+
+    const contract = async () =>
+      erc1155Mintable.deploy({
+        baseURI: faker.internet.url(),
+        contractURI: faker.internet.url(),
+        ids: [],
+      });
+
+    expect(contract).rejects.toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.ERC1155Mintable_deploy,
+        message: ERROR_LOG.message.contract_already_deployed,
+      }),
+    );
+  });
+
   it('[Deploy] - should return a contract', async () => {
     erc1155Mintable = new ERC1155Mintable(signer);
 
@@ -183,7 +208,8 @@ describe('ERC1155Mintable SDK', () => {
     const myNFT = async () =>
       erc1155Mintable.mint({
         publicAddress: ACCOUNT_ADDRESS,
-        tokenURI: 'https://infura.io/images/404.png',
+        id: 0,
+        quantity: 1,
       });
     expect(myNFT).rejects.toThrow(
       errorLogger({
@@ -234,7 +260,7 @@ describe('ERC1155Mintable SDK', () => {
     expect(myNFT).rejects.toThrow(
       errorLogger({
         location: ERROR_LOG.location.ERC1155Mintable_mint,
-        message: ERROR_LOG.message.invalid_mint_quantity,
+        message: ERROR_LOG.message.invalid_quantity,
       }),
     );
   });
@@ -1359,6 +1385,500 @@ describe('ERC1155Mintable SDK', () => {
       };
       expect(renounceOwnership).rejects.toThrow(
         '[AccessControl.renounceOwnership] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
+  });
+
+  describe('setBaseURI', () => {
+    it('[SetBaseURI] - should return an Error if contract is not deployed', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      expect(() =>
+        erc1155Mintable.setBaseURI({
+          baseURI:
+            'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+        }),
+      ).rejects.toThrow('[ERC1155Mintable.setBaseURI] Contract not deployed or loaded.');
+    });
+
+    it('[SetBaseURI] - should return an Error if the baseURI is empty', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const uri = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.setBaseURI({ baseURI: '' });
+      };
+      expect(uri).rejects.toThrow('[ERC1155Mintable.setBaseURI] Invalid baseURI.');
+    });
+
+    it('[SetBaseURI] - should set the baseURI', async () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      await erc1155Mintable.deploy({
+        baseURI: faker.internet.url(),
+        contractURI: faker.internet.url(),
+        ids: [],
+      });
+      await erc1155Mintable.setBaseURI({
+        baseURI:
+          'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
+      });
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('mintBatch', () => {
+    it('[Mint] - should return an Error if contract is not deployed', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () =>
+        erc1155Mintable.mintBatch({
+          publicAddress: ACCOUNT_ADDRESS,
+          ids: [0],
+          quantities: [1],
+        });
+      expect(myNFT).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    });
+
+    it('[mintBatch] - should return an Error if the address is empty', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.mintBatch({
+          to: '',
+          ids: [0],
+          quantities: [1],
+        });
+      };
+      expect(myNFT).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
+          message: ERROR_LOG.message.invalid_public_address,
+        }),
+      );
+    });
+
+    it('[mintBatch] - should return an Error if ids and quantities arrays have different sizes', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.mintBatch({
+          to: '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+          ids: [0, 1],
+          quantities: [1],
+        });
+      };
+      expect(myNFT).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
+          message: ERROR_LOG.message.different_array_lengths,
+        }),
+      );
+    });
+
+    it('[MmintBatchint] - should return an Error if any quantity is less than one', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.mintBatch({
+          to: '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
+          ids: [0, 1],
+          quantities: [1, 0],
+        });
+      };
+      expect(myNFT).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_mintBatch,
+          message: ERROR_LOG.message.invalid_quantity,
+        }),
+      );
+    });
+
+    it('[mintBatch] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          mintBatch: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.mintBatch({
+          to: ACCOUNT_ADDRESS,
+          ids: [0, 1],
+          quantities: [1, 1],
+        });
+      };
+      expect(myNFT).rejects.toThrow(
+        '[ERC1155Mintable.mintBatch] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
+
+    it('[mintBatch] - should mint a token', async () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      await erc1155Mintable.deploy({
+        baseURI: faker.internet.url(),
+        contractURI: faker.internet.url(),
+        ids: [],
+      });
+      await erc1155Mintable.mintBatch({
+        to: ACCOUNT_ADDRESS,
+        ids: [0, 1],
+        quantities: [1, 1],
+      });
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('addIds', () => {
+    it('[addIds] - should return an Error if contract is not deployed', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () =>
+        erc1155Mintable.addIds({
+          ids: [0],
+        });
+      expect(myNFT).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_addIds,
+          message: ERROR_LOG.message.contract_not_deployed_or_loaded,
+        }),
+      );
+    });
+
+    it('[addIds] - should return an Error if the ids array is empty', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.addIds({
+          ids: [],
+        });
+      };
+      expect(myNFT).rejects.toThrow(
+        errorLogger({
+          location: ERROR_LOG.location.ERC1155Mintable_addIds,
+          message: ERROR_LOG.message.invalid_ids,
+        }),
+      );
+    });
+
+    it('[addIds] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        deployed: () => ({
+          addIds: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const myNFT = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.addIds({
+          ids: [0, 1],
+        });
+      };
+      expect(myNFT).rejects.toThrow(
+        '[ERC1155Mintable.addIds] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
+  });
+
+  describe('Transfers', () => {
+    it('[Transfer] - should return an Error if contract is not deployed', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () =>
+        erc1155Mintable.transfer({ from: ACCOUNT_ADDRESS, to: ACCOUNT_ADDRESS_2, tokenId: 1 });
+      expect(transferNft).rejects.toThrow(
+        '[ERC1155Mintable.transfer] Contract not deployed or loaded.',
+      );
+    });
+
+    it('[Transfer] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        address,
+        deployed: () => ({
+          safeTransferFrom: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transfer({
+          from: ACCOUNT_ADDRESS,
+          to: ACCOUNT_ADDRESS_2,
+          tokenId: 1,
+          quantity: 1,
+        });
+      };
+      expect(transferNft).rejects.toThrow(
+        '[ERC1155Mintable.transfer] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
+
+    it('[Transfer] - should return an Error if from address is not valid', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transfer({
+          from: '',
+          to: ACCOUNT_ADDRESS_2,
+          tokenId: 1,
+          quantity: 1,
+        });
+      };
+      expect(transferNft).rejects.toThrow('[ERC1155Mintable.transfer] Invalid from address.');
+    });
+
+    it('[Transfer] - should return an Error if to address is not valid', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transfer({
+          from: ACCOUNT_ADDRESS,
+          to: '',
+          tokenId: 1,
+          quantity: 1,
+        });
+      };
+      expect(transferNft).rejects.toThrow('[ERC1155Mintable.transfer] Invalid to address.');
+    });
+
+    it('[Transfer] - should return an Error if to tokenID is not valid', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transfer({
+          from: ACCOUNT_ADDRESS,
+          to: ACCOUNT_ADDRESS_2,
+          tokenId: 'test',
+          quantity: 1,
+        });
+      };
+      expect(transferNft).rejects.toThrow('[ERC1155Mintable.transfer] TokenId must be integer.');
+    });
+
+    it('[Transfer] - should transfer nft', async () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      await erc1155Mintable.deploy({
+        baseURI: faker.internet.url(),
+        contractURI: faker.internet.url(),
+        ids: [],
+      });
+      await erc1155Mintable.transfer({
+        from: ACCOUNT_ADDRESS,
+        to: ACCOUNT_ADDRESS_2,
+        tokenId: 1,
+        quantity: 1,
+      });
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('BatchTransfers', () => {
+    it('[BatchTransfer] - should return an Error if contract is not deployed', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () =>
+        erc1155Mintable.transferBatch({ from: ACCOUNT_ADDRESS, to: ACCOUNT_ADDRESS_2, tokenId: 1 });
+      expect(transferNft).rejects.toThrow(
+        '[ERC1155Mintable.transferBatch] Contract not deployed or loaded.',
+      );
+    });
+
+    it('[BatchTransfer] - should return an Error if there is a network error', async () => {
+      jest.spyOn(ContractFactory.prototype, 'deploy').mockImplementationOnce(() => ({
+        address,
+        deployed: () => ({
+          safeBatchTransferFrom: () => {
+            throw new Error('test error');
+          },
+        }),
+      }));
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transferBatch({
+          from: ACCOUNT_ADDRESS,
+          to: ACCOUNT_ADDRESS_2,
+          tokenIds: [1],
+          quantities: [1],
+        });
+      };
+      expect(transferNft).rejects.toThrow(
+        '[ERC1155Mintable.transferBatch] An error occured | [RUNTIME.ERROR] code: UNKNOWN_ERROR, message: Error: test error',
+      );
+    });
+
+    it('[BatchTransfer] - should return an Error if from address is not valid', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transferBatch({
+          from: '',
+          to: ACCOUNT_ADDRESS_2,
+          tokenIds: [1],
+          quantities: [1],
+        });
+      };
+      expect(transferNft).rejects.toThrow('[ERC1155Mintable.transferBatch] Invalid from address.');
+    });
+
+    it('[BatchTransfer] - should return an Error if to address is not valid', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transferBatch({
+          from: ACCOUNT_ADDRESS,
+          to: '',
+          tokenIds: [1],
+          quantities: [1],
+        });
+      };
+      expect(transferNft).rejects.toThrow('[ERC1155Mintable.transferBatch] Invalid to address.');
+    });
+
+    it('[BatchTransfer] - should return an Error if to tokenID is not valid', () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transferBatch({
+          from: ACCOUNT_ADDRESS,
+          to: ACCOUNT_ADDRESS_2,
+          tokenIds: ['test'],
+          quantities: [1],
+        });
+      };
+      expect(transferNft).rejects.toThrow(
+        '[ERC1155Mintable.transferBatch] TokenId must be integer.',
+      );
+    });
+
+    it('[BatchTransfer] - should transfer nft', async () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      await erc1155Mintable.deploy({
+        baseURI: faker.internet.url(),
+        contractURI: faker.internet.url(),
+        ids: [],
+      });
+      await erc1155Mintable.transferBatch({
+        from: ACCOUNT_ADDRESS,
+        to: ACCOUNT_ADDRESS_2,
+        tokenIds: [1],
+        quantities: [1],
+      });
+
+      expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('[BatchTransfer] - should throw error because of different array lengths', async () => {
+      erc1155Mintable = new ERC1155Mintable(signer);
+
+      const transferNft = async () => {
+        await erc1155Mintable.deploy({
+          baseURI: faker.internet.url(),
+          contractURI: faker.internet.url(),
+          ids: [],
+        });
+        await erc1155Mintable.transferBatch({
+          from: ACCOUNT_ADDRESS,
+          to: ACCOUNT_ADDRESS_2,
+          tokenIds: [0, 1],
+          quantities: [1],
+        });
+      };
+
+      expect(transferNft).rejects.toThrow(
+        '[ERC1155Mintable.transferBatch] IDs and quantities arrays must be of same length',
       );
     });
   });
