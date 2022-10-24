@@ -59,6 +59,9 @@ export const ERROR_MESSAGE = {
   metadata_upload_failed: 'Metadata file not uploaded: ',
   unsupported_input: 'Input is not supported (not JSON object or filepath): ',
   invalid_input: 'Input should be a valid JSON object or a filepath: ',
+  no_metadata_name_supplied: 'Property name is required.',
+  no_metadata_description_supplied: 'Property description is required.',
+  no_metadata_image_supplied: 'Property image is required.',
 };
 
 export const ERROR_LOCATION = {
@@ -118,6 +121,8 @@ export const ERROR_LOCATION = {
   Ipfs_unPinFile: '[IPFS.unPinFile]',
 
   Metadata_constructor: '[Metadata.constructor]',
+  Metadata_contract_creation: '[Metadata.contractLevelMetadata]',
+  Metadata_token_creation: '[Metadata.tokenLevelMetadata]',
   Metadata_upload: '[Metadata.upload]',
   Metadata_uploadFileAndGetLink: '[Metadata.uploadFileAndGetLink]',
   Metadata_parseInput: '[Metadata.parseInput]',

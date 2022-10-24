@@ -1,134 +1,136 @@
-/*!
- * Copyright(c) ConsenSys Software Inc.
- * Copyright(c) https://consensys.net/
- * MIT Licensed
- */
-
-import { readFileSync } from 'fs';
-
-import IPFS from '../../services/ipfsService.js';
-import { ERROR_LOG, errorLogger } from '../error/handler.js';
+import { errorLogger, ERROR_LOG } from '../error/handler.js';
+import {
+  contractMetadataSchema,
+  freeMetadataSchema,
+  tokenMetadataSchema,
+} from './metadata.schema.js';
 
 export default class Metadata {
-  IPFS_BASE_URL = 'https://ipfs.io/ipfs/';
+  /**
+   * Create token metadata
+   * @param {string} name Name of the token
+   * @param {string} description description of the token
+   * @param {string} image link to the image URL
+   * @param {Array} attributes The attributes of the token
+   * @param {string} external_url The external link of the token
+   * @param {string} animation_url Link to the animation such as music, video
+   * @param {string} background_color The background color of the token
+   * @param {string} youtube_url The youtube url of the token
+   * @returns string
+   */
+  static OpenSeaTokenLevelStandard({
+    name,
+    description,
+    image,
+    attributes,
+    external_url = null,
+    animation_url = null,
+    background_color = null,
+    youtube_url = null,
+  }) {
+    const tokenMetadata = {
+      name,
+      description,
+      image,
+      attributes,
+    };
 
-  constructor({ projectId, projectSecret }) {
-    if (!projectId) {
+    if (animation_url) {
+      tokenMetadata.animation_url = animation_url;
+    }
+
+    if (background_color) {
+      tokenMetadata.background_color = background_color;
+    }
+
+    if (external_url) {
+      tokenMetadata.external_url = external_url;
+    }
+
+    if (youtube_url) {
+      tokenMetadata.youtube_url = youtube_url;
+    }
+
+    const result = tokenMetadataSchema.validate(tokenMetadata);
+
+    if (result.error) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.Metadata_constructor,
-          message: ERROR_LOG.message.no_infura_projectID_supplied,
+          location: ERROR_LOG.location.Metadata_token_creation,
+          message: result.error.details[0].message,
         }),
       );
     }
 
-    if (!projectSecret) {
+    return JSON.stringify(tokenMetadata);
+  }
+
+  /**
+   * Create contract metadata
+   * @param {string} name Name of the contract
+   * @param {string} description description of the contract
+   * @param {string} image link to the image URL
+   * @param {string} external_link The external link of the contract
+   * @param {number} seller_fee_basis_points basis point for royalty
+   * @param {number} fee_recipient free to for royalty recipient
+   * @returns string
+   */
+  static OpenSeaCollectionLevelStandard({
+    name,
+    description,
+    image,
+    external_link = null,
+    seller_fee_basis_points = null,
+    fee_recipient = null,
+  }) {
+    const contractmetadata = {
+      name,
+      description,
+      image,
+    };
+
+    if (external_link) {
+      contractmetadata.external_link = external_link;
+    }
+
+    if (seller_fee_basis_points) {
+      contractmetadata.seller_fee_basis_points = seller_fee_basis_points;
+    }
+
+    if (fee_recipient) {
+      contractmetadata.fee_recipient = fee_recipient;
+    }
+
+    const result = contractMetadataSchema.validate(contractmetadata);
+
+    if (result.error) {
       throw new Error(
         errorLogger({
-          location: ERROR_LOG.location.Metadata_constructor,
-          message: ERROR_LOG.message.no_infura_projectSecret_supplied,
+          location: ERROR_LOG.location.Metadata_contract_creation,
+          message: result.error.details[0].message,
+        }),
+      );
+    }
+    return JSON.stringify(contractmetadata);
+  }
+
+  /**
+   * Create free metadata
+   * @param {object} metadata object of free metadata
+   * @returns string
+   */
+  static freeLevelMetadata(metadata) {
+    const result = freeMetadataSchema.validate(metadata);
+
+    if (result.error) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Metadata_token_creation,
+          message: result.error.details[0].message,
         }),
       );
     }
 
-    this.client = new IPFS({
-      projectId,
-      projectSecret,
-    });
-  }
-
-  createTokenURI(metadataInput) {
-    return this.upload({
-      metadataObject: Metadata.parseInput(metadataInput),
-      isContract: false,
-    });
-  }
-
-  createContractURI(metadataInput) {
-    return this.upload({
-      metadataObject: Metadata.parseInput(metadataInput),
-      isContract: true,
-    });
-  }
-
-  async upload({ metadataObject, isContract }) {
-    let result = { ...metadataObject };
-    result.image = await this.uploadFileAndGetLink({
-      obj: metadataObject,
-      field: 'image',
-    });
-    result.animation_url = await this.uploadFileAndGetLink({
-      obj: metadataObject,
-      field: 'animation_url',
-    });
-
-    try {
-      // upload metadata file to IPFS
-      const cidFile = await this.client.uploadObject({ source: result });
-      result = {
-        type: isContract ? 'collectionMetadata' : 'nftMetadata',
-        cid: cidFile,
-        ...result,
-      };
-    } catch (error) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.Metadata_upload,
-          message: error.message || ERROR_LOG.message.metadata_upload_failed,
-        }),
-      );
-    }
-    return result;
-  }
-
-  async uploadFileAndGetLink({ obj, field }) {
-    let res;
-    try {
-      res = obj[field]
-        ? this.IPFS_BASE_URL + (await this.client.uploadFile({ source: obj[field] }))
-        : '';
-    } catch (error) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.Metadata_uploadFileAndGetLink,
-          message: error.message || ERROR_LOG.message.media_upload_failed,
-        }),
-      );
-    }
-    return res;
-  }
-
-  static parseInput(candidateInput) {
-    let metadata;
-    try {
-      switch (typeof candidateInput) {
-        // file path
-        case 'string':
-          metadata = JSON.parse(readFileSync(candidateInput));
-          break;
-
-        // JSON object
-        case 'object':
-          metadata = candidateInput;
-          break;
-
-        // unsupported input
-        default:
-          throw new Error(
-            errorLogger({
-              location: ERROR_LOG.location.Metadata_parseInput,
-              message: ERROR_LOG.message.unsupported_input,
-            }),
-          );
-      }
-    } catch (error) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.Metadata_parseInput,
-          message: ERROR_LOG.message.invalid_input,
-        }),
-      );
-    }
-    return metadata;
+    return JSON.stringify(metadata);
   }
 }

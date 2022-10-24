@@ -1,146 +1,175 @@
-import { config as loadEnv } from 'dotenv';
-import path from 'path';
 import Metadata from '../src/lib/Metadata/Metadata.js';
-
-loadEnv();
-
-// Mock Endpoint
-const mockedUploadFile = jest.fn().mockImplementation(() => 'mockedFile');
-const mockedUploadObject = jest.fn().mockImplementation(() => 'mockedObject');
-
-jest.mock('../src/services/ipfsService.js', () => {
-  return function () {
-    return {
-      uploadFile: mockedUploadFile,
-      uploadObject: mockedUploadObject,
-    };
-  };
-});
+import { faker } from '@faker-js/faker';
 
 describe('Metadata', () => {
-  const projectId = process.env.INFURA_IPFS_PROJECT_ID;
-  const projectSecret = process.env.INFURA_IPFS_PROJECT_SECRET;
-  let met;
-
-  beforeAll(() => {
-    met = new Metadata({ projectId, projectSecret });
-  });
-
-  it('should throw when args are missing (ipfsInfuraProjectId)', () => {
-    expect(() => new Metadata({ projectId: null, projectSecret: projectSecret })).toThrow();
-  });
-
-  it('should throw when args are missing (ipfsInfuraSecreId)', () => {
-    expect(() => new Metadata({ projectId: projectId, projectSecret: null })).toThrow();
-  });
-
-  describe('createTokenURI', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
+  describe('createTokenMetadata', () => {
+    it('should throw error if name not provided', () => {
+      expect(() => Metadata.OpenSeaTokenLevelStandard({})).toThrow(
+        '[Metadata.tokenLevelMetadata] "name" is required',
+      );
+    });
+    it('should throw error if description is not provided', () => {
+      expect(() => Metadata.OpenSeaTokenLevelStandard({ name: faker.datatype.string() })).toThrow(
+        '[Metadata.tokenLevelMetadata] "description" is required',
+      );
     });
 
-    it('should throw when input is not supported', () => {
-      // arrange
-      const candidateInput = 12;
-      // act
-      const hash = async () => await met.createTokenURI(candidateInput);
-      // assert
-      expect(hash).rejects.toThrow();
+    it('should throw error if image is not provided', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+        }),
+      ).toThrow('[Metadata.tokenLevelMetadata] "image" is required');
     });
 
-    it('should throw when input is not valid', () => {
-      // arrange
-      const candidateInput = '../not-existing-json.json';
-      // act
-      const hash = async () => await met.createTokenURI(candidateInput);
-      // assert
-      expect(hash).rejects.toThrow();
+    it('should throw error if image is not url', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: faker.datatype.string(),
+        }),
+      ).toThrow(
+        '[Metadata.tokenLevelMetadata] "image" must be a valid uri with a scheme matching the ipfs|https? pattern',
+      );
     });
 
-    it('should upload image & file in IPFS (JSON)', async () => {
-      // arrange
-      const tokenMetadataImage = {
-        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-        external_url: 'https://openseacreatures.io/3',
-        image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-        name: 'Dave Starbelly',
+    it('should not throw error if image is url', () => {
+      const data = Metadata.OpenSeaTokenLevelStandard({
+        name: faker.datatype.string(),
+        description: faker.datatype.string(),
+        image: faker.internet.url(),
         attributes: [],
-      };
-      // act
-      const res = await met.createTokenURI(tokenMetadataImage);
-      // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
-      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
-      expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mockedObject');
+      });
+
+      expect(data).not.toBe(null);
     });
 
-    it('should upload image & file in IPFS (file)', async () => {
-      // arrange
-      const file = path.join(__dirname, 'ipfs-test/nftMetadata.json');
-      // act
-      const res = await met.createTokenURI(file);
-      // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
-      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
-      expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mockedObject');
-    });
-
-    it('should upload image & animation_url & file in IPFS', async () => {
-      // arrange
-      const tokenMetadataImageWithAnimatioUrl = {
-        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-        external_url: 'https://openseacreatures.io/3',
-        image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-        animation_url: 'ipfs-test/consensys.png',
-        name: 'Dave Starbelly',
+    it('should not throw error if image is ipfs link', () => {
+      const data = Metadata.OpenSeaTokenLevelStandard({
+        name: faker.datatype.string(),
+        description: faker.datatype.string(),
+        image: `ipfs://${faker.datatype.uuid()}`,
         attributes: [],
-      };
-      // act
-      const res = await met.createTokenURI(tokenMetadataImageWithAnimatioUrl);
-      // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(2);
-      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
-      expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.animation_url.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mockedObject');
+      });
+      expect(data).not.toBe(null);
+    });
+
+    it('should throw error if attributes doesnt contains trait_type property', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: `ipfs://${faker.datatype.uuid()}`,
+          attributes: [{ value: faker.datatype.number() }],
+        }),
+      ).toThrow('[Metadata.tokenLevelMetadata] "attributes[0].trait_type" is required');
+    });
+
+    it('should throw error if attributes doesnt contains value property', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: `ipfs://${faker.datatype.uuid()}`,
+          attributes: [{ trait_type: faker.datatype.string() }],
+        }),
+      ).toThrow('[Metadata.tokenLevelMetadata] "attributes[0].value" is required');
+    });
+
+    it('should throw error if animation_url is not an url', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: `ipfs://${faker.datatype.uuid()}`,
+          attributes: [{ value: faker.datatype.number(), trait_type: faker.datatype.string() }],
+          animation_url: faker.datatype.string(),
+        }),
+      ).toThrow(
+        '[Metadata.tokenLevelMetadata] "animation_url" must be a valid uri with a scheme matching the ipfs|https? pattern',
+      );
     });
   });
 
-  describe('createContractURI', () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
+  describe('createContractMetadata', () => {
+    it('should throw error if name not provided', () => {
+      expect(() => Metadata.OpenSeaCollectionLevelStandard({})).toThrow(
+        '[Metadata.contractLevelMetadata] "name" is required',
+      );
     });
 
-    it('should upload image & file in IPFS (JSON)', async () => {
-      // arrange
-      const collectionMetadata = {
-        name: 'OpenSea Creatures',
-        description:
-          'OpenSea Creatures are adorable aquatic beings primarily for demonstrating what can be done using the OpenSea platform. Adopt one today to try out all the OpenSea buying, selling, and bidding feature set.',
-        image: '/full/path/to/0.jpg',
-        external_link: 'external-link-url',
-      };
-      // act
-      const res = await met.createContractURI(collectionMetadata);
-      // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
-      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
-      expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mockedObject');
+    it('should throw error if description is not provided', () => {
+      expect(() =>
+        Metadata.OpenSeaCollectionLevelStandard({ name: faker.datatype.string() }),
+      ).toThrow('[Metadata.contractLevelMetadata] "description" is required');
     });
 
-    it('should upload image & file in IPFS (file)', async () => {
-      // arrange
-      const file = path.join(__dirname, 'ipfs-test/collectionMetadata.json');
-      // act
-      const res = await met.createContractURI(file);
-      // assert
-      expect(mockedUploadFile).toHaveBeenCalledTimes(1);
-      expect(mockedUploadObject).toHaveBeenCalledTimes(1);
-      expect(res.image.startsWith('https://')).toBe(true);
-      expect(res.cid).toBe('mockedObject');
+    it('should throw error if image is not provided', () => {
+      expect(() =>
+        Metadata.OpenSeaCollectionLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+        }),
+      ).toThrow('[Metadata.contractLevelMetadata] "image" is required');
+    });
+
+    it('should throw error if external_link is not an url', () => {
+      expect(() =>
+        Metadata.OpenSeaCollectionLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: faker.internet.url(),
+          external_link: faker.datatype.string(),
+        }),
+      ).toThrow(
+        '[Metadata.contractLevelMetadata] "external_link" must be a valid uri with a scheme matching the ipfs|https? pattern',
+      );
+    });
+
+    it('should throw error if external_link is not an url', () => {
+      expect(() =>
+        Metadata.OpenSeaCollectionLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: faker.internet.url(),
+          external_link: faker.datatype.string(),
+        }),
+      ).toThrow(
+        '[Metadata.contractLevelMetadata] "external_link" must be a valid uri with a scheme matching the ipfs|https? pattern',
+      );
+    });
+
+    it('should throw error if fee_recipient is not a number', () => {
+      expect(() =>
+        Metadata.OpenSeaCollectionLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: faker.internet.url(),
+          external_link: faker.internet.url(),
+          fee_recipient: faker.datatype.string(),
+        }),
+      ).toThrow('[Metadata.contractLevelMetadata] "fee_recipient" must be a number');
+    });
+  });
+
+  describe('createFreeMetadata', () => {
+    it('should throw error if metadata is not an object', () => {
+      expect(() => Metadata.freeLevelMetadata(1)).toThrow(
+        '[Metadata.tokenLevelMetadata] "value" must be of type object',
+      );
+    });
+
+    it('should throw error if free metadata is not an object', () => {
+      expect(() => Metadata.freeLevelMetadata('test')).toThrow(
+        '[Metadata.tokenLevelMetadata] "value" must be of type object',
+      );
+    });
+
+    it('should create free metadata', () => {
+      const metadata = Metadata.freeLevelMetadata({ key: 'test' });
+      expect(metadata).not.toBe(null);
     });
   });
 });
