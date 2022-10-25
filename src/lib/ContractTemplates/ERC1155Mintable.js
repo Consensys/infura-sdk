@@ -25,8 +25,9 @@ export default class ERC1155Mintable {
    * @param {string} baseURI BaseURI of the contract
    * @param {string} ContractURI contractURI of the contract
    * @param {array} ids IDs of valid tokens for the contract
+   * @param {number} gas (Optional) gas parameter to pass to transaction
    * (link to a JSON file describing the contract's metadata)
-   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @notice Warning: This method will consume gas (varies depending on array size)
    * @returns void
    */
   async deploy({ baseURI, contractURI, ids = [], gas = null }) {
@@ -150,10 +151,11 @@ export default class ERC1155Mintable {
    * @param {string} to destination address of the minted token
    * @param {number} id ID of the token to mint
    * @param {number} quantity Quantity of the specified token to mint
-   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @param {number} gas (Optional) gas parameter to pass to transaction
+   * @notice Warning: This method will consume gas (52000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async mint({ to, id, quantity }) {
+  async mint({ to, id, quantity, gas = null }) {
     if (!this._contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -182,7 +184,8 @@ export default class ERC1155Mintable {
     }
 
     try {
-      return await this._contractDeployed.mint(to, id, quantity);
+      const options = addGasPriceToOptions({}, gas);
+      return await this._contractDeployed.mint(to, id, quantity, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -200,10 +203,11 @@ export default class ERC1155Mintable {
    * @param {string} to destination address of the minted token
    * @param {number} id ID of the token to mint
    * @param {number} quantity Quantity of the specified token to mint
-   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @param {number} gas (Optional) gas parameter to pass to transaction
+   * @notice Warning: This method will consume gas (varies depending on size of array)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
-  async mintBatch({ to, ids = null, quantities = null }) {
+  async mintBatch({ to, ids = null, quantities = null, gas = null }) {
     if (!this._contractDeployed && !this.contractAddress) {
       throw new Error(
         errorLogger({
@@ -243,7 +247,8 @@ export default class ERC1155Mintable {
     });
 
     try {
-      return await this._contractDeployed.mintBatch(to, ids, quantities);
+      const options = addGasPriceToOptions({}, gas);
+      return await this._contractDeployed.mintBatch(to, ids, quantities, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -256,6 +261,13 @@ export default class ERC1155Mintable {
     }
   }
 
+  /**
+   * Allow admin of contract to add new valid token IDs
+   * @param {number[]} ids array of IDs to add
+   * @param {number} gas (Optional) gas parameter to pass to transaction
+   * @notice Warning: This method will consume gas (varies depending on size of array)
+   * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
+   */
   async addIds({ ids = [], gas = null }) {
     if (!this._contractDeployed && !this.contractAddress) {
       throw new Error(
@@ -293,7 +305,9 @@ export default class ERC1155Mintable {
   /**
    * setBaseURI function: Set the "baseURI" metadata for the specified contract
    * @param {string} baseURI baseURI for the contract
+   * @param {number} gas (Optional) gas parameter to pass to transaction
    * (URI to a JSON file describing the contract's metadata)
+   * @notice Warning: This method will consume gas (35000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async setBaseURI({ baseURI, gas = null }) {
@@ -340,6 +354,7 @@ export default class ERC1155Mintable {
    * setContractURI function: Set the "contractURI" metadata for the specified contract
    * @param {string} contractURI ContractURI for the contract
    * (URI to a JSON file describing the contract's metadata)
+   * @param {number} gas (Optional) gas parameter to pass to transaction
    * @notice Warning: This method will consume gas (35000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
@@ -389,7 +404,8 @@ export default class ERC1155Mintable {
    * @param {string} to Address that will receive the token
    * @param {number} tokenId ID of the token that will be transfered
    * @param {number} quantity quantity of the given tokenId to be transferred
-   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @param {number} gas (Optional) gas parameter to pass to transaction
+   * @notice Warning: This method will consume gas (53000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async transfer({ from, to, tokenId, quantity, gas = null }) {
@@ -460,7 +476,8 @@ export default class ERC1155Mintable {
    * @param {string} to Address that will receive the token
    * @param {number} tokenIds IDs of the tokens that will be transferred
    * @param {number} quantities quantities of the given tokenId to be transferred
-   * @notice Warning: This method will consume gas (xxx gas estimated)
+   * @param {number} gas (Optional) gas parameter to pass to transaction
+   * @notice Warning: This method will consume gas (varies depending on array size)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */
   async transferBatch({ from, to, tokenIds, quantities, gas = null }) {
@@ -549,6 +566,7 @@ export default class ERC1155Mintable {
    * @param {string} to Address which will receive the approval rights
    * @param {boolean} approvalStatus Boolean representing the approval to be given (true)
    *  or revoked (false)
+   * @param {number} gas (Optional) gas parameter to pass to transaction
    * @notice Warning: This method will consume gas (46000 gas estimated)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
    */

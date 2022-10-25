@@ -30,7 +30,6 @@ describe('E2E Test: User Payable NFT (write)', () => {
     const chainId = 5;
     const projectId = process.env.INFURA_PROJECT_ID;
     const secretId = process.env.INFURA_PROJECT_SECRET;
-    const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
 
     account = new Auth({
       privateKey,
