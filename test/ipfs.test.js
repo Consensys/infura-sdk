@@ -64,6 +64,14 @@ describe('ipfs', () => {
     expect(() => new IPFS({ projectId, projectSecret: null })).toThrow();
   });
 
+  it('should not instanciate ipfs without project secret nor project id', async () => {
+    expect(() => new IPFS({ projectId: null, projectSecret: null })).toThrow();
+  });
+
+  it('should not instanciate ipfs with empty object', async () => {
+    expect(() => new IPFS({})).toThrow();
+  });
+
   it('should upload local file', async () => {
     await ipfs.uploadFile({
       source: file,

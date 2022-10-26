@@ -35,6 +35,16 @@ describe('Metadata', () => {
       );
     });
 
+    it('should throw an error if attributes is not defined', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: faker.internet.url(),
+        }),
+      ).toThrow('[Metadata.tokenLevelMetadata] "attributes" is required');
+    });
+
     it('should not throw error if image is url', () => {
       const data = Metadata.OpenSeaTokenLevelStandard({
         name: faker.datatype.string(),
@@ -67,7 +77,7 @@ describe('Metadata', () => {
       ).toThrow('[Metadata.tokenLevelMetadata] "attributes[0].trait_type" is required');
     });
 
-    it('should throw error if attributes doesnt contains value property', () => {
+    it('should throw error if attributes doesnt contain value property', () => {
       expect(() =>
         Metadata.OpenSeaTokenLevelStandard({
           name: faker.datatype.string(),
@@ -90,6 +100,16 @@ describe('Metadata', () => {
       ).toThrow(
         '[Metadata.tokenLevelMetadata] "animation_url" must be a valid uri with a scheme matching the ipfs|https? pattern',
       );
+    });
+    it('should throw error if trait_type is not defined', () => {
+      expect(() =>
+        Metadata.OpenSeaTokenLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: `ipfs://${faker.datatype.uuid()}`,
+          attributes: [{ value: faker.datatype.number() }],
+        }),
+      ).toThrow('[Metadata.tokenLevelMetadata] "attributes[0].trait_type" is required');
     });
   });
 
@@ -128,19 +148,6 @@ describe('Metadata', () => {
       );
     });
 
-    it('should throw error if external_link is not an url', () => {
-      expect(() =>
-        Metadata.OpenSeaCollectionLevelStandard({
-          name: faker.datatype.string(),
-          description: faker.datatype.string(),
-          image: faker.internet.url(),
-          external_link: faker.datatype.string(),
-        }),
-      ).toThrow(
-        '[Metadata.contractLevelMetadata] "external_link" must be a valid uri with a scheme matching the ipfs|https? pattern',
-      );
-    });
-
     it('should throw error if fee_recipient is not a number', () => {
       expect(() =>
         Metadata.OpenSeaCollectionLevelStandard({
@@ -151,6 +158,18 @@ describe('Metadata', () => {
           fee_recipient: faker.datatype.string(),
         }),
       ).toThrow('[Metadata.contractLevelMetadata] "fee_recipient" must be a number');
+    });
+
+    it('should throw error if seller_fee_basis_points is not a number', () => {
+      expect(() =>
+        Metadata.OpenSeaCollectionLevelStandard({
+          name: faker.datatype.string(),
+          description: faker.datatype.string(),
+          image: faker.internet.url(),
+          external_link: faker.internet.url(),
+          seller_fee_basis_points: faker.datatype.string(),
+        }),
+      ).toThrow('[Metadata.contractLevelMetadata] "seller_fee_basis_points" must be a number');
     });
   });
 

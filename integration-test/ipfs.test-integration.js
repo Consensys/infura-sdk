@@ -21,6 +21,16 @@ describe('E2E Test: IPFS Service', () => {
     });
   });
 
+  it('should not upload a non existing remote file', async () => {
+    let hash;
+    expect(
+      async () =>
+        await ipfs.uploadFile({
+          source: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.test.png',
+        }),
+    ).rejects.toThrow(`IPFS.uploadFile] Not Found`);
+  });
+
   it('should upload local file', async () => {
     const hash = await ipfs.uploadFile({
       source: file,
