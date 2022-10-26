@@ -8,6 +8,7 @@ import Signer from '../Signer/Signer.js';
 import Provider from '../Provider/Provider.js';
 import { isValidString, formatRpcUrl, toBase64 } from '../utils.js';
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
+import IPFS from '../../services/ipfsService.js';
 
 export default class Auth {
   #privateKey;
@@ -22,7 +23,9 @@ export default class Auth {
 
   #chainId;
 
-  constructor({ privateKey, projectId, secretId, rpcUrl, chainId, provider }) {
+  #ipfs = null;
+
+  constructor({ privateKey, projectId, secretId, rpcUrl, chainId, provider, ipfs = null }) {
     if (!privateKey && !provider) {
       throw new Error(
         errorLogger({
@@ -39,6 +42,7 @@ export default class Auth {
         }),
       );
     }
+
     if (!projectId) {
       throw new Error(
         errorLogger({
@@ -71,12 +75,35 @@ export default class Auth {
         }),
       );
     }
-
     this.#privateKey = privateKey;
     this.#projectId = projectId;
     this.#secretId = secretId;
     this.#chainId = chainId;
     this.#rpcUrl = rpcUrl;
+    this.#ipfs = ipfs;
+
+    if (ipfs) {
+      if (!ipfs.projectId) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.Auth_constructor,
+            message: ERROR_LOG.message.no_ipfs_projectId_supplied,
+          }),
+        );
+      }
+
+      if (!ipfs.apiKeySecret) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.Auth_constructor,
+            message: ERROR_LOG.message.no_ipfs_secretId_supplied,
+          }),
+        );
+      }
+
+      const { projectId: ipfsProjectId, apiKeySecret } = ipfs;
+      this.#ipfs = new IPFS({ projectId: ipfsProjectId, projectSecret: apiKeySecret });
+    }
 
     if (!isValidString(this.#rpcUrl)) {
       this.#rpcUrl = formatRpcUrl({ chainId, projectId: this.#projectId });
@@ -87,6 +114,10 @@ export default class Auth {
 
   getChainId() {
     return this.#chainId;
+  }
+
+  getIpfsClient() {
+    return this.#ipfs;
   }
 
   getRpcUrl() {
