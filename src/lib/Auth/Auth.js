@@ -80,6 +80,30 @@ export default class Auth {
     this.#secretId = secretId;
     this.#chainId = chainId;
     this.#rpcUrl = rpcUrl;
+    this.#ipfs = ipfs;
+
+    if (ipfs) {
+      if (!ipfs.projectId) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.Auth_constructor,
+            message: ERROR_LOG.message.no_ipfs_projectId_supplied,
+          }),
+        );
+      }
+
+      if (!ipfs.apiKeySecret) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.Auth_constructor,
+            message: ERROR_LOG.message.no_ipfs_secretId_supplied,
+          }),
+        );
+      }
+
+      const { projectId: ipfsProjectId, apiKeySecret } = ipfs;
+      this.#ipfs = new IPFS({ projectId: ipfsProjectId, projectSecret: apiKeySecret });
+    }
 
     if (ipfs) {
       if (!ipfs.projectId) {
