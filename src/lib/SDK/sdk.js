@@ -14,6 +14,8 @@ export default class SDK {
 
   #httpClient;
 
+  #ipfsClient;
+
   constructor(auth) {
     if (!(auth instanceof Auth)) {
       throw new Error(
@@ -27,6 +29,7 @@ export default class SDK {
 
     this.#apiPath = `/networks/${this.#auth.getChainId()}`;
     this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
+    this.#ipfsClient = this.#auth.getIpfsClient();
   }
 
   /** Get signer
@@ -231,5 +234,24 @@ export default class SDK {
 
     const signer = await this.getSigner();
     return signer.provider.getTransactionReceipt(txHash);
+  }
+
+  /** Store data in ipfs
+   * @param {string} data data to store such as path to local file or url
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async store(data) {
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+    if (!Array.isArray(data)) {
+      return this.#ipfsClient.uploadFile({ source: data });
+    }
+    return this.#ipfsClient.uploadDirectory({ source: data });
   }
 }

@@ -44,41 +44,21 @@ export default class IPFS {
 
   async uploadFile({ source }) {
     try {
-      // input can be a local file (absolute path) or a URL
-      const inputSrc = isURI(source)
-        ? urlSource(source)
-        : fs.lstatSync(source).isFile()
-        ? fs.createReadStream(source)
-        : '';
-      if (!inputSrc) {
-        throw errorLogger({
-          location: ERROR_LOG.location.Ipfs_uploadFile,
-          message: ERROR_LOG.message.invalid_source,
-        });
+      if (isURI(source)) {
+        const inputSrc = urlSource(source);
+        return (await this.ipfsClient.add(inputSrc)).cid.toString();
       }
 
-      return (await this.ipfsClient.add(inputSrc)).cid.toString();
+      if (fs.existsSync(source)) {
+        const inputSrc = fs.createReadStream(source);
+        return (await this.ipfsClient.add(inputSrc)).cid.toString();
+      }
+
+      return (await this.ipfsClient.add(source)).cid.toString();
     } catch (error) {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Ipfs_uploadFile,
-          message: error.message || ERROR_LOG.message.an_error_occured_with_ipfs_api,
-        }),
-      );
-    }
-  }
-
-  async uploadObject({ source }) {
-    try {
-      return (
-        await this.ipfsClient.add({
-          content: JSON.stringify(source),
-        })
-      ).cid.toString();
-    } catch (error) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.Ipfs_uploadObject,
           message: error.message || ERROR_LOG.message.an_error_occured_with_ipfs_api,
         }),
       );
@@ -87,12 +67,6 @@ export default class IPFS {
 
   async uploadDirectory({ source }) {
     try {
-      const isDirectory = fs.lstatSync(source).isDirectory();
-      if (!isDirectory) {
-        // TODO: add logger
-        throw new Error('Source should be a Directory');
-      }
-
       const uploadedDirectory = [];
       for await (const file of this.ipfsClient.addAll(globSource(source, '**/*'), {
         wrapWithDirectory: true,
