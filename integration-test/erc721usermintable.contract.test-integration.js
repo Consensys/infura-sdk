@@ -46,6 +46,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
       params: {
         name: 'Payable Mint Contract',
         symbol: 'PYMC',
+        contractURI: faker.internet.url(),
         baseURI: faker.internet.url(),
         maxSupply: 10,
         price: '0.00001',
