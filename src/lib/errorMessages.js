@@ -37,10 +37,11 @@ export const ERROR_MESSAGE = {
   invalid_max_supply: 'Invalid maximum supply.',
   invalid_max_token_request: 'Invalid maximum token request.',
   invalid_price: 'Invalid price',
-  invalid_mint_quantity: 'Quantity as integer value greater than 0 required.',
+  invalid_quantity: 'Quantity as integer value greater than 0 required.',
   invalid_provider: 'Invalid provider.',
   invalid_gas_price_supplied: 'Invalid value for gas provided',
   invalid_source: 'Source should be a file or a valid URL',
+  invalid_ids: 'List of IDs provided cannot be empty',
 
   contract_already_deployed: 'Contract already deployed.',
   contract_already_loaded: 'Contract already loaded.',
@@ -55,6 +56,7 @@ export const ERROR_MESSAGE = {
   chain_not_supported: 'Chain not supported.',
   an_error_occured: 'An error occured',
   an_error_occured_with_ipfs_api: 'An error occured with infura ipfs api',
+  array_should_not_be_empty: 'The Array can not be empty',
 
   no_infura_projectID_supplied: 'No projectId supplied.',
   no_infura_projectSecret_supplied: 'No projectSecret supplied.',
@@ -63,10 +65,14 @@ export const ERROR_MESSAGE = {
   metadata_upload_failed: 'Metadata file not uploaded: ',
   unsupported_input: 'Input is not supported (not JSON object or filepath): ',
   invalid_input: 'Input should be a valid JSON object or a filepath: ',
+  different_array_lengths: 'IDs and quantities arrays must be of same length',
   no_metadata_name_supplied: 'Property name is required.',
   no_metadata_description_supplied: 'Property description is required.',
   no_metadata_image_supplied: 'Property image is required.',
-  should_be_directory: 'Source should be a Directory',
+  data_must_be_string: 'Data must be a string',
+  data_must_be_valid_json: 'Data must be a valid json',
+  unexisting_file: 'The file does not exists',
+  is_not_an_array: 'The parameter should be a valid array',
 };
 
 export const ERROR_LOCATION = {
@@ -97,6 +103,9 @@ export const ERROR_LOCATION = {
   BaseERC721_setContractURI: '[BaseERC721.setContractURI]',
   BaseERC721_transfer: '[BaseERC721.transfer]',
 
+  BaseERC1155_setContractURI: '[BaseERC1155.setContractURI]',
+  BaseERC1155_setApprovalForAll: '[BaseERC1155.setApprovalForAll]',
+
   Royalties_setRoyalties: '[Royalties.setRoyalties]',
   Royalties_royaltyInfo: '[Royalties.royaltyInfo]',
 
@@ -114,6 +123,15 @@ export const ERROR_LOCATION = {
   ERC721UserMintable_setPrice: '[ERC721UserMintable.setPrice]',
   ERC721UserMintable_toggleSale: '[ERC721UserMintable.toggleSale]',
   ERC721UserMintable_withdraw: '[ERC721UserMintable.withdraw]',
+
+  ERC1155Mintable_deploy: '[ERC1155Mintable.deploy]',
+  ERC1155Mintable_mint: '[ERC1155Mintable.mint]',
+  ERC1155Mintable_mintBatch: '[ERC1155Mintable.mintBatch]',
+  ERC1155Mintable_loadContract: '[ERC1155Mintable.loadContract]',
+  ERC1155Mintable_setBaseURI: '[ERC1155Mintable.setBaseURI]',
+  ERC1155Mintable_addIds: '[ERC1155Mintable.addIds]',
+  ERC1155Mintable_transfer: '[ERC1155Mintable.transfer]',
+  ERC1155Mintable_transferBatch: '[ERC1155Mintable.transferBatch]',
 
   ContractFactory_factory: '[ContractFactory.factory]',
   Provider_getProvider: '[Provider.getProvider]',

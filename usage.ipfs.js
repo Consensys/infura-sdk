@@ -33,10 +33,10 @@ const sdk = new SDK(acc);
  * METADATA
  */
 // CREATE CONTRACT Metadata
-const collectionMetadata = Metadata.OpenSeaCollectionLevelStandard({
+const collectionMetadata = Metadata.openSeaCollectionLevelStandard({
   name: 'My awesome collection',
   description: "A long description explaining why it's awesome",
-  image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+  image: await sdk.storeFile('https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png'),
   external_link: 'https://myawesomewebsite.net',
 });
 
@@ -46,46 +46,40 @@ console.log('collectionMetadata ----', collectionMetadata);
  * METADATA
  */
 // CREATE Token Metadata
-const tokenMetadata = Metadata.OpenSeaTokenLevelStandard({
+const tokenMetadata = Metadata.openSeaTokenLevelStandard({
   description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
   external_url: 'https://openseacreatures.io/3',
-  image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+  image: await sdk.storeFile('https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png'),
   name: 'Dave Starbelly',
   attributes: [],
 });
 
 console.log('tokenMetadata ----', tokenMetadata);
 
-const storeMetadata = await sdk.store(tokenMetadata);
+const storeMetadata = await sdk.storeMetadata(tokenMetadata);
 
-const storeImageUrl = await sdk.store(
+const storeImageUrl = await sdk.storeFile(
   'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
 );
 
-const storeImageFile = await sdk.store('./integration-test/ipfs-test/metamask.jpeg');
+const storeImageFile = await sdk.storeFile('./integration-test/ipfs-test/metamask.jpeg');
 
 console.log('storeMetadata ----', storeMetadata);
 console.log('storeImageUrl ----', storeImageUrl);
 console.log('storeImageUrl ----', storeImageFile);
 
-/*
-const storeArrayMetadata = await sdk.store([
-  {
-    description: 'test1',
-    external_url: 'test1',
-    image: 'test1',
+const storeArrayMetadata = await sdk.storeBaseURI([
+  Metadata.openSeaTokenLevelStandard({
+    description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+    external_url: 'https://openseacreatures.io/3',
+    image: await sdk.storeFile(
+      'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    ),
     name: 'Dave Starbelly',
     attributes: [],
-  },
-  {
-    description: 'test2',
-    external_url: 'test2',
-    image: 'test2',
-    name: 'Dave Starbelly',
-    attributes: [],
-  },
+  }),
 ]);
-*/
+
 console.log('storeArrayMetadata ----', storeArrayMetadata);
 /**
  * METADATA

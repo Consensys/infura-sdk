@@ -42,19 +42,35 @@ export default class IPFS {
     });
   }
 
+  /** Upload free content data on ipfs
+   * @param {string} metadata any string
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async uploadContent({ source }) {
+    return `ipfs://${(await this.ipfsClient.add(source)).cid.toString()}`;
+  }
+
+  /** Upload file on ipfs
+   * @param {string} metadata path to local file or url
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
   async uploadFile({ source }) {
     try {
       if (isURI(source)) {
         const inputSrc = urlSource(source);
-        return (await this.ipfsClient.add(inputSrc)).cid.toString();
+        return `ipfs://${(await this.ipfsClient.add(inputSrc)).cid.toString()}`;
       }
 
-      if (fs.existsSync(source)) {
-        const inputSrc = fs.createReadStream(source);
-        return (await this.ipfsClient.add(inputSrc)).cid.toString();
+      if (!fs.existsSync(source)) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.Ipfs_uploadFile,
+            message: ERROR_LOG.message.unexisting_file,
+          }),
+        );
       }
-
-      return (await this.ipfsClient.add(source)).cid.toString();
+      const inputSrc = fs.createReadStream(source);
+      return `ipfs://${(await this.ipfsClient.add(inputSrc)).cid.toString()}`;
     } catch (error) {
       throw new Error(
         errorLogger({
@@ -65,16 +81,35 @@ export default class IPFS {
     }
   }
 
-  async uploadDirectory({ source }) {
+  /** upload array of metadata on ipfs
+   * @param {Array<any>} metadata an array of valid JSON Metadata
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async uploadArray({ sources }) {
+    if (!sources.length > 0) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.Ipfs_uploadDirectory,
+          message: ERROR_LOG.message.array_should_not_be_empty,
+        }),
+      );
+    }
     try {
       const uploadedDirectory = [];
-      for await (const file of this.ipfsClient.addAll(globSource(source, '**/*'), {
+      const files = sources.map((source, index) => {
+        return {
+          path: index + 1,
+          content: source,
+        };
+      });
+
+      for await (const file of this.ipfsClient.addAll(files, {
         wrapWithDirectory: true,
       })) {
         uploadedDirectory.push(file);
       }
 
-      return [...uploadedDirectory].pop().cid.toString();
+      return `ipfs://${[...uploadedDirectory].pop().cid.toString()}`;
     } catch (error) {
       throw new Error(
         errorLogger({
@@ -96,5 +131,9 @@ export default class IPFS {
         }),
       );
     }
+  }
+
+  async closeConnection() {
+    this.ipfsClient.stop();
   }
 }

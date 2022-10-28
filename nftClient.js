@@ -1,7 +1,8 @@
 import { NFT_API_URL } from './src/lib/NFT/constants.js';
 import { HttpService } from './src/services/httpService.js';
 
-const token = 'Mjg5MTBkNDRiMzlkNGE5OThjMmVjYWVjYzEyMTlkMzQ6ZTBhMjgzNjBlMWY1NDM2NjhiMjg3NjNjMzI0OWE0OGQ=';
+const token =
+  'Mjg5MTBkNDRiMzlkNGE5OThjMmVjYWVjYzEyMTlkMzQ6ZTBhMjgzNjBlMWY1NDM2NjhiMjg3NjNjMzI0OWE0OGQ=';
 
 export default class NFTApiClient {
   url;
@@ -19,7 +20,6 @@ export default class NFTApiClient {
     this.networkId = process.env.NETWORK_ID; // by defaul, we set it to eth mainnet
 
     this.url = `${this.url}/networks/${this.networkId}`;
-    console.log(this.url);
     this.httpClient = new HttpService(this.url, token);
   }
 

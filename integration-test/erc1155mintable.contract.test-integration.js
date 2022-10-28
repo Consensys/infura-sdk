@@ -30,7 +30,6 @@ describe('E2E Test: User Payable NFT (write)', () => {
     const chainId = 5;
     const projectId = process.env.INFURA_PROJECT_ID;
     const secretId = process.env.INFURA_PROJECT_SECRET;
-    const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
 
     account = new Auth({
       privateKey,
@@ -42,15 +41,11 @@ describe('E2E Test: User Payable NFT (write)', () => {
 
     sdk = new SDK(account);
     contractObject = await sdk.deploy({
-      template: TEMPLATES.ERC721UserMintable,
+      template: TEMPLATES.ERC1155Mintable,
       params: {
-        name: 'Payable Mint Contract',
-        symbol: 'PYMC',
-        contractURI: faker.internet.url(),
         baseURI: faker.internet.url(),
-        maxSupply: 10,
-        price: '0.00001',
-        maxTokenRequest: 1,
+        contractURI: faker.internet.url(),
+        ids: [0],
       },
     });
   });
@@ -61,32 +56,11 @@ describe('E2E Test: User Payable NFT (write)', () => {
 
   it('should return loaded contract', async () => {
     const loadedContract = await sdk.loadContract({
-      template: TEMPLATES.ERC721UserMintable,
+      template: TEMPLATES.ERC1155Mintable,
       contractAddress: contractObject.contractAddress,
     });
 
     expect(loadedContract).not.toBe(null);
-  });
-
-  it('should reserve an nft', async () => {
-    const tx = await contractObject.reserve({
-      quantity: 1,
-    });
-
-    const receipt = await tx.wait();
-    expect(receipt.status).toEqual(1);
-  });
-
-  it('should transfer nft', async () => {
-    const tx = await contractObject.transfer({
-      from: owner,
-      to: publicAddress,
-      tokenId: 0,
-    });
-
-    const receipt = await tx.wait();
-
-    expect(receipt.status).toEqual(1);
   });
 
   it('should set contract URI', async () => {
@@ -106,46 +80,11 @@ describe('E2E Test: User Payable NFT (write)', () => {
     expect(receipt.status).toEqual(1);
   });
 
-  it('should set price', async () => {
-    const loadedContractObject = await sdk.loadContract({
-      template: TEMPLATES.ERC721UserMintable,
-      contractAddress: contractObject.contractAddress,
-    });
-    const tx = await loadedContractObject.setPrice({
-      price: '0.00002',
-    });
-    const receipt = await tx.wait();
-
-    expect(receipt.status).toEqual(1);
-
-    const price = await contractObject.price();
-    expect(price).toEqual('0.00002');
-  });
-
-  it('should toggle sale', async () => {
-    const tx = await contractObject.toggleSale();
-    const receipt = await tx.wait();
-
-    expect(receipt.status).toEqual(1);
-  });
-
-  it('should reveal the contract base URI', async () => {
-    const loadedContractObject = await sdk.loadContract({
-      template: TEMPLATES.ERC721UserMintable,
-      contractAddress: contractObject.contractAddress,
-    });
-    const tx = await loadedContractObject.reveal({
-      baseURI: 'https://www.cryptotimes.io/wp-content/uploads/2022/03/BAYC-835-Website-800x500.jpg',
-    });
-    const receipt = await tx.wait();
-
-    expect(receipt.status).toEqual(1);
-  });
-
   it('should mint nft', async () => {
     const tx = await contractObject.mint({
+      to: owner,
+      id: 0,
       quantity: 1,
-      cost: '0.00002',
     });
 
     const receipt = await tx.wait();
@@ -154,7 +93,7 @@ describe('E2E Test: User Payable NFT (write)', () => {
 
   it('should set approval for all', async () => {
     const loadedContractObject = await sdk.loadContract({
-      template: TEMPLATES.ERC721UserMintable,
+      template: TEMPLATES.ERC1155Mintable,
       contractAddress: contractObject.contractAddress,
     });
     const tx = await loadedContractObject.setApprovalForAll({
@@ -169,14 +108,18 @@ describe('E2E Test: User Payable NFT (write)', () => {
   it('should transfer nft with approval', async () => {
     // owner mints a token to themselves
     const tx = await contractObject.mint({
+      to: owner,
+      id: 0,
       quantity: 1,
-      cost: '0.00002',
     });
 
     await tx.wait();
 
     // owner approves publicAddress to transfer token that he owns
-    const txApprove = await contractObject.approveTransfer({ to: publicAddress, tokenId: 1 });
+    const txApprove = await contractObject.setApprovalForAll({
+      to: publicAddress,
+      approvalStatus: true,
+    });
 
     await txApprove.wait();
 
@@ -191,12 +134,17 @@ describe('E2E Test: User Payable NFT (write)', () => {
     const sdkPublic = new SDK(accountPublic);
 
     const existing = await sdkPublic.loadContract({
-      template: TEMPLATES.ERC721UserMintable,
+      template: TEMPLATES.ERC1155Mintable,
       contractAddress: contractObject.contractAddress,
     });
 
     // publicAddress transfers token of owner
-    const txTransfer = await existing.transfer({ from: owner, to: thirdUser, tokenId: 1 });
+    const txTransfer = await existing.safeTransferFrom({
+      from: owner,
+      to: thirdUser,
+      id: 0,
+      amount: 1,
+    });
 
     const receipt = await txTransfer.wait();
 

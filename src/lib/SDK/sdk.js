@@ -5,6 +5,7 @@ import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
+import { isJson } from '../utils.js';
 
 export default class SDK {
   /* Private property */
@@ -46,8 +47,8 @@ export default class SDK {
    * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async deploy({ template, params }) {
-    console.log(params);
     if (!template) {
+      console.log('entra aqui');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.SDK_deploy,
@@ -66,7 +67,6 @@ export default class SDK {
 
     const signer = await this.getSigner();
     const contract = ContractFactory.factory(template, signer);
-
     await contract.deploy(params);
     return contract;
   }
@@ -237,11 +237,20 @@ export default class SDK {
     return signer.provider.getTransactionReceipt(txHash);
   }
 
-  /** Store data in ipfs
-   * @param {string} data data to store such as path to local file or url
+  /** Store file on ipfs
+   * @param {string} metadata path to local file or url
    * @returns {Promise<string>} Ipfs hash of the stored data
    */
-  async store(data) {
+  async storeFile(metadata) {
+    if (typeof metadata !== 'string' && metadata instanceof String === false) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.data_must_be_string,
+        }),
+      );
+    }
+
     if (!this.#ipfsClient) {
       throw new Error(
         errorLogger({
@@ -250,9 +259,94 @@ export default class SDK {
         }),
       );
     }
-    if (!Array.isArray(data)) {
-      return this.#ipfsClient.uploadFile({ source: data });
+
+    return this.#ipfsClient.uploadFile({ source: metadata });
+  }
+
+  /** Store metadata on ipfs
+   * @param {string} metadata valid json metadata
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async storeMetadata(metadata) {
+    if (!isJson(metadata)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.data_must_be_valid_json,
+        }),
+      );
     }
-    return this.#ipfsClient.uploadDirectory({ source: data });
+
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+    return this.#ipfsClient.uploadContent({ source: metadata });
+  }
+
+  /** Store array of metadata on ipfs
+   * @param {Array<any>} metadata an array of valid JSON Metadata
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async storeBaseURI(metadata) {
+    if (!Array.isArray(metadata)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.is_not_an_array,
+        }),
+      );
+    }
+    metadata.forEach(data => {
+      if (!isJson(data)) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.SDK_store,
+            message: ERROR_LOG.message.data_must_be_valid_json,
+          }),
+        );
+      }
+    });
+
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+
+    return this.#ipfsClient.uploadArray({ sources: metadata });
+  }
+
+  /** Store free content data on ipfs
+   * @param {string} metadata any string
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async storeContent(metadata) {
+    if (typeof metadata !== 'string' && metadata instanceof String === false) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.data_must_be_string,
+        }),
+      );
+    }
+
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+
+    return this.#ipfsClient.uploadContent({ source: metadata });
   }
 }

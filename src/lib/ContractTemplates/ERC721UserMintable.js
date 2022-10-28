@@ -44,6 +44,7 @@ export default class ERC721UserMintable extends BaseERC721 {
     maxTokenRequest,
     gas = null,
   }) {
+    console.log(this);
     if (this.contractAddress || this._contractDeployed) {
       throw new Error(
         errorLogger({
@@ -235,7 +236,7 @@ export default class ERC721UserMintable extends BaseERC721 {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721UserMintable_mint,
-          message: ERROR_LOG.message.invalid_mint_quantity,
+          message: ERROR_LOG.message.invalid_quantity,
         }),
       );
     }
@@ -298,7 +299,7 @@ export default class ERC721UserMintable extends BaseERC721 {
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.ERC721UserMintable_reserve,
-          message: ERROR_LOG.message.invalid_mint_quantity,
+          message: ERROR_LOG.message.invalid_quantity,
         }),
       );
     }

@@ -90,8 +90,10 @@ export default class ERC721Mintable extends BaseERC721 {
         smartContractArtifact.bytecode,
         this.#signer,
       );
-
+      console.log('Antes del gas');
       const options = addGasPriceToOptions({}, gas);
+      console.log('despues del gas ', gas);
+      console.log('despues del gas ', options);
       const contract = await factory.deploy(name, symbol, contractURI, options);
       this._contractDeployed = await contract.deployed();
 
