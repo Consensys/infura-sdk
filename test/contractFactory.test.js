@@ -1,5 +1,6 @@
 import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable';
 import ERC721UserMintable from '../src/lib/ContractTemplates/ERC721UserMintable';
+import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
 import { TEMPLATES } from '../src/lib/NFT/constants';
 import ContractFactory from '../src/lib/NFT/contractFactory';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
@@ -23,7 +24,7 @@ describe('ContractFactory', () => {
     expect(contract instanceof ERC721UserMintable).toBe(true);
   });
 
-  it('should return "ERC721UserMintable" instance', async () => {
+  it('should return "ERC1155Mintable" instance', async () => {
     const template = TEMPLATES.ERC1155Mintable;
     const signer = '';
 
