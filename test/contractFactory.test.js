@@ -23,6 +23,15 @@ describe('ContractFactory', () => {
     expect(contract instanceof ERC721UserMintable).toBe(true);
   });
 
+  it('should return "ERC721UserMintable" instance', async () => {
+    const template = TEMPLATES.ERC1155Mintable;
+    const signer = '';
+
+    const contract = ContractFactory.factory(template, signer);
+
+    expect(contract instanceof ERC1155Mintable).toBe(true);
+  });
+
   it('should return an Error', async () => {
     const template = null;
     const signer = null;
