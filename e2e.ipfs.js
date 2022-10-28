@@ -66,9 +66,8 @@ const storeImageFile = await sdk.store('./integration-test/ipfs-test/metamask.jp
 
 console.log('storeMetadata ----', storeMetadata);
 console.log('storeImageUrl ----', storeImageUrl);
-console.log('storeImageUrl ----', storeImageFile);
+console.log('storeImageFile ----', storeImageFile);
 
-/*
 const storeArrayMetadata = await sdk.store([
   {
     description: 'test1',
@@ -85,7 +84,7 @@ const storeArrayMetadata = await sdk.store([
     attributes: [],
   },
 ]);
-*/
+
 console.log('storeArrayMetadata ----', storeArrayMetadata);
 /**
  * METADATA

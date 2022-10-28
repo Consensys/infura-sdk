@@ -46,6 +46,7 @@ export default class SDK {
    * @returns {Promise<ERC721Mintable>} Contract instance
    */
   async deploy({ template, params }) {
+    console.log(params);
     if (!template) {
       throw new Error(
         errorLogger({
