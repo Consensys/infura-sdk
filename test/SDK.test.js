@@ -14,7 +14,6 @@ import {
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { TEMPLATES } from '../src/lib/NFT/constants';
 import ContractFactory from '../src/lib/NFT/contractFactory';
-import IPFS from '../src/services/ipfsService.js';
 
 loadEnv();
 
@@ -25,21 +24,7 @@ describe('Sdk', () => {
   const HttpServiceMock = jest
     .spyOn(HttpService.prototype, 'get')
     .mockImplementation(() => jest.fn());
-
-  const IpfsUploadContentMock = jest
-    .spyOn(IPFS.prototype, 'uploadContent')
-    .mockImplementation(() => jest.fn());
-
-  const IpfsUploadArrayMock = jest
-    .spyOn(IPFS.prototype, 'uploadArray')
-    .mockImplementation(() => jest.fn());
-
-  const IpfsUploadFileMock = jest
-    .spyOn(IPFS.prototype, 'uploadFile')
-    .mockImplementation(() => jest.fn());
-
   let sdk;
-  let sdkWithoutIpfs;
   beforeAll(() => {
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
@@ -47,22 +32,8 @@ describe('Sdk', () => {
       secretId: process.env.INFURA_PROJECT_SECRET,
       rpcUrl: process.env.EVM_RPC_URL,
       chainId: 5,
-      ipfs: {
-        projectId: process.env.INFURA_IPFS_PROJECT_ID,
-        apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
-      },
-    });
-
-    const account2 = new Auth({
-      privateKey: generateTestPrivateKeyOrHash(),
-      projectId: process.env.INFURA_PROJECT_ID,
-      secretId: process.env.INFURA_PROJECT_SECRET,
-      rpcUrl: process.env.EVM_RPC_URL,
-      chainId: 5,
     });
     sdk = new Sdk(account);
-
-    sdkWithoutIpfs = new Sdk(account2);
 
     signerMock = jest.spyOn(account, 'getSigner').mockImplementation(() => ({
       provider: {
@@ -80,9 +51,6 @@ describe('Sdk', () => {
 
   afterEach(() => {
     HttpServiceMock.mockClear();
-    IpfsUploadFileMock.mockClear();
-    IpfsUploadArrayMock.mockClear();
-    IpfsUploadContentMock.mockClear();
     contractFactoryMock.mockClear();
     signerMock.mockClear();
   });
@@ -318,60 +286,6 @@ describe('Sdk', () => {
 
       expect(signerMock).toHaveBeenCalledTimes(1);
       expect(result).toBe('250.0');
-    });
-  });
-
-  describe('storeIpfs', () => {
-    it('should store file', async () => {
-      IpfsUploadFileMock.mockResolvedValueOnce('test');
-      await sdk.storeFile('https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png');
-      expect(IpfsUploadFileMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('should store an array', async () => {
-      IpfsUploadArrayMock.mockResolvedValueOnce('test');
-      await sdk.storeBaseURI([
-        JSON.stringify({
-          test: 'test',
-        }),
-      ]);
-      expect(IpfsUploadArrayMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('should store content', async () => {
-      IpfsUploadContentMock.mockResolvedValueOnce('test');
-      await sdk.storeContent('test');
-      expect(IpfsUploadContentMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('should throw error if ipfs is not setted', async () => {
-      const store = async () => await sdkWithoutIpfs.storeContent('test');
-      expect(store).rejects.toThrow('[SDK.store] Invalid ipfs setup.');
-    });
-
-    it('should throw error if its not a valid json', async () => {
-      const store = async () => await sdk.storeBaseURI([{ test: 'test' }]);
-      expect(store).rejects.toThrow('[SDK.store] Data must be a valid json');
-    });
-
-    it('should throw error if its not an array', async () => {
-      const store = async () => await sdk.storeBaseURI({ test: 'test' });
-      expect(store).rejects.toThrow('[SDK.store] The parameter should be a valid array');
-    });
-
-    it('should throw error if ipfs is not setted for baseURI', async () => {
-      const store = async () =>
-        await sdkWithoutIpfs.storeBaseURI([
-          JSON.stringify({
-            test: 'test',
-          }),
-        ]);
-      expect(store).rejects.toThrow('[SDK.store] Invalid ipfs setup.');
-    });
-
-    it('should throw error if ipfs data is not a string', async () => {
-      const store = async () => await sdkWithoutIpfs.storeContent(1);
-      expect(store).rejects.toThrow('[SDK.store] Data must be a string');
     });
   });
 });

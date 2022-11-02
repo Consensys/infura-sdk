@@ -44,7 +44,6 @@ export default class ERC721UserMintable extends BaseERC721 {
     maxTokenRequest,
     gas = null,
   }) {
-    console.log(this);
     if (this.contractAddress || this._contractDeployed) {
       throw new Error(
         errorLogger({

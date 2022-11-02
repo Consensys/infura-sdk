@@ -143,46 +143,6 @@ describe('Auth', () => {
     );
   });
 
-  it('should throw when ipfs projectId is not provided', () => {
-    expect(
-      () =>
-        new Auth({
-          privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
-          chainId: 5,
-          ipfs: {},
-        }),
-    ).toThrow(
-      errorLogger({
-        location: ERROR_LOG.location.Auth_constructor,
-        message: ERROR_LOG.message.no_ipfs_projectId_supplied,
-      }),
-    );
-  });
-
-  it('should throw when ipfs secret key is not provided', () => {
-    expect(
-      () =>
-        new Auth({
-          privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
-          chainId: 5,
-          ipfs: {
-            projectId: 'test',
-          },
-        }),
-    ).toThrow(
-      errorLogger({
-        location: ERROR_LOG.location.Auth_constructor,
-        message: ERROR_LOG.message.no_ipfs_secretId_supplied,
-      }),
-    );
-  });
-
   describe('getSigner', () => {
     let ganacheProvider;
     beforeAll(async () => {

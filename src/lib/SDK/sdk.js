@@ -5,7 +5,6 @@ import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
-import { isJson } from '../utils.js';
 
 export default class SDK {
   /* Private property */
@@ -14,8 +13,6 @@ export default class SDK {
   #apiPath;
 
   #httpClient;
-
-  #ipfsClient;
 
   constructor(auth) {
     if (!(auth instanceof Auth)) {
@@ -30,7 +27,6 @@ export default class SDK {
 
     this.#apiPath = `/networks/${this.#auth.getChainId()}`;
     this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
-    this.#ipfsClient = this.#auth.getIpfsClient();
   }
 
   /** Get signer
@@ -48,7 +44,6 @@ export default class SDK {
    */
   async deploy({ template, params }) {
     if (!template) {
-      console.log('entra aqui');
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.SDK_deploy,
@@ -67,6 +62,7 @@ export default class SDK {
 
     const signer = await this.getSigner();
     const contract = ContractFactory.factory(template, signer);
+
     await contract.deploy(params);
     return contract;
   }
@@ -235,119 +231,5 @@ export default class SDK {
 
     const signer = await this.getSigner();
     return signer.provider.getTransactionReceipt(txHash);
-  }
-
-  /** Store file on ipfs
-   * @param {string} metadata path to local file or url
-   * @returns {Promise<string>} Ipfs hash of the stored data
-   */
-  async storeFile(metadata) {
-    if (typeof metadata !== 'string' && metadata instanceof String === false) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.data_must_be_string,
-        }),
-      );
-    }
-
-    if (!this.#ipfsClient) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.invalid_ipfs_setup,
-        }),
-      );
-    }
-
-    return this.#ipfsClient.uploadFile({ source: metadata });
-  }
-
-  /** Store metadata on ipfs
-   * @param {string} metadata valid json metadata
-   * @returns {Promise<string>} Ipfs hash of the stored data
-   */
-  async storeMetadata(metadata) {
-    if (!isJson(metadata)) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.data_must_be_valid_json,
-        }),
-      );
-    }
-
-    if (!this.#ipfsClient) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.invalid_ipfs_setup,
-        }),
-      );
-    }
-    return this.#ipfsClient.uploadContent({ source: metadata });
-  }
-
-  /** Store array of metadata on ipfs
-   * @param {Array<any>} metadata an array of valid JSON Metadata
-   * @returns {Promise<string>} Ipfs hash of the stored data
-   */
-  async storeBaseURI(metadata) {
-    if (!Array.isArray(metadata)) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.is_not_an_array,
-        }),
-      );
-    }
-    console.log(metadata);
-    metadata.forEach(data => {
-      if (!isJson(data)) {
-        throw new Error(
-          errorLogger({
-            location: ERROR_LOG.location.SDK_store,
-            message: ERROR_LOG.message.data_must_be_valid_json,
-          }),
-        );
-      }
-    });
-
-    if (!this.#ipfsClient) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.invalid_ipfs_setup,
-        }),
-      );
-    }
-
-    return this.#ipfsClient.uploadArray({ sources: metadata });
-  }
-
-  /** Store free content data on ipfs
-   * @param {string} metadata any string
-   * @returns {Promise<string>} Ipfs hash of the stored data
-   */
-  async storeContent(metadata) {
-    if (typeof metadata !== 'string' && metadata instanceof String === false) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.data_must_be_string,
-        }),
-      );
-    }
-
-    if (!this.#ipfsClient) {
-      throw new Error(
-        errorLogger({
-          location: ERROR_LOG.location.SDK_store,
-          message: ERROR_LOG.message.invalid_ipfs_setup,
-        }),
-      );
-    }
-
-    return this.#ipfsClient.uploadContent({ source: metadata });
   }
 }

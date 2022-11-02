@@ -42,12 +42,3 @@ export const addGasPriceToOptions = (options, gas) => {
   }
   return newOptions;
 };
-
-export const isJson = param => {
-  try {
-    JSON.parse(param);
-  } catch (err) {
-    return false;
-  }
-  return true;
-};

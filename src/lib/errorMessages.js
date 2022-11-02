@@ -7,10 +7,7 @@ export const ERROR_MESSAGE = {
   no_tokenId_supplied: 'No tokenId supplied.',
   no_tokenURI_supplied: 'No tokenURI supplied.',
   no_projectId_supplied: 'No project id supplied.',
-  no_ipfs_projectId_supplied: 'No ipfs project id supplied.',
   no_secretId_supplied: 'No secret id supplied.',
-  no_ipfs_secretId_supplied: 'No ipfs secret id supplied.',
-
   no_chainId_supplied: 'No chain id supplied.',
   no_signer_instance_supplied: 'No signer instance supplied.',
   no_name_supplied: 'No name supplied.',
@@ -33,7 +30,6 @@ export const ERROR_MESSAGE = {
   invalid_baseURI: 'Invalid baseURI.',
   invalid_template: 'Invalid template.',
   invalid_transaction_hash: 'Invalid transaction hash.',
-  invalid_ipfs_setup: 'Invalid ipfs setup.',
   invalid_max_supply: 'Invalid maximum supply.',
   invalid_max_token_request: 'Invalid maximum token request.',
   invalid_price: 'Invalid price',
@@ -56,7 +52,6 @@ export const ERROR_MESSAGE = {
   chain_not_supported: 'Chain not supported.',
   an_error_occured: 'An error occured',
   an_error_occured_with_ipfs_api: 'An error occured with infura ipfs api',
-  array_should_not_be_empty: 'The Array can not be empty',
 
   no_infura_projectID_supplied: 'No projectId supplied.',
   no_infura_projectSecret_supplied: 'No projectSecret supplied.',
@@ -69,10 +64,6 @@ export const ERROR_MESSAGE = {
   no_metadata_name_supplied: 'Property name is required.',
   no_metadata_description_supplied: 'Property description is required.',
   no_metadata_image_supplied: 'Property image is required.',
-  data_must_be_string: 'Data must be a string',
-  data_must_be_valid_json: 'Data must be a valid json',
-  unexisting_file: 'The file does not exists',
-  is_not_an_array: 'The parameter should be a valid array',
 };
 
 export const ERROR_LOCATION = {
@@ -84,7 +75,6 @@ export const ERROR_LOCATION = {
   SDK_getNFTsForCollection: '[SDK.getNFTsForCollection]',
   SDK_getTokenMetadata: '[SDK.getTokenMetadata]',
   SDK_getStatus: '[SDK.GetStatus]',
-  SDK_store: '[SDK.store]',
   Auth_constructor: '[Auth.constructor]',
 
   AccessControl_addMinter: '[AccessControl.addMinter]',
