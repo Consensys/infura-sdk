@@ -26,7 +26,6 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   const nftApiClient = new NFTApiClient();
   it('Deploy - Get all nfts by owner address', async () => {
     const response = await nftApiClient.getAllNftsByOwner(ownerAddress);
-    console.log(response);
     expect(response.status).toBe(200);
     expect(response.data.type).toEqual('NFT');
     const acc = new Auth(authInfo);
@@ -79,14 +78,11 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     const receipt3 = await mintHash3.wait();
     expect(receipt3.status).toEqual(1);
 
-    console.log(contract.contractAddress);
-
     let response;
     const startTime = Date.now();
     await wait(
       async () => {
         response = await nftApiClient.getAllNfsFromCollection(contract.contractAddress);
-        console.log(response.data);
         return response.data.total === 3;
       },
       600000,
@@ -105,10 +101,8 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   it('Deploy - Get all collection metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    console.log('hace deploy');
     const contract = await sdk.deploy(contractInfo);
 
-    console.log('Minting');
     const mintHash1 = await contract.mint({
       to: ownerAddress,
       id: 0,
@@ -147,7 +141,6 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         const response = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-        console.log(response.data);
         return response.data.total === 3;
       },
       90000,

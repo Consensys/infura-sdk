@@ -79,8 +79,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const receipt3 = await mintHash3.wait();
     expect(receipt3.status).toEqual(1);
 
-    console.log(contract.contractAddress);
-
     let response;
     const startTime = Date.now();
     await wait(
@@ -103,10 +101,8 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
   it('Deploy - Get all collection metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    console.log('hace deploy');
     const contract = await sdk.deploy(contractInfo);
 
-    console.log('Minting');
     const mintHash1 = await contract.mint({
       publicAddress: ownerAddress,
       tokenURI,
