@@ -2,8 +2,14 @@
 name: e2e tests
 
 on:
+  push:
+    branches:
+      - main
+      - dev
   pull_request:
-    types: [opened, reopened]
+    branches:
+      - main
+      - dev
 
 jobs:
   test:
