@@ -16,7 +16,7 @@ export default class NFTApiClient {
 
   constructor() {
     this.url = NFT_API_URL;
-    this.networkId = process.env.NETWORK_ID; // by defaul, we set it to eth mainnet
+    this.networkId = 5;
 
     this.url = `${this.url}/networks/${this.networkId}`;
     console.log(this.url);
