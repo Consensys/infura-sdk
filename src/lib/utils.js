@@ -42,3 +42,13 @@ export const addGasPriceToOptions = (options, gas) => {
   }
   return newOptions;
 };
+
+export const isJson = param => {
+  if (typeof param !== 'string') return false;
+  try {
+    JSON.parse(param);
+  } catch (err) {
+    return false;
+  }
+  return true;
+};
