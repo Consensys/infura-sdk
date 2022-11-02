@@ -87,10 +87,6 @@ export default class ERC1155Mintable {
       );
 
       const options = addGasPriceToOptions({}, gas);
-      console.log(baseURI);
-      console.log(contractURI);
-      console.log(ids);
-      console.log(options);
       const contract = await factory.deploy(baseURI, contractURI, ids, options);
       this._contractDeployed = await contract.deployed();
 
@@ -169,7 +165,7 @@ export default class ERC1155Mintable {
         }),
       );
     }
-
+    console.log(to);
     if (!to || !ethers.utils.isAddress(to)) {
       throw new Error(
         errorLogger({
@@ -206,8 +202,8 @@ export default class ERC1155Mintable {
   /**
    * Mint function: Mint multiple tokens for publicAddress
    * @param {string} to destination address of the minted token
-   * @param {number} id ID of the token to mint
-   * @param {number} quantity Quantity of the specified token to mint
+   * @param {array} id ID of the token to mint
+   * @param {array} quantity Quantity of the specified token to mint
    * @param {number} gas (Optional) gas parameter to pass to transaction
    * @notice Warning: This method will consume gas (varies depending on size of array)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
