@@ -24,18 +24,21 @@ export default class NFTApiClient {
   }
 
   getNftCollectionMetadata = async tokenAddress => {
+    console.log(this.url);
     const response = await this.httpClient.get(`${this.url}/nfts/${tokenAddress}`);
 
     return { status: response.status, data: response.data };
   };
 
   getAllNftsByOwner = async ownerAddress => {
+    console.log(this.url);
     const response = await this.httpClient.get(`${this.url}/accounts/${ownerAddress}/assets/nfts`);
 
     return { status: response.status, data: response.data };
   };
 
   getNftMetadeta = async (tokenAddress, tokenId) => {
+    console.log(this.url);
     const response = await this.httpClient.get(
       `${this.url}/nfts/${tokenAddress}/tokens/${tokenId}`,
     );
@@ -44,6 +47,7 @@ export default class NFTApiClient {
   };
 
   getAllNfsFromCollection = async collectionAddress => {
+    console.log(this.url);
     const response = await this.httpClient.get(`${this.url}/nfts/${collectionAddress}/tokens`);
     return { status: response.status, data: response.data };
   };
