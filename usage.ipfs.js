@@ -9,7 +9,7 @@
 import { config as loadEnv } from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { SDK, Auth, Metadata } from './index.js';
+import { SDK, Auth, Metadata, TEMPLATES } from './index.js';
 loadEnv();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -88,3 +88,37 @@ console.log('storeArrayMetadata ----', storeArrayMetadata);
 Metadata.freeLevelMetadata({
   test: 'test.',
 });
+
+// Create a new contract
+const newContract = await sdk.deploy({
+  template: TEMPLATES.ERC721Mintable,
+  params: {
+    name: '1507Contract',
+    symbol: 'TOC',
+    contractURI: collectionMetadata,
+  },
+});
+console.log('contract address: \n', newContract.contractAddress);
+
+// mint a NFT
+const mint = await newContract.mint({
+  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
+  tokenURI: tokenMetadata,
+});
+
+const minted = await mint.wait();
+console.log(minted);
+
+// READ API
+// Get contract metadata
+const contractMetadata = await sdk.getContractMetadata({
+  contractAddress: newContract.contractAddress,
+});
+console.log('contractMetadata', contractMetadata);
+
+// Get the token metadata
+const tokenMetadataResult = await sdk.getTokenMetadata({
+  contractAddress: newContract.contractAddress,
+  tokenId: 0,
+});
+console.log('tokenMetadataResult', tokenMetadataResult);

@@ -52,6 +52,15 @@ describe('E2E Test: Basic NFT (mint)', () => {
     });
   });
 
+  it('should fail to get contract metadata before mint', async () => {
+    expect(
+      async () =>
+        await sdk.getContractMetadata({
+          contractAddress: contractObject.contractAddress,
+        }),
+    ).rejects.toThrow("[API.ERROR][httpService.get] Token address doesn't exist, yet?");
+  });
+
   it('should mint nft', async () => {
     const tx = await contractObject.mint({
       publicAddress: owner,

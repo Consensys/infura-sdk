@@ -27,6 +27,9 @@ export class HttpService {
     try {
       return await this.instance.get(uri);
     } catch (error) {
+      if (error.response.data) {
+        throw new Error(`[API.ERROR][httpService.get] ${error.response.data.message}`);
+      }
       throw new Error(`[API.ERROR][httpService.get] An error occured: ${error}`);
     }
   }
