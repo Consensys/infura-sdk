@@ -18,7 +18,7 @@ export default class Metadata {
    * @param {string} youtube_url The youtube url of the token
    * @returns string
    */
-  static openSeaTokenLevelStandard({
+  static OpenSeaTokenLevelStandard({
     name,
     description,
     image,
@@ -75,7 +75,7 @@ export default class Metadata {
    * @param {number} fee_recipient free to for royalty recipient
    * @returns string
    */
-  static openSeaCollectionLevelStandard({
+  static OpenSeaCollectionLevelStandard({
     name,
     description,
     image,

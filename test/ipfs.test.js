@@ -5,6 +5,7 @@ import path from 'path';
 import IPFS from '../src/services/ipfsService';
 
 const file = path.join(__dirname, 'ipfs-test/consensys.png');
+const folder = path.join(__dirname, '__mocks__');
 
 loadEnv();
 
@@ -79,24 +80,20 @@ describe('ipfs', () => {
     expect(mockedCall).toHaveBeenCalledTimes(1);
   });
 
-  it('should upload an array', async () => {
-    await ipfs.uploadArray({
-      sources: [
-        {
-          source: {
-            name: 'my object',
-            description: 'My description',
-          },
-        },
-      ],
+  it('should upload object', async () => {
+    await ipfs.uploadObject({
+      source: {
+        name: 'my object',
+        description: 'My description',
+      },
     });
 
     expect(mockedCall).toHaveBeenCalledTimes(1);
   });
 
-  it('should upload content', async () => {
-    await ipfs.uploadContent({
-      source: 'test',
+  it('should upload folder', async () => {
+    await ipfs.uploadDirectory({
+      source: folder,
     });
 
     expect(mockedCall).toHaveBeenCalledTimes(1);
@@ -124,6 +121,15 @@ describe('ipfs', () => {
       async () =>
         await ipfs.uploadDirectory({
           source: file,
+        }),
+    ).rejects.toThrow();
+  });
+
+  it('should throw error if its a directory', async () => {
+    expect(
+      async () =>
+        await ipfs.uploadFile({
+          source: folder,
         }),
     ).rejects.toThrow();
   });

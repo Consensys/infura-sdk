@@ -4,19 +4,19 @@ import { faker } from '@faker-js/faker';
 describe('Metadata', () => {
   describe('createTokenMetadata', () => {
     it('should throw error if name not provided', () => {
-      expect(() => Metadata.openSeaTokenLevelStandard({})).toThrow(
+      expect(() => Metadata.OpenSeaTokenLevelStandard({})).toThrow(
         '[Metadata.tokenLevelMetadata] "name" is required',
       );
     });
     it('should throw error if description is not provided', () => {
-      expect(() => Metadata.openSeaTokenLevelStandard({ name: faker.datatype.string() })).toThrow(
+      expect(() => Metadata.OpenSeaTokenLevelStandard({ name: faker.datatype.string() })).toThrow(
         '[Metadata.tokenLevelMetadata] "description" is required',
       );
     });
 
     it('should throw error if image is not provided', () => {
       expect(() =>
-        Metadata.openSeaTokenLevelStandard({
+        Metadata.OpenSeaTokenLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
         }),
@@ -25,7 +25,7 @@ describe('Metadata', () => {
 
     it('should throw error if image is not url', () => {
       expect(() =>
-        Metadata.openSeaTokenLevelStandard({
+        Metadata.OpenSeaTokenLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: faker.datatype.string(),
@@ -36,7 +36,7 @@ describe('Metadata', () => {
     });
 
     it('should not throw error if image is url', () => {
-      const data = Metadata.openSeaTokenLevelStandard({
+      const data = Metadata.OpenSeaTokenLevelStandard({
         name: faker.datatype.string(),
         description: faker.datatype.string(),
         image: faker.internet.url(),
@@ -47,7 +47,7 @@ describe('Metadata', () => {
     });
 
     it('should not throw error if image is ipfs link', () => {
-      const data = Metadata.openSeaTokenLevelStandard({
+      const data = Metadata.OpenSeaTokenLevelStandard({
         name: faker.datatype.string(),
         description: faker.datatype.string(),
         image: `ipfs://${faker.datatype.uuid()}`,
@@ -58,7 +58,7 @@ describe('Metadata', () => {
 
     it('should throw error if attributes doesnt contains trait_type property', () => {
       expect(() =>
-        Metadata.openSeaTokenLevelStandard({
+        Metadata.OpenSeaTokenLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: `ipfs://${faker.datatype.uuid()}`,
@@ -69,7 +69,7 @@ describe('Metadata', () => {
 
     it('should throw error if attributes doesnt contains value property', () => {
       expect(() =>
-        Metadata.openSeaTokenLevelStandard({
+        Metadata.OpenSeaTokenLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: `ipfs://${faker.datatype.uuid()}`,
@@ -80,7 +80,7 @@ describe('Metadata', () => {
 
     it('should throw error if animation_url is not an url', () => {
       expect(() =>
-        Metadata.openSeaTokenLevelStandard({
+        Metadata.OpenSeaTokenLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: `ipfs://${faker.datatype.uuid()}`,
@@ -95,20 +95,20 @@ describe('Metadata', () => {
 
   describe('createContractMetadata', () => {
     it('should throw error if name not provided', () => {
-      expect(() => Metadata.openSeaCollectionLevelStandard({})).toThrow(
+      expect(() => Metadata.OpenSeaCollectionLevelStandard({})).toThrow(
         '[Metadata.contractLevelMetadata] "name" is required',
       );
     });
 
     it('should throw error if description is not provided', () => {
       expect(() =>
-        Metadata.openSeaCollectionLevelStandard({ name: faker.datatype.string() }),
+        Metadata.OpenSeaCollectionLevelStandard({ name: faker.datatype.string() }),
       ).toThrow('[Metadata.contractLevelMetadata] "description" is required');
     });
 
     it('should throw error if image is not provided', () => {
       expect(() =>
-        Metadata.openSeaCollectionLevelStandard({
+        Metadata.OpenSeaCollectionLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
         }),
@@ -117,7 +117,7 @@ describe('Metadata', () => {
 
     it('should throw error if external_link is not an url', () => {
       expect(() =>
-        Metadata.openSeaCollectionLevelStandard({
+        Metadata.OpenSeaCollectionLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: faker.internet.url(),
@@ -130,7 +130,7 @@ describe('Metadata', () => {
 
     it('should throw error if external_link is not an url', () => {
       expect(() =>
-        Metadata.openSeaCollectionLevelStandard({
+        Metadata.OpenSeaCollectionLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: faker.internet.url(),
@@ -143,7 +143,7 @@ describe('Metadata', () => {
 
     it('should throw error if fee_recipient is not a number', () => {
       expect(() =>
-        Metadata.openSeaCollectionLevelStandard({
+        Metadata.OpenSeaCollectionLevelStandard({
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: faker.internet.url(),
