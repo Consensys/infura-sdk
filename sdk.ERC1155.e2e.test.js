@@ -7,9 +7,6 @@ import { errorLogger, ERROR_LOG } from './src/lib/error/handler.js';
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS;
 const tokenURI = 'https://';
-/* const API_KEY = Buffer.from(
-  `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-).toString('base64'); */
 const authInfo = {
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
