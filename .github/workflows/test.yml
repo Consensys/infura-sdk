@@ -1,15 +1,9 @@
 ---
-name: Test
+name: e2e tests
 
 on:
-  push:
-    branches:
-      - main
-      - dev
   pull_request:
-    branches:
-      - main
-      - dev
+    types: [opened, reopened]
 
 jobs:
   test:
@@ -31,8 +25,8 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Run unit tests + e2e tests + coverage
-        run: npm run test:coverage
+      - name: Run e2e tests
+        run: npm run test:e2e
         env:
           WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
           INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
