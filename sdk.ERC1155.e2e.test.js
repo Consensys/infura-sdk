@@ -17,8 +17,7 @@ const authInfo = {
 const contractInfo = {
   template: TEMPLATES.ERC1155Mintable,
   params: {
-    name: 'Contract for testing',
-    symbol: 'TOC',
+    baseURI: 'https://test.io',
     contractURI: 'https://test.io',
   },
 };
@@ -27,6 +26,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   const nftApiClient = new NFTApiClient();
   it.only('Deploy - Get all nfts by owner address', async () => {
     const response = await nftApiClient.getAllNftsByOwner(ownerAddress);
+    console.log(response);
     expect(response.status).toBe(200);
     expect(response.data.type).toEqual('NFT');
     const acc = new Auth(authInfo);
