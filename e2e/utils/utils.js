@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/prefer-default-export
 export const wait = async (
   // eslint-disable-next-line no-unused-vars
   fn,

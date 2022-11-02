@@ -301,6 +301,7 @@ export default class SDK {
         }),
       );
     }
+    console.log(metadata);
     metadata.forEach(data => {
       if (!isJson(data)) {
         throw new Error(

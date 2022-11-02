@@ -1,8 +1,7 @@
-import { NFT_API_URL } from './src/lib/NFT/constants.js';
-import { HttpService } from './src/services/httpService.js';
+import { NFT_API_URL } from '../../src/lib/NFT/constants.js';
+import { HttpService } from '../../src/services/httpService.js';
 
-const token =
-  'Mjg5MTBkNDRiMzlkNGE5OThjMmVjYWVjYzEyMTlkMzQ6ZTBhMjgzNjBlMWY1NDM2NjhiMjg3NjNjMzI0OWE0OGQ=';
+const token = 'Mjg5MTBkNDRiMzlkNGE5OThjMmVjYWVjYzEyMTlkMzQ6ZTBhMjgzNjBlMWY1NDM2NjhiMjg3NjNjMzI0OWE0OGQ=';
 
 export default class NFTApiClient {
   url;
@@ -24,7 +23,6 @@ export default class NFTApiClient {
   }
 
   getNftCollectionMetadata = async tokenAddress => {
-    console.log(`${this.url}/nfts/${tokenAddress}`);
     const response = await this.httpClient.get(`${this.url}/nfts/${tokenAddress}`);
 
     return { status: response.status, data: response.data };

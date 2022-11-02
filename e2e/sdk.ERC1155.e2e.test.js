@@ -1,15 +1,12 @@
 import { config as loadEnv } from 'dotenv';
-import { wait } from './test/utils.js';
-import { SDK, Auth, TEMPLATES } from './index.js';
-import NFTApiClient from './nftClient.js';
-import { errorLogger, ERROR_LOG } from './src/lib/error/handler.js';
+import { wait } from './utils/utils.js';
+import { SDK, Auth, TEMPLATES } from '../index.js';
+import NFTApiClient from './utils/nftClient.js';
+import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS;
 const tokenURI = 'https://';
-/* const API_KEY = Buffer.from(
-  `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-).toString('base64'); */
 const authInfo = {
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
@@ -18,18 +15,19 @@ const authInfo = {
   chainId: 5,
 };
 const contractInfo = {
-  template: TEMPLATES.ERC721Mintable,
+  template: TEMPLATES.ERC1155Mintable,
   params: {
-    name: 'Contract for testing',
-    symbol: 'TOC',
+    baseURI: 'https://test.io',
     contractURI: 'https://test.io',
+    ids: [],
   },
 };
-describe('SDK - contract interaction (deploy, load and mint)', () => {
+describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 10);
   const nftApiClient = new NFTApiClient();
-  it('Deploy - Get all nfts by owner address', async () => {
+  it.only('Deploy - Get all nfts by owner address', async () => {
     const response = await nftApiClient.getAllNftsByOwner(ownerAddress);
+    console.log(response);
     expect(response.status).toBe(200);
     expect(response.data.type).toEqual('NFT');
     const acc = new Auth(authInfo);
@@ -37,8 +35,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const newContract = await sdk.deploy(contractInfo);
     const mintHash = await newContract.mint({
       publicAddress: ownerAddress,
-      // eslint-disable-next-line sonarjs/no-duplicate-string
-      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+      tokenURI: 'https://ipfs.io/ipfs/test',
     });
     const receipt = await mintHash.wait();
     expect(receipt.status).toEqual(1);
@@ -50,7 +47,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       },
       120000,
       1000,
-      'Waiting for NFT collection to be available for an user',
+      'Waiting for new nft to be available',
     );
     const response2 = await nftApiClient.getAllNftsByOwner(ownerAddress);
     expect(response2.data.total).toBeGreaterThan(response.data.total);
@@ -90,7 +87,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       },
       600000,
       1000,
-      'Waiting for NFT collection to be available',
+      'Waiting for NFT collection to be available from api',
     );
     const finishTime = Date.now();
     console.log(finishTime - startTime);
@@ -121,7 +118,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       },
       120000,
       1000,
-      'Waiting for NFT collection metadata to be available',
+      'Waiting for NFT collection to be available',
     );
     response = await nftApiClient.getNftCollectionMetadata(contract.contractAddress);
     expect(response.data.contract).not.toBeNull();

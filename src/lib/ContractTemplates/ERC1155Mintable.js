@@ -87,11 +87,16 @@ export default class ERC1155Mintable {
       );
 
       const options = addGasPriceToOptions({}, gas);
+      console.log(baseURI);
+      console.log(contractURI);
+      console.log(ids);
+      console.log(options);
       const contract = await factory.deploy(baseURI, contractURI, ids, options);
       this._contractDeployed = await contract.deployed();
 
       this.#setContracts();
     } catch (error) {
+      console.log(error);
       const { message, type } = networkErrorHandler(error);
       throw new Error(
         errorLogger({
