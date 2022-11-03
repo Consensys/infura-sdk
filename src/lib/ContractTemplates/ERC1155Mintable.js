@@ -201,8 +201,8 @@ export default class ERC1155Mintable {
   /**
    * Mint function: Mint multiple tokens for publicAddress
    * @param {string} to destination address of the minted token
-   * @param {number} id ID of the token to mint
-   * @param {number} quantity Quantity of the specified token to mint
+   * @param {number} ids IDs of the tokens to mint
+   * @param {number} quantities Quantities of the specified tokens to mint
    * @param {number} gas (Optional) gas parameter to pass to transaction
    * @notice Warning: This method will consume gas (varies depending on size of array)
    * @returns {Promise<ethers.providers.TransactionResponse>} Transaction
