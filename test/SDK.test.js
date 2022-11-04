@@ -1,5 +1,3 @@
-import { config as loadEnv } from 'dotenv';
-
 import Sdk from '../src/lib/SDK/sdk';
 import Auth from '../src/lib/Auth/Auth';
 import { HttpService } from '../src/services/httpService';
@@ -14,9 +12,7 @@ import {
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { TEMPLATES } from '../src/lib/NFT/constants';
 import ContractFactory from '../src/lib/NFT/contractFactory';
-import IPFS from '../src/services/ipfsService.js';
-
-loadEnv();
+import { faker } from '@faker-js/faker';
 
 describe('Sdk', () => {
   let signerMock;
@@ -43,9 +39,9 @@ describe('Sdk', () => {
   beforeAll(() => {
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
-      projectId: process.env.INFURA_PROJECT_ID,
-      secretId: process.env.INFURA_PROJECT_SECRET,
-      rpcUrl: process.env.EVM_RPC_URL,
+      projectId: faker.datatype.uuid(),
+      secretId: faker.datatype.uuid(),
+      rpcUrl: faker.internet.url(),
       chainId: 5,
       ipfs: {
         projectId: process.env.INFURA_IPFS_PROJECT_ID,
