@@ -1,4 +1,3 @@
-import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
 import ganache from 'ganache';
 
@@ -7,11 +6,9 @@ import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
-
-loadEnv();
+import { faker } from '@faker-js/faker';
 
 class FakeProvider {}
-
 describe('Auth', () => {
   it('should throw when args are missing (privateKey)', () => {
     expect(
@@ -19,9 +16,9 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: null,
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
+          projectId: faker.datatype.uuid(),
+          secretId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
           chainId: 5,
         }),
     ).toThrow(
@@ -37,10 +34,10 @@ describe('Auth', () => {
       () =>
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
-          privateKey: generateTestPrivateKeyOrHash(),
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
+          privateKey: faker.datatype.uuid(),
+          projectId: faker.datatype.uuid(),
+          secretId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
           chainId: 5,
           provider: ethers.providers.Provider,
         }),
@@ -57,9 +54,9 @@ describe('Auth', () => {
       () =>
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
+          projectId: faker.datatype.uuid(),
+          secretId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
           chainId: 5,
           provider: new FakeProvider(),
         }),
@@ -77,8 +74,8 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
+          secretId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
           chainId: 5,
         }),
     ).toThrow(
@@ -95,8 +92,8 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          rpcUrl: process.env.EVM_RPC_URL,
+          projectId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
           chainId: 5,
         }),
     ).toThrow(
@@ -113,9 +110,9 @@ describe('Auth', () => {
         // eslint-disable-next-line implicit-arrow-linebreak
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
+          projectId: faker.datatype.uuid(),
+          secretId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
         }),
     ).toThrow(
       errorLogger({
@@ -130,9 +127,9 @@ describe('Auth', () => {
       () =>
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
-          rpcUrl: process.env.EVM_RPC_URL,
+          projectId: faker.datatype.uuid(),
+          secretId: faker.datatype.uuid(),
+          rpcUrl: faker.internet.url(),
           chainId: 6,
         }),
     ).toThrow(
@@ -197,14 +194,15 @@ describe('Auth', () => {
 
     it('should return the signer using private key and rpc_url', async () => {
       const privateKey = generateTestPrivateKeyOrHash();
+      const rpcUrl = faker.internet.url();
       const account = new Auth({
         privateKey,
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
+        projectId: faker.datatype.uuid(),
+        secretId: faker.datatype.uuid(),
+        rpcUrl,
         chainId: 5,
       });
-      const provider = Provider.getProvider(process.env.EVM_RPC_URL);
+      const provider = Provider.getProvider(rpcUrl);
       const signer = await account.getSigner();
 
       expect(JSON.stringify(signer)).toStrictEqual(
@@ -214,9 +212,9 @@ describe('Auth', () => {
 
     it('should return the signer using passed provider', async () => {
       const account = new Auth({
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
+        projectId: faker.datatype.uuid(),
+        secretId: faker.datatype.uuid(),
+        rpcUrl: faker.internet.url(),
         chainId: 5,
         provider: ganacheProvider,
       });
@@ -230,18 +228,19 @@ describe('Auth', () => {
 
   describe('getApiAuth', () => {
     it('should return the apiAuth key', () => {
+      const projectId = faker.datatype.uuid();
+      const secretId = faker.datatype.uuid();
+
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
+        projectId,
+        secretId,
+        rpcUrl: faker.internet.url(),
         chainId: 5,
       });
 
       expect(account.getApiAuth()).toStrictEqual(
-        Buffer.from(
-          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-        ).toString('base64'),
+        Buffer.from(`${projectId}:${secretId}`).toString('base64'),
       );
     });
   });
@@ -250,9 +249,9 @@ describe('Auth', () => {
     it('should return the chainId', () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
+        projectId: faker.datatype.uuid(),
+        secretId: faker.datatype.uuid(),
+        rpcUrl: faker.internet.url(),
         chainId: 5,
       });
 
@@ -262,28 +261,30 @@ describe('Auth', () => {
 
   describe('getRpcUrl', () => {
     it('should return the rpcUrl', () => {
+      const rpcUrl = faker.internet.url();
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
+        projectId: faker.datatype.uuid(),
+        secretId: faker.datatype.uuid(),
+        rpcUrl,
         chainId: 5,
       });
 
-      expect(account.getRpcUrl()).toStrictEqual(process.env.EVM_RPC_URL);
+      expect(account.getRpcUrl()).toStrictEqual(rpcUrl);
     });
   });
 
   describe('rpcUrl', () => {
     it('Auth should construct correct RpcURL, if no rpcUrl is provided', () => {
-      const defaultRpcUrl = `https://${getChainName(5)}.infura.io/v3/${
-        process.env.INFURA_PROJECT_ID
-      }`;
+      const projectId = faker.datatype.uuid();
+      const secretId = faker.datatype.uuid();
+
+      const defaultRpcUrl = `https://${getChainName(5)}.infura.io/v3/${projectId}`;
 
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        projectId,
+        secretId,
         chainId: 5,
       });
 
@@ -293,18 +294,18 @@ describe('Auth', () => {
 
   describe('getApiAuthHeader', () => {
     it('should return the chainId', () => {
+      const projectId = faker.datatype.uuid();
+      const secretId = faker.datatype.uuid();
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
+        projectId,
+        secretId,
+        rpcUrl: faker.internet.url(),
         chainId: 5,
       });
 
       expect(account.getApiAuthHeader()).toStrictEqual({
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-        ).toString('base64')}`,
+        Authorization: `Basic ${Buffer.from(`${projectId}:${secretId}`).toString('base64')}`,
       });
     });
   });
