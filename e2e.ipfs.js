@@ -9,7 +9,7 @@
 import { config as loadEnv } from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { SDK, Auth, Metadata, TEMPLATES } from './index.js';
+import { SDK, Auth, Metadata } from './index.js';
 loadEnv();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,10 +33,10 @@ const sdk = new SDK(acc);
  * METADATA
  */
 // CREATE CONTRACT Metadata
-const collectionMetadata = Metadata.openSeaCollectionLevelStandard({
+const collectionMetadata = Metadata.OpenSeaCollectionLevelStandard({
   name: 'My awesome collection',
   description: "A long description explaining why it's awesome",
-  image: await sdk.storeFile('https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png'),
+  image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
   external_link: 'https://myawesomewebsite.net',
 });
 
@@ -46,29 +46,28 @@ console.log('collectionMetadata ----', collectionMetadata);
  * METADATA
  */
 // CREATE Token Metadata
-const tokenMetadata = Metadata.openSeaTokenLevelStandard({
+const tokenMetadata = Metadata.OpenSeaTokenLevelStandard({
   description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
   external_url: 'https://openseacreatures.io/3',
-  image: await sdk.storeFile('https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png'),
+  image: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
   name: 'Dave Starbelly',
   attributes: [],
 });
 
 console.log('tokenMetadata ----', tokenMetadata);
 
-const storeMetadata = await sdk.storeMetadata(tokenMetadata);
+const storeMetadata = await sdk.store(tokenMetadata);
 
-const storeImageUrl = await sdk.storeFile(
+const storeImageUrl = await sdk.store(
   'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
 );
 
-const storeImageFile = await sdk.storeFile('./integration-test/ipfs-test/metamask.jpeg');
+const storeImageFile = await sdk.store('./integration-test/ipfs-test/metamask.jpeg');
 
 console.log('storeMetadata ----', storeMetadata);
 console.log('storeImageUrl ----', storeImageUrl);
-console.log('storeImageUrl ----', storeImageFile);
+console.log('storeImageFile ----', storeImageFile);
 
-/*
 const storeArrayMetadata = await sdk.store([
   {
     description: 'test1',
@@ -76,9 +75,16 @@ const storeArrayMetadata = await sdk.store([
     image: 'test1',
     name: 'Dave Starbelly',
     attributes: [],
-  }),
+  },
+  {
+    description: 'test2',
+    external_url: 'test2',
+    image: 'test2',
+    name: 'Dave Starbelly',
+    attributes: [],
+  },
 ]);
-*/
+
 console.log('storeArrayMetadata ----', storeArrayMetadata);
 /**
  * METADATA
@@ -87,37 +93,3 @@ console.log('storeArrayMetadata ----', storeArrayMetadata);
 Metadata.freeLevelMetadata({
   test: 'test.',
 });
-
-// Create a new contract
-const newContract = await sdk.deploy({
-  template: TEMPLATES.ERC721Mintable,
-  params: {
-    name: '1507Contract',
-    symbol: 'TOC',
-    contractURI: collectionMetadata,
-  },
-});
-console.log('contract address: \n', newContract.contractAddress);
-
-// mint a NFT
-const mint = await newContract.mint({
-  publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-  tokenURI: tokenMetadata,
-});
-
-const minted = await mint.wait();
-console.log(minted);
-
-// READ API
-// Get contract metadata
-const contractMetadata = await sdk.getContractMetadata({
-  contractAddress: newContract.contractAddress,
-});
-console.log('contractMetadata', contractMetadata);
-
-// Get the token metadata
-const tokenMetadataResult = await sdk.getTokenMetadata({
-  contractAddress: newContract.contractAddress,
-  tokenId: 0,
-});
-console.log('tokenMetadataResult', tokenMetadataResult);
