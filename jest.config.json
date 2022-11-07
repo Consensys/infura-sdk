@@ -2,5 +2,11 @@
     "moduleFileExtensions": ["js"],
     "testEnvironment": "node",
     "roots": ["e2e/"],
-    "verbose": true
+    "verbose": true,
+    "reporters": [
+        "default",
+        ["./node_modules/jest-html-reporter", {
+            "pageTitle": "E2E Test Report"
+        }]
+    ]
   }

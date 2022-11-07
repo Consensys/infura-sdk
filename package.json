@@ -53,6 +53,7 @@
     "dotenv": "^16.0.1",
     "ethers": "^5.6.9",
     "ipfs-http-client": "56.0.3",
+    "jest-html-reporter": "^3.7.0",
     "joi": "^17.6.4"
   },
   "devDependencies": {

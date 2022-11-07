@@ -12,7 +12,6 @@ jobs:
       matrix:
         node-version:
           - v18.1.0
-          - v16.13.1
 
     steps:
       - uses: actions/checkout@v2
@@ -35,7 +34,11 @@ jobs:
           WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
           INFURA_IPFS_PROJECT_ID: ${{ secrets.INFURA_IPFS_PROJECT_ID }}
           INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
-
+      - name: Storing e2e report
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-report
+          path: test-report.html
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e
         env:

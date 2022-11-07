@@ -40,7 +40,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         const resp = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
-        console.log(resp);
         return resp.total > response.total;
       },
       120000,
@@ -99,7 +98,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
   });
 
-  it.only('Deploy - Get all collection metadata', async () => {
+  it('Deploy - Get all collection metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const contract = await sdk.deploy(contractInfo);
