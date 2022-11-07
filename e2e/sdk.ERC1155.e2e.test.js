@@ -1,7 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { wait } from './utils/utils.js';
 import { SDK, Auth, TEMPLATES } from '../index.js';
-import NFTApiClient from './utils/nftClient.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 loadEnv();
@@ -22,18 +21,13 @@ const contractInfo = {
   },
 };
 describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
-  console.log(process.env.WALLET_PRIVATE_KEY);
-  console.log(process.env.INFURA_PROJECT_ID);
-  console.log(process.env.INFURA_PROJECT_SECRET);
-  console.log(process.env.EVM_RPC_URL);
   jest.setTimeout(60 * 1000 * 10);
-  const nftApiClient = new NFTApiClient();
   it('Deploy - Get all nfts by owner address', async () => {
-    const response = await nftApiClient.getAllNftsByOwner(ownerAddress);
-    expect(response.status).toBe(200);
-    expect(response.data.type).toEqual('NFT');
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
+    const response = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    expect(response.type).toEqual('NFT');
+
     const newContract = await sdk.deploy(contractInfo);
     const mintHash = await newContract.mint({
       to: ownerAddress,
@@ -45,15 +39,21 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
 
     await wait(
       async () => {
-        const resp = await nftApiClient.getAllNftsByOwner(ownerAddress);
-        return resp.data.total > response.data.total;
+        const resp = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+        return resp.total > response.total;
       },
       120000,
       1000,
       'Waiting for new nft to be available',
     );
-    const response2 = await nftApiClient.getAllNftsByOwner(ownerAddress);
-    expect(response2.data.total).toBeGreaterThan(response.data.total);
+    const response2 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    expect(response2.total).toBeGreaterThan(response.total);
+    expect(response2.assets[0].metadata).toEqual(undefined);
+    const response3 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
+    const createdToken = await response3.assets.filter(
+      asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
+    );
+    expect(createdToken.metadata).not.toBeNull();
   });
   it('Deploy - Get all nfts from a collection', async () => {
     const acc = new Auth(authInfo);
@@ -86,8 +86,8 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     const startTime = Date.now();
     await wait(
       async () => {
-        response = await nftApiClient.getAllNfsFromCollection(contract.contractAddress);
-        return response.data.total === 3;
+        response = await sdk.getNFTsForCollection({ contractAddress: contract.contractAddress });
+        return response.total === 3;
       },
       600000,
       1000,
@@ -95,7 +95,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     );
     const finishTime = Date.now();
     console.log(finishTime - startTime);
-    response.data.assets.forEach(asset => {
+    response.assets.forEach(asset => {
       expect(asset.contract.toLowerCase()).toEqual(contract.contractAddress.toLowerCase());
       expect(asset.type).toEqual('ERC1155');
       expect(asset.supply).toEqual('3');
@@ -117,19 +117,18 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     let response;
     await wait(
       async () => {
-        response = await nftApiClient.getNftCollectionMetadata(contract.contractAddress);
-        return response.status === 200;
+        response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+        return response !== null;
       },
       120000,
       1000,
       // eslint-disable-next-line sonarjs/no-duplicate-string
       'Waiting for NFT collection to be available',
     );
-    response = await nftApiClient.getNftCollectionMetadata(contract.contractAddress);
-    expect(response.data.contract).not.toBeNull();
-    expect(response.data.name).toEqual(null);
-    expect(response.data.symbol).toEqual(null);
-    expect(response.data.tokenType).toEqual('ERC1155');
+    response = await await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+    expect(response.name).toEqual(null);
+    expect(response.symbol).toEqual(null);
+    expect(response.tokenType).toEqual('ERC1155');
   }, 240000);
   it('Mint batch', async () => {
     const acc = new Auth(authInfo);
@@ -145,27 +144,31 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(receipt1.status).toEqual(1);
     await wait(
       async () => {
-        const response = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-        return response.data.total === 3 && response.data.assets.length === 3;
+        const response = await sdk.getNFTsForCollection({
+          contractAddress: newContract.contractAddress,
+        });
+        return response.total === 3 && response.assets.length === 3;
       },
       90000,
       1000,
       'Waiting for NFT collection to be available',
     );
 
-    const response = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-    expect(response.data.assets.length).toEqual(3);
-    const token0 = response.data.assets.filter(ele => ele.tokenId === '0')[0];
+    const response = await sdk.getNFTsForCollection({
+      contractAddress: newContract.contractAddress,
+    });
+    expect(response.assets.length).toEqual(3);
+    const token0 = response.assets.filter(ele => ele.tokenId === '0')[0];
     expect(token0.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token0.tokenId).toEqual('0');
     expect(token0.supply).toEqual('1');
     expect(token0.type).toEqual('ERC1155');
-    const token1 = response.data.assets.filter(ele => ele.tokenId === '1')[0];
+    const token1 = response.assets.filter(ele => ele.tokenId === '1')[0];
     expect(token1.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token1.tokenId).toEqual('1');
     expect(token1.supply).toEqual('2');
     expect(token1.type).toEqual('ERC1155');
-    const token2 = response.data.assets.filter(ele => ele.tokenId === '2')[0];
+    const token2 = response.assets.filter(ele => ele.tokenId === '2')[0];
     expect(token2.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token2.tokenId).toEqual('2');
     expect(token2.supply).toEqual('3');
@@ -208,7 +211,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
   });
-  it.only('Load new contract and get Metadata', async () => {
+  it('Load new contract and get Metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const newContract = await sdk.deploy(contractInfo);
@@ -219,6 +222,18 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     });
     const receipt1 = await mintHash1.wait();
     expect(receipt1.status).toEqual(1);
+    await wait(
+      async () => {
+        const response = await sdk.getContractMetadata({
+          contractAddress: newContract.contractAddress,
+        });
+
+        return response !== null;
+      },
+      300000,
+      1000,
+      'Waiting for NFT metadata to be available',
+    );
     const meta = await sdk.getContractMetadata({ contractAddress: newContract.contractAddress });
     expect(meta.tokenType).toEqual('ERC1155');
   });
@@ -238,85 +253,18 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     await mintHash.wait();
     await wait(
       async () => {
-        const response = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-        return response.data.total === 1;
+        const response = await sdk.getNFTsForCollection({
+          contractAddress: newContract.contractAddress,
+        });
+        return response.total === 1;
       },
       90000,
       1000,
       'Waiting for NFT collection to be available',
     );
-    const collection = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-    expect(collection.data.total).toEqual(1);
-  });
-  it.skip('deploy a contract and setBaseURI', async () => {
-    const acc = new Auth(authInfo);
-    const sdk = new SDK(acc);
-    const newContract = await sdk.deploy(contractInfo);
-    const hash = await newContract.setBaseURI({
-      baseURI: 'https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq',
+    const collection = await sdk.getNFTsForCollection({
+      contractAddress: newContract.contractAddress,
     });
-    const receipt1 = await hash.wait();
-    expect(receipt1.status).toEqual(1);
-    const mintHash = await newContract.mint({
-      to: ownerAddress,
-      id: 0,
-      quantity: 1,
-    });
-    await mintHash.wait();
-    await wait(
-      async () => {
-        const response = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-        console.log(response.data);
-        return (
-          // eslint-disable-next-line operator-linebreak
-          response.status === 200 &&
-          // eslint-disable-next-line operator-linebreak
-          response.data.total === 1 &&
-          response.data.assets[0].metadata !== null
-        );
-      },
-      120000,
-      1000,
-      'Waiting for NFT collection to be available',
-    );
-    const collection = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-    console.log(collection.data);
-    expect(collection.data.total).toEqual(1);
-  });
-  it.skip('deploy a contract and transfer', async () => {
-    const acc = new Auth(authInfo);
-    const sdk = new SDK(acc);
-    const newContract = await sdk.deploy(contractInfo);
-    const hash = await newContract.tran({
-      baseURI: 'https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq',
-    });
-    const receipt1 = await hash.wait();
-    expect(receipt1.status).toEqual(1);
-    const mintHash = await newContract.mint({
-      to: ownerAddress,
-      id: 0,
-      quantity: 1,
-    });
-    await mintHash.wait();
-    await wait(
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      async () => {
-        const response = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-        console.log(response.data);
-        return (
-          // eslint-disable-next-line operator-linebreak
-          response.status === 200 &&
-          // eslint-disable-next-line operator-linebreak
-          response.data.total === 1 &&
-          response.data.assets[0].metadata !== null
-        );
-      },
-      120000,
-      1000,
-      'Waiting for NFT collection to be available',
-    );
-    const collection = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-    console.log(collection.data);
-    expect(collection.data.total).toEqual(1);
+    expect(collection.total).toEqual(1);
   });
 });

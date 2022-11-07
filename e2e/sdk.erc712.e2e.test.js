@@ -1,15 +1,11 @@
 import { config as loadEnv } from 'dotenv';
 import { existingContractAddress, wait } from './utils/utils.js';
 import { SDK, Auth, TEMPLATES } from '../index.js';
-import NFTApiClient from './utils/nftClient.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS;
 const tokenURI = 'https://';
-/* const API_KEY = Buffer.from(
-  `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-).toString('base64'); */
 const authInfo = {
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
@@ -27,13 +23,11 @@ const contractInfo = {
 };
 describe('SDK - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 10);
-  const nftApiClient = new NFTApiClient();
   it('Deploy - Get all nfts by owner address', async () => {
-    const response = await nftApiClient.getAllNftsByOwner(ownerAddress);
-    expect(response.status).toBe(200);
-    expect(response.data.type).toEqual('NFT');
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
+    const response = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    expect(response.type).toEqual('NFT');
     const newContract = await sdk.deploy(contractInfo);
     const mintHash = await newContract.mint({
       publicAddress: ownerAddress,
@@ -45,15 +39,21 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
 
     await wait(
       async () => {
-        const resp = await nftApiClient.getAllNftsByOwner(ownerAddress);
-        return resp.data.total > response.data.total;
+        const resp = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+        return resp.total > response.total;
       },
       120000,
       1000,
       'Waiting for NFT collection to be available for an user',
     );
-    const response2 = await nftApiClient.getAllNftsByOwner(ownerAddress);
-    expect(response2.data.total).toBeGreaterThan(response.data.total);
+    const response2 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    expect(response2.total).toBeGreaterThan(response.total);
+    expect(response2.assets[0].metadata).toEqual(undefined);
+    const response3 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
+    const createdToken = await response3.assets.filter(
+      asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
+    );
+    expect(createdToken.metadata).not.toBeNull();
   });
   it('Deploy - Get all nfts from a collection', async () => {
     const acc = new Auth(authInfo);
@@ -83,8 +83,8 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const startTime = Date.now();
     await wait(
       async () => {
-        response = await nftApiClient.getAllNfsFromCollection(contract.contractAddress);
-        return response.data.total === 3;
+        response = await sdk.getNFTsForCollection({ contractAddress: contract.contractAddress });
+        return response.total === 3;
       },
       600000,
       1000,
@@ -92,13 +92,13 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     );
     const finishTime = Date.now();
     console.log(finishTime - startTime);
-    response.data.assets.forEach(asset => {
+    response.assets.forEach(asset => {
       expect(asset.contract.toLowerCase()).toEqual(contract.contractAddress.toLowerCase());
       expect(asset.type).toEqual('ERC721');
     });
   });
 
-  it('Deploy - Get all collection metadata', async () => {
+  it.only('Deploy - Get all collection metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const contract = await sdk.deploy(contractInfo);
@@ -112,21 +112,21 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     let response;
     await wait(
       async () => {
-        response = await nftApiClient.getNftCollectionMetadata(contract.contractAddress);
-        return response.status === 200;
+        response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+        return response !== null;
       },
       120000,
       1000,
       'Waiting for NFT collection metadata to be available',
     );
-    response = await nftApiClient.getNftCollectionMetadata(contract.contractAddress);
-    expect(response.data.contract).not.toBeNull();
-    expect(response.data.name).toEqual(contractInfo.params.name);
-    expect(response.data.symbol).toEqual(contractInfo.params.symbol);
-    expect(response.data.tokenType).toEqual('ERC721');
+    response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+    expect(response.name).toEqual(contractInfo.params.name);
+    expect(response.symbol).toEqual(contractInfo.params.symbol);
+    expect(response.tokenType).toEqual('ERC721');
   }, 240000);
-  /*
-  it.only('Deploy - Get NFT metadata', async () => {
+  it.skip('Deploy - Get NFT metadata', async () => {
+    // skipped because we are caching the response from Moralis before metadata is available
+    // and NFT api is returning null
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const newContract = await sdk.deploy(contractInfo);
@@ -137,32 +137,31 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
     const receipt1 = await mintHash1.wait();
     expect(receipt1.status).toEqual(1);
-    console.log(newContract.contractAddress);
     await wait(
       async () => {
-        const response = await nftApiClient.getNftMetadeta(newContract.contractAddress, '0');
-        console.log(`response ${response.data}`);
-        const response2 = await nftApiClient.getNftCollectionMetadata(newContract.contractAddress);
-        console.log(`response2 ${response2.data}`);
-        const response3 = await nftApiClient.getAllNfsFromCollection(newContract.contractAddress);
-        console.log(`response3 ${response3.data}`);
-        return response.status === 200 && response.data.metadata !== null;
+        const response = await sdk.getTokenMetadata({
+          contractAddress: newContract.contractAddress,
+          tokenId: 0,
+        });
+        console.log(response);
+        return response.metadata !== null;
       },
       600000,
       1000,
-      'Waiting for NFT collection to be available',
+      'Waiting for NFT metadata to be available',
     );
 
-    const response = await nftApiClient.getNftMetadeta(newContract.contractAddress, '0');
-    expect(response.data.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
-    expect(response.data.metadata.name).toEqual('Astro Soccer');
-    expect(response.data.metadata.description).toEqual(
-      "The world's most adorable and sensitive pup.",
-    );
-    expect(response.data.metadata.image).toContain('https://ipfs.io/ipfs/');
-    expect(response.data.metadata.attributes).not.toBeNull();
+    const response = await sdk.getTokenMetadata({
+      contractAddress: newContract.contractAddress,
+      tokenId: '0',
+    });
+    expect(response.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
+    expect(response.metadata.name).toEqual('Astro Soccer');
+    expect(response.metadata.description).toEqual("The world's most adorable and sensitive pup.");
+    expect(response.metadata.image).toContain('https://ipfs.io/ipfs/');
+    expect(response.metadata.attributes).not.toBeNull();
   }, 600000);
-  */
+
   it('Load existing contract', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
@@ -210,20 +209,21 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
     const receipt1 = await mintHash1.wait();
     expect(receipt1.status).toEqual(1);
+    await wait(
+      async () => {
+        const response = await sdk.getContractMetadata({
+          contractAddress: newContract.contractAddress,
+        });
+
+        return response !== null;
+      },
+      300000,
+      1000,
+      'Waiting for NFT metadata to be available',
+    );
     const meta = await sdk.getContractMetadata({ contractAddress: newContract.contractAddress });
     expect(meta.symbol).toEqual(contractInfo.params.symbol);
     expect(meta.name).toEqual(contractInfo.params.name);
     expect(meta.tokenType).toEqual('ERC721');
   });
-  /* Skipped for now as Moralis is not able to reply with metadata until a token is minted
-  it('Deploy a contract and get Metadata', async () => {
-    const acc = new Auth(authInfo);
-    const sdk = new SDK(acc);
-    const newContract = await sdk.deploy(contractInfo);
-    console.log(newContract.contractAddress);
-    const meta = await sdk.getContractMetadata({ contractAddress: newContract.contractAddress });
-    expect(meta.symbol).toEqual(contractInfo.params.symbol);
-    expect(meta.name).toEqual(contractInfo.params.name);
-    expect(meta.tokenType).toEqual('ERC721');
-  }); */
 });
