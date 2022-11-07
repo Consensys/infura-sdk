@@ -23,7 +23,7 @@ const contractInfo = {
 };
 describe('SDK - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 10);
-  it('Deploy - Get all nfts by owner address', async () => {
+  it.only('Deploy - Get all nfts by owner address', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const response = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
@@ -40,6 +40,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         const resp = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+        console.log(resp);
         return resp.total > response.total;
       },
       120000,

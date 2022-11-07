@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest '/test'",
     "test:integration": "jest --config ./integration-test/config/jest-integration.json --maxWorkers=1 --forceExit",
-    "test:e2e": "jest e2e/*  --runInBand  ",
+    "test:e2e": "jest e2e/*  --config jest.config.json --runInBand  ",
     "test:coverage": "jest --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",

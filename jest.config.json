@@ -1,0 +1,6 @@
+{
+    "moduleFileExtensions": ["js"],
+    "testEnvironment": "node",
+    "roots": ["e2e/"],
+    "verbose": true
+  }
