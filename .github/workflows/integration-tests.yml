@@ -1,5 +1,5 @@
 ---
-name: Test
+name: Integration tests
 
 on:
   push:
