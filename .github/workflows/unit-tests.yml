@@ -29,8 +29,15 @@ jobs:
 
       - name: Install packages
         run: npm ci
+<<<<<<<< HEAD:.github/workflows/unit-tests.yml
       - name: Run Unit tests
         run: npm run test:coverage
+========
+      - name: Run Integration tests
+        run: npm run test:integration
+      - name: Run e2e tests
+        run: npm run test:e2e
+>>>>>>>> 4d7f631 (chore: added new workflow for unit tests and removed useless console.log):.github/workflows/test.yml
         env:
           WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
           INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
@@ -39,6 +46,14 @@ jobs:
           WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
           INFURA_IPFS_PROJECT_ID: ${{ secrets.INFURA_IPFS_PROJECT_ID }}
           INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
+<<<<<<<< HEAD:.github/workflows/unit-tests.yml
+========
+      - name: Storing e2e report
+        uses: actions/upload-artifact@v3
+        with:
+          name: e2e-report
+          path: test-report.html
+>>>>>>>> 4d7f631 (chore: added new workflow for unit tests and removed useless console.log):.github/workflows/test.yml
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e
         env:
