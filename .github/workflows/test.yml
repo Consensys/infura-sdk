@@ -29,16 +29,6 @@ jobs:
 
       - name: Install packages
         run: npm ci
-      - name: Run Unit tests
-        run: npm run test
-        env:
-          WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-          INFURA_PROJECT_SECRET: ${{ secrets.INFURA_PROJECT_SECRET }}
-          EVM_RPC_URL: ${{ secrets.EVM_RPC_URL }}
-          WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
-          INFURA_IPFS_PROJECT_ID: ${{ secrets.INFURA_IPFS_PROJECT_ID }}
-          INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
       - name: Run Integration tests
         run: npm run test:integration
         env:
@@ -49,21 +39,6 @@ jobs:
           WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
           INFURA_IPFS_PROJECT_ID: ${{ secrets.INFURA_IPFS_PROJECT_ID }}
           INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
-      - name: Run e2e tests
-        run: npm run test:e2e
-        env:
-          WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
-          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
-          INFURA_PROJECT_SECRET: ${{ secrets.INFURA_PROJECT_SECRET }}
-          EVM_RPC_URL: ${{ secrets.EVM_RPC_URL }}
-          WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
-          INFURA_IPFS_PROJECT_ID: ${{ secrets.INFURA_IPFS_PROJECT_ID }}
-          INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
-      - name: Storing e2e report
-        uses: actions/upload-artifact@v3
-        with:
-          name: e2e-report
-          path: test-report.html
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e
         env:
