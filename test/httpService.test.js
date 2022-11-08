@@ -3,7 +3,7 @@ import { HttpService } from '../src/services/httpService';
 // Constant
 const BASEURL = 'http://base.url.com';
 const APIKEY = 'APIKEY';
-
+import { jest } from '@jest/globals';
 // Mock Endpoint
 const pushHttpService = jest.spyOn(HttpService.prototype, 'post').mockImplementation(() => {});
 const gethHttpService = jest
