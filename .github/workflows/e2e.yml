@@ -2,16 +2,24 @@
 name: e2e tests
 
 on:
+  push:
+    branches:
+      - main
+      - dev
   pull_request:
-    types: [opened, reopened]
+    branches:
+      - main
+      - dev
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - v18.1.0
+
     steps:
-      - uses: actions/setup-node@v3
-        with:
-          node-version: v18.1.0
       - uses: actions/checkout@v2
 
       - uses: actions/setup-node@v2
@@ -21,7 +29,8 @@ jobs:
 
       - name: Install packages
         run: npm ci
-
+      - name: Run Integration tests
+        run: npm run test:integration
       - name: Run e2e tests
         run: npm run test:e2e
         env:
