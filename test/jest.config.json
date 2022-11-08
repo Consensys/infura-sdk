@@ -1,0 +1,11 @@
+{
+    "moduleFileExtensions": ["js"],
+    "testEnvironment": "node",
+    "verbose": true,
+    "reporters": [
+        "default",
+        ["../node_modules/jest-html-reporter", {
+            "pageTitle": "Unit Test Report"
+        }]
+    ]
+  }
