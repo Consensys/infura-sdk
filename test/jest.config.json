@@ -2,10 +2,18 @@
     "moduleFileExtensions": ["js"],
     "testEnvironment": "node",
     "verbose": true,
+    "roots": ["./"],
     "reporters": [
         "default",
         ["../node_modules/jest-html-reporter", {
             "pageTitle": "Unit Test Report"
         }]
-    ]
+    ],
+    "compilerOptions": {
+        "baseUrl": "src",
+        "moduleResolution": "node",
+        "outDir": "./dist",
+        "target": "es6"
+      }
+      
   }

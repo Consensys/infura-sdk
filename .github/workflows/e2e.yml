@@ -29,8 +29,6 @@ jobs:
 
       - name: Install packages
         run: npm ci
-      - name: Run Integration tests
-        run: npm run test:integration
       - name: Run e2e tests
         run: npm run test:e2e
         env:
