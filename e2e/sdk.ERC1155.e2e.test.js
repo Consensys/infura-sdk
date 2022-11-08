@@ -141,6 +141,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       ids: [0, 1, 2],
       quantities: [1, 2, 3],
     });
+    console.log(await mintHash1);
     const receipt1 = await mintHash1.wait();
     expect(receipt1.status).toEqual(1);
     await wait(
