@@ -2,6 +2,7 @@
     "moduleFileExtensions": ["js"],
     "testEnvironment": "node",
     "roots": ["e2e/"],
+    "outputName": "junit.xml",
     "verbose": true,
     "reporters": [
         "default",
