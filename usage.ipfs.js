@@ -68,17 +68,18 @@ console.log('storeMetadata ----', storeMetadata);
 console.log('storeImageUrl ----', storeImageUrl);
 console.log('storeImageUrl ----', storeImageFile);
 
-/*
-const storeArrayMetadata = await sdk.store([
-  {
-    description: 'test1',
-    external_url: 'test1',
-    image: 'test1',
+const storeArrayMetadata = await sdk.createFolder([
+  Metadata.openSeaTokenLevelStandard({
+    description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+    external_url: 'https://openseacreatures.io/3',
+    image: await sdk.storeFile(
+      'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    ),
     name: 'Dave Starbelly',
     attributes: [],
   }),
 ]);
-*/
+
 console.log('storeArrayMetadata ----', storeArrayMetadata);
 /**
  * METADATA

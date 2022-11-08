@@ -31,7 +31,7 @@ jobs:
       - name: Install packages
         run: npm ci
       - name: Run Unit tests
-        run: npm run test
+        run: npm run test:coverage
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e
         env:
