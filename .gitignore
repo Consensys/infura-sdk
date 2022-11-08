@@ -56,3 +56,4 @@ storage
 .editorconfig
 storage
 dist
+test-report.html
