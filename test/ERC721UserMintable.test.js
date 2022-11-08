@@ -45,6 +45,7 @@ describe('SDK', () => {
   jest
     .spyOn(ethers.utils, 'parseUnits')
     .mockImplementation(() => ({ _hex: '0x3a35294400', _isBigNumber: true }));
+  jest.spyOn(console, 'warn').mockImplementation();
 
   beforeAll(() => {
     signer = 'signer';
