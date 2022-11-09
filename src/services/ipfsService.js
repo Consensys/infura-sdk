@@ -85,7 +85,7 @@ export default class IPFS {
    * @param {Array<any>} metadata an array of valid JSON Metadata
    * @returns {Promise<string>} Ipfs hash of the stored data
    */
-  async uploadArray({ sources }) {
+  async uploadArray({ sources, isErc1155 = false }) {
     if (!sources.length > 0) {
       throw new Error(
         errorLogger({
@@ -98,7 +98,7 @@ export default class IPFS {
       const uploadedDirectory = [];
       const files = sources.map((source, index) => {
         return {
-          path: index + 1,
+          path: isErc1155 === true ? `${index}.json` : `${index}`,
           content: source,
         };
       });

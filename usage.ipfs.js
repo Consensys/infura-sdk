@@ -78,7 +78,40 @@ const storeArrayMetadata = await sdk.createFolder([
     name: 'Dave Starbelly',
     attributes: [],
   }),
+  Metadata.openSeaTokenLevelStandard({
+    description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+    external_url: 'https://openseacreatures.io/3',
+    image: await sdk.storeFile(
+      'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    ),
+    name: 'Dave Starbelly',
+    attributes: [],
+  }),
 ]);
+
+const storeArrayMetadataForERC1155 = await sdk.createFolder(
+  [
+    Metadata.openSeaTokenLevelStandard({
+      description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+      external_url: 'https://openseacreatures.io/3',
+      image: await sdk.storeFile(
+        'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+      ),
+      name: 'Dave Starbelly',
+      attributes: [],
+    }),
+    Metadata.openSeaTokenLevelStandard({
+      description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+      external_url: 'https://openseacreatures.io/3',
+      image: await sdk.storeFile(
+        'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+      ),
+      name: 'Dave Starbelly',
+      attributes: [],
+    }),
+  ],
+  true,
+);
 
 console.log('storeArrayMetadata ----', storeArrayMetadata);
 /**
@@ -88,6 +121,9 @@ console.log('storeArrayMetadata ----', storeArrayMetadata);
 Metadata.freeLevelMetadata({
   test: 'test.',
 });
+
+// -----------------------------------------------------------------------------
+// ERC721 Mintable
 
 // Create a new contract
 const newContract = await sdk.deploy({
@@ -122,3 +158,54 @@ const tokenMetadataResult = await sdk.getTokenMetadata({
   tokenId: 0,
 });
 console.log('tokenMetadataResult', tokenMetadataResult);
+
+// -----------------------------------------------------------------------------
+// ERC1155
+const newContractERC1155 = await sdk.deploy({
+  template: TEMPLATES.ERC1155Mintable,
+  params: {
+    baseURI: storeArrayMetadataForERC1155,
+    contractURI: collectionMetadata,
+    ids: [0, 1],
+  },
+});
+
+console.log('Contract ERC 1155 --------', newContractERC1155.contractAddress);
+
+const tx1 = await newContractERC1155.mint({
+  to: process.env.WALLET_PUBLIC_ADDRESS,
+  id: 1,
+  quantity: 1,
+});
+
+const mintedNFT = await tx1.wait();
+console.log('mintedNFT --------', mintedNFT);
+
+// -----------------------------------------------------------------------------
+// ERC721UserMintable
+const ERC721UserMintable = await sdk.deploy({
+  template: TEMPLATES.ERC721UserMintable,
+  params: {
+    name: 'Payable Mint Contract',
+    symbol: 'PYMC',
+    contractURI: collectionMetadata,
+    baseURI: storeArrayMetadata,
+    maxSupply: 10,
+    price: '0.00001',
+    maxTokenRequest: 1,
+  },
+});
+
+console.log('Contract ERC721 UserMintable --------', ERC721UserMintable.contractAddress);
+
+const tx = await ERC721UserMintable.toggleSale();
+
+const sale = await tx.wait();
+
+const txMinted = await ERC721UserMintable.mint({
+  quantity: 1,
+  cost: '0.00002',
+});
+
+const mintedNFTERC721 = await txMinted.wait();
+console.log('mintedNFT --------', mintedNFTERC721);
