@@ -4,7 +4,7 @@ import Sdk from '../src/lib/SDK/sdk';
 import Auth from '../src/lib/Auth/Auth';
 import { HttpService } from '../src/services/httpService';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler';
-import { jest } from '@jest/globals';
+
 import {
   accountNFTsMock,
   collectionNFTsMock,

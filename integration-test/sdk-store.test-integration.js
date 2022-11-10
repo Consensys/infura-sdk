@@ -70,6 +70,7 @@ describe('E2E Test: sdk store', () => {
 
   it('should store file using path', async () => {
     const hash = await sdkWithIpfs.storeFile(file);
+    console.log(hash);
     expect(hash).toBe('ipfs://QmbuNrChRcADV4NVvDo2yctWu4Gt9atpVUC74ZsVqRw5uJ');
   });
 
@@ -92,7 +93,7 @@ describe('E2E Test: sdk store', () => {
     expect(hash).toBe('ipfs://QmZ75v2TmpBhV37TnvUwynjygiecQbZDY7F6N5c84576GX');
   });
 
-  it('should store openSea token standard metadata', async () => {
+  it.only('should store openSea token standard metadata', async () => {
     const hash = await sdkWithIpfs.storeMetadata(
       Metadata.openSeaTokenLevelStandard({
         description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
