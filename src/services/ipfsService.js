@@ -98,7 +98,7 @@ export default class IPFS {
       const uploadedDirectory = [];
       const files = sources.map((source, index) => {
         return {
-          path: isErc1155 === true ? `${index}.json` : `${index}`,
+          path: isErc1155 ? `${index}.json` : `${index}`,
           content: source,
         };
       });
@@ -109,7 +109,7 @@ export default class IPFS {
         uploadedDirectory.push(file);
       }
 
-      return `ipfs://${[...uploadedDirectory].pop().cid.toString()}`;
+      return `ipfs://${[...uploadedDirectory].pop().cid.toString()}/`;
     } catch (error) {
       throw new Error(
         errorLogger({
