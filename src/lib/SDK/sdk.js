@@ -110,6 +110,7 @@ export default class SDK {
    * @returns {Promise<object>} Contract metadata object
    */
   async getContractMetadata({ contractAddress }) {
+    console.log(contractAddress);
     if (!contractAddress || !utils.isAddress(contractAddress)) {
       throw new Error(
         errorLogger({

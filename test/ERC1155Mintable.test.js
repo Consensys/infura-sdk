@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker';
 import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
-import { jest } from '@jest/globals';
+
 let erc1155Mintable;
 let signer;
 const address = '0x0';
