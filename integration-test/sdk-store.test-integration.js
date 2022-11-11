@@ -129,49 +129,55 @@ describe('E2E Test: sdk store', () => {
   });
   describe('baseURI', () => {
     it('should fail to store openSea array if param is string', async () => {
-      const getHash = async () => await sdkWithIpfs.createFolder(['test']);
+      const getHash = async () => await sdkWithIpfs.createFolder(['test'], true);
 
       expect(getHash).rejects.toThrow('[SDK.store] Data must be a valid json');
     });
 
     it('should store openSea array token standard metadata', async () => {
       const getHash = async () =>
-        await sdkWithIpfs.createFolder([
-          Metadata.openSeaTokenLevelStandard({
-            description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-            external_url: 'https://openseacreatures.io/3',
-            image: await sdkWithIpfs.storeFile(
-              'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-            ),
-            name: 'Dave Starbelly',
-            attributes: [],
-          }),
-          Metadata.openSeaTokenLevelStandard({
-            description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-            external_url: 'https://openseacreatures.io/3',
-            image: await sdkWithIpfs.storeFile(
-              'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-            ),
-            name: 'Dave Starbelly',
-            attributes: [],
-          }),
-        ]);
+        await sdkWithIpfs.createFolder(
+          [
+            Metadata.openSeaTokenLevelStandard({
+              description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+              external_url: 'https://openseacreatures.io/3',
+              image: await sdkWithIpfs.storeFile(
+                'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+              ),
+              name: 'Dave Starbelly',
+              attributes: [],
+            }),
+            Metadata.openSeaTokenLevelStandard({
+              description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+              external_url: 'https://openseacreatures.io/3',
+              image: await sdkWithIpfs.storeFile(
+                'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+              ),
+              name: 'Dave Starbelly',
+              attributes: [],
+            }),
+          ],
+          true,
+        );
 
       expect(getHash).not.toThrow();
     });
 
     it('should fail to store openSea array of contract Metadata', async () => {
       const getHash = async () =>
-        await sdkWithIpfs.createFolder([
-          Metadata.openSeaCollectionLevelStandard({
-            name: 'My awesome collection',
-            description: "A long description explaining why it's awesome",
-            image: await sdkWithIpfs.storeFile(
-              'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-            ),
-            external_link: 'https://myawesomewebsite.net',
-          }),
-        ]);
+        await sdkWithIpfs.createFolder(
+          [
+            Metadata.openSeaCollectionLevelStandard({
+              name: 'My awesome collection',
+              description: "A long description explaining why it's awesome",
+              image: await sdkWithIpfs.storeFile(
+                'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+              ),
+              external_link: 'https://myawesomewebsite.net',
+            }),
+          ],
+          true,
+        );
 
       expect(getHash).rejects.toThrow(
         '[Metadata.tokenLevelMetadata] Data must be a string or an array of metadata token object',
