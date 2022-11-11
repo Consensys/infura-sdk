@@ -298,7 +298,7 @@ export default class SDK {
    * @param {Array<any>} metadata an array of valid JSON Metadata
    * @returns {Promise<string>} Ipfs hash of the stored data
    */
-  async createFolder(metadata) {
+  async createFolder(metadata, isErc1155 = false) {
     if (!this.#ipfsClient) {
       throw new Error(
         errorLogger({
@@ -327,6 +327,6 @@ export default class SDK {
       }
     });
 
-    return this.#ipfsClient.uploadArray({ sources: metadata });
+    return this.#ipfsClient.uploadArray({ sources: metadata, isErc1155 });
   }
 }

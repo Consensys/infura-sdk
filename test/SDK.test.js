@@ -330,11 +330,14 @@ describe('Sdk', () => {
 
     it('should store an array', async () => {
       IpfsUploadArrayMock.mockResolvedValueOnce('test');
-      await sdk.createFolder([
-        JSON.stringify({
-          test: 'test',
-        }),
-      ]);
+      await sdk.createFolder(
+        [
+          JSON.stringify({
+            test: 'test',
+          }),
+        ],
+        true,
+      );
       expect(IpfsUploadArrayMock).toHaveBeenCalledTimes(1);
     });
 
@@ -350,7 +353,7 @@ describe('Sdk', () => {
     });
 
     it('should throw error if its not a valid json', async () => {
-      const store = async () => await sdk.createFolder([{ test: 'test' }]);
+      const store = async () => await sdk.createFolder([{ test: 'test' }], true);
       expect(store).rejects.toThrow('[SDK.store] Data must be a valid json');
     });
 
@@ -361,11 +364,14 @@ describe('Sdk', () => {
 
     it('should throw error if ipfs is not setted for create folder', async () => {
       const store = async () =>
-        await sdkWithoutIpfs.createFolder([
-          JSON.stringify({
-            test: 'test',
-          }),
-        ]);
+        await sdkWithoutIpfs.createFolder(
+          [
+            JSON.stringify({
+              test: 'test',
+            }),
+          ],
+          true,
+        );
       expect(store).rejects.toThrow('[SDK.store] Invalid ipfs setup.');
     });
 
