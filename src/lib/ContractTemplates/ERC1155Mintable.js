@@ -85,11 +85,9 @@ export default class ERC1155Mintable {
         smartContractArtifact.bytecode,
         this.#signer,
       );
-
       const options = addGasPriceToOptions({}, gas);
       const contract = await factory.deploy(baseURI, contractURI, ids, options);
       this._contractDeployed = await contract.deployed();
-
       this.#setContracts();
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
