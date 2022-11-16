@@ -22,8 +22,14 @@ on:
           required: true
         INFURA_IPFS_GATEWAY:
           required: true
+  push:
+    branches:
+      - main
+      - dev
   pull_request:
-    types: [opened, reopened]
+    branches:
+      - main
+      - dev
 
 jobs:
   test:
