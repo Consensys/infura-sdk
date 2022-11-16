@@ -1,7 +1,27 @@
 ---
-name: e2e tests
+name: e2e SDK tests
 
 on:
+  workflow_dispatch:
+    secrets:
+        INFURA_PROJECT_ID:
+          required: true
+        INFURA_PROJECT_SECRET:
+          required: true
+        WALLET_PUBLIC_ADDRESS:
+          required: true
+        WALLET_PRIVATE_KEY:
+          required: true
+        EVM_RPC_URL:
+          required: true
+        INFURA_IPFS_PROJECT_ID:
+          required: true
+        INFURA_IPFS_PROJECT_SECRET:
+          required: true
+        INFURA_IPFS_ENDPOINT:
+          required: true
+        INFURA_IPFS_GATEWAY:
+          required: true
   pull_request:
     types: [opened, reopened]
 
