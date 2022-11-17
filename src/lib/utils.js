@@ -20,7 +20,6 @@ export const formatRpcUrl = ({ chainId, projectId }) => {
 
 export const toBase64 = ({ projectId, secretId }) =>
   Buffer.from(`${projectId}:${secretId}`).toString('base64');
-
 export const addGasPriceToOptions = (options, gas) => {
   const newOptions = options;
   if (gas) {

@@ -1,11 +1,16 @@
 import { HttpService } from '../../src/services/httpService.js';
+import { toBase64 } from '../../src/lib/utils.js';
 
 export default class IpfsApiClient {
   httpClient;
 
   constructor() {
     this.url = 'https://nft-api.infura-ipfs.io/ipfs/';
-    this.httpClient = new HttpService(this.url, process.env.INFURA_IPFS_PROJECT_SECRET);
+    const apiKey = toBase64(
+      process.env.INFURA_IPFS_PROJECT_ID,
+      process.env.INFURA_IPFS_PROJECT_SECRET,
+    );
+    this.httpClient = new HttpService(this.url, apiKey);
   }
 
   getIpfsImage = async ipfsHash => {
