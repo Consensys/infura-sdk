@@ -33,7 +33,7 @@ export default class IPFS {
         }),
       );
     }
-
+    console.log(`ProjectId ${projectId} and apiKeySecret ${apiKeySecret}`);
     this.ipfsClient = ipfsClient({
       url: 'https://ipfs.infura.io:5001',
       headers: {

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "jest --config ./jest-unit.json",
-    "test:e2e": "jest e2e/*  --config jest.config.json --runInBand  ",
+    "test:e2e": "jest e2e/sdk.ipfs.erc721.e2e.test.js  --config jest.config.json --runInBand  ",
     "test:integration": "jest --config ./integration-test/config/jest-integration.json --forceExit --runInBand",
     "test:coverage": "jest --config ./jest-unit.json --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
