@@ -28,9 +28,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const sdk = new SDK(acc);
     const response = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
     expect(response.type).toEqual('NFT');
-    console.log('deploy ');
     const newContract = await sdk.deploy(contractInfo);
-    console.log('mint');
     const mintHash = await newContract.mint({
       publicAddress: ownerAddress,
       // eslint-disable-next-line sonarjs/no-duplicate-string

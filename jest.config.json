@@ -4,6 +4,7 @@
     "roots": ["e2e/"],
     "outputName": "junit.xml",
     "verbose": true,
+    "testRegex": ".*\\.test\\.js$",
     "reporters": [
         "default",
         ["./node_modules/jest-html-reporter", {
