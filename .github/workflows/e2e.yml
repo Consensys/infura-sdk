@@ -4,24 +4,24 @@ name: e2e SDK tests
 on:
   workflow_dispatch:
     secrets:
-        INFURA_PROJECT_ID:
-          required: true
-        INFURA_PROJECT_SECRET:
-          required: true
-        WALLET_PUBLIC_ADDRESS:
-          required: true
-        WALLET_PRIVATE_KEY:
-          required: true
-        EVM_RPC_URL:
-          required: true
-        INFURA_IPFS_PROJECT_ID:
-          required: true
-        INFURA_IPFS_PROJECT_SECRET:
-          required: true
-        INFURA_IPFS_ENDPOINT:
-          required: true
-        INFURA_IPFS_GATEWAY:
-          required: true
+      INFURA_PROJECT_ID:
+        required: true
+      INFURA_PROJECT_SECRET:
+        required: true
+      WALLET_PUBLIC_ADDRESS:
+        required: true
+      WALLET_PRIVATE_KEY:
+        required: true
+      EVM_RPC_URL:
+        required: true
+      INFURA_IPFS_PROJECT_ID:
+        required: true
+      INFURA_IPFS_PROJECT_SECRET:
+        required: true
+      INFURA_IPFS_ENDPOINT:
+        required: true
+      INFURA_IPFS_GATEWAY:
+        required: true
   push:
     branches:
       - main
@@ -62,53 +62,3 @@ jobs:
           INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
           INFURA_IPFS_GATEWAY: ${{ secrets.INFURA_IPFS_GATEWAY }}
           INFURA_IPFS_ENDPOINT: ${{ secrets.INFURA_IPFS_ENDPOINT }}
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@25b0be1ad1c39388799624b0d0914282bc36ac8e
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  release:
-    runs-on: ubuntu-latest
-    if: ${{ github.ref_type == 'tag' }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-        with:
-          node-version: v18.1.0
-          cache: npm
-
-      - name: Install packages
-        run: npm ci
-
-      - uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: 'public'
-      #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
-      #    registry: https://registry.nft.consensys-solutions.net
-
-      # uncomment to publish publicly
-      # - name: Publish on NPM
-      #   run: |
-      #     echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-      #     npm publish --registry https://registry.npmjs.org/
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      # bump version manually (e.g., before creating the tag)
-      # - name: Setup git info
-      #   run: |
-      #     git config --global user.email "johannbich@gmail.com"
-      #     git config --global user.name "kalote"
-
-      # - name: Bump npm version
-      #   run: npm version ${{ github.ref_name }} -m "bump version to %s"
-
-      # - name: Commit version
-      #   run: |
-      #     git status
-      #     git push
