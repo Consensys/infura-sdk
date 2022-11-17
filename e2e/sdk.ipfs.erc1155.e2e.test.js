@@ -24,6 +24,7 @@ const file = path.join(__dirname, 'infura.jpeg');
 
 describe('SDK - IPFS for ERC1155', () => {
   jest.setTimeout(60 * 1000 * 10);
+  console.log(process.env);
   const ipfsApiClient = new IpfsApiClient();
   it('Store file with an string', async () => {
     const acc = new Auth(authInfo);
