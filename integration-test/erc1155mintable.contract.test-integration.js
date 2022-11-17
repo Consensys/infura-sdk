@@ -138,12 +138,13 @@ describe('E2E Test: User Payable NFT (write)', () => {
       contractAddress: contractObject.contractAddress,
     });
 
+    let txTransfer;
     // publicAddress transfers token of owner
-    const txTransfer = await existing.safeTransferFrom({
+    txTransfer = await existing.transfer({
       from: owner,
       to: thirdUser,
-      id: 0,
-      amount: 1,
+      tokenId: 0,
+      quantity: 1,
     });
 
     const receipt = await txTransfer.wait();
