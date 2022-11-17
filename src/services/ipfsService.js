@@ -72,7 +72,8 @@ export default class IPFS {
       const inputSrc = fs.createReadStream(source);
       return `ipfs://${(await this.ipfsClient.add(inputSrc)).cid.toString()}`;
     } catch (error) {
-      console.log(error.response.body);
+      console.log(error.response.headersList);
+      console.log(error.response.urlList);
       throw new Error(
         errorLogger({
           location: ERROR_LOG.location.Ipfs_uploadFile,
