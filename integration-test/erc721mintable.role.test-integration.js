@@ -54,9 +54,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
   it('should Grant & check Minter role', async () => {
     // grant minter role
     const tx = await contractObject.accessControl.addMinter({ publicAddress });
-    console.log('TX: ', tx);
     const receipt = await tx.wait();
-    console.log('receipt: ', receipt);
 
     // // check minter role
     const isMinter = await contractObject.accessControl.isMinter({ publicAddress });
