@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "jest --config ./jest-unit.json",
-    "test:integration": "jest --config ./integration-test/config/jest-integration.json --maxWorkers=1 --forceExit",
+    "test:e2e": "jest e2e/*  --config jest.config.json --runInBand  ",
+    "test:integration": "jest --config ./integration-test/config/jest-integration.json --forceExit --runInBand",
     "test:coverage": "jest --config ./jest-unit.json --coverage",
     "prettier:format": "prettier --write \"*.js\" ",
     "prettier:check": "prettier --check .",
@@ -52,6 +53,7 @@
     "dotenv": "^16.0.1",
     "ethers": "^5.6.9",
     "ipfs-http-client": "56.0.3",
+    "jest-html-reporter": "^3.7.0",
     "joi": "^17.6.4"
   },
   "devDependencies": {
@@ -74,6 +76,7 @@
     "ganache": "^7.3.2",
     "husky": "^8.0.1",
     "jest": "^28.1.3",
+    "jest-html-reporters": "^3.0.11",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "sonarjs": "^0.2.0"
