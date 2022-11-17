@@ -56,26 +56,20 @@ describe('E2E Test: sdk store', () => {
     accountWithIpfs.getIpfsClient().closeConnection();
   });
 
-  it('should store file using url', async () => {
-    const hash = await sdkWithIpfs.storeFile(
-      'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-    );
-    expect(hash).toBe('ipfs://QmeoHozGjjBhdVEXfxBiawPYM5gkuBn1abKZXmNMdz87n1');
-  });
-
   it('should not store file if the url is not a media', async () => {
     const getHash = async () => await sdkWithIpfs.storeFile('https://openseacreatures.io/3');
     expect(getHash).rejects.toThrow('[IPFS.uploadFile] Forbidden');
   });
 
-  it('should store file using path', async () => {
-    const hash = await sdkWithIpfs.storeFile(file);
-    expect(hash).toBe('ipfs://QmbuNrChRcADV4NVvDo2yctWu4Gt9atpVUC74ZsVqRw5uJ');
-  });
+  it('should store free level metadata', async () => {
+    const getHash = async () =>
+      await sdkWithIpfs.storeMetadata(
+        Metadata.freeLevelMetadata({
+          key: 'test',
+        }),
+      );
 
-  it('should not store unexisting file', async () => {
-    const getHash = async () => await sdkWithIpfs.storeFile(unexistingFile);
-    expect(getHash).rejects.toThrow('[IPFS.uploadFile] [IPFS.uploadFile] The file does not exists');
+    expect(getHash).not.toThrow();
   });
 
   it('should store openSea contract standard metadata', async () => {
@@ -107,26 +101,6 @@ describe('E2E Test: sdk store', () => {
     expect(hash).toBe('ipfs://QmUrDwbA9XBvhRsc5LDQUz3pxEHypUESNy6jxLXw1UgaTS');
   });
 
-  it('should store free level metadata', async () => {
-    const hash = await sdkWithIpfs.storeMetadata(
-      Metadata.freeLevelMetadata({
-        key: 'test',
-      }),
-    );
-
-    expect(hash).toBe('ipfs://QmUAKAJZvyBuvMX9VqwfhS1K7iyPhR1ZWnT9AQXcovrMkn');
-  });
-
-  it('should throw error if json is not valid', async () => {
-    const getHash = async () =>
-      await sdkWithIpfs.storeMetadata(
-        Metadata.freeLevelMetadata({
-          key: 'test',
-        }),
-      );
-
-    expect(getHash).rejects.toThrow('[SDK.store] Data must be a valid json');
-  });
   describe('baseURI', () => {
     it('should fail to store openSea array if param is string', async () => {
       const getHash = async () => await sdkWithIpfs.createFolder(['test'], true);

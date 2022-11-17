@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { DEFAULT_MINTER_ROLE, DEFAULT_ADMIN_ROLE } from '../../constants.js';
 import { addGasPriceToOptions } from '../../utils.js';
 import { networkErrorHandler, errorLogger, ERROR_LOG } from '../../error/handler.js';
 
@@ -44,7 +45,8 @@ export default class AccessControl {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this.#contractDeployed.grantRole(this.MINTER_ROLE, publicAddress, options);
+
+      return await this.#contractDeployed.grantRole(DEFAULT_MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -84,7 +86,7 @@ export default class AccessControl {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this.#contractDeployed.renounceRole(this.MINTER_ROLE, publicAddress, options);
+      return await this.#contractDeployed.renounceRole(DEFAULT_MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -124,7 +126,7 @@ export default class AccessControl {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this.#contractDeployed.revokeRole(this.MINTER_ROLE, publicAddress, options);
+      return await this.#contractDeployed.revokeRole(DEFAULT_MINTER_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -162,7 +164,7 @@ export default class AccessControl {
     }
 
     try {
-      return await this.#contractDeployed.hasRole(this.MINTER_ROLE, publicAddress);
+      return await this.#contractDeployed.hasRole(DEFAULT_MINTER_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -203,7 +205,7 @@ export default class AccessControl {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this.#contractDeployed.grantRole(this.ADMIN_ROLE, publicAddress, options);
+      return await this.#contractDeployed.grantRole(DEFAULT_ADMIN_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -244,7 +246,7 @@ export default class AccessControl {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this.#contractDeployed.revokeRole(this.ADMIN_ROLE, publicAddress, options);
+      return await this.#contractDeployed.revokeRole(DEFAULT_ADMIN_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -285,7 +287,7 @@ export default class AccessControl {
 
     try {
       const options = addGasPriceToOptions({}, gas);
-      return await this.#contractDeployed.renounceRole(this.ADMIN_ROLE, publicAddress, options);
+      return await this.#contractDeployed.renounceRole(DEFAULT_ADMIN_ROLE, publicAddress, options);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(
@@ -323,7 +325,7 @@ export default class AccessControl {
     }
 
     try {
-      return await this.#contractDeployed.hasRole(this.ADMIN_ROLE, publicAddress);
+      return await this.#contractDeployed.hasRole(DEFAULT_ADMIN_ROLE, publicAddress);
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(

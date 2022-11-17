@@ -457,7 +457,14 @@ export default class ERC1155Mintable {
     try {
       let options = { gasLimit: GAS_LIMIT };
       options = addGasPriceToOptions(options, gas);
-      return await this._contractDeployed.safeTransferFrom(from, to, tokenId, quantity, options);
+      return await this._contractDeployed.safeTransferFrom(
+        from,
+        to,
+        tokenId,
+        quantity,
+        [],
+        options,
+      );
     } catch (error) {
       const { message, type } = networkErrorHandler(error);
       throw new Error(

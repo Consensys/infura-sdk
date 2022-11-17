@@ -30,15 +30,17 @@ describe('E2E Test: Basic NFT (mint)', () => {
     const chainId = 5;
     const projectId = process.env.INFURA_PROJECT_ID;
     const secretId = process.env.INFURA_PROJECT_SECRET;
-    const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
-
+    const ipfs = {
+      projectId: process.env.INFURA_IPFS_PROJECT_ID,
+      apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+    };
     account = new Auth({
       privateKey,
       projectId,
       secretId,
       rpcUrl,
       chainId,
-      IPFS,
+      ipfs,
     });
 
     sdk = new SDK(account);

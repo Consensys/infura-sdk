@@ -1,0 +1,43 @@
+---
+name: Integration tests
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version:
+          - v18.1.0
+          - v16.13.1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          WALLET_PRIVATE_KEY: ${{ secrets.WALLET_PRIVATE_KEY }}
+          INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+          INFURA_PROJECT_SECRET: ${{ secrets.INFURA_PROJECT_SECRET }}
+          EVM_RPC_URL: ${{ secrets.EVM_RPC_URL }}
+          WALLET_PUBLIC_ADDRESS: ${{ secrets.WALLET_PUBLIC_ADDRESS }}
+          INFURA_IPFS_PROJECT_ID: ${{ secrets.INFURA_IPFS_PROJECT_ID }}
+          INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
