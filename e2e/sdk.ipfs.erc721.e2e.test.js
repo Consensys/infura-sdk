@@ -8,16 +8,17 @@ import { wait } from './utils/utils.js';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS;
+const ipfs = {
+  projectId: process.env.INFURA_IPFS_PROJECT_ID,
+  apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+};
 const authInfo = {
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
   rpcUrl: process.env.EVM_RPC_URL,
   chainId: 5,
-  ipfs: {
-    projectId: process.env.INFURA_IPFS_PROJECT_ID,
-    apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
-  },
+  ipfs,
 };
 
 const file = path.join(__dirname, 'infura.jpeg');

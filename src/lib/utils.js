@@ -18,13 +18,8 @@ export const formatRpcUrl = ({ chainId, projectId }) => {
   return `${chainUrls[chainId]}/v3/${projectId}`;
 };
 
-export const toBase64 = ({ projectId, secretId }) => {
-  console.log(
-    `projectId and secretId ${Buffer.from(`${projectId}:${secretId}`).toString('base64')}`,
-  );
-  return Buffer.from(`${projectId}:${secretId}`).toString('base64');
-};
-
+export const toBase64 = ({ projectId, secretId }) =>
+  Buffer.from(`${projectId}:${secretId}`).toString('base64');
 export const addGasPriceToOptions = (options, gas) => {
   const newOptions = options;
   if (gas) {
