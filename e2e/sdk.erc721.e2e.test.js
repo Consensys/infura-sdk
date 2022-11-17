@@ -124,7 +124,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(response.symbol).toEqual(contractInfo.params.symbol);
     expect(response.tokenType).toEqual('ERC721');
   }, 240000);
-  it('Deploy - Get NFT metadata', async () => {
+  it.skip('Deploy - Get NFT metadata', async () => {
     // and NFT api is returning null
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
