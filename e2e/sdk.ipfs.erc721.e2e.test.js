@@ -25,7 +25,7 @@ const file = path.join(__dirname, 'infura.jpeg');
 describe('SDK - IPFS for ERC712', () => {
   jest.setTimeout(60 * 1000 * 10);
   const ipfsApiClient = new IpfsApiClient();
-  it('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
+  it.only('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const folderUri = await sdk.createFolder(
