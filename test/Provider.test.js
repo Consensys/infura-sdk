@@ -1,8 +1,12 @@
+import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
+
 import Provider from '../src/lib/Provider/Provider.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
-import { faker } from '@faker-js/faker';
 
+loadEnv();
+
+let provider;
 describe('Provider', () => {
   //   jest.spyOn(ethers.providers, 'getDefaultProvider').mockImplementation(() => ({}));
 
@@ -16,7 +20,7 @@ describe('Provider', () => {
   });
 
   it('should return the provider', () => {
-    const rpcUrl = faker.internet.url();
+    const rpcUrl = process.env.EVM_RPC_URL;
 
     expect(JSON.stringify(Provider.getProvider(rpcUrl))).toStrictEqual(
       JSON.stringify(new ethers.providers.getDefaultProvider(rpcUrl)),
