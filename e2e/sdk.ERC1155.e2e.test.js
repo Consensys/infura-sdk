@@ -26,7 +26,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   console.log(process.env.INFURA_PROJECT_SECRET);
   console.log(process.env.EVM_RPC_URL);
   jest.setTimeout(60 * 1000 * 10);
-  it.only('Deploy - Get all nfts by owner address', async () => {
+  it('Deploy - Get all nfts by owner address', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const response = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
