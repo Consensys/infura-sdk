@@ -76,7 +76,7 @@ describe('SDK - IPFS for ERC1155', () => {
     expect(imageResponse.data).not.toBeNull();
   });
 
-  it.skip('Create folder and store 2 files openSeaCollectionLevelStandard', async () => {
+  it('Create folder and store 2 files openSeaCollectionLevelStandard', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const folderUri = await sdk.createFolder(
@@ -103,7 +103,7 @@ describe('SDK - IPFS for ERC1155', () => {
           attributes: [],
         }),
         Metadata.openSeaCollectionLevelStandard({
-          description: 'Open see image 2',
+          description: 'Open see image 4',
           external_url: 'https://testing',
           image: await sdk.storeFile(file),
           name: 'Javivi',
@@ -175,107 +175,12 @@ describe('SDK - IPFS for ERC1155', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    expect(contractNftMetadata.assets[0].metadata).not.toBeNull();
-    expect(contractNftMetadata.assets[1].metadata).not.toBeNull();
+    console.log(contractNftMetadata.assets);
+    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
+    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
   });
 
-  it.skip('Create folder and store 2 files openSeaCollectionLevelStandard for an ERC1155', async () => {
-    const acc = new Auth(authInfo);
-    const sdk = new SDK(acc);
-    const folderUri = await sdk.createFolder(
-      [
-        Metadata.openSeaCollectionLevelStandard({
-          description: 'Open see image 1',
-          external_url: 'https://testing',
-          image: await sdk.storeFile(file),
-          name: 'Javivi',
-          attributes: [],
-        }),
-        Metadata.openSeaCollectionLevelStandard({
-          description: 'Open see image 2',
-          external_url: 'https://testing',
-          image: await sdk.storeFile(file),
-          name: 'Javivi',
-          attributes: [],
-        }),
-        Metadata.openSeaCollectionLevelStandard({
-          description: 'Open see image 3',
-          external_url: 'https://testing',
-          image: await sdk.storeFile(file),
-          name: 'Javivi',
-          attributes: [],
-        }),
-        Metadata.openSeaCollectionLevelStandard({
-          description: 'Open see image 2',
-          external_url: 'https://testing',
-          image: await sdk.storeFile(file),
-          name: 'Javivi',
-          attributes: [],
-        }),
-      ],
-      true,
-    );
-    const folderHash = await ipfsApiClient.getIpfsImage(folderUri.replace('ipfs://', ''));
-    console.log(folderUri);
-    expect(folderHash.status).toEqual(200);
-    expect(folderHash.data).not.toBeNull();
-    const contractInfo = {
-      template: TEMPLATES.ERC1155Mintable,
-      params: {
-        baseURI: folderUri,
-        contractURI: folderUri,
-        ids: [0, 1, 3, 4],
-      },
-    };
-    const contract = await sdk.deploy(contractInfo);
-    console.log(contract.contractAddress);
-    console.log('Deployed and Minting');
-    const mintHash1 = await contract.mint({
-      to: ownerAddress,
-      id: 0,
-      quantity: 2,
-    });
-    const receipt1 = await mintHash1.wait();
-    expect(receipt1.status).toEqual(1);
-    const mintHash2 = await contract.mint({
-      to: ownerAddress,
-      id: 1,
-      quantity: 2,
-    });
-    const receipt2 = await mintHash2.wait();
-    expect(receipt2.status).toEqual(1);
-
-    console.log(contract.contractAddress);
-    let response;
-    let response2;
-    await wait(
-      async () => {
-        response = await sdk.getTokenMetadata({
-          contractAddress: contract.contractAddress,
-          tokenId: 0,
-        });
-        response2 = await sdk.getTokenMetadata({
-          contractAddress: contract.contractAddress,
-          tokenId: 1,
-        });
-        return response.metadata !== null && response2.metadata !== null;
-      },
-      300000,
-      1000,
-      // eslint-disable-next-line sonarjs/no-duplicate-string
-      'Waiting for NFT collection to be available',
-    );
-    expect(response.metadata).not.toBeNull();
-    expect(response2.metadata).not.toBeNull();
-
-    const contractNftMetadata = await sdk.getNFTsForCollection({
-      contractAddress: contract.contractAddress,
-    });
-    expect(contractNftMetadata.assets[0].metadata).not.toBeNull();
-    expect(contractNftMetadata.assets[1].metadata).not.toBeNull();
-  });
-
-  it.skip('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
+  it('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const folderUri = await sdk.createFolder(
@@ -363,6 +268,17 @@ describe('SDK - IPFS for ERC1155', () => {
           contractAddress: contract.contractAddress,
           tokenId: 1,
         });
+        console.log(`Total is ${nftCollection.total}`);
+        console.log(
+          `Response metadata for contract${contract.contractAddress} is ${JSON.stringify(
+            response.metadata,
+          )}`,
+        );
+        console.log(
+          `Response2 metadata for contract${contract.contractAddress} is ${JSON.stringify(
+            response2.metadata,
+          )}`,
+        );
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null
         );
@@ -378,7 +294,8 @@ describe('SDK - IPFS for ERC1155', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    expect(contractNftMetadata.assets[0].metadata).not.toBeNull();
-    expect(contractNftMetadata.assets[1].metadata).not.toBeNull();
+    console.log(contractNftMetadata.assets);
+    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
+    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
   });
 });
