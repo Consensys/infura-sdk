@@ -6,10 +6,10 @@ export default class IpfsApiClient {
 
   constructor() {
     this.url = 'https://nft-api.infura-ipfs.io/ipfs/';
-    const apiKey = toBase64(
-      process.env.INFURA_IPFS_PROJECT_ID,
-      process.env.INFURA_IPFS_PROJECT_SECRET,
-    );
+    const apiKey = toBase64({
+      projectId: process.env.INFURA_IPFS_PROJECT_ID,
+      secretId: process.env.INFURA_IPFS_PROJECT_SECRET,
+    });
     this.httpClient = new HttpService(this.url, apiKey);
   }
 
