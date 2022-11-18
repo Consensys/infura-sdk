@@ -113,9 +113,10 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+        console.log(response);
         return response !== null;
       },
-      120000,
+      300000,
       1000,
       'Waiting for NFT collection metadata to be available',
     );
