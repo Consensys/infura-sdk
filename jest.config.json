@@ -1,0 +1,14 @@
+{
+    "moduleFileExtensions": ["js"],
+    "testEnvironment": "node",
+    "roots": ["e2e/"],
+    "outputName": "junit.xml",
+    "verbose": true,
+    "testRegex": ".*\\.test\\.js$",
+    "reporters": [
+        "default",
+        ["./node_modules/jest-html-reporter", {
+            "pageTitle": "E2E Test Report"
+        }]
+    ]
+  }
