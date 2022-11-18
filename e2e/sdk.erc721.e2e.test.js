@@ -110,6 +110,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+        console.log(response);
         return response !== null;
       },
       300000,
