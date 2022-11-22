@@ -176,8 +176,12 @@ describe('SDK - IPFS for ERC1155', () => {
       contractAddress: contract.contractAddress,
     });
     console.log(contractNftMetadata.assets);
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0').metadata,
+    ).not.toBeNull();
   });
 
   it('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
@@ -295,7 +299,11 @@ describe('SDK - IPFS for ERC1155', () => {
       contractAddress: contract.contractAddress,
     });
     console.log(contractNftMetadata.assets);
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0').metadata,
+    ).not.toBeNull();
   });
 });

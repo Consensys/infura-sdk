@@ -26,7 +26,7 @@ const file = path.join(__dirname, 'infura.jpeg');
 describe('SDK - IPFS for ERC712', () => {
   jest.setTimeout(60 * 1000 * 10);
   const ipfsApiClient = new IpfsApiClient();
-  it.only('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
+  it('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const folderUri = await sdk.createFolder(
@@ -119,8 +119,13 @@ describe('SDK - IPFS for ERC712', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    expect(contractNftMetadata.assets[0].metadata).not.toBeNull();
-    expect(contractNftMetadata.assets[1].metadata).not.toBeNull();
+    console.log(contractNftMetadata.assets);
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0')[0].metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1')[0].metadata,
+    ).not.toBeNull();
   });
   it('Create folder and store 2 files openSeaCollectionLevelStandard', async () => {
     const acc = new Auth(authInfo);
@@ -217,8 +222,12 @@ describe('SDK - IPFS for ERC712', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0').metadata,
+    ).not.toBeNull();
   });
 
   it('Create folder and store 3 files openSeaTokenLevelStandard', async () => {
@@ -318,8 +327,12 @@ describe('SDK - IPFS for ERC712', () => {
       contractAddress: contract.contractAddress,
     });
     console.log(contractNftMetadata);
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0').metadata,
+    ).not.toBeNull();
   });
   it('storeMetadata and check ', async () => {
     const acc = new Auth(authInfo);
