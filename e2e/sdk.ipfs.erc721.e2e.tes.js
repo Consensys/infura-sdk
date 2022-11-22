@@ -26,7 +26,7 @@ const file = path.join(__dirname, 'infura.jpeg');
 describe('SDK - IPFS for ERC712', () => {
   jest.setTimeout(60 * 1000 * 10);
   const ipfsApiClient = new IpfsApiClient();
-  it.only('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
+  it('Create folder and store 2 files openSeaTokenLevelStandard', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const folderUri = await sdk.createFolder(
@@ -56,7 +56,6 @@ describe('SDK - IPFS for ERC712', () => {
       false,
     );
     const folderHash = await ipfsApiClient.getIpfsImage(folderUri.replace('ipfs://', ''));
-    console.log(folderUri);
     expect(folderHash.status).toEqual(200);
     expect(folderHash.data).not.toBeNull();
     const contractInfo = {
@@ -68,8 +67,6 @@ describe('SDK - IPFS for ERC712', () => {
       },
     };
     const contract = await sdk.deploy(contractInfo);
-    console.log(contract.contractAddress);
-    console.log('Deployed and Minting');
     const mintHash1 = await contract.mint({
       publicAddress: ownerAddress,
       tokenURI: `${folderUri}/0`,
@@ -91,7 +88,6 @@ describe('SDK - IPFS for ERC712', () => {
     const receipt3 = await mintHash3.wait();
     expect(receipt3.status).toEqual(1);
 
-    console.log(contract.contractAddress);
     let response;
     let response2;
     await wait(
@@ -104,8 +100,6 @@ describe('SDK - IPFS for ERC712', () => {
           contractAddress: contract.contractAddress,
           tokenId: 1,
         });
-        console.log(response.metadata);
-        console.log(response2.metadata);
         return response.metadata !== null && response2.metadata !== null;
       },
       300000,
@@ -119,8 +113,12 @@ describe('SDK - IPFS for ERC712', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    expect(contractNftMetadata.assets[0].metadata).not.toBeNull();
-    expect(contractNftMetadata.assets[1].metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0')[0].metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1')[0].metadata,
+    ).not.toBeNull();
   });
   it('Create folder and store 2 files openSeaCollectionLevelStandard', async () => {
     const acc = new Auth(authInfo);
@@ -152,7 +150,6 @@ describe('SDK - IPFS for ERC712', () => {
       false,
     );
     const folderHash = await ipfsApiClient.getIpfsImage(folderUri.replace('ipfs://', ''));
-    console.log(folderUri);
     expect(folderHash.status).toEqual(200);
     expect(folderHash.data).not.toBeNull();
     const contractInfo = {
@@ -164,8 +161,6 @@ describe('SDK - IPFS for ERC712', () => {
       },
     };
     const contract = await sdk.deploy(contractInfo);
-    console.log(contract.contractAddress);
-    console.log('Deployed and Minting');
     const mintHash1 = await contract.mint({
       publicAddress: ownerAddress,
       tokenURI: `${folderUri}0`,
@@ -191,7 +186,6 @@ describe('SDK - IPFS for ERC712', () => {
     });
     const receipt4 = await mintHash4.wait();
     expect(receipt4.status).toEqual(1);
-    console.log(contract.contractAddress);
     let response;
     let response2;
     await wait(
@@ -217,8 +211,12 @@ describe('SDK - IPFS for ERC712', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0').metadata,
+    ).not.toBeNull();
   });
 
   it('Create folder and store 3 files openSeaTokenLevelStandard', async () => {
@@ -258,7 +256,6 @@ describe('SDK - IPFS for ERC712', () => {
       false,
     );
     const folderHash = await ipfsApiClient.getIpfsImage(folderUri.replace('ipfs://', ''));
-    console.log(folderUri);
     expect(folderHash.status).toEqual(200);
     expect(folderHash.data).not.toBeNull();
     const contractInfo = {
@@ -270,8 +267,6 @@ describe('SDK - IPFS for ERC712', () => {
       },
     };
     const contract = await sdk.deploy(contractInfo);
-    console.log(contract.contractAddress);
-    console.log('Deployed and Minting');
     const mintHash1 = await contract.mint({
       publicAddress: ownerAddress,
       tokenURI: `${folderUri}/0`,
@@ -291,7 +286,6 @@ describe('SDK - IPFS for ERC712', () => {
     const receipt3 = await mintHash3.wait();
     expect(receipt3.status).toEqual(1);
 
-    console.log(contract.contractAddress);
     let response;
     let response2;
     await wait(
@@ -317,9 +311,12 @@ describe('SDK - IPFS for ERC712', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    console.log(contractNftMetadata);
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 1).metadata).not.toBeNull();
-    expect(contractNftMetadata.assets.filter(asset => asset.tokenId === 0).metadata).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
+    ).not.toBeNull();
+    expect(
+      contractNftMetadata.assets.filter(asset => asset.tokenId === '0').metadata,
+    ).not.toBeNull();
   });
   it('storeMetadata and check ', async () => {
     const acc = new Auth(authInfo);
@@ -341,7 +338,6 @@ describe('SDK - IPFS for ERC712', () => {
       }),
     );
 
-    console.log(fileStored);
     const imageResponse = await ipfsApiClient.getIpfsImage(fileStored.replace('ipfs://', ''));
     expect(imageResponse.status).toEqual(200);
     expect(imageResponse.data).not.toBeNull();
@@ -354,8 +350,6 @@ describe('SDK - IPFS for ERC712', () => {
       },
     };
     const newContract = await sdk.deploy(contractInfo);
-    console.log(newContract.contractAddress);
-    console.log(fileStored);
     const mintHash = await newContract.mint({
       publicAddress: ownerAddress,
       // eslint-disable-next-line sonarjs/no-duplicate-string
@@ -370,7 +364,6 @@ describe('SDK - IPFS for ERC712', () => {
           contractAddress: newContract.contractAddress,
           tokenId: 0,
         });
-        console.log(resp.metadata);
         return resp.metadata !== null;
       },
       120000,

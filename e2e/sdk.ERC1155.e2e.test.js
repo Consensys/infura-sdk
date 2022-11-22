@@ -83,7 +83,6 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(receipt3.status).toEqual(1);
 
     let response;
-    const startTime = Date.now();
     await wait(
       async () => {
         response = await sdk.getNFTsForCollection({ contractAddress: contract.contractAddress });
@@ -93,8 +92,6 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT collection to be available from api',
     );
-    const finishTime = Date.now();
-    console.log(finishTime - startTime);
     response.assets.forEach(asset => {
       expect(asset.contract.toLowerCase()).toEqual(contract.contractAddress.toLowerCase());
       expect(asset.type).toEqual('ERC1155');
@@ -162,19 +159,16 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(token0.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token0.tokenId).toEqual('0');
     expect(token0.supply).toEqual('1');
-    console.log(token0);
     expect(token0.type).toEqual('ERC1155');
     const token1 = response.assets.filter(ele => ele.tokenId === '1')[0];
     expect(token1.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token1.tokenId).toEqual('1');
     expect(token1.supply).toEqual('2');
-    console.log(token1);
     expect(token1.type).toEqual('ERC1155');
     const token2 = response.assets.filter(ele => ele.tokenId === '2')[0];
     expect(token2.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token2.tokenId).toEqual('2');
     expect(token2.supply).toEqual('3');
-    console.log(token2);
     expect(token2.type).toEqual('ERC1155');
   }, 240000);
   it('Load existing contract', async () => {
