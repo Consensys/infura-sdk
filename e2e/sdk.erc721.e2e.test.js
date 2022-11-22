@@ -80,7 +80,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(receipt3.status).toEqual(1);
 
     let response;
-    const startTime = Date.now();
     await wait(
       async () => {
         response = await sdk.getNFTsForCollection({ contractAddress: contract.contractAddress });
@@ -90,8 +89,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    const finishTime = Date.now();
-    console.log(finishTime - startTime);
     response.assets.forEach(asset => {
       expect(asset.contract.toLowerCase()).toEqual(contract.contractAddress.toLowerCase());
       expect(asset.type).toEqual('ERC721');
@@ -113,7 +110,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
-        console.log(response);
         return response !== null;
       },
       300000,
@@ -143,7 +139,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
           contractAddress: newContract.contractAddress,
           tokenId: 0,
         });
-        console.log(response);
         return response.metadata !== null;
       },
       600000,

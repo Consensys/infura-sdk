@@ -113,7 +113,6 @@ describe('SDK - IPFS for ERC1155', () => {
       true,
     );
     const folderHash = await ipfsApiClient.getIpfsImage(folderUri.replace('ipfs://', ''));
-    console.log(folderUri);
     expect(folderHash.status).toEqual(200);
     expect(folderHash.data).not.toBeNull();
     const contractInfo = {
@@ -125,8 +124,6 @@ describe('SDK - IPFS for ERC1155', () => {
       },
     };
     const contract = await sdk.deploy(contractInfo);
-    console.log(contract.contractAddress);
-    console.log('Deployed and Minting');
     const mintHash1 = await contract.mint({
       to: ownerAddress,
       id: 0,
@@ -149,7 +146,6 @@ describe('SDK - IPFS for ERC1155', () => {
     const receipt3 = await mintHash3.wait();
     expect(receipt3.status).toEqual(1);
 
-    console.log(contract.contractAddress);
     let response;
     let response2;
     await wait(
@@ -175,7 +171,6 @@ describe('SDK - IPFS for ERC1155', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    console.log(contractNftMetadata.assets);
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
     ).not.toBeNull();
@@ -221,7 +216,6 @@ describe('SDK - IPFS for ERC1155', () => {
       true,
     );
     const folderHash = await ipfsApiClient.getIpfsImage(folderUri.replace('ipfs://', ''));
-    console.log(folderUri);
     expect(folderHash.status).toEqual(200);
     expect(folderHash.data).not.toBeNull();
     const contractInfo = {
@@ -233,8 +227,6 @@ describe('SDK - IPFS for ERC1155', () => {
       },
     };
     const contract = await sdk.deploy(contractInfo);
-    console.log(contract.contractAddress);
-    console.log('Deployed and Minting');
     const mintHash1 = await contract.mint({
       to: ownerAddress,
       id: 0,
@@ -256,7 +248,6 @@ describe('SDK - IPFS for ERC1155', () => {
     });
     const receipt3 = await mintHash3.wait();
     expect(receipt3.status).toEqual(1);
-    console.log(contract.contractAddress);
     let response;
     let response2;
     await wait(
@@ -272,17 +263,6 @@ describe('SDK - IPFS for ERC1155', () => {
           contractAddress: contract.contractAddress,
           tokenId: 1,
         });
-        console.log(`Total is ${nftCollection.total}`);
-        console.log(
-          `Response metadata for contract${contract.contractAddress} is ${JSON.stringify(
-            response.metadata,
-          )}`,
-        );
-        console.log(
-          `Response2 metadata for contract${contract.contractAddress} is ${JSON.stringify(
-            response2.metadata,
-          )}`,
-        );
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null
         );
@@ -298,7 +278,6 @@ describe('SDK - IPFS for ERC1155', () => {
     const contractNftMetadata = await sdk.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
-    console.log(contractNftMetadata.assets);
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '1').metadata,
     ).not.toBeNull();
