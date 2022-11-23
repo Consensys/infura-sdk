@@ -1,9 +1,10 @@
 import { config as loadEnv } from 'dotenv';
 import { ethers } from 'ethers';
+import ganache from 'ganache';
+
 import Auth from '../src/lib/Auth/Auth.js';
 import Provider from '../src/lib/Provider/Provider.js';
 import { generateTestPrivateKeyOrHash } from './__mocks__/utils.js';
-import ganache from 'ganache';
 import { getChainName } from '../src/lib/Auth/availableChains.js';
 import { errorLogger, ERROR_LOG } from '../src/lib/error/handler.js';
 
@@ -138,6 +139,46 @@ describe('Auth', () => {
       errorLogger({
         location: ERROR_LOG.location.Auth_constructor,
         message: ERROR_LOG.message.chain_not_supported,
+      }),
+    );
+  });
+
+  it('should throw when ipfs projectId is not provided', () => {
+    expect(
+      () =>
+        new Auth({
+          privateKey: 'privateKey',
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          ipfs: {},
+        }),
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.no_ipfs_projectId_supplied,
+      }),
+    );
+  });
+
+  it('should throw when ipfs secret key is not provided', () => {
+    expect(
+      () =>
+        new Auth({
+          privateKey: 'privateKey',
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          ipfs: {
+            projectId: 'test',
+          },
+        }),
+    ).toThrow(
+      errorLogger({
+        location: ERROR_LOG.location.Auth_constructor,
+        message: ERROR_LOG.message.no_ipfs_secretId_supplied,
       }),
     );
   });

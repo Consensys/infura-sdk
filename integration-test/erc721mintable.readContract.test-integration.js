@@ -1,4 +1,5 @@
 import { config as loadEnv } from 'dotenv';
+
 import SDK from '../src/lib/SDK/sdk.js';
 import Auth from '../src/lib/Auth/Auth.js';
 
@@ -60,11 +61,8 @@ describe('E2E Test: Sdk (read)', () => {
       });
       const expectedTokenMetadata = {
         contract: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-        attributes: [],
-        tokenId: '0',
-        name: '',
-        description: '',
-        image: '',
+        metadata: null,
+        tokenId: 0,
       };
 
       expect(tokenMetadata).toStrictEqual(expectedTokenMetadata);

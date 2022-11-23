@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
-import ganache from 'ganache';
-import { BigNumber, utils } from 'ethers';
+import { faker } from '@faker-js/faker';
+
 import Auth from '../src/lib/Auth/Auth';
 import SDK from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/NFT/constants';
@@ -8,7 +8,6 @@ import { TEMPLATES } from '../src/lib/NFT/constants';
 loadEnv();
 let sdk;
 let account;
-let server;
 let contractObject;
 let publicAddress;
 let owner;
@@ -47,7 +46,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
       params: {
         name: 'Cool Contract',
         symbol: 'CC',
-        contractURI: 'URI',
+        contractURI: faker.internet.url(),
       },
     });
   });
@@ -75,7 +74,7 @@ describe('E2E Test: Basic NFT (mint)', () => {
   });
 
   it('should renounce contract ownership', async () => {
-    const result = await contractObject.renounceOwnership();
+    const result = await contractObject.accessControl.renounceOwnership();
     const receipt = await result.wait();
 
     expect(receipt.status).toBe(1);

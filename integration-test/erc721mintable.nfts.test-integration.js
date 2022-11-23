@@ -1,5 +1,6 @@
 import { config as loadEnv } from 'dotenv';
-import ganache from 'ganache';
+import { faker } from '@faker-js/faker';
+
 import Auth from '../src/lib/Auth/Auth';
 import SDK from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/NFT/constants';
@@ -7,7 +8,6 @@ import { TEMPLATES } from '../src/lib/NFT/constants';
 loadEnv();
 let sdk;
 let account;
-let server;
 let contractObject;
 let publicAddress;
 let owner;
@@ -30,15 +30,17 @@ describe('E2E Test: Basic NFT (mint)', () => {
     const chainId = 5;
     const projectId = process.env.INFURA_PROJECT_ID;
     const secretId = process.env.INFURA_PROJECT_SECRET;
-    const IPFS = { IPFSProjectID: '', IPFSProjectSecret: '' };
-
+    const ipfs = {
+      projectId: process.env.INFURA_IPFS_PROJECT_ID,
+      apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+    };
     account = new Auth({
       privateKey,
       projectId,
       secretId,
       rpcUrl,
       chainId,
-      IPFS,
+      ipfs,
     });
 
     sdk = new SDK(account);
@@ -47,9 +49,18 @@ describe('E2E Test: Basic NFT (mint)', () => {
       params: {
         name: 'Cool Contract',
         symbol: 'CC',
-        contractURI: 'URI',
+        contractURI: faker.internet.url(),
       },
     });
+  });
+
+  it('should fail to get contract metadata before mint', async () => {
+    expect(
+      async () =>
+        await sdk.getContractMetadata({
+          contractAddress: contractObject.contractAddress,
+        }),
+    ).rejects.toThrow("[API.ERROR][httpService.get] Token address doesn't exist, yet?");
   });
 
   it('should mint nft', async () => {

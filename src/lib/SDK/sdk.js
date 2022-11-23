@@ -1,9 +1,11 @@
 import { utils } from 'ethers';
+
 import Auth from '../Auth/Auth.js';
 import { HttpService } from '../../services/httpService.js';
 import { NFT_API_URL } from '../NFT/constants.js';
 import ContractFactory from '../NFT/contractFactory.js';
 import { errorLogger, ERROR_LOG } from '../error/handler.js';
+import { isJson } from '../utils.js';
 
 export default class SDK {
   /* Private property */
@@ -12,6 +14,8 @@ export default class SDK {
   #apiPath;
 
   #httpClient;
+
+  #ipfsClient;
 
   constructor(auth) {
     if (!(auth instanceof Auth)) {
@@ -26,6 +30,8 @@ export default class SDK {
 
     this.#apiPath = `/networks/${this.#auth.getChainId()}`;
     this.#httpClient = new HttpService(NFT_API_URL, this.#auth.getApiAuth());
+
+    this.#ipfsClient = this.#auth.getIpfsClient();
   }
 
   /** Get signer
@@ -230,5 +236,97 @@ export default class SDK {
 
     const signer = await this.getSigner();
     return signer.provider.getTransactionReceipt(txHash);
+  }
+
+  /** Store file on ipfs
+   * @param {string} metadata path to local file or url
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async storeFile(metadata) {
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+
+    if (typeof metadata !== 'string' && metadata instanceof String === false) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.data_must_be_string,
+        }),
+      );
+    }
+
+    return this.#ipfsClient.uploadFile({ source: metadata });
+  }
+
+  /** Store metadata on ipfs
+   * @param {string} metadata valid json metadata
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async storeMetadata(metadata) {
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+
+    if (
+      // eslint-disable-next-line operator-linebreak
+      !isJson(metadata) &&
+      typeof metadata !== 'string'
+    ) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.data_must_be_string,
+        }),
+      );
+    }
+
+    return this.#ipfsClient.uploadContent({ source: metadata });
+  }
+
+  /** Store array of metadata on ipfs
+   * @param {Array<any>} metadata an array of valid JSON Metadata
+   * @returns {Promise<string>} Ipfs hash of the stored data
+   */
+  async createFolder(metadata, isErc1155 = false) {
+    if (!this.#ipfsClient) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.invalid_ipfs_setup,
+        }),
+      );
+    }
+
+    if (!Array.isArray(metadata)) {
+      throw new Error(
+        errorLogger({
+          location: ERROR_LOG.location.SDK_store,
+          message: ERROR_LOG.message.is_not_an_array,
+        }),
+      );
+    }
+    metadata.forEach(data => {
+      if (!isJson(data)) {
+        throw new Error(
+          errorLogger({
+            location: ERROR_LOG.location.SDK_store,
+            message: ERROR_LOG.message.data_must_be_valid_json,
+          }),
+        );
+      }
+    });
+
+    return this.#ipfsClient.uploadArray({ sources: metadata, isErc1155 });
   }
 }
