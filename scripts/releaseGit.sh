@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=$(node -e 'console.log(require("../package.json").version)')
+VERSION=$(npm pkg get version | sed 's/"//g')
 
 git config user.name github-actions[bot]
 git config user.email github-actions[bot]@users.noreply.github.com
