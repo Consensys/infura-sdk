@@ -154,7 +154,7 @@ export default class SDK {
     }
 
     const apiUrl = `${this.#apiPath}/accounts/${publicAddress}/assets/nfts`;
-    console.log(NFT_API_URL);
+
     const { data } = await this.#httpClient.get(apiUrl);
 
     if (!includeMetadata) {
