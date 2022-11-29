@@ -41,3 +41,4 @@ jobs:
           INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
           INFURA_IPFS_GATEWAY: ${{ secrets.INFURA_IPFS_GATEWAY }}
           INFURA_IPFS_ENDPOINT: ${{ secrets.INFURA_IPFS_ENDPOINT }}
+          NFT_API_URL: https://nft.staging.infura.org
