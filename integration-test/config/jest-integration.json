@@ -1,11 +1,12 @@
 {
-    "moduleFileExtensions": ["js"],
+    "moduleFileExtensions": ["js", "json", "ts"],
     "rootDir": "../",
-    "transform": {
-      "\\.[jt]sx?$": "esbuild-jest"
-    },
-    "setupFilesAfterEnv": ["<rootDir>/config/setupTests.js"],
+    "setupFiles": ["dotenv/config"],
+    "setupFilesAfterEnv": ["<rootDir>/config/setupTests.ts"],
     "testEnvironment": "node",
-    "testRegex": ".*\\.test-integration\\.js$",
+    "testRegex": ".*\\.test-integration\\.ts$",
+    "transform": {
+        "^.+\\.(t|j)s$": "ts-jest"
+    },
     "verbose": true
   }

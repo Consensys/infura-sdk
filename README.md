@@ -1,6 +1,6 @@
-# Infura NFT SDK
+# Infura NFT SDK - TypeScript
 
-The Infura NFT SDK is a JavaScript library that wraps REST calls to Ethereum nodes.
+The Infura NFT SDK is a TypeScript library that wraps REST calls to Ethereum nodes.
 
 The library allows you to deploy and call methods on common Ethereum smart-contract definitions through Infura without the developer overhead of learning Solidity, compiling code, importing ABI’s, etc.
 
@@ -13,20 +13,20 @@ The current alpha version of the SDK defines common ERC721 read and write method
 Sign up for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
 Once accepted, you will be able to use the NFT API and the NFT SDK.
 
-## Initialize a new project
+## Initialize a new typescript project
 
 ```bash
 mkdir new_project
 cd new_project
 npm init -y
+npm install -D typescript ts-node
+npx tsc --init
 ```
-
-Add `"type":"module"` to the `package.json` file to run it as an ESmodule.
 
 ## Install the libraries
 
 ```bash
-npm install -S @infura/sdk
+npm install -S @infura/sdk-ts
 npm install dotenv 
 ```
 
@@ -36,7 +36,7 @@ npm install dotenv
 
 ## Authentication
 
-Authentication requires an active `PROJECT_ID` and `PROJECT_SECRET` from an Ethereum project. Find an example in your [Infura dashboard](https://infura.io/dashboard) or create a new Ethereum project and get the details in project settings.
+Authentication requires an active `PROJECT_ID` and `PROJECT_SECRET` from an Ethereum project in Infura. You can find it in your [Infura dashboard](https://infura.io/dashboard) in project settings.
 
 To run the example code, add the following environment variables to a `.env` file:
 
@@ -51,18 +51,18 @@ EVM_RPC_URL=https://goerli.infura.io/v3/<PROJECT-ID>
 
 ### Import the libraries
 
-Create an `index.js` file, import the libraries, and load the environment variables.
+Create an `index.ts` file, import the libraries, and load the environment variables.
 
-```js
+```ts
 import { config as loadEnv } from 'dotenv';
-import { SDK, Auth, TEMPLATES } from '@infura/sdk';
+import { SDK, Auth, TEMPLATES } from '@infura/sdk-ts';
 
 loadEnv();
 ```
 
 ### Create an `Auth` object
 
-```javascript
+```ts
 const auth = new Auth({
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
@@ -77,13 +77,13 @@ const auth = new Auth({
 
 ### Instantiate the SDK
 
-```js
+```ts
 const sdk = new SDK(auth);
 ```
 
 ### Deploy an ERC721Mintable contract
 
-```js
+```ts
 const newContract = await sdk.deploy({
    template: TEMPLATES.ERC721Mintable,
    params: {
@@ -95,15 +95,15 @@ const newContract = await sdk.deploy({
 console.log(`Contract address is: ${newContract.contractAddress}`);
 ```
 
-### Run with Node
+### Run with TS-Node
 
 ```bash
-node index.js
+ts-node index.ts
 ```
 
 ## Examples
 
-Check out [this demo file](https://github.com/ConsenSys/infura-sdk/blob/main/usage.js) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
+Check out [this demo file](https://github.com/ConsenSys/infura-sdk-ts/blob/main/usage.ts) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
 
 ## Swagger API methods
 
@@ -116,8 +116,8 @@ https://docs.api.infura.io/nft/
 
 ## SDK methods
 
-https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/SDK/sdk.js
+https://github.com/ConsenSys/infura-sdk-ts/blob/main/src/lib/SDK/sdk.ts
 
 ## ERC721 template methods
 
-https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC721Mintable.js
+https://github.com/ConsenSys/infura-sdk-ts/blob/main/src/lib/ContractTemplates/ERC721Mintable.ts

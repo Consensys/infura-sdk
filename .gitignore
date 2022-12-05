@@ -43,7 +43,6 @@ node_modules/
 # dotenv environment variables file
 .env
 .env.test
-test-report.html
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -56,3 +55,4 @@ storage
 .editorconfig
 storage
 dist
+test-report.html

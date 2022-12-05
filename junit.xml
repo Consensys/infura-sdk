@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="117" failures="0" errors="0" time="5.399">
+  <testsuite name="httpService" errors="0" failures="0" skipped="5" timestamp="2022-11-08T11:04:39" time="2.932" tests="6">
+    <testcase classname="httpService should throw when args are missing (baseURL)" name="httpService should throw when args are missing (baseURL)" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="httpService should throw when args are missing (apiKey)" name="httpService should throw when args are missing (apiKey)" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="httpService should GET using axios" name="httpService should GET using axios" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="httpService should throw GET using axios" name="httpService should throw GET using axios" time="0.049">
+    </testcase>
+    <testcase classname="httpService should throw POST using axios" name="httpService should throw POST using axios" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="httpService should POST using axios" name="httpService should POST using axios" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="Provider" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="3.075" tests="2">
+    <testcase classname="Provider should return the provider" name="Provider should return the provider" time="0.003">
+    </testcase>
+    <testcase classname="Provider should return the injected provider" name="Provider should return the injected provider" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="SDK" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="3.115" tests="58">
+    <testcase classname="SDK should create &quot;ERC721Mintable&quot; instance" name="SDK should create &quot;ERC721Mintable&quot; instance" time="0.001">
+    </testcase>
+    <testcase classname="SDK [Deploy] - should return an Error if signer not defined " name="SDK [Deploy] - should return an Error if signer not defined " time="0.001">
+    </testcase>
+    <testcase classname="SDK [Deploy] - should console.warn if URI is not a link " name="SDK [Deploy] - should console.warn if URI is not a link " time="0.002">
+    </testcase>
+    <testcase classname="SDK [Deploy] - should return an Error if Name is empty" name="SDK [Deploy] - should return an Error if Name is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [Deploy] - should return a contract" name="SDK [Deploy] - should return a contract" time="0.001">
+    </testcase>
+    <testcase classname="SDK [Mint] - should return an Error if contract is not deployed" name="SDK [Mint] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [Mint] - should console.warn if tokenURI is not a link " name="SDK [Mint] - should console.warn if tokenURI is not a link " time="0.001">
+    </testcase>
+    <testcase classname="SDK [Mint] - should return an Error if the address is empty" name="SDK [Mint] - should return an Error if the address is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [Mint] - should return an Error if the tokenURI is empty" name="SDK [Mint] - should return an Error if the tokenURI is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [Mint] - should mint a token" name="SDK [Mint] - should mint a token" time="0">
+    </testcase>
+    <testcase classname="SDK [LoadContract] - should return an Error if contract is already deployed" name="SDK [LoadContract] - should return an Error if contract is already deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [LoadContract] - should return an Error if the address is empty" name="SDK [LoadContract] - should return an Error if the address is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [LoadContract] - should load the contract" name="SDK [LoadContract] - should load the contract" time="0">
+    </testcase>
+    <testcase classname="SDK [Transfer] - should return an Error if contract is not deployed" name="SDK [Transfer] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [Transfer] - should return an Error if from address is not valid" name="SDK [Transfer] - should return an Error if from address is not valid" time="0">
+    </testcase>
+    <testcase classname="SDK [Transfer] - should return an Error if to address is not valid" name="SDK [Transfer] - should return an Error if to address is not valid" time="0.001">
+    </testcase>
+    <testcase classname="SDK [Transfer] - should transfer nft" name="SDK [Transfer] - should transfer nft" time="0">
+    </testcase>
+    <testcase classname="SDK [SetContractURI] - should return an Error if contract is not deployed" name="SDK [SetContractURI] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [SetContractURI] - should console.warn if contractURI is not a link " name="SDK [SetContractURI] - should console.warn if contractURI is not a link " time="0.001">
+    </testcase>
+    <testcase classname="SDK [SetContractURI] - should return an Error if the contractURI is empty" name="SDK [SetContractURI] - should return an Error if the contractURI is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [SetContractURI] - should set the contractURI" name="SDK [SetContractURI] - should set the contractURI" time="0">
+    </testcase>
+    <testcase classname="SDK [addMinter] - should return an Error if contract is not deployed" name="SDK [addMinter] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [addMinter] - should return an Error if the address is empty" name="SDK [addMinter] - should return an Error if the address is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [addMinter] - should add minter role to an address" name="SDK [addMinter] - should add minter role to an address" time="0.001">
+    </testcase>
+    <testcase classname="SDK [removeMinter] - should return an Error if contract is not deployed" name="SDK [removeMinter] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [removeMinter] - should return an Error if the address is empty" name="SDK [removeMinter] - should return an Error if the address is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [removeMinter] - should remove minter role to an address" name="SDK [removeMinter] - should remove minter role to an address" time="0">
+    </testcase>
+    <testcase classname="SDK [renounceMinter] - should return an Error if contract is not deployed" name="SDK [renounceMinter] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [renounceMinter] - should return an Error if the address is empty" name="SDK [renounceMinter] - should return an Error if the address is empty" time="0.001">
+    </testcase>
+    <testcase classname="SDK [renounceMinter] - should renounce minter role for an address" name="SDK [renounceMinter] - should renounce minter role for an address" time="0">
+    </testcase>
+    <testcase classname="SDK [isMinter] - should return an Error if contract is not deployed" name="SDK [isMinter] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [isMinter] - should return an Error if the address is empty" name="SDK [isMinter] - should return an Error if the address is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [isMinter] - should check if an address has minter role" name="SDK [isMinter] - should check if an address has minter role" time="0">
+    </testcase>
+    <testcase classname="SDK [SetApprovalForAll] - should return an Error if contract is not deployed" name="SDK [SetApprovalForAll] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [SetApprovalForAll] - should return an Error if the address is empty" name="SDK [SetApprovalForAll] - should return an Error if the address is empty" time="0">
+    </testcase>
+    <testcase classname="SDK [SetApprovalForAll] - should set approval for all when all params are correct" name="SDK [SetApprovalForAll] - should set approval for all when all params are correct" time="0">
+    </testcase>
+    <testcase classname="SDK [addAdmin] - should return an Error if contract is not deployed" name="SDK [addAdmin] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [addAdmin] - should return an Error because of bad address" name="SDK [addAdmin] - should return an Error because of bad address" time="0">
+    </testcase>
+    <testcase classname="SDK [addAdmin] - should add admin" name="SDK [addAdmin] - should add admin" time="0">
+    </testcase>
+    <testcase classname="SDK [removeAdmin] - should return an Error if contract is not deployed" name="SDK [removeAdmin] - should return an Error if contract is not deployed" time="0.001">
+    </testcase>
+    <testcase classname="SDK [removeAdmin] - should return an Error because of bad address" name="SDK [removeAdmin] - should return an Error because of bad address" time="0">
+    </testcase>
+    <testcase classname="SDK [removeAdmin] - should remove admin" name="SDK [removeAdmin] - should remove admin" time="0">
+    </testcase>
+    <testcase classname="SDK [renounceAdmin] - should return an Error if contract is not deployed" name="SDK [renounceAdmin] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [renounceAdmin] - should return an Error because of bad address" name="SDK [renounceAdmin] - should return an Error because of bad address" time="0">
+    </testcase>
+    <testcase classname="SDK [renounceAdmin] - should renounce admin" name="SDK [renounceAdmin] - should renounce admin" time="0.005">
+    </testcase>
+    <testcase classname="SDK [isAdmin] - should return an Error if contract is not deployed" name="SDK [isAdmin] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [isAdmin] - should return an Error because of bad address" name="SDK [isAdmin] - should return an Error because of bad address" time="0">
+    </testcase>
+    <testcase classname="SDK [isAdmin] - should renounce admin" name="SDK [isAdmin] - should renounce admin" time="0.001">
+    </testcase>
+    <testcase classname="SDK [ApproveTransfer] - should return an Error if contract is not deployed" name="SDK [ApproveTransfer] - should return an Error if contract is not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK [ApproveTransfer] - should return an Error if to address is not valid" name="SDK [ApproveTransfer] - should return an Error if to address is not valid" time="0">
+    </testcase>
+    <testcase classname="SDK [ApproveTransfer] - should approve transfer nft" name="SDK [ApproveTransfer] - should approve transfer nft" time="0">
+    </testcase>
+    <testcase classname="SDK setRoyalties [setRoyalties] - should throw if contract not deployed" name="SDK setRoyalties [setRoyalties] - should throw if contract not deployed" time="0.001">
+    </testcase>
+    <testcase classname="SDK setRoyalties [setRoyalties] - should throw when &quot;fee&quot; is not a number larger than 0 and less than 10000" name="SDK setRoyalties [setRoyalties] - should throw when &quot;fee&quot; is not a number larger than 0 and less than 10000" time="0">
+    </testcase>
+    <testcase classname="SDK setRoyalties [setRoyalties] - should set royalties" name="SDK setRoyalties [setRoyalties] - should set royalties" time="0">
+    </testcase>
+    <testcase classname="SDK royaltyInfo [royaltyInfo] - should not throw if TokenId is 0" name="SDK royaltyInfo [royaltyInfo] - should not throw if TokenId is 0" time="0">
+    </testcase>
+    <testcase classname="SDK royaltyInfo [royaltyInfo] - should not throw if SalePrice is 0" name="SDK royaltyInfo [royaltyInfo] - should not throw if SalePrice is 0" time="0">
+    </testcase>
+    <testcase classname="SDK renounceOwnership [renounceOwnership] - should throw if contract not deployed" name="SDK renounceOwnership [renounceOwnership] - should throw if contract not deployed" time="0">
+    </testcase>
+    <testcase classname="SDK renounceOwnership [renounceOwnership] - should call renounce ownership" name="SDK renounceOwnership [renounceOwnership] - should call renounce ownership" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ContractFactory" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="3.208" tests="2">
+    <testcase classname="ContractFactory should return &quot;ERC721Mintable&quot; instance" name="ContractFactory should return &quot;ERC721Mintable&quot; instance" time="0.001">
+    </testcase>
+    <testcase classname="ContractFactory should return an Error" name="ContractFactory should return an Error" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Signer" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="3.233" tests="1">
+    <testcase classname="Signer getWallet should return the signer" name="Signer getWallet should return the signer" time="0.117">
+    </testcase>
+  </testsuite>
+  <testsuite name="Auth" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="3.891" tests="10">
+    <testcase classname="Auth should throw when passing both privateKey and provider" name="Auth should throw when passing both privateKey and provider" time="0.001">
+    </testcase>
+    <testcase classname="Auth should throw when passing invalid provider" name="Auth should throw when passing invalid provider" time="0.007">
+    </testcase>
+    <testcase classname="Auth should throw when chainId is not supported" name="Auth should throw when chainId is not supported" time="0">
+    </testcase>
+    <testcase classname="Auth getSigner should return the signer using private key and rpc_url" name="Auth getSigner should return the signer using private key and rpc_url" time="0.136">
+    </testcase>
+    <testcase classname="Auth getSigner should return the signer using passed provider" name="Auth getSigner should return the signer using passed provider" time="0.001">
+    </testcase>
+    <testcase classname="Auth getApiAuth should return the apiAuth key" name="Auth getApiAuth should return the apiAuth key" time="0.001">
+    </testcase>
+    <testcase classname="Auth getChainId should return the chainId" name="Auth getChainId should return the chainId" time="0.001">
+    </testcase>
+    <testcase classname="Auth getRpcUrl should return the rpcUrl" name="Auth getRpcUrl should return the rpcUrl" time="0.001">
+    </testcase>
+    <testcase classname="Auth rpcUrl Auth should construct correct RpcURL, if no rpcUrl is provided" name="Auth rpcUrl Auth should construct correct RpcURL, if no rpcUrl is provided" time="0">
+    </testcase>
+    <testcase classname="Auth getApiAuthHeader should return the chainId" name="Auth getApiAuthHeader should return the chainId" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="ipfs" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="4.321" tests="8">
+    <testcase classname="ipfs should not instanciate ipfs without project id" name="ipfs should not instanciate ipfs without project id" time="0.001">
+    </testcase>
+    <testcase classname="ipfs should not instanciate ipfs without project secret" name="ipfs should not instanciate ipfs without project secret" time="0">
+    </testcase>
+    <testcase classname="ipfs should upload local file" name="ipfs should upload local file" time="0.001">
+    </testcase>
+    <testcase classname="ipfs should upload remote file" name="ipfs should upload remote file" time="0">
+    </testcase>
+    <testcase classname="ipfs should upload an array" name="ipfs should upload an array" time="0.001">
+    </testcase>
+    <testcase classname="ipfs should upload content" name="ipfs should upload content" time="0">
+    </testcase>
+    <testcase classname="ipfs should unpin file" name="ipfs should unpin file" time="0.001">
+    </testcase>
+    <testcase classname="ipfs should not upload unexisting file" name="ipfs should not upload unexisting file" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Metadata" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="4.308" tests="10">
+    <testcase classname="Metadata createTokenMetadata should throw error if image is not url" name="Metadata createTokenMetadata should throw error if image is not url" time="0.008">
+    </testcase>
+    <testcase classname="Metadata createTokenMetadata should not throw error if image is url" name="Metadata createTokenMetadata should not throw error if image is url" time="0.003">
+    </testcase>
+    <testcase classname="Metadata createTokenMetadata should not throw error if image is ipfs link" name="Metadata createTokenMetadata should not throw error if image is ipfs link" time="0.001">
+    </testcase>
+    <testcase classname="Metadata createTokenMetadata should throw error if animation_url is not an url" name="Metadata createTokenMetadata should throw error if animation_url is not an url" time="0">
+    </testcase>
+    <testcase classname="Metadata createContractMetadata should throw error if external_link is not an url" name="Metadata createContractMetadata should throw error if external_link is not an url" time="0.001">
+    </testcase>
+    <testcase classname="Metadata createContractMetadata should throw error if external_link is not an url" name="Metadata createContractMetadata should throw error if external_link is not an url" time="0">
+    </testcase>
+    <testcase classname="Metadata createContractMetadata should throw error if fee_recipient is not a number" name="Metadata createContractMetadata should throw error if fee_recipient is not a number" time="0">
+    </testcase>
+    <testcase classname="Metadata createFreeMetadata should throw error if metadata is not an object" name="Metadata createFreeMetadata should throw error if metadata is not an object" time="0.001">
+    </testcase>
+    <testcase classname="Metadata createFreeMetadata should throw error if free metadata is not an object" name="Metadata createFreeMetadata should throw error if free metadata is not an object" time="0">
+    </testcase>
+    <testcase classname="Metadata createFreeMetadata should create free metadata" name="Metadata createFreeMetadata should create free metadata" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Sdk" errors="0" failures="0" skipped="0" timestamp="2022-11-08T11:04:39" time="4.595" tests="20">
+    <testcase classname="Sdk getContractMetadata should throw when &quot;contractAddress&quot; is not a valid address" name="Sdk getContractMetadata should throw when &quot;contractAddress&quot; is not a valid address" time="0.002">
+    </testcase>
+    <testcase classname="Sdk getContractMetadata should return contract metadata" name="Sdk getContractMetadata should return contract metadata" time="0.002">
+    </testcase>
+    <testcase classname="Sdk getNFTs should throw when &quot;address&quot; is not a valid address" name="Sdk getNFTs should throw when &quot;address&quot; is not a valid address" time="0">
+    </testcase>
+    <testcase classname="Sdk getNFTs should return the list of NFTs without metadata" name="Sdk getNFTs should return the list of NFTs without metadata" time="0.001">
+    </testcase>
+    <testcase classname="Sdk getNFTs should return the list of NFTs with metadata" name="Sdk getNFTs should return the list of NFTs with metadata" time="0">
+    </testcase>
+    <testcase classname="Sdk getNFTsForCollection should throw when &quot;contractAddress&quot; is not a valid address" name="Sdk getNFTsForCollection should throw when &quot;contractAddress&quot; is not a valid address" time="0.001">
+    </testcase>
+    <testcase classname="Sdk getNFTsForCollection should return return collection NFTs list" name="Sdk getNFTsForCollection should return return collection NFTs list" time="0">
+    </testcase>
+    <testcase classname="Sdk getTokenMetadata should throw when &quot;contractAddress&quot; is not a valid address" name="Sdk getTokenMetadata should throw when &quot;contractAddress&quot; is not a valid address" time="0.001">
+    </testcase>
+    <testcase classname="Sdk getTokenMetadata should return token metadata" name="Sdk getTokenMetadata should return token metadata" time="0">
+    </testcase>
+    <testcase classname="Sdk getStatus should throw when transaction hash argument is not valid" name="Sdk getStatus should throw when transaction hash argument is not valid" time="0">
+    </testcase>
+    <testcase classname="Sdk getStatus should return transaction status and details" name="Sdk getStatus should return transaction status and details" time="0">
+    </testcase>
+    <testcase classname="Sdk deploy should throw error when template is not provided" name="Sdk deploy should throw error when template is not provided" time="0.001">
+    </testcase>
+    <testcase classname="Sdk deploy should deploy contract" name="Sdk deploy should deploy contract" time="0">
+    </testcase>
+    <testcase classname="Sdk getProvider should return the provider" name="Sdk getProvider should return the provider" time="0">
+    </testcase>
+    <testcase classname="Sdk storeIpfs should store file" name="Sdk storeIpfs should store file" time="0.001">
+    </testcase>
+    <testcase classname="Sdk storeIpfs should store an array" name="Sdk storeIpfs should store an array" time="0">
+    </testcase>
+    <testcase classname="Sdk storeIpfs should store content" name="Sdk storeIpfs should store content" time="0">
+    </testcase>
+    <testcase classname="Sdk storeIpfs should throw error if ipfs is not setted" name="Sdk storeIpfs should throw error if ipfs is not setted" time="0.001">
+    </testcase>
+    <testcase classname="Sdk storeIpfs should throw error if its not a valid json" name="Sdk storeIpfs should throw error if its not a valid json" time="0">
+    </testcase>
+    <testcase classname="Sdk storeIpfs should throw error if ipfs is not setted for create folder" name="Sdk storeIpfs should throw error if ipfs is not setted for create folder" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>
