@@ -1,6 +1,6 @@
 {
   "name": "@infura/sdk",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -18,6 +18,10 @@
     "postfetchAPITypes": "sh scripts/PascalCase.sh",
     "prepare": "husky install",
     "generate:changelog": "npx auto-changelog"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConsenSys/infura-sdk.git"
   },
   "keywords": [
     "infura",
