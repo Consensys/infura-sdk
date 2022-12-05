@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="/Users/salim/infura-sdk-ts/test/httpService.test.ts">
+    <testCase name="httpService should throw when args are missing (baseURL)" duration="0"/>
+    <testCase name="httpService should throw when args are missing (apiKey)" duration="0"/>
+    <testCase name="httpService should GET using axios" duration="0"/>
+    <testCase name="httpService should throw GET using axios" duration="49"/>
+    <testCase name="httpService should throw POST using axios" duration="0"/>
+    <testCase name="httpService should POST using axios" duration="0"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/Provider.test.ts">
+    <testCase name="Provider should return the provider" duration="3"/>
+    <testCase name="Provider should return the injected provider" duration="0"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/ERC721Mintable.test.ts">
+    <testCase name="SDK should create &quot;ERC721Mintable&quot; instance" duration="1"/>
+    <testCase name="SDK [Deploy] - should return an Error if signer not defined " duration="1"/>
+    <testCase name="SDK [Deploy] - should console.warn if URI is not a link " duration="2"/>
+    <testCase name="SDK [Deploy] - should return an Error if Name is empty" duration="0"/>
+    <testCase name="SDK [Deploy] - should return a contract" duration="1"/>
+    <testCase name="SDK [Mint] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [Mint] - should console.warn if tokenURI is not a link " duration="1"/>
+    <testCase name="SDK [Mint] - should return an Error if the address is empty" duration="0"/>
+    <testCase name="SDK [Mint] - should return an Error if the tokenURI is empty" duration="0"/>
+    <testCase name="SDK [Mint] - should mint a token" duration="0"/>
+    <testCase name="SDK [LoadContract] - should return an Error if contract is already deployed" duration="0"/>
+    <testCase name="SDK [LoadContract] - should return an Error if the address is empty" duration="0"/>
+    <testCase name="SDK [LoadContract] - should load the contract" duration="0"/>
+    <testCase name="SDK [Transfer] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [Transfer] - should return an Error if from address is not valid" duration="0"/>
+    <testCase name="SDK [Transfer] - should return an Error if to address is not valid" duration="1"/>
+    <testCase name="SDK [Transfer] - should transfer nft" duration="0"/>
+    <testCase name="SDK [SetContractURI] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [SetContractURI] - should console.warn if contractURI is not a link " duration="1"/>
+    <testCase name="SDK [SetContractURI] - should return an Error if the contractURI is empty" duration="0"/>
+    <testCase name="SDK [SetContractURI] - should set the contractURI" duration="0"/>
+    <testCase name="SDK [addMinter] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [addMinter] - should return an Error if the address is empty" duration="0"/>
+    <testCase name="SDK [addMinter] - should add minter role to an address" duration="1"/>
+    <testCase name="SDK [removeMinter] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [removeMinter] - should return an Error if the address is empty" duration="0"/>
+    <testCase name="SDK [removeMinter] - should remove minter role to an address" duration="0"/>
+    <testCase name="SDK [renounceMinter] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [renounceMinter] - should return an Error if the address is empty" duration="1"/>
+    <testCase name="SDK [renounceMinter] - should renounce minter role for an address" duration="0"/>
+    <testCase name="SDK [isMinter] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [isMinter] - should return an Error if the address is empty" duration="0"/>
+    <testCase name="SDK [isMinter] - should check if an address has minter role" duration="0"/>
+    <testCase name="SDK [SetApprovalForAll] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [SetApprovalForAll] - should return an Error if the address is empty" duration="0"/>
+    <testCase name="SDK [SetApprovalForAll] - should set approval for all when all params are correct" duration="0"/>
+    <testCase name="SDK [addAdmin] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [addAdmin] - should return an Error because of bad address" duration="0"/>
+    <testCase name="SDK [addAdmin] - should add admin" duration="0"/>
+    <testCase name="SDK [removeAdmin] - should return an Error if contract is not deployed" duration="1"/>
+    <testCase name="SDK [removeAdmin] - should return an Error because of bad address" duration="0"/>
+    <testCase name="SDK [removeAdmin] - should remove admin" duration="0"/>
+    <testCase name="SDK [renounceAdmin] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [renounceAdmin] - should return an Error because of bad address" duration="0"/>
+    <testCase name="SDK [renounceAdmin] - should renounce admin" duration="5"/>
+    <testCase name="SDK [isAdmin] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [isAdmin] - should return an Error because of bad address" duration="0"/>
+    <testCase name="SDK [isAdmin] - should renounce admin" duration="1"/>
+    <testCase name="SDK [ApproveTransfer] - should return an Error if contract is not deployed" duration="0"/>
+    <testCase name="SDK [ApproveTransfer] - should return an Error if to address is not valid" duration="0"/>
+    <testCase name="SDK [ApproveTransfer] - should approve transfer nft" duration="0"/>
+    <testCase name="SDK setRoyalties [setRoyalties] - should throw if contract not deployed" duration="1"/>
+    <testCase name="SDK setRoyalties [setRoyalties] - should throw when &quot;fee&quot; is not a number larger than 0 and less than 10000" duration="0"/>
+    <testCase name="SDK setRoyalties [setRoyalties] - should set royalties" duration="0"/>
+    <testCase name="SDK royaltyInfo [royaltyInfo] - should not throw if TokenId is 0" duration="0"/>
+    <testCase name="SDK royaltyInfo [royaltyInfo] - should not throw if SalePrice is 0" duration="0"/>
+    <testCase name="SDK renounceOwnership [renounceOwnership] - should throw if contract not deployed" duration="0"/>
+    <testCase name="SDK renounceOwnership [renounceOwnership] - should call renounce ownership" duration="1"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/contractFactory.test.ts">
+    <testCase name="ContractFactory should return &quot;ERC721Mintable&quot; instance" duration="1"/>
+    <testCase name="ContractFactory should return an Error" duration="0"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/Signer.test.ts">
+    <testCase name="Signer getWallet should return the signer" duration="117"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/auth.test.ts">
+    <testCase name="Auth should throw when passing both privateKey and provider" duration="1"/>
+    <testCase name="Auth should throw when passing invalid provider" duration="7"/>
+    <testCase name="Auth should throw when chainId is not supported" duration="0"/>
+    <testCase name="Auth getSigner should return the signer using private key and rpc_url" duration="136"/>
+    <testCase name="Auth getSigner should return the signer using passed provider" duration="1"/>
+    <testCase name="Auth getApiAuth should return the apiAuth key" duration="1"/>
+    <testCase name="Auth getChainId should return the chainId" duration="1"/>
+    <testCase name="Auth getRpcUrl should return the rpcUrl" duration="1"/>
+    <testCase name="Auth rpcUrl Auth should construct correct RpcURL, if no rpcUrl is provided" duration="0"/>
+    <testCase name="Auth getApiAuthHeader should return the chainId" duration="1"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/ipfs.test.ts">
+    <testCase name="ipfs should not instanciate ipfs without project id" duration="1"/>
+    <testCase name="ipfs should not instanciate ipfs without project secret" duration="0"/>
+    <testCase name="ipfs should upload local file" duration="1"/>
+    <testCase name="ipfs should upload remote file" duration="0"/>
+    <testCase name="ipfs should upload an array" duration="1"/>
+    <testCase name="ipfs should upload content" duration="0"/>
+    <testCase name="ipfs should unpin file" duration="1"/>
+    <testCase name="ipfs should not upload unexisting file" duration="0"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/metadata.test.ts">
+    <testCase name="Metadata createTokenMetadata should throw error if image is not url" duration="8"/>
+    <testCase name="Metadata createTokenMetadata should not throw error if image is url" duration="3"/>
+    <testCase name="Metadata createTokenMetadata should not throw error if image is ipfs link" duration="1"/>
+    <testCase name="Metadata createTokenMetadata should throw error if animation_url is not an url" duration="0"/>
+    <testCase name="Metadata createContractMetadata should throw error if external_link is not an url" duration="1"/>
+    <testCase name="Metadata createContractMetadata should throw error if external_link is not an url" duration="0"/>
+    <testCase name="Metadata createContractMetadata should throw error if fee_recipient is not a number" duration="0"/>
+    <testCase name="Metadata createFreeMetadata should throw error if metadata is not an object" duration="1"/>
+    <testCase name="Metadata createFreeMetadata should throw error if free metadata is not an object" duration="0"/>
+    <testCase name="Metadata createFreeMetadata should create free metadata" duration="0"/>
+  </file>
+  <file path="/Users/salim/infura-sdk-ts/test/SDK.test.ts">
+    <testCase name="Sdk getContractMetadata should throw when &quot;contractAddress&quot; is not a valid address" duration="2"/>
+    <testCase name="Sdk getContractMetadata should return contract metadata" duration="2"/>
+    <testCase name="Sdk getNFTs should throw when &quot;address&quot; is not a valid address" duration="0"/>
+    <testCase name="Sdk getNFTs should return the list of NFTs without metadata" duration="1"/>
+    <testCase name="Sdk getNFTs should return the list of NFTs with metadata" duration="0"/>
+    <testCase name="Sdk getNFTsForCollection should throw when &quot;contractAddress&quot; is not a valid address" duration="1"/>
+    <testCase name="Sdk getNFTsForCollection should return return collection NFTs list" duration="0"/>
+    <testCase name="Sdk getTokenMetadata should throw when &quot;contractAddress&quot; is not a valid address" duration="1"/>
+    <testCase name="Sdk getTokenMetadata should return token metadata" duration="0"/>
+    <testCase name="Sdk getStatus should throw when transaction hash argument is not valid" duration="0"/>
+    <testCase name="Sdk getStatus should return transaction status and details" duration="0"/>
+    <testCase name="Sdk deploy should throw error when template is not provided" duration="1"/>
+    <testCase name="Sdk deploy should deploy contract" duration="0"/>
+    <testCase name="Sdk getProvider should return the provider" duration="0"/>
+    <testCase name="Sdk storeIpfs should store file" duration="1"/>
+    <testCase name="Sdk storeIpfs should store an array" duration="0"/>
+    <testCase name="Sdk storeIpfs should store content" duration="0"/>
+    <testCase name="Sdk storeIpfs should throw error if ipfs is not setted" duration="1"/>
+    <testCase name="Sdk storeIpfs should throw error if its not a valid json" duration="0"/>
+    <testCase name="Sdk storeIpfs should throw error if ipfs is not setted for create folder" duration="0"/>
+  </file>
+</testExecutions>

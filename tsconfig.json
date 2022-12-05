@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es2017", "es7", "es6", "dom"],
+    "declaration": true,
+    "outDir": "dist",
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "strictPropertyInitialization": false
+  },
+  "include": ["./src", "./types.d.ts", "./usage.ts", "./e2e"],
+  "exclude": ["node_modules", "dist", "./jest.config.js"]
+}
