@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /*!
  * Copyright(c) ConsenSys Software Inc.
  * Copyright(c) https://consensys.net/
@@ -5,55 +6,132 @@
  */
 
 import { config as loadEnv } from 'dotenv';
-import { SDK, Auth, TEMPLATES } from './src/index';
+import { SDK, Auth, Metadata, TEMPLATES } from './src/index';
 
 loadEnv();
 
 (async () => {
   const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: <string>process.env.INFURA_PROJECT_ID,
-    secretId: <string>process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_PROJECT_ID,
+    secretId: process.env.INFURA_PROJECT_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
-    chainId: 4,
+    chainId: 5,
+    ipfs: {
+      projectId: process.env.INFURA_IPFS_PROJECT_ID,
+      apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
+    },
   });
 
-  // Alternative Auth Instantiation with MetaMask
-  // When using SDK in a browser
-  //
-  // const accWithProvider = new Auth({
-  //   projectId: process.env.INFURA_PROJECT_ID,
-  //   secretId: process.env.INFURA_PROJECT_SECRET,
-  //   rpcUrl: process.env.EVM_RPC_URL,
-  //   chainId: 5,
-  //   provider: window.ethereum,
-  // });
-  //
-
-  // E2E type safety on API calls
   const sdk = new SDK(acc);
-  // const myNFT: NftDTO = await sdk.getNFTs({
-  //   publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
-  //   includeMetadata: true,
-  // });
-  // // auto complete with ctrl + space
-  /* eslint-disable no-console */
-  // console.log(`NFTs of contract ${myNFT.account} on network ${myNFT.network}:`);
-  // array methods (map()) found on assets of type array
-  /* eslint-disable array-callback-return */
-  // myNFT.assets.map(asset => {
-  //   // optional chaining when property can be undefined
-  //   /* eslint-disable no-console */
-  //   console.log(`Asset #${asset.tokenId} of type ${asset.type} owned by ${asset.metadata?.owner}:`);
-  //   if (asset.metadata) {
-  //     /* eslint-disable no-console */
-  //     console.log(`
-  //     - desc: ${asset.metadata.description}
-  //     - name: ${asset.metadata.name}
-  //     - image: ${asset.metadata.image}
-  //     `);
-  //   }
-  // });
+
+  /**
+   * METADATA
+   */
+  // CREATE CONTRACT Metadata
+  const collectionMetadata = Metadata.openSeaCollectionLevelStandard({
+    name: 'My awesome collection',
+    description: "A long description explaining why it's awesome",
+    image: await sdk.storeFile({
+      metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    }),
+    external_link: 'https://myawesomewebsite.net',
+  });
+
+  console.log('collectionMetadata ----', collectionMetadata);
+  const storeMetadata = await sdk.storeMetadata({ metadata: collectionMetadata });
+  console.log(':rocket: ~ file: usage.ipfs.ts:60 ~ storeMetadata', storeMetadata);
+
+  /**
+   * METADATA
+   */
+  // CREATE Token Metadata
+  const tokenMetadata = Metadata.openSeaTokenLevelStandard({
+    description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+    external_url: 'https://openseacreatures.io/3',
+    image: await sdk.storeFile({
+      metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    }),
+    name: 'Dave Starbelly',
+    attributes: [],
+  });
+
+  console.log('tokenMetadata ----', tokenMetadata);
+
+  const storeTokenMetadata = await sdk.storeMetadata({ metadata: tokenMetadata });
+  console.log(':rocket: ~ file: usage.ipfs.ts:60 ~ storeMetadata', storeTokenMetadata);
+
+  /*   const storeImageUrl = await sdk.storeFile({
+    metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+  });
+
+  const storeImageFile = await sdk.storeFile({
+    metadata: './integration-test/ipfs-test/metamask.jpeg',
+  }); */
+
+  /*   console.log('storeMetadata ----', storeMetadata);
+  console.log('storeImageUrl ----', storeImageUrl);
+  console.log('storeImageUrl ----', storeImageFile); */
+
+  /*   const storeArrayMetadata = await sdk.createFolder({
+    metadata: [
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+    ],
+    isErc1155: false,
+  }); */
+
+  /*   const storeArrayMetadataForERC1155 = await sdk.createFolder({
+    metadata: [
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+    ],
+    isErc1155: true,
+  }); */
+
+  //  console.log('storeArrayMetadata ----', storeArrayMetadata);
+  /**
+   * METADATA
+   */
+  // CREATE free Metadata
+  /*   Metadata.freeLevelMetadata({
+    test: 'test.',
+  }); */
+
+  // -----------------------------------------------------------------------------
+  // ERC721 Mintable
 
   // Create a new contract
   const newContract = await sdk.deploy({
@@ -61,158 +139,83 @@ loadEnv();
     params: {
       name: '1507Contract',
       symbol: 'TOC',
-      contractURI: 'URI',
+      contractURI: storeMetadata,
     },
   });
-  console.log(newContract.contractAddress);
+  console.log('contract address: \n', newContract.contractAddress);
+
+  // mint a NFT
+  const mint = await newContract.mint({
+    publicAddress:
+      process.env.WALLET_PUBLIC_ADDRESS ?? '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7',
+    tokenURI: storeTokenMetadata,
+  });
+
+  const minted = await mint.wait();
+  console.log(minted);
 
   // READ API
   // Get contract metadata
-  // const contractMetadata = await sdk.getContractMetadata({
-  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
-  // });
-  // console.log(contractMetadata);
-
-  // getTokenMetadata
-  // const mt = await sdk.getTokenMetadata({
-  //   contractAddress: '0x3acc7164bcbda63a8df1f823bf4f0e08efd4ff04',
-  //   tokenId: 1,
-  // });
-  // console.log(mt);
-
-  // Get all NFTs for the specified address
-  // const mynfts = await sdk.getNFTs({
-  //   publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
-  //   includeMetadata: true,
-  // });
-  // /* eslint-disable no-console */
-  // console.log(mynfts.assets[1]);
-  // console.log((mynfts.assets[1] as any).metadata.attributes);
-
-  // Get all NFTs for the specified contract
-  // const nfts = await sdk.getNFTsForCollection({
-  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
-  // });
-  // console.log(nfts);
+  /*  const contractMetadata = await sdk.getContractMetadata({
+    contractAddress: newContract.contractAddress,
+  });
+  console.log('contractMetadata', contractMetadata); */
 
   // Get the token metadata
-  // const tokenMetadata = await sdk.getTokenMetadata({
-  //   contractAddress: '0x9daB8FcFe91688d360FeB9ba83F74F29dfC82287',
-  //   tokenId: 0,
-  // });
-  // console.log(tokenMetadata);
-
-  // Load an existing contract
-  // const existingContract = await sdk.loadContract({
-  //   template: TEMPLATES.ERC721Mintable,
-  //   contractAddress: '0x7Ef864d9fFb6eC7815b22b7A92B8F0EDe97080A8',
-  // });
-
-  // console.log('contract address: \n', existingContract.contractAddress);
-
-  // // mint a NFT
-  // const mintErr = await newContract.mint({
-  //   publicAddress: '0x',
-  //   tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
-  // });
-
-  // const mintedErr = await mintErr.wait();
-  // console.log(mintedErr);
-
-  // // // mint a NFT
-  // console.log('first mint:\n');
-  // const mint = await newContract.mint({
-  //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS as string,
-  //   tokenURI: 'https://ipfs.io/ipfs/QmajL9pQBCMhvkwJdVYSBkMXaQnDdsMcEvKYSxmyUc5WYy',
-  // });
-
-  // const minted = await mint.wait();
-  // console.log(minted);
-
-  // // Transfer a NFT
-  // const transfer = await existingContract.transfer({
-  //   from: ownerOfToken,
-  //   to: anotherAddress,
-  //   tokenId: 0,
-  // });
-
-  // const transfered = await transfer.wait();
-  // console.log(transfered);
-
-  // // ROLES (MINTER and ADMIN)
-  // // Grant MINTER Role
-  const add = await newContract.accessControl.addMinter({
-    publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
+  /*   const tokenMetadataResult = await sdk.getTokenMetadata({
+    contractAddress: newContract.contractAddress,
+    tokenId: 0,
+  });
+  console.log('tokenMetadataResult', tokenMetadataResult);
+ */
+  // -----------------------------------------------------------------------------
+  // ERC1155
+  /*   const newContractERC1155 = await sdk.deploy({
+    template: TEMPLATES.ERC1155Mintable,
+    params: {
+      baseURI: storeArrayMetadataForERC1155,
+      contractURI: storeTokenMetadata,
+      ids: [0, 1],
+    },
   });
 
-  const added = await add.wait();
-  console.log(added);
+  console.log('Contract ERC 1155 --------', newContractERC1155.contractAddress);
 
-  // // check MINTER role
-  const isMinter = await newContract.accessControl.isMinter({
-    publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
+  const tx1 = await newContractERC1155.mint({
+    to: process.env.WALLET_PUBLIC_ADDRESS ?? '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7',
+    id: 1,
+    quantity: 1,
   });
-  console.log(isMinter);
 
-  // // APPROVAL
-  // // Set approval for all
-  // const setApproval = await existingContract.setApprovalForAll({
-  //   to: publicAddress,
-  //   approvalStatus: true,
-  // });
-  // const approvalSet = await setApproval.wait();
-  // console.log(approvalSet);
+  const mintedNFT = await tx1.wait();
+  console.log('mintedNFT --------', mintedNFT); */
 
-  // // Transfer NFT with approval
-  // // 1. owner mints a token
-  // console.log('second mint:\n');
-  // const tx = await newContract.mint({
-  //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS as string,
-  //   tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
-  // });
-  // const receipt = await tx.wait();
-  // console.log(receipt);
+  // -----------------------------------------------------------------------------
+  // ERC721UserMintable
+  /*  const ERC721UserMintable = await sdk.deploy({
+    template: TEMPLATES.ERC721UserMintable,
+    params: {
+      name: 'Payable Mint Contract',
+      symbol: 'PYMC',
+      contractURI: storeMetadata,
+      baseURI: storeArrayMetadata,
+      maxSupply: 10,
+      price: '0.00001',
+      maxTokenRequest: 1,
+    },
+  });
 
-  // // 2. owner approves publicAddress to transfer token that he owns
-  // const txApprove = await existingContract.approveTransfer({ to: publicAddress, tokenId: 1 });
-  // await txApprove.wait();
+  console.log('Contract ERC721 UserMintable --------', ERC721UserMintable.contractAddress);
 
-  // // new auth as "publicAddress"
-  // const accountPublic = new Auth({
-  //   privateKey: privateKeyPublicAddress,
-  //   projectId: process.env.INFURA_PROJECT_ID,
-  //   secretId: process.env.INFURA_PROJECT_SECRET,
-  //   rpcUrl: 'http://0.0.0.0:8545',
-  //   chainId: 5,
-  // });
-  // const sdkPublic = new SDK(accountPublic);
-  // const existing = await sdkPublic.loadContract({
-  //   template: TEMPLATES.ERC721Mintable,
-  //   contractAddress: contractObject.contractAddress,
-  // });
+  const tx = await ERC721UserMintable.toggleSale();
 
-  // // 3. publicAddress transfers token of owner
-  // const txTransfer = await existing.transfer({ from: owner, to: thirdUser, tokenId: 1 });
+  await tx.wait();
 
-  // const receipt = await txTransfer.wait();
-  // console.log(receipt);
+  const txMinted = await ERC721UserMintable.mint({
+    quantity: 1,
+    cost: '0.00002',
+  });
 
-  // // ROYALTIES
-  // // Set Royalties for a contract
-  // const royalties = await newContract.setRoyalties({
-  //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS,
-  //   fee: 50,
-  // });
-  // const royaltiesSet = await royalties.wait();
-  // console.log(royaltiesSet);
-
-  // // Get Royalties info for a token at a specific sellPrice
-  // const infos = await newContract.royaltyInfo({ tokenId: 1, sellPrice: 100000 });
-  // console.log(infos);
-
-  // console.log('check if address isMinter:\n');
-  // const isMinter = await newContract.isMinter({
-  //   publicAddress: process.env.WALLET_PUBLIC_ADDRESS as string,
-  // });
-  // console.log(isMinter);
+  const mintedNFTERC721 = await txMinted.wait();
+  console.log('mintedNFT --------', mintedNFTERC721); */
 })();
