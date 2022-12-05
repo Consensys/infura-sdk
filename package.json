@@ -19,6 +19,10 @@
     "prepare": "husky install",
     "generate:changelog": "npx auto-changelog"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ConsenSys/infura-sdk.git"
+  },
   "keywords": [
     "infura",
     "sdk",
