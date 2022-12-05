@@ -26,37 +26,45 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Create changelog
-        run: npm run generate:changelog
+      - name: Download latest API doc
+        run: npm run fetchAPITypes
 
-      # Release kind:
+      #- name: Create changelog
+      #  run: npm run generate:changelog
+
+      # Release kind: 
       # More than 3 feature == minor (inc Y in "X.Y.Z")
       # Otherwise, "patch" (inc Z in "X.Y.Z")
       # TODO: implement "major" kind (inc X in "X.Y.Z")
-      - name: Set release kind (minor, patch) based on number of features
-        run: ./scripts/releaseKind.sh
+      #- name: Set release kind (minor, patch) based on number of features
+      #  run: ./scripts/releaseKind.sh
 
       # Will increase package.json without running commit hooks, without creating a git tag
-      - name: Bump version in package.json
-        run: npm version "$KIND" --commit-hooks=false --git-tag-version=false
+      #- name: Bump version in package.json
+      #  run: npm version "$KIND" --commit-hooks=false --git-tag-version=false
 
-      - name: Update files (sonar-project.properties, _version.js, ...)
-        run: echo "update files"
+      #- name: Update files (sonar-project.properties, _version.js, ...)
+      #  run: echo "update files"
 
-      - name: Update documentation (gitbook infura, ...)
-        run: echo "update documentation"
+      #- name: Update documentation (gitbook infura, ...)
+      #  run: echo "update documentation"
 
-      - name: Setup git info / add & commit / create tag
-        run: ./scripts/releaseGit.sh
+      #- name: Setup git info / add & commit / create tag
+      #  run: ./scripts/releaseGit.sh
 
-      - name: Release NPM
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
-          access: 'public'
+      #- name: Release 🚀
+      #  run: npx semantic-release --debug
+      #  env:
+      #    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #    NPM_TOKEN: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
+      #    NPM_CONFIG_REGISTRY: 'https://registry.nft.consensys-solutions.net'
 
-      #- name: Merge changes back to dev
-      #  run: ./scripts/merge-dev.sh
-
+      #- name: Release NPM
+      #  uses: JS-DevTools/npm-publish@v1
+      #  with:
       #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
       #    registry: https://registry.nft.consensys-solutions.net
+      #    access: 'public'
+      
+      #- name: Merge changes back to dev
+      #  run: ./scripts/merge-dev.sh
