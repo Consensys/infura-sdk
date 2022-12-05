@@ -1,0 +1,17 @@
+{
+    "moduleFileExtensions": ["js", "json", "ts"],
+    "testEnvironment": "node",
+    "testRegex": ".*\\.test\\.ts$",
+    "rootDir": "../../",
+    "transform": {
+        "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "retry":1,
+    "verbose": true,
+    "reporters": [
+        "default",
+        ["./node_modules/jest-html-reporter", {
+            "pageTitle": "E2E Test Report"
+        }]
+    ]
+  }

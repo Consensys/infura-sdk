@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - v18.1.0
+          - v16.13.1
 
     steps:
       - uses: actions/checkout@v2
@@ -28,7 +28,12 @@ jobs:
 
       - name: Install packages
         run: npm ci
-
+      - name: node version
+        run: node -v 
+      - name: pwd
+        run: pwd 
+      - name: ls -l 
+        run: ls -l ./e2e
       - name: Run e2e tests
         run: npm run test:e2e
         env:
@@ -41,3 +46,4 @@ jobs:
           INFURA_IPFS_PROJECT_SECRET: ${{ secrets.INFURA_IPFS_PROJECT_SECRET }}
           INFURA_IPFS_GATEWAY: ${{ secrets.INFURA_IPFS_GATEWAY }}
           INFURA_IPFS_ENDPOINT: ${{ secrets.INFURA_IPFS_ENDPOINT }}
+          NFT_API_URL: https://nft.staging.infura.org

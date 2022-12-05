@@ -1,0 +1,43 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true,
+    "jest": true
+  },
+  "plugins": ["jest", "@typescript-eslint", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "overrides": [
+    {
+      "extends": ["airbnb-base", "airbnb-typescript/base", "prettier"],
+      "files": ["*.ts", "*.tsx"],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      }
+    }
+  ],
+  "rules": {
+    "eol-last": "error",
+    "eqeqeq": ["error", "allow-null"],
+    "indent": [
+      "error",
+      2,
+      {
+        "MemberExpression": "off",
+        "SwitchCase": 1
+      }
+    ],
+    "no-trailing-spaces": "error",
+    "no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "none",
+        "ignoreRestSiblings": true
+      }
+    ],
+    "object-curly-newline": "off",
+    "import/extensions": ["error", "ignorePackages", { "ts": "never" }],
+    "arrow-parens": "off",
+    "no-return-await":"off"
+  }
+}
