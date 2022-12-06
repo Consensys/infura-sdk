@@ -28,6 +28,28 @@ loadEnv();
   /**
    * METADATA
    */
+  // CREATE Token Metadata
+  const tokenMetadata = Metadata.openSeaTokenLevelStandard({
+    description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+    external_url: 'https://openseacreatures.io/3',
+    image: await sdk.storeFile({
+      metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+    }),
+    name: 'Dave Starbelly',
+    attributes: [],
+  });
+
+  console.log('tokenMetadata', tokenMetadata);
+
+  const storeTokenMetadata = await sdk.storeMetadata({ metadata: tokenMetadata });
+  console.log(':rocket: ~ file: usage.ipfs.ts:60 ~ storeMetadata', storeTokenMetadata);
+
+  // -----------------------------------------------------------------------------
+  // ERC721 Mintable
+
+  /**
+   * METADATA
+   */
   // CREATE CONTRACT Metadata
   const collectionMetadata = Metadata.openSeaCollectionLevelStandard({
     name: 'My awesome collection',
@@ -41,97 +63,6 @@ loadEnv();
   console.log('collectionMetadata ----', collectionMetadata);
   const storeMetadata = await sdk.storeMetadata({ metadata: collectionMetadata });
   console.log(':rocket: ~ file: usage.ipfs.ts:60 ~ storeMetadata', storeMetadata);
-
-  /**
-   * METADATA
-   */
-  // CREATE Token Metadata
-  const tokenMetadata = Metadata.openSeaTokenLevelStandard({
-    description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-    external_url: 'https://openseacreatures.io/3',
-    image: await sdk.storeFile({
-      metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-    }),
-    name: 'Dave Starbelly',
-    attributes: [],
-  });
-
-  console.log('tokenMetadata ----', tokenMetadata);
-
-  const storeTokenMetadata = await sdk.storeMetadata({ metadata: tokenMetadata });
-  console.log(':rocket: ~ file: usage.ipfs.ts:60 ~ storeMetadata', storeTokenMetadata);
-
-  /*   const storeImageUrl = await sdk.storeFile({
-    metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-  });
-
-  const storeImageFile = await sdk.storeFile({
-    metadata: './integration-test/ipfs-test/metamask.jpeg',
-  }); */
-
-  /*   console.log('storeMetadata ----', storeMetadata);
-  console.log('storeImageUrl ----', storeImageUrl);
-  console.log('storeImageUrl ----', storeImageFile); */
-
-  /*   const storeArrayMetadata = await sdk.createFolder({
-    metadata: [
-      Metadata.openSeaTokenLevelStandard({
-        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-        external_url: 'https://openseacreatures.io/3',
-        image: await sdk.storeFile({
-          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-        }),
-        name: 'Dave Starbelly',
-        attributes: [],
-      }),
-      Metadata.openSeaTokenLevelStandard({
-        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-        external_url: 'https://openseacreatures.io/3',
-        image: await sdk.storeFile({
-          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-        }),
-        name: 'Dave Starbelly',
-        attributes: [],
-      }),
-    ],
-    isErc1155: false,
-  }); */
-
-  /*   const storeArrayMetadataForERC1155 = await sdk.createFolder({
-    metadata: [
-      Metadata.openSeaTokenLevelStandard({
-        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-        external_url: 'https://openseacreatures.io/3',
-        image: await sdk.storeFile({
-          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-        }),
-        name: 'Dave Starbelly',
-        attributes: [],
-      }),
-      Metadata.openSeaTokenLevelStandard({
-        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
-        external_url: 'https://openseacreatures.io/3',
-        image: await sdk.storeFile({
-          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
-        }),
-        name: 'Dave Starbelly',
-        attributes: [],
-      }),
-    ],
-    isErc1155: true,
-  }); */
-
-  //  console.log('storeArrayMetadata ----', storeArrayMetadata);
-  /**
-   * METADATA
-   */
-  // CREATE free Metadata
-  /*   Metadata.freeLevelMetadata({
-    test: 'test.',
-  }); */
-
-  // -----------------------------------------------------------------------------
-  // ERC721 Mintable
 
   // Create a new contract
   const newContract = await sdk.deploy({
@@ -156,21 +87,48 @@ loadEnv();
 
   // READ API
   // Get contract metadata
-  /*  const contractMetadata = await sdk.getContractMetadata({
+  const contractMetadata = await sdk.getContractMetadata({
     contractAddress: newContract.contractAddress,
   });
-  console.log('contractMetadata', contractMetadata); */
+  console.log('contractMetadata', contractMetadata);
 
   // Get the token metadata
-  /*   const tokenMetadataResult = await sdk.getTokenMetadata({
+  const tokenMetadataResult = await sdk.getTokenMetadata({
     contractAddress: newContract.contractAddress,
     tokenId: 0,
   });
   console.log('tokenMetadataResult', tokenMetadataResult);
- */
+
   // -----------------------------------------------------------------------------
   // ERC1155
-  /*   const newContractERC1155 = await sdk.deploy({
+
+  // IPFS Store
+  const storeArrayMetadataForERC1155 = await sdk.createFolder({
+    metadata: [
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+    ],
+    isErc1155: true,
+  });
+
+  // Deploy new Contract
+  const newContractERC1155 = await sdk.deploy({
     template: TEMPLATES.ERC1155Mintable,
     params: {
       baseURI: storeArrayMetadataForERC1155,
@@ -179,7 +137,7 @@ loadEnv();
     },
   });
 
-  console.log('Contract ERC 1155 --------', newContractERC1155.contractAddress);
+  console.log('Contract ERC 1155', newContractERC1155.contractAddress);
 
   const tx1 = await newContractERC1155.mint({
     to: process.env.WALLET_PUBLIC_ADDRESS ?? '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7',
@@ -188,11 +146,38 @@ loadEnv();
   });
 
   const mintedNFT = await tx1.wait();
-  console.log('mintedNFT --------', mintedNFT); */
+  console.log('mintedNFT', mintedNFT);
 
   // -----------------------------------------------------------------------------
   // ERC721UserMintable
-  /*  const ERC721UserMintable = await sdk.deploy({
+
+  // IPFS Store
+
+  const storeArrayMetadata = await sdk.createFolder({
+    metadata: [
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+      Metadata.openSeaTokenLevelStandard({
+        description: 'Friendly OpenSea Creature that enjoys long swims in the ocean.',
+        external_url: 'https://openseacreatures.io/3',
+        image: await sdk.storeFile({
+          metadata: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
+        }),
+        name: 'Dave Starbelly',
+        attributes: [],
+      }),
+    ],
+    isErc1155: false,
+  });
+
+  const ERC721UserMintable = await sdk.deploy({
     template: TEMPLATES.ERC721UserMintable,
     params: {
       name: 'Payable Mint Contract',
@@ -205,7 +190,7 @@ loadEnv();
     },
   });
 
-  console.log('Contract ERC721 UserMintable --------', ERC721UserMintable.contractAddress);
+  console.log('Contract ERC721 UserMintable', ERC721UserMintable.contractAddress);
 
   const tx = await ERC721UserMintable.toggleSale();
 
@@ -217,5 +202,5 @@ loadEnv();
   });
 
   const mintedNFTERC721 = await txMinted.wait();
-  console.log('mintedNFT --------', mintedNFTERC721); */
+  console.log('mintedNFT', mintedNFTERC721);
 })();
