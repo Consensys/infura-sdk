@@ -4,7 +4,7 @@ The Infura NFT SDK is a TypeScript library that wraps REST calls to Ethereum nod
 
 The library allows you to deploy and call methods on common Ethereum smart-contract definitions through Infura without the developer overhead of learning Solidity, compiling code, importing ABI’s, etc.
 
-The current alpha version of the SDK defines common ERC721 read and write methods. The read methods are also available for interactive testing on a Swagger doc.
+The current alpha version of the SDK defines common ERC721 and ERC1155 read and write methods. The read methods are also available for interactive testing on a Swagger doc.
 
 [Contact us](https://infura.io/contact) if you have any questions.
 
@@ -118,7 +118,7 @@ ts-node index.ts
 
 ## Examples
 
-Check out [this demo file](https://github.com/ConsenSys/infura-sdk-ts/blob/main/usage.ts) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
+Check out [this demo file](https://github.com/ConsenSys/infura-sdk/blob/main/usage.ts) for example method calls such as minting an NFT, getting NFT info, and transferring an NFT.
 
 ## Swagger API methods
 
