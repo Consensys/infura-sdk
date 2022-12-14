@@ -190,7 +190,7 @@ export enum ErrorMessage {
 }
 
 export class Logger {
-  readonly version: string;
+  version: string;
 
   static code = ErrorCode;
 
