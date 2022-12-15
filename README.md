@@ -162,7 +162,7 @@ The SDK currently supports the following IPFS API methods under the sdk class:
 # Usage Examples
 ## ERC721 template
 
-```
+```ts
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, Metadata, TEMPLATES } from '@infura/sdk';
 
@@ -242,7 +242,7 @@ console.log('tokenMetadataResult', tokenMetadataResult);
 ```
 ## ERC721 user mintable template
 
-```
+```ts
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, Metadata, TEMPLATES } from '@infura/sdk';
 
@@ -330,7 +330,7 @@ const mintedNFTERC721 = await txMinted.wait();
 
 ## ERC1155 mintable template
 
-```
+```ts
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, Metadata, TEMPLATES } from '@infura/sdk';
 
