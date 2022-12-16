@@ -19,11 +19,6 @@ The current alpha version of the SDK defines common ERC721 and ERC1155 read and 
 - BSC: Mainnet
 
 You can find method documentation of the Infura SDK at the [infura Docs linked in the sidebar](https://docs.infura.io/infura/infura-custom-apis/nft-sdk).
-## Prerequisites
-
-Sign up for the Beta on the [Beta Signup page](https://infura.io/resources/apis/nft-api-beta-signup).
-Once accepted, you will be able to use the NFT API and the NFT SDK.
-
 ## Initialize a new typescript project
 
 ```bash
@@ -55,7 +50,7 @@ To run the example code, add the following environment variables to a `.env` fil
 INFURA_PROJECT_ID=xxx
 INFURA_PROJECT_SECRET=xxx
 WALLET_PRIVATE_KEY=xxx
-EVM_RPC_URL=https://goerli.infura.io/v3/<PROJECT-ID>
+EVM_RPC_URL=https://goerli.infura.io/v3/<API-KEY>
 ```
 
 ## Use the SDK
@@ -124,8 +119,8 @@ Check out [this demo file](https://github.com/ConsenSys/infura-sdk/blob/main/usa
 
 Authenticate using your infura project's information:
 
-- Username: `PROJECT-ID`
-- Password: `PROJECT-SECRET`
+- Username: `API-KEY`
+- Password: `API-KEY-SECRET`
 
 https://docs.api.infura.io/nft/
 
