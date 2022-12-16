@@ -13,6 +13,7 @@ export enum ErrorCode {
 export enum ErrorLocation {
   // AUTH
   AUTH_CONSTRUCTOR = '[Auth.constructor]',
+  AUTH_SET_PROVIDER = '[Auth.setProvider]',
 
   // CONTRACT FACTORY
   CONTRACTFACTORY_FACTORY = '[ContractFactory.factory]',
@@ -187,6 +188,8 @@ export enum ErrorMessage {
   data_must_be_string = 'data must be a string',
   data_must_be_valid_json = 'data must be a valid json',
   invalid_ids = 'List of IDs provided cannot be empty',
+
+  unsupported_provider = 'unsupported provider',
 }
 
 export class Logger {

@@ -43,6 +43,24 @@ describe('Auth', () => {
     );
   });
 
+  it('should throw when passing infuraProvider', () => {
+    expect(
+      () =>
+        new Auth({
+          projectId: process.env.INFURA_PROJECT_ID,
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          provider: new ethers.providers.InfuraProvider(
+            5,
+            process.env.INFURA_PROJECT_ID,
+          ) as unknown as ethers.providers.ExternalProvider,
+        }),
+    ).toThrow(
+      `Error: unsupported provider (location=\"[Auth.setProvider]\", error=\"unsupported provider\", argument=\"provider\", value=\"ethers.providers.InfuraProvider\", code=INVALID_ARGUMENT, version=${version})`,
+    );
+  });
+
   it('should throw when chainId is not supported', () => {
     expect(
       () =>

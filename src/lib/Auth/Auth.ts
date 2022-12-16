@@ -125,6 +125,18 @@ export default class Auth {
   setProvider(
     provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc | undefined,
   ) {
+    if (provider instanceof ethers.providers.InfuraProvider) {
+      log.throwArgumentError(
+        Logger.message.unsupported_provider,
+        'provider',
+        'ethers.providers.InfuraProvider',
+        {
+          location: Logger.location.AUTH_SET_PROVIDER,
+          error: Logger.message.unsupported_provider,
+        },
+      );
+      return;
+    }
     if (this.privateKey) {
       this.provider = Provider.getProvider(this.rpcUrl);
       return;
