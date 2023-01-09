@@ -13,7 +13,7 @@ export const tokenMetadataSchema = Joi.object({
       Joi.object({
         display_type: Joi.string().optional(),
         trait_type: Joi.string().required(),
-        value: Joi.number().required(),
+        value: [Joi.number().required(), Joi.string().required()],
       }).optional(),
     )
     .required(),
