@@ -9,7 +9,9 @@ import version from '../src/_version';
 
 import {
   accountNFTsMock,
+  accountNFTsMockWithoutCursor,
   collectionNFTsMock,
+  collectionNFTsMockWithoutCursor,
   contractMetadataMock,
   tokenMetadataMock,
 } from './__mocks__/api';
@@ -134,6 +136,20 @@ describe('Sdk', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
       expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
     });
+
+    it('should return the list of NFTs with metadata and without cursor', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        accountNFTsMockWithoutCursor as AxiosResponse<any, any>,
+      );
+      const accountNFTs = await sdk.getNFTs({
+        publicAddress: CONTRACT_ADDRESS,
+        includeMetadata: true,
+        cursor: 'test',
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
+      expect((accountNFTs as any).cursor).toBe(null);
+    });
   });
 
   describe('getNFTsForCollection', () => {
@@ -149,6 +165,18 @@ describe('Sdk', () => {
       HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock as AxiosResponse<any, any>);
       await sdk.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return the collection NFT list without cursor', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        collectionNFTsMockWithoutCursor as AxiosResponse<any, any>,
+      );
+      const nftCollection = await sdk.getNFTsForCollection({
+        contractAddress: CONTRACT_ADDRESS,
+        cursor: 'test',
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect((nftCollection as any).cursor).toBe(null);
     });
   });
 

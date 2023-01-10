@@ -60,10 +60,12 @@ type GetStatusOptions = {
 type PublicAddressOptions = {
   publicAddress: string;
   includeMetadata?: boolean;
+  cursor?: string;
 };
 
 type ContractAddressOptions = {
   contractAddress: string;
+  cursor?: string;
 };
 
 export class SDK {
@@ -196,7 +198,9 @@ export class SDK {
       });
     }
 
-    const apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
+    let apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
+
+    if (opts.cursor) apiUrl = apiUrl.concat(`?cursor=${opts.cursor}`);
 
     const { data } = await this.httpClient.get(apiUrl);
 
@@ -224,7 +228,8 @@ export class SDK {
         location: Logger.location.SDK_GETNFTSFORCOLLECTION,
       });
     }
-    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens`;
+    let apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens`;
+    if (opts.cursor) apiUrl = apiUrl.concat(`?cursor=${opts.cursor}`);
 
     const { data } = await this.httpClient.get(apiUrl);
     return data;
