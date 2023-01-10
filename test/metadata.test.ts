@@ -43,7 +43,7 @@ describe('Metadata', () => {
           name: faker.datatype.string(),
           description: faker.datatype.string(),
           image: `ipfs://${faker.datatype.uuid()}`,
-          attributes: [{ value: faker.datatype.number(), trait_type: faker.datatype.string() }],
+          attributes: [{ value: faker.datatype.string(), trait_type: faker.datatype.string() }],
           animation_url: faker.datatype.string(),
         }),
       ).toThrow(

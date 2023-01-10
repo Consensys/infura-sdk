@@ -275,7 +275,7 @@ describe('SDK - IPFS for ERC1155', () => {
           external_url: 'https://url2',
           image: await sdk.storeFile({ metadata: file }),
           name: 'image2',
-          attributes: [{ value: 2, trait_type: 'a' }],
+          attributes: [{ value: '2', trait_type: 'a' }],
         }),
         Metadata.openSeaTokenLevelStandard({
           description: 'Description 3',
@@ -289,7 +289,7 @@ describe('SDK - IPFS for ERC1155', () => {
           external_url: 'https://url4',
           image: await sdk.storeFile({ metadata: file }),
           name: 'image3',
-          attributes: [{ value: 4, trait_type: 'a' }],
+          attributes: [{ value: '4', trait_type: 'a' }],
         }),
       ],
       isErc1155: true,
