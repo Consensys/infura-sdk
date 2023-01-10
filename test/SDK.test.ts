@@ -137,7 +137,7 @@ describe('Sdk', () => {
       expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
     });
 
-    it('should return the list of NFTs with metadata and without cursor', async () => {
+    it('should return the list of NFTs with metadata and with cursor', async () => {
       HttpServiceMock.mockResolvedValueOnce(
         accountNFTsMockWithoutCursor as AxiosResponse<any, any>,
       );
