@@ -45,7 +45,7 @@ describe('httpService', () => {
 
   it('should GET using axios', async () => {
     const instance = new HttpService(BASEURL, APIKEY);
-    const res = await instance.get('/api/people/1');
+    await instance.get('/api/people/1');
     expect(_mock.get).toHaveBeenCalled();
   });
 

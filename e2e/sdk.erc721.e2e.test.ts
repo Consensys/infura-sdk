@@ -1,8 +1,9 @@
 import { config as loadEnv } from 'dotenv';
 import Auth from '../src/lib/Auth/Auth';
-import { MetadataDTO, SDK } from '../src/lib/SDK/sdk';
+import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait, { existingContractAddress } from './utils/utils.ts/utils';
+import { MetadataDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
@@ -29,7 +30,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
   it('Deploy - Get all nfts by owner address', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    const response: any = await sdk.getNFTs({
+    const response: any = await sdk.api.getNFTs({
       publicAddress: ownerAddress,
       includeMetadata: false,
     });
@@ -45,7 +46,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
 
     await wait(
       async () => {
-        const resp = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+        const resp = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
         const newContractCollection = await resp.assets.filter(
           asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
         )[0];
@@ -59,18 +60,21 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT collection to be available for an user',
     );
-    const response2 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    const response2 = await sdk.api.getNFTs({
+      publicAddress: ownerAddress,
+      includeMetadata: false,
+    });
     expect(response2.total).toBeGreaterThan(response.total);
     expect(response2.assets[0].metadata).toEqual(undefined);
 
     await wait(async () => {
-      const nfts = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
+      const nfts = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
       const token = await nfts.assets.filter(
         (asset: any) => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
       );
       return token[0].metadata !== null;
     });
-    const response3 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
+    const response3 = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
     const createdToken = await response3.assets.filter(
       (asset: any) => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
     );
@@ -103,7 +107,9 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     let response: any;
     await wait(
       async () => {
-        response = await sdk.getNFTsForCollection({ contractAddress: contract.contractAddress });
+        response = await sdk.api.getNFTsForCollection({
+          contractAddress: contract.contractAddress,
+        });
         return response.total === 3;
       },
       600000,
@@ -132,14 +138,14 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     let response;
     await wait(
       async () => {
-        response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+        response = await sdk.api.getContractMetadata({ contractAddress: contract.contractAddress });
         return response !== null;
       },
       120000,
       1000,
       'Waiting for NFT collection metadata to be available',
     );
-    response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+    response = await sdk.api.getContractMetadata({ contractAddress: contract.contractAddress });
     expect(response.name).toEqual(contractInfo.params.name);
     expect(response.symbol).toEqual(contractInfo.params.symbol);
     expect(response.tokenType).toEqual('ERC721');
@@ -159,7 +165,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(receipt1.status).toEqual(1);
     await wait(
       async () => {
-        const response: any = await sdk.getTokenMetadata({
+        const response: any = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: 0,
         });
@@ -170,7 +176,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       'Waiting for NFT metadata to be available',
     );
 
-    const metadataResponse: MetadataDTO = await sdk.getTokenMetadata({
+    const metadataResponse: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: newContract.contractAddress,
       tokenId: 0,
     });
@@ -218,7 +224,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(receipt1.status).toEqual(1);
     await wait(
       async () => {
-        const response = await sdk.getContractMetadata({
+        const response = await sdk.api.getContractMetadata({
           contractAddress: newContract.contractAddress,
         });
 
@@ -228,7 +234,9 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT metadata to be available',
     );
-    const meta = await sdk.getContractMetadata({ contractAddress: newContract.contractAddress });
+    const meta = await sdk.api.getContractMetadata({
+      contractAddress: newContract.contractAddress,
+    });
     expect(meta.symbol).toEqual(contractInfo.params.symbol);
     expect(meta.name).toEqual(contractInfo.params.name);
     expect(meta.tokenType).toEqual('ERC721');

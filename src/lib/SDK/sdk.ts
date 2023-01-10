@@ -2,87 +2,35 @@ import { ethers, utils } from 'ethers';
 import Auth from '../Auth/Auth';
 import HttpService from '../../services/httpService';
 import { NFT_API_URL } from '../constants';
-import ERC721Mintable, {
-  DeployParams as MintableDeploy,
-} from '../ContractTemplates/ERC721Mintable';
-import ERC721UserMintable, {
-  DeployParams as UserMintableDeploy,
-} from '../ContractTemplates/ERC721UserMintable';
+import ERC721Mintable from '../ContractTemplates/ERC721Mintable';
+import ERC721UserMintable from '../ContractTemplates/ERC721UserMintable';
 import { Logger, log } from '../Logger';
-import { Components } from '../../services/nft-api';
 import { metadataFolderSchema, metadataSchema } from './sdk.schema';
 import { isJson } from '../utils';
-import ERC1155Mintable, { DeployERC1155Params } from '../ContractTemplates/ERC1155Mintable';
+import ERC1155Mintable from '../ContractTemplates/ERC1155Mintable';
+import Api from '../Api/api';
+import IPFS from '../../services/ipfsService';
+import {
+  DeployOptionsERC1155UserMintable,
+  DeployOptionsMintable,
+  DeployOptionsUserMintable,
+  GetStatusOptions,
+  LoadContractOptions,
+} from './types';
 
-const classes = {
+export const classes = {
   ERC721Mintable,
   ERC721UserMintable,
   ERC1155Mintable,
 };
 
-export type NftDTO = Components['schemas']['NftModel'];
-export type MetadataDTO = Components['schemas']['MetadataModel'];
-export type TransfersDTO = Components['schemas']['TransfersModel'];
-export type MetadataInfo = {
-  symbol: string;
-  name: string;
-  tokenType: string;
-};
-
-// TODO: fix type & function overloading in "deploy"
-type DeployOptionsMintable = {
-  template: string;
-  params: MintableDeploy;
-};
-type DeployOptionsUserMintable = {
-  template: string;
-  params: UserMintableDeploy;
-};
-
-type DeployOptionsERC1155UserMintable = {
-  template: string;
-  params: DeployERC1155Params;
-};
-
-type LoadContractOptions = {
-  template: string;
-  contractAddress: string;
-};
-
-type GetTokenMetadataOptions = {
-  contractAddress: string;
-  tokenId: number;
-};
-
-export type GetTransfersByBlockNumberOptions = {
-  blockHashNumber: string;
-  cursor?: string;
-};
-
-type GetStatusOptions = {
-  txHash: string;
-};
-
-type PublicAddressOptions = {
-  publicAddress: string;
-  includeMetadata?: boolean;
-  cursor?: string;
-};
-
-type ContractAddressOptions = {
-  contractAddress: string;
-  cursor?: string;
-};
-
 export class SDK {
   /* Private property */
-  private readonly auth;
+  private readonly auth: Auth;
 
-  private readonly apiPath;
+  public readonly api: Api;
 
-  private readonly httpClient;
-
-  private readonly ipfsClient;
+  private readonly ipfsClient: IPFS;
 
   constructor(auth: Auth) {
     if (!(auth instanceof Auth)) {
@@ -91,8 +39,11 @@ export class SDK {
       });
     }
     this.auth = auth;
-    this.apiPath = `/networks/${this.auth.getChainId()}`;
-    this.httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
+
+    const apiPath = `/networks/${this.auth.getChainId()}`;
+    const httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
+
+    this.api = new Api(apiPath, httpClient);
     this.ipfsClient = this.auth.getIpfsClient();
   }
 

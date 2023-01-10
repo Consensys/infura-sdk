@@ -12,7 +12,6 @@ let contractObject: ERC721Mintable;
 let publicAddress: string;
 let owner: string;
 let thirdUser: string;
-let privateKeyPublicAddress: string;
 let successfulTx: string;
 
 describe('E2E Test: Basic NFT (mint)', () => {
@@ -24,7 +23,6 @@ describe('E2E Test: Basic NFT (mint)', () => {
     const { addresses: addr, private_keys: pk } = require('../keys.json');
     [owner, publicAddress, thirdUser] = Object.keys(addr);
     const privateKey = pk[owner];
-    privateKeyPublicAddress = pk[publicAddress];
 
     const rpcUrl = 'http://0.0.0.0:8545';
     const chainId = 5;
