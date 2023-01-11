@@ -12,10 +12,11 @@ import {
   collectionNFTsMock,
   contractMetadataMock,
   tokenMetadataMock,
+  transferByBlockNumberMock,
 } from './__mocks__/api';
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { TEMPLATES } from '../src/lib/constants';
-import { SDK } from '../src/lib/SDK/sdk';
+import { GetTransfersByBlockNumberOptions, SDK } from '../src/lib/SDK/sdk';
 import ERC721Mintable, { DeployParams } from '../src/lib/ContractTemplates/ERC721Mintable';
 import IPFS from '../src/services/ipfsService';
 
@@ -164,6 +165,22 @@ describe('Sdk', () => {
     it('should return token metadata', async () => {
       HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock as AxiosResponse<any, any>);
       await sdk.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: 1 });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersByBlockNumber', () => {
+    it('hould throw when block number not provided', async () => {
+      await expect(() =>
+        sdk.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
+      await sdk.getTransfersByBlockNumber({ blockHashNumber: '125' });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

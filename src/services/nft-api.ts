@@ -101,15 +101,19 @@ export interface Components {
       transactionType: string;
     };
     TransfersModel: {
+      /** @example 1200 */
+      total: number;
       /** @example 1 */
       pageNumber: number;
+      /** @example 100 */
+      pageSize: number;
       /**
        * @example ETHEREUM
        * @enum {string}
        */
       network: 'ETHEREUM' | 'GOERLI' | 'BINANCE' | 'POLYGON';
-      /** @example 1 */
-      total: number;
+      cursor: string;
+
       /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
       account: string;
       transfers: Components['schemas']['TransfersResultsModel'][];
