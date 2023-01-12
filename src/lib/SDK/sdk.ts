@@ -22,6 +22,7 @@ const classes = {
 
 export type NftDTO = Components['schemas']['NftModel'];
 export type MetadataDTO = Components['schemas']['MetadataModel'];
+export type TransfersDTO = Components['schemas']['TransfersModel'];
 export type MetadataInfo = {
   symbol: string;
   name: string;
@@ -51,6 +52,11 @@ type LoadContractOptions = {
 type GetTokenMetadataOptions = {
   contractAddress: string;
   tokenId: number;
+};
+
+export type GetTransfersByBlockNumberOptions = {
+  blockHashNumber: string;
+  cursor?: string;
 };
 
 type GetStatusOptions = {
@@ -85,7 +91,6 @@ export class SDK {
       });
     }
     this.auth = auth;
-
     this.apiPath = `/networks/${this.auth.getChainId()}`;
     this.httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
     this.ipfsClient = this.auth.getIpfsClient();
@@ -254,6 +259,24 @@ export class SDK {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}`;
 
     const { data } = await this.httpClient.get(apiUrl);
+    return data;
+  }
+
+  /**
+   * Get transfers by block number
+   * @param {object} opts object containing all parameters
+   * @param {string} opts.blockHashNumber number of the block to get transfers from
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByBlockNumber(opts: GetTransfersByBlockNumberOptions): Promise<TransfersDTO> {
+    if (!opts.blockHashNumber) {
+      log.throwMissingArgumentError(Logger.message.invalid_block_number, {
+        location: Logger.location.SDK_GETTRANSFERSBYBLOCKNUMBER,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/block/transfers`;
+    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHashNumber });
     return data;
   }
 

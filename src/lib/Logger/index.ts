@@ -105,6 +105,7 @@ export enum ErrorLocation {
   SDK_STOREFILE = '[SDK.storeFile]',
   SDK_STOREMETADATA = '[SDK.storeMetadata]',
   SDK_CREATEFOLDER = '[SDK.createFolder]',
+  SDK_GETTRANSFERSBYBLOCKNUMBER = '[SDK.getTransfersByBlockNumber]',
 
   // Metadata
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
@@ -190,6 +191,8 @@ export enum ErrorMessage {
   invalid_ids = 'List of IDs provided cannot be empty',
 
   unsupported_provider = 'unsupported provider',
+
+  invalid_block_number = 'Invalid block number.',
 }
 
 export class Logger {
