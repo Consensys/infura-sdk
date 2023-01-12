@@ -1,20 +1,27 @@
 import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
-import { MetadataDTO, MetadataInfo, NftDTO } from '../SDK/types';
+import { MetadataDTO, MetadataInfo, NftDTO, TransfersDTO } from '../SDK/types';
 
 type PublicAddressOptions = {
   publicAddress: string;
   includeMetadata?: boolean;
+  cursor?: string;
 };
 
 type ContractAddressOptions = {
   contractAddress: string;
+  cursor?: string;
 };
 
 type GetTokenMetadataOptions = {
   contractAddress: string;
   tokenId: number;
+};
+
+export type GetTransfersByBlockNumberOptions = {
+  blockHashNumber: string;
+  cursor?: string;
 };
 
 export default class Api {
@@ -43,7 +50,7 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}`;
     const {
       data: { symbol, name, tokenType },
-    } = await this.httpClient.get(apiUrl);
+    } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
 
     return { symbol, name, tokenType };
   }
@@ -64,7 +71,7 @@ export default class Api {
 
     const apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
 
-    const { data } = await this.httpClient.get(apiUrl);
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
 
     if (!opts.includeMetadata) {
       return {
@@ -92,7 +99,7 @@ export default class Api {
     }
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens`;
 
-    const { data } = await this.httpClient.get(apiUrl);
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
     return data;
   }
 
@@ -118,6 +125,24 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}`;
 
     const { data } = await this.httpClient.get(apiUrl);
+    return data;
+  }
+
+  /**
+   * Get transfers by block number
+   * @param {object} opts object containing all parameters
+   * @param {string} opts.blockHashNumber number of the block to get transfers from
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByBlockNumber(opts: GetTransfersByBlockNumberOptions): Promise<TransfersDTO> {
+    if (!opts.blockHashNumber) {
+      log.throwMissingArgumentError(Logger.message.invalid_block_number, {
+        location: Logger.location.SDK_GETTRANSFERSBYBLOCKNUMBER,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/block/transfers`;
+    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHashNumber });
     return data;
   }
 }

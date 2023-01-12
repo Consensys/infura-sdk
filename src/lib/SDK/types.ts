@@ -5,6 +5,7 @@ import { DeployERC1155Params } from '../ContractTemplates/ERC1155Mintable';
 
 export type NftDTO = Components['schemas']['NftModel'];
 export type MetadataDTO = Components['schemas']['MetadataModel'];
+export type TransfersDTO = Components['schemas']['TransfersModel'];
 
 export type MetadataInfo = {
   symbol: string;

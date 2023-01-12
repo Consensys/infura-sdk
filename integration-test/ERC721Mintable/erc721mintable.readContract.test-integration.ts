@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
-import { NftDTO, SDK } from '../../src/lib/SDK/sdk';
+import { SDK } from '../../src/lib/SDK/sdk';
 import Auth from '../../src/lib/Auth/Auth';
+import { NftDTO } from '../../src/lib/SDK/types';
 
 loadEnv();
 

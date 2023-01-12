@@ -9,13 +9,16 @@ import version from '../src/_version';
 
 import {
   accountNFTsMock,
+  accountNFTsMockWithoutCursor,
   collectionNFTsMock,
+  collectionNFTsMockWithoutCursor,
   contractMetadataMock,
   tokenMetadataMock,
+  transferByBlockNumberMock,
 } from './__mocks__/api';
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
-import Api from '../src/lib/Api/api';
+import Api, { GetTransfersByBlockNumberOptions } from '../src/lib/Api/api';
 
 loadEnv();
 
@@ -105,6 +108,20 @@ describe('Api', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
       expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
     });
+
+    it('should return the list of NFTs with metadata and with cursor', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        accountNFTsMockWithoutCursor as AxiosResponse<any, any>,
+      );
+      const accountNFTs = await api.getNFTs({
+        publicAddress: CONTRACT_ADDRESS,
+        includeMetadata: true,
+        cursor: 'test',
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
+      expect((accountNFTs as any).cursor).toBe(null);
+    });
   });
 
   describe('getNFTsForCollection', () => {
@@ -121,6 +138,18 @@ describe('Api', () => {
       await api.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
+
+    it('should return the collection NFT list without cursor', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        collectionNFTsMockWithoutCursor as AxiosResponse<any, any>,
+      );
+      const nftCollection = await api.getNFTsForCollection({
+        contractAddress: CONTRACT_ADDRESS,
+        cursor: 'test',
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect((nftCollection as any).cursor).toBe(null);
+    });
   });
 
   describe('getTokenMetadata', () => {
@@ -135,6 +164,22 @@ describe('Api', () => {
     it('should return token metadata', async () => {
       HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock as AxiosResponse<any, any>);
       await api.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: 1 });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersByBlockNumber', () => {
+    it('hould throw when block number not provided', async () => {
+      await expect(() =>
+        api.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
+      await api.getTransfersByBlockNumber({ blockHashNumber: '125' });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

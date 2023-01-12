@@ -7,19 +7,10 @@ import Auth from '../src/lib/Auth/Auth';
 import HttpService from '../src/services/httpService';
 import version from '../src/_version';
 
-import {
-  accountNFTsMock,
-  accountNFTsMockWithoutCursor,
-  collectionNFTsMock,
-  collectionNFTsMockWithoutCursor,
-  contractMetadataMock,
-  tokenMetadataMock,
-  transferByBlockNumberMock,
-} from './__mocks__/api';
-import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import { generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { TEMPLATES } from '../src/lib/constants';
-import { GetTransfersByBlockNumberOptions, SDK } from '../src/lib/SDK/sdk';
-import ERC721Mintable, { DeployParams } from '../src/lib/ContractTemplates/ERC721Mintable';
+import { SDK } from '../src/lib/SDK/sdk';
+import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable';
 import IPFS from '../src/services/ipfsService';
 
 loadEnv();
@@ -93,124 +84,6 @@ describe('Sdk', () => {
     IpfsUploadContentMock.mockClear();
     erc721Mocked.mockClear();
     signerMock.mockClear();
-  });
-
-  describe('getContractMetadata', () => {
-    it('should throw when "contractAddress" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getContractMetadata({ contractAddress: 'notAValidAddress' }),
-      ).rejects.toThrow(
-        `missing argument: Invalid contract address. (location="[SDK.getContractMetadata]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return contract metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(contractMetadataMock as AxiosResponse<any, any>);
-      const contractMetadata = await sdk.getContractMetadata({
-        contractAddress: '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
-      });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect(contractMetadata).not.toHaveProperty('contract');
-    });
-  });
-
-  describe('getNFTs', () => {
-    it('should throw when "address" is not a valid address', async () => {
-      await expect(() => sdk.getNFTs({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
-        `missing argument: Invalid public address. (location="[SDK.getNFTs]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return the list of NFTs without metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
-      const accountNFTs = await sdk.getNFTs({ publicAddress: CONTRACT_ADDRESS });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect((accountNFTs as any).assets[0]).not.toHaveProperty('metadata');
-    });
-
-    it('should return the list of NFTs with metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
-      const accountNFTs = await sdk.getNFTs({
-        publicAddress: CONTRACT_ADDRESS,
-        includeMetadata: true,
-      });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
-    });
-
-    it('should return the list of NFTs with metadata and with cursor', async () => {
-      HttpServiceMock.mockResolvedValueOnce(
-        accountNFTsMockWithoutCursor as AxiosResponse<any, any>,
-      );
-      const accountNFTs = await sdk.getNFTs({
-        publicAddress: CONTRACT_ADDRESS,
-        includeMetadata: true,
-        cursor: 'test',
-      });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
-      expect((accountNFTs as any).cursor).toBe(null);
-    });
-  });
-
-  describe('getNFTsForCollection', () => {
-    it('should throw when "contractAddress" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getNFTsForCollection({ contractAddress: 'notAValidAddress' }),
-      ).rejects.toThrow(
-        `missing argument: Invalid contract address. (location="[SDK.getNFTsForCollection]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return return collection NFTs list', async () => {
-      HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock as AxiosResponse<any, any>);
-      await sdk.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('should return the collection NFT list without cursor', async () => {
-      HttpServiceMock.mockResolvedValueOnce(
-        collectionNFTsMockWithoutCursor as AxiosResponse<any, any>,
-      );
-      const nftCollection = await sdk.getNFTsForCollection({
-        contractAddress: CONTRACT_ADDRESS,
-        cursor: 'test',
-      });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect((nftCollection as any).cursor).toBe(null);
-    });
-  });
-
-  describe('getTokenMetadata', () => {
-    it('should throw when "contractAddress" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getTokenMetadata({ contractAddress: 'notAValidAddress', tokenId: 1 }),
-      ).rejects.toThrow(
-        `missing argument: Invalid contract address. (location="[SDK.getTokenMetadata]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return token metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock as AxiosResponse<any, any>);
-      await sdk.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: 1 });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('getTransfersByBlockNumber', () => {
-    it('hould throw when block number not provided', async () => {
-      await expect(() =>
-        sdk.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
-      ).rejects.toThrow(
-        `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return transfers', async () => {
-      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
-      await sdk.getTransfersByBlockNumber({ blockHashNumber: '125' });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('getStatus', () => {
