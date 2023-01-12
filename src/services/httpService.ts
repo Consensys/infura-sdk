@@ -29,9 +29,12 @@ export default class HttpService {
     });
   }
 
-  async get(uri: string) {
+  async get(uri: string, params?: Object) {
+    const config = {
+      params,
+    };
     try {
-      return await this.instance.get(uri);
+      return await this.instance.get(uri, config);
     } catch (error) {
       return log.throwError(Logger.message.axios_error, Logger.code.API, {
         location: Logger.location.HTTPSERVICE_GET,

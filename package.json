@@ -77,6 +77,18 @@
     "jest-sonar-reporter": "^2.0.0",
     "joi": "^17.7.0"
   },
+  "overrides": {
+    "eslint-config-airbnb-base": {
+      "eslint-plugin-import": {
+        "debug": "^3.1.0"
+      }
+    },
+    "eslint-config-airbnb-typescript": {
+      "eslint-plugin-import": {
+        "debug": "^3.1.0"
+      }
+    }
+  },
   "lint-staged": {
     "*.ts": "eslint --cache --fix",
     "*.{ts,css,md}": "prettier --write"
