@@ -28,7 +28,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   it('Deploy - Get all nfts by owner address', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    const response = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    const response = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
     expect(response.type).toEqual('NFT');
 
     const newContract = await sdk.deploy(contractInfo);
@@ -42,17 +42,20 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
 
     await wait(
       async () => {
-        const resp = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+        const resp = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
         return resp.total > response.total;
       },
       120000,
       1000,
       'Waiting for new nft to be available',
     );
-    const response2 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+    const response2 = await sdk.api.getNFTs({
+      publicAddress: ownerAddress,
+      includeMetadata: false,
+    });
     expect(response2.total).toBeGreaterThan(response.total);
     expect(response2.assets[0].metadata).toEqual(undefined);
-    const response3 = await sdk.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
+    const response3 = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
     const createdToken: any = await response3.assets.filter(
       asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
     );
@@ -88,7 +91,9 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     let response: any;
     await wait(
       async () => {
-        response = await sdk.getNFTsForCollection({ contractAddress: contract.contractAddress });
+        response = await sdk.api.getNFTsForCollection({
+          contractAddress: contract.contractAddress,
+        });
         return response.total === 3;
       },
       600000,
@@ -117,14 +122,16 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     let response;
     await wait(
       async () => {
-        response = await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+        response = await sdk.api.getContractMetadata({ contractAddress: contract.contractAddress });
         return response !== null;
       },
       120000,
       1000,
       'Waiting for NFT collection to be available',
     );
-    response = await await sdk.getContractMetadata({ contractAddress: contract.contractAddress });
+    response = await await sdk.api.getContractMetadata({
+      contractAddress: contract.contractAddress,
+    });
     expect(response.name).toEqual(null);
     expect(response.symbol).toEqual(null);
     expect(response.tokenType).toEqual('ERC1155');
@@ -143,7 +150,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(receipt1.status).toEqual(1);
     await wait(
       async () => {
-        const response = await sdk.getNFTsForCollection({
+        const response = await sdk.api.getNFTsForCollection({
           contractAddress: newContract.contractAddress,
         });
         return response.total === 3 && response.assets.length === 3;
@@ -153,7 +160,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       'Waiting for NFT collection to be available',
     );
 
-    const response = await sdk.getNFTsForCollection({
+    const response = await sdk.api.getNFTsForCollection({
       contractAddress: newContract.contractAddress,
     });
     expect(response.assets.length).toEqual(3);
@@ -206,7 +213,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(receipt1.status).toEqual(1);
     await wait(
       async () => {
-        const response = await sdk.getContractMetadata({
+        const response = await sdk.api.getContractMetadata({
           contractAddress: newContract.contractAddress,
         });
 
@@ -216,7 +223,9 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT metadata to be available',
     );
-    const meta = await sdk.getContractMetadata({ contractAddress: newContract.contractAddress });
+    const meta = await sdk.api.getContractMetadata({
+      contractAddress: newContract.contractAddress,
+    });
     expect(meta.tokenType).toEqual('ERC1155');
   });
 
@@ -235,7 +244,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     await mintHash.wait();
     await wait(
       async () => {
-        const response = await sdk.getNFTsForCollection({
+        const response = await sdk.api.getNFTsForCollection({
           contractAddress: reusableContract.contractAddress,
         });
         return response.total === 1;
@@ -244,7 +253,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    const collection = await sdk.getNFTsForCollection({
+    const collection = await sdk.api.getNFTsForCollection({
       contractAddress: reusableContract.contractAddress,
     });
     expect(collection.total).toEqual(1);
@@ -252,7 +261,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   it('', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    const transferList = await sdk.getNftsTransfersByWallet({ walletAddress: ownerAddress });
+    const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
     const cont = {
       template: TEMPLATES.ERC1155Mintable,
       contractAddress: reusableContract.contractAddress,
@@ -269,7 +278,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
 
     await wait(
       async () => {
-        const response = await sdk.getNftsTransfersByWallet({
+        const response = await sdk.api.getNftsTransfersByWallet({
           walletAddress: ownerAddress,
         });
         return response.total > transferList.total;
@@ -278,13 +287,15 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT transfer to be available',
     );
-    const transferList2 = await sdk.getNftsTransfersByWallet({ walletAddress: ownerAddress });
+    const transferList2 = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
 
     expect(transferList2.total).toBeGreaterThan(transferList.total); // check the new transfer is returned
 
-    const transfer = transferList2.transfers.filter(tx => tx.transactionHash === txHash.hash);
+    const transfer = transferList2.transfers.filter(
+      (tx: any) => tx.transactionHash === txHash.hash,
+    );
 
-    const transferList3: any = await sdk.getTransfersByBlockNumber({
+    const transferList3: any = await sdk.api.getTransfersByBlockNumber({
       blockHashNumber: transfer[0].blockNumber,
     });
     expect(

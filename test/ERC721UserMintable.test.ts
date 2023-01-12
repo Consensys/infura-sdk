@@ -1107,7 +1107,7 @@ describe('SDK', () => {
       price: '1',
       maxTokenRequest: 1,
     });
-    const price = contract.price();
+    contract.price();
     await expect(contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 

@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
-import { GetTransfersByBlockNumberOptions, SDK } from './../src/lib/SDK/sdk';
+import { SDK } from './../src/lib/SDK/sdk';
 import Auth from './../src/lib/Auth/Auth';
+import { GetTransfersByBlockNumberOptions } from '../src/lib/Api/api';
 
 loadEnv();
 
@@ -27,7 +28,7 @@ describe('E2E Test: Sdk (read)', () => {
   describe('As an account I should get error with invalid blockNumber', () => {
     it('should throw if block number not valid', async () => {
       expect(() =>
-        sdk.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
+        sdk.api.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
       ).rejects.toThrow(
         `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=1.0.2)`,
       );
@@ -36,7 +37,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should get list of transfers by block', () => {
     it('should get list of transfers', async () => {
-      const result = await sdk.getTransfersByBlockNumber({ blockHashNumber: '15846571' });
+      const result = await sdk.api.getTransfersByBlockNumber({ blockHashNumber: '15846571' });
 
       expect(result).toMatchObject({
         total: expect.any(Number),
@@ -62,7 +63,7 @@ describe('E2E Test: Sdk (read)', () => {
       });
       const cursor = result.cursor;
       if (result.cursor) {
-        const resultSecondPage = await sdk.getTransfersByBlockNumber({
+        const resultSecondPage = await sdk.api.getTransfersByBlockNumber({
           blockHashNumber: '15846571',
           cursor: cursor,
         });
