@@ -42,13 +42,13 @@ npm install dotenv
 
 ## Authentication
 
-Authentication requires an active `PROJECT_ID` and `PROJECT_SECRET` from an Ethereum project in Infura. You can find it in your [Infura dashboard](https://infura.io/dashboard) in project settings.
+Authentication requires an active `API_KEY` and `API_KEY_SECRET` from an Ethereum project in Infura. You can find it in your [Infura dashboard](https://infura.io/dashboard) in project settings.
 
 To run the example code, add the following environment variables to a `.env` file:
 
 ```bash
-INFURA_PROJECT_ID=xxx
-INFURA_PROJECT_SECRET=xxx
+INFURA_API_KEY=xxx
+INFURA_API_KEY_SECRET=xxx
 WALLET_PRIVATE_KEY=xxx
 EVM_RPC_URL=https://goerli.infura.io/v3/<API-KEY>
 ```
@@ -70,8 +70,8 @@ loadEnv();
 
 ```ts
 const auth = new Auth({
-  projectId: process.env.INFURA_PROJECT_ID,
-  secretId: process.env.INFURA_PROJECT_SECRET,
+  projectId: process.env.INFURA_API_KEY,
+  secretId: process.env.INFURA_API_KEY_SECRET,
   privateKey: process.env.WALLET_PRIVATE_KEY,
   rpcUrl: process.env.EVM_RPC_URL,
   chainId: 5, // Goerli
@@ -165,8 +165,8 @@ loadEnv();
 
 const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: process.env.INFURA_PROJECT_ID,
-    secretId: process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
     chainId: 5,
     ipfs: {
@@ -247,8 +247,8 @@ loadEnv();
 
 const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: process.env.INFURA_PROJECT_ID,
-    secretId: process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
     chainId: 5,
     ipfs: {
@@ -335,8 +335,8 @@ loadEnv();
 
 const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: process.env.INFURA_PROJECT_ID,
-    secretId: process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
     chainId: 5,
     ipfs: {
