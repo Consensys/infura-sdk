@@ -31,7 +31,6 @@ export default class HttpService {
 
   async get(uri: string, params?: any) {
     try {
-      console.log(params);
       return await this.instance.get(uri, { params });
     } catch (error) {
       return log.throwError(Logger.message.axios_error, Logger.code.API, {
