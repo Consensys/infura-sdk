@@ -145,7 +145,7 @@ describe('Sdk', () => {
       const accountNFTs = await sdk.getNFTs({
         publicAddress: CONTRACT_ADDRESS,
         includeMetadata: true,
-        params: { cursor: 'test' },
+        cursor: 'test',
       });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
       expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
@@ -174,7 +174,7 @@ describe('Sdk', () => {
       );
       const nftCollection = await sdk.getNFTsForCollection({
         contractAddress: CONTRACT_ADDRESS,
-        params: { cursor: 'test' },
+        cursor: 'test',
       });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
       expect((nftCollection as any).cursor).toBe(null);

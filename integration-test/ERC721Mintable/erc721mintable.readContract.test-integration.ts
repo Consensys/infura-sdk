@@ -55,7 +55,7 @@ describe('E2E Test: Sdk (read)', () => {
       });
       const nftPage2: NftDTO = await sdk.getNFTs({
         publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
-        params: { cursor: nfts.cursor },
+        cursor: nfts.cursor,
       });
       expect(nftPage2.cursor).not.toBeNull();
       expect(nftPage2.pageNumber).toEqual(2);
@@ -64,7 +64,7 @@ describe('E2E Test: Sdk (read)', () => {
       const nfts = async () =>
         await sdk.getNFTs({
           publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
-          params: { cursor: 'test' },
+          cursor: 'test',
         });
 
       expect(nfts).rejects.toThrow(
@@ -91,7 +91,7 @@ describe('E2E Test: Sdk (read)', () => {
       expect(nfts.pageNumber).toBe(0);
       nfts = await sdk.getNFTsForCollection({
         contractAddress: goerliCollectionAddress,
-        params: { cursor: nfts.cursor },
+        cursor: nfts.cursor,
       });
       expect(nfts.cursor).not.toBeNull();
       expect(nfts.assets.length).toBeGreaterThan(0);
@@ -101,7 +101,7 @@ describe('E2E Test: Sdk (read)', () => {
       const nftCollection = async () =>
         await sdk.getNFTsForCollection({
           contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-          params: { cursor: 'test' },
+          cursor: 'test',
         });
 
       expect(nftCollection).rejects.toThrow(
