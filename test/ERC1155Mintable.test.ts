@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { BigNumber, Contract, ContractFactory, ethers, utils } from 'ethers';
+import { BigNumber, Contract, ContractFactory, ethers } from 'ethers';
 import { ACCOUNT_ADDRESS, ACCOUNT_ADDRESS_2, CONTRACT_ADDRESS } from './__mocks__/utils';
 import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
 import version from '../src/_version';

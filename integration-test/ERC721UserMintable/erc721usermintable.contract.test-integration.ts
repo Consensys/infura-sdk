@@ -1,6 +1,6 @@
 import { config as loadEnv } from 'dotenv';
 import { faker } from '@faker-js/faker';
-import { BigNumber, ethers, utils } from 'ethers';
+import { BigNumber, utils } from 'ethers';
 
 import Auth from '../../src/lib/Auth/Auth';
 import { SDK } from '../../src/lib/SDK/sdk';

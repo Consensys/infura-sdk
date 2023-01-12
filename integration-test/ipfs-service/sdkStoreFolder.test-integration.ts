@@ -1,6 +1,5 @@
 import Auth from '../../src/lib/Auth/Auth';
 import { SDK } from '../../src/lib/SDK/sdk';
-import path from 'path';
 import Metadata from '../../src/lib/Metadata/Metadata';
 import { config as loadEnv } from 'dotenv';
 import version from '../../src/_version';
@@ -10,16 +9,13 @@ loadEnv();
 describe('E2E Test: sdk store', () => {
   jest.setTimeout(120 * 1000);
 
-  let accountWithoutIpfs: Auth;
   let accountWithIpfs: Auth;
-  let sdkWithoutIpfs: SDK;
   let sdkWithIpfs: SDK;
-  let publicAddress: string;
   let owner: string;
 
   beforeAll(() => {
     const { addresses: addr, private_keys: pk } = require('../keys.json');
-    [owner, publicAddress] = Object.keys(addr);
+    [owner] = Object.keys(addr);
     const privateKey = pk[owner];
 
     const rpcUrl = 'http://0.0.0.0:8545';
@@ -31,14 +27,6 @@ describe('E2E Test: sdk store', () => {
       apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
     };
 
-    accountWithoutIpfs = new Auth({
-      privateKey,
-      projectId,
-      secretId,
-      rpcUrl,
-      chainId,
-    });
-
     accountWithIpfs = new Auth({
       privateKey,
       projectId,
@@ -48,7 +36,6 @@ describe('E2E Test: sdk store', () => {
       ipfs,
     });
 
-    sdkWithoutIpfs = new SDK(accountWithoutIpfs);
     sdkWithIpfs = new SDK(accountWithIpfs);
   });
 

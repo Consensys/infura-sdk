@@ -9,20 +9,14 @@ loadEnv();
 describe.skip('E2E Test: sdk store', () => {
   jest.setTimeout(120 * 1000);
 
-  let accountWithoutIpfs: Auth;
   let accountWithIpfs: Auth;
-  let sdkWithoutIpfs: SDK;
   let sdkWithIpfs: SDK;
-  let publicAddress: string;
   let owner: string;
-  let thirdUser: string;
-  let privateKeyPublicAddress: string;
 
   beforeAll(() => {
     const { addresses: addr, private_keys: pk } = require('../keys.json');
-    [owner, publicAddress, thirdUser] = Object.keys(addr);
+    [owner] = Object.keys(addr);
     const privateKey = pk[owner];
-    privateKeyPublicAddress = pk[publicAddress];
 
     const rpcUrl = 'http://0.0.0.0:8545';
     const chainId = 5;
@@ -33,14 +27,6 @@ describe.skip('E2E Test: sdk store', () => {
       apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
     };
 
-    accountWithoutIpfs = new Auth({
-      privateKey,
-      projectId,
-      secretId,
-      rpcUrl,
-      chainId,
-    });
-
     accountWithIpfs = new Auth({
       privateKey,
       projectId,
@@ -50,7 +36,6 @@ describe.skip('E2E Test: sdk store', () => {
       ipfs,
     });
 
-    sdkWithoutIpfs = new SDK(accountWithoutIpfs);
     sdkWithIpfs = new SDK(accountWithIpfs);
   });
 

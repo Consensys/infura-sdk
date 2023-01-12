@@ -1,11 +1,12 @@
 import { config as loadEnv } from 'dotenv';
 import path from 'path';
 import Auth from '../src/lib/Auth/Auth';
-import { MetadataDTO, SDK } from '../src/lib/SDK/sdk';
+import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait from './utils/utils.ts/utils';
 import IpfsApiClient from './utils/utils.ts/ipfsClient';
 import Metadata from '../src/lib/Metadata/Metadata';
+import { MetadataDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = <string>process.env.WALLET_PUBLIC_ADDRESS;
@@ -97,11 +98,11 @@ describe('SDK - IPFS for ERC712', () => {
     let response2: MetadataDTO;
     await wait(
       async () => {
-        response = await sdk.getTokenMetadata({
+        response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: 0,
         });
-        response2 = await sdk.getTokenMetadata({
+        response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: 1,
         });
@@ -111,18 +112,18 @@ describe('SDK - IPFS for ERC712', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    response = await sdk.getTokenMetadata({
+    response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
       tokenId: 0,
     });
-    response2 = await sdk.getTokenMetadata({
+    response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
       tokenId: 1,
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
 
-    const contractNftMetadata = await sdk.getNFTsForCollection({
+    const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
     expect(
@@ -205,11 +206,11 @@ describe('SDK - IPFS for ERC712', () => {
     let response2: MetadataDTO;
     await wait(
       async () => {
-        response = await sdk.getTokenMetadata({
+        response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: 0,
         });
-        response2 = await sdk.getTokenMetadata({
+        response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: 1,
         });
@@ -219,18 +220,18 @@ describe('SDK - IPFS for ERC712', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    response = await sdk.getTokenMetadata({
+    response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
       tokenId: 0,
     });
-    response2 = await sdk.getTokenMetadata({
+    response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
       tokenId: 1,
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
 
-    const contractNftMetadata = await sdk.getNFTsForCollection({
+    const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
     expect(
@@ -312,11 +313,11 @@ describe('SDK - IPFS for ERC712', () => {
     let response2: MetadataDTO;
     await wait(
       async () => {
-        response = await sdk.getTokenMetadata({
+        response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: 0,
         });
-        response2 = await sdk.getTokenMetadata({
+        response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: 1,
         });
@@ -326,18 +327,18 @@ describe('SDK - IPFS for ERC712', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    response = await sdk.getTokenMetadata({
+    response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
       tokenId: 0,
     });
-    response2 = await sdk.getTokenMetadata({
+    response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
       tokenId: 1,
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
 
-    const contractNftMetadata = await sdk.getNFTsForCollection({
+    const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
     expect(
@@ -388,7 +389,7 @@ describe('SDK - IPFS for ERC712', () => {
     let resp: MetadataDTO;
     await wait(
       async () => {
-        resp = await sdk.getTokenMetadata({
+        resp = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: 0,
         });
@@ -398,7 +399,7 @@ describe('SDK - IPFS for ERC712', () => {
       1000,
       'Waiting for NFT collection to be available for an user',
     );
-    resp = await sdk.getTokenMetadata({
+    resp = await sdk.api.getTokenMetadata({
       contractAddress: newContract.contractAddress,
       tokenId: 0,
     });

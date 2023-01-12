@@ -1,6 +1,7 @@
 import { config as loadEnv } from 'dotenv';
-import { NftDTO, SDK } from '../../src/lib/SDK/sdk';
+import { SDK } from '../../src/lib/SDK/sdk';
 import Auth from '../../src/lib/Auth/Auth';
+import { NftDTO } from '../../src/lib/SDK/types';
 
 loadEnv();
 
@@ -27,7 +28,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the contract metadata', () => {
     it('should return the contract metadata', async () => {
-      const contractMetadata = await sdk.getContractMetadata({
+      const contractMetadata = await sdk.api.getContractMetadata({
         contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
       });
       const expectedContractMetadata = { name: 'testContract', symbol: 'TST', tokenType: 'ERC721' };
@@ -37,7 +38,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the list of NFTs by address', () => {
     it('should return list of NFTs by address', async () => {
-      const nfts: any = await sdk.getNFTs({
+      const nfts: any = await sdk.api.getNFTs({
         publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
       });
 
@@ -53,7 +54,7 @@ describe('E2E Test: Sdk (read)', () => {
         expect(asset).toHaveProperty('supply');
         expect(asset).toHaveProperty('type');
       });
-      const nftPage2: NftDTO = await sdk.getNFTs({
+      const nftPage2: NftDTO = await sdk.api.getNFTs({
         publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
         cursor: nfts.cursor,
       });
@@ -62,7 +63,7 @@ describe('E2E Test: Sdk (read)', () => {
     });
     it('should return an error when using wrong cursor', async () => {
       const nfts = async () =>
-        await sdk.getNFTs({
+        await sdk.api.getNFTs({
           publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
           cursor: 'test',
         });
@@ -75,7 +76,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the list of NFTs by collection', () => {
     it('should return list of NFTs by collection', async () => {
-      const nfts: NftDTO = await sdk.getNFTsForCollection({
+      const nfts: NftDTO = await sdk.api.getNFTsForCollection({
         contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
       });
       expect(nfts.cursor).toBeNull();
@@ -83,13 +84,13 @@ describe('E2E Test: Sdk (read)', () => {
     });
     it('should return list of NFTs by collection with pagination', async () => {
       const goerliCollectionAddress = '0x317a8fe0f1c7102e7674ab231441e485c64c178a';
-      let nfts: NftDTO = await sdk.getNFTsForCollection({
+      let nfts: NftDTO = await sdk.api.getNFTsForCollection({
         contractAddress: goerliCollectionAddress,
       });
       expect(nfts.cursor).not.toBeNull();
       expect(nfts.assets.length).toBeGreaterThan(0);
       expect(nfts.pageNumber).toBe(0);
-      nfts = await sdk.getNFTsForCollection({
+      nfts = await sdk.api.getNFTsForCollection({
         contractAddress: goerliCollectionAddress,
         cursor: nfts.cursor,
       });
@@ -99,7 +100,7 @@ describe('E2E Test: Sdk (read)', () => {
     });
     it('should return an error when using wrong cursor', async () => {
       const nftCollection = async () =>
-        await sdk.getNFTsForCollection({
+        await sdk.api.getNFTsForCollection({
           contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
           cursor: 'test',
         });
@@ -112,7 +113,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should be able to get the token metadata', () => {
     it('should return token metadata', async () => {
-      const tokenMetadata = await sdk.getTokenMetadata({
+      const tokenMetadata = await sdk.api.getTokenMetadata({
         contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
         tokenId: 0,
       });
