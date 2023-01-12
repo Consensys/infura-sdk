@@ -184,7 +184,7 @@ export class SDK {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}`;
     const {
       data: { symbol, name, tokenType },
-    } = await this.httpClient.get(apiUrl, opts.cursor);
+    } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
 
     return { symbol, name, tokenType };
   }
