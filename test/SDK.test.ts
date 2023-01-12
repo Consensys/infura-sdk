@@ -18,7 +18,7 @@ import {
 } from './__mocks__/api';
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { TEMPLATES } from '../src/lib/constants';
-import { GetTransfersByBlockNumberOptions, SDK } from '../src/lib/SDK/sdk';
+import { GetTransfersByBlockNumberOptions, GetNftTransfersByWallet, SDK } from '../src/lib/SDK/sdk';
 import ERC721Mintable, { DeployParams } from '../src/lib/ContractTemplates/ERC721Mintable';
 import IPFS from '../src/services/ipfsService';
 
@@ -209,6 +209,29 @@ describe('Sdk', () => {
     it('should return transfers', async () => {
       HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
       await sdk.getTransfersByBlockNumber({ blockHashNumber: '125' });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersByWallet', () => {
+    it('should throw when wallet address is not provided', async () => {
+      await expect(() =>
+        sdk.getNftsTransfersByWallet({} as GetNftTransfersByWallet),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid account address. (location="[SDK.getNftTransfersByWallet]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "walletAddress" is not a valid address', async () => {
+      await expect(() =>
+        sdk.getNftsTransfersByWallet({ walletAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid account address. (location="[SDK.getNftTransfersByWallet]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
+      await sdk.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

@@ -69,8 +69,13 @@ type PublicAddressOptions = {
   cursor?: string;
 };
 
-type ContractAddressOptions = {
+export type ContractAddressOptions = {
   contractAddress: string;
+  cursor?: string;
+};
+
+export type GetNftTransfersByWallet = {
+  walletAddress: string;
   cursor?: string;
 };
 
@@ -277,6 +282,23 @@ export class SDK {
 
     const apiUrl = `${this.apiPath}/nfts/block/transfers`;
     const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHashNumber });
+    return data;
+  }
+
+  /**
+   * Get transfers by wallet address
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getNftsTransfersByWallet(opts: GetNftTransfersByWallet): Promise<TransfersDTO> {
+    if (!opts.walletAddress || !utils.isAddress(opts.walletAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_account_address, {
+        location: Logger.location.SDK_GETTRANSFERSBYWALLET,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/transfers`;
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
     return data;
   }
 

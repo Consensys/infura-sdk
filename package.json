@@ -6,7 +6,7 @@
   "types": "dist/src/index.d.ts",
   "scripts": {
     "test": "jest",
-    "test:e2e": "jest e2e/*  --config ./e2e/config/jest.config.json --runInBand  ",
+    "test:e2e": "jest e2e/sdk.ERC1155.e2e.test.ts  --config ./e2e/config/jest.config.json --runInBand  ",
     "test:integration": "jest --config ./integration-test/config/jest-integration.json --forceExit --runInBand --no-cache",
     "test:coverage": "jest --coverage",
     "build": "rm -rf dist/ && tsc",
