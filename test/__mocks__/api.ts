@@ -41,6 +41,19 @@ export const accountNFTsMock = {
     account: ACCOUNT_ADDRESS,
     type: 'NFT',
     assets: [assetMock],
+    cursor: 'cursorTest',
+  },
+};
+
+export const accountNFTsMockWithoutCursor = {
+  data: {
+    pageNumber: 2,
+    network: 'ETHEREUM',
+    total: 1,
+    account: ACCOUNT_ADDRESS,
+    type: 'NFT',
+    assets: [assetMock],
+    cursor: null,
   },
 };
 
@@ -51,6 +64,19 @@ export const collectionNFTsMock = {
     total: 1,
     account: ACCOUNT_ADDRESS,
     type: 'NFT',
+    cursor: 'test',
+    assets: [assetMock],
+  },
+};
+
+export const collectionNFTsMockWithoutCursor = {
+  data: {
+    pageNumber: 1,
+    network: 'ETHEREUM',
+    total: 1,
+    account: ACCOUNT_ADDRESS,
+    type: 'NFT',
+    cursor: null,
     assets: [assetMock],
   },
 };

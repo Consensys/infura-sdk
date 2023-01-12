@@ -217,7 +217,6 @@ export class Logger {
   makeError(message: string, code?: ErrorCode, params?: any): string {
     const optCode = !code ? Logger.code.RUNTIME : code;
     const optParams = !params ? {} : params;
-
     const messageDetails: Array<string> = [];
     Object.keys(optParams).forEach(key => {
       const value = optParams[key];

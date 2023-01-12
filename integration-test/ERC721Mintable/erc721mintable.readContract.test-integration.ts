@@ -1,5 +1,5 @@
 import { config as loadEnv } from 'dotenv';
-import { SDK } from '../../src/lib/SDK/sdk';
+import { NftDTO, SDK } from '../../src/lib/SDK/sdk';
 import Auth from '../../src/lib/Auth/Auth';
 
 loadEnv();
@@ -42,6 +42,9 @@ describe('E2E Test: Sdk (read)', () => {
       });
 
       expect(nfts.account).toEqual(process.env.WALLET_PUBLIC_ADDRESS);
+      expect(nfts.total).toBeGreaterThan(100);
+      expect(nfts.pageNumber).toEqual(1);
+      expect(nfts.cursor).not.toBeNull();
       // Checking that each element has the right data
       nfts.assets.forEach((asset: any) => {
         expect(asset).not.toHaveProperty('metadata');
@@ -50,15 +53,60 @@ describe('E2E Test: Sdk (read)', () => {
         expect(asset).toHaveProperty('supply');
         expect(asset).toHaveProperty('type');
       });
+      const nftPage2: NftDTO = await sdk.getNFTs({
+        publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
+        cursor: nfts.cursor,
+      });
+      expect(nftPage2.cursor).not.toBeNull();
+      expect(nftPage2.pageNumber).toEqual(2);
+    });
+    it('should return an error when using wrong cursor', async () => {
+      const nfts = async () =>
+        await sdk.getNFTs({
+          publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
+          cursor: 'test',
+        });
+
+      expect(nfts).rejects.toThrow(
+        `An Axios error occured (location="[httpService.get]", error={"message":"Request failed with status code 400","name":"AxiosError"`,
+      );
     });
   });
 
   describe('As an account I should be able to get the list of NFTs by collection', () => {
     it('should return list of NFTs by collection', async () => {
-      const nfts: any = await sdk.getNFTsForCollection({
+      const nfts: NftDTO = await sdk.getNFTsForCollection({
         contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
       });
+      expect(nfts.cursor).toBeNull();
       expect(nfts.assets.length).toBeGreaterThan(0);
+    });
+    it('should return list of NFTs by collection with pagination', async () => {
+      const goerliCollectionAddress = '0x317a8fe0f1c7102e7674ab231441e485c64c178a';
+      let nfts: NftDTO = await sdk.getNFTsForCollection({
+        contractAddress: goerliCollectionAddress,
+      });
+      expect(nfts.cursor).not.toBeNull();
+      expect(nfts.assets.length).toBeGreaterThan(0);
+      expect(nfts.pageNumber).toBe(0);
+      nfts = await sdk.getNFTsForCollection({
+        contractAddress: goerliCollectionAddress,
+        cursor: nfts.cursor,
+      });
+      expect(nfts.cursor).not.toBeNull();
+      expect(nfts.assets.length).toBeGreaterThan(0);
+      expect(nfts.pageNumber).toBe(1);
+    });
+    it('should return an error when using wrong cursor', async () => {
+      const nftCollection = async () =>
+        await sdk.getNFTsForCollection({
+          contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
+          cursor: 'test',
+        });
+
+      expect(nftCollection).rejects.toThrow(
+        `An Axios error occured (location="[httpService.get]", error={"message":"Request failed with status code 400","name":"AxiosError"`,
+      );
     });
   });
 

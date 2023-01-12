@@ -58,6 +58,7 @@ export interface Components {
       account: string;
       /** @example NFT */
       type: string;
+      cursor: string;
       assets: Components['schemas']['AssetsModel'][];
     };
     MetadataModel: {
