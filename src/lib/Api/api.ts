@@ -20,7 +20,12 @@ type GetTokenMetadataOptions = {
 };
 
 export type GetTransfersByBlockNumberOptions = {
-  blockHashNumber: string;
+  blockNumber: string;
+  cursor?: string;
+};
+
+export type GetTransfersByBlockHashOptions = {
+  blockHash: string;
   cursor?: string;
 };
 
@@ -136,18 +141,36 @@ export default class Api {
   /**
    * Get transfers by block number
    * @param {object} opts object containing all parameters
-   * @param {string} opts.blockHashNumber number of the block to get transfers from
+   * @param {string} opts.blockNumber number of the block to get transfers from
    * @returns {Promise<object>} Transfers list
    */
   async getTransfersByBlockNumber(opts: GetTransfersByBlockNumberOptions): Promise<TransfersDTO> {
-    if (!opts.blockHashNumber) {
+    if (!opts.blockNumber) {
       log.throwMissingArgumentError(Logger.message.invalid_block_number, {
         location: Logger.location.SDK_GETTRANSFERSBYBLOCKNUMBER,
       });
     }
 
     const apiUrl = `${this.apiPath}/nfts/block/transfers`;
-    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHashNumber });
+    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockNumber });
+    return data;
+  }
+
+  /**
+   * Get transfers by block hash
+   * @param {object} opts object containing all parameters
+   * @param {string} opts.blockHash number of the block to get transfers from
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByBlockHash(opts: GetTransfersByBlockHashOptions): Promise<TransfersDTO> {
+    if (!opts.blockHash) {
+      log.throwMissingArgumentError(Logger.message.invalid_block_hash, {
+        location: Logger.location.SDK_GETTRANSFERSBYBLOCKHASH,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/block/transfers`;
+    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHash });
     return data;
   }
 

@@ -190,10 +190,9 @@ export enum ErrorMessage {
   data_must_be_string = 'data must be a string',
   data_must_be_valid_json = 'data must be a valid json',
   invalid_ids = 'List of IDs provided cannot be empty',
-
   unsupported_provider = 'unsupported provider',
-
   invalid_block_number = 'Invalid block number.',
+  invalid_block_hash = 'Invalid block hash.',
 }
 
 export class Logger {
