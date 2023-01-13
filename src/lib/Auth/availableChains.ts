@@ -9,6 +9,7 @@ const Chains = {
   goerli: 5,
   polygon: 137,
   mumbai: 80001,
+  sepolia: 11155111,
 };
 
 const chainsName: ChainInfo = {
@@ -18,6 +19,7 @@ const chainsName: ChainInfo = {
   5: 'goerli',
   137: 'polygon',
   80001: 'mumbai',
+  11155111: 'sepolia',
 };
 
 const chainUrls = {
@@ -27,6 +29,7 @@ const chainUrls = {
   [Chains.goerli]: 'https://goerli.infura.io',
   [Chains.polygon]: 'https://polygon-mainnet.infura.io',
   [Chains.mumbai]: 'https://polygon-mumbai.infura.io',
+  [Chains.sepolia]: 'https://sepolia.infura.io',
 };
 
 const availableChains = [
@@ -36,6 +39,7 @@ const availableChains = [
   Chains.rinkeby,
   Chains.polygon,
   Chains.mumbai,
+  Chains.sepolia,
 ];
 
 const getChainName = (chainId: number) => chainsName[chainId];
