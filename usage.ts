@@ -16,7 +16,7 @@ loadEnv();
     projectId: process.env.INFURA_PROJECT_ID,
     secretId: process.env.INFURA_PROJECT_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
-    chainId: 56,
+    chainId: 5,
     ipfs: {
       projectId: process.env.INFURA_IPFS_PROJECT_ID,
       apiKeySecret: process.env.INFURA_IPFS_PROJECT_SECRET,
@@ -65,7 +65,7 @@ loadEnv();
   console.log(':rocket: ~ file: usage.ipfs.ts:60 ~ storeMetadata', storeMetadata);
 
   // Create a new contract
-  /* const newContract = await sdk.deploy({
+  const newContract = await sdk.deploy({
     template: TEMPLATES.ERC721Mintable,
     params: {
       name: '1507Contract',
@@ -87,24 +87,21 @@ loadEnv();
 
   // READ API
   // Get contract metadata
-  const contractMetadata = await sdk.api.getContractMetadata({
+  const contractMetadata = await sdk.getContractMetadata({
     contractAddress: newContract.contractAddress,
   });
-  console.log('contractMetadata', contractMetadata); */
+  console.log('contractMetadata', contractMetadata);
 
   // Get the token metadata
-  /* const tokenMetadataResult = await sdk.api.getTokenMetadata({
-    contractAddress: '0xf1797f9E7e10ae0c76B98386190bA7E1Dc82346F',
+  const tokenMetadataResult = await sdk.getTokenMetadata({
+    contractAddress: newContract.contractAddress,
     tokenId: 0,
   });
-  console.log('tokenMetadataResult', tokenMetadataResult); */
+  console.log('tokenMetadataResult', tokenMetadataResult);
 
   // -----------------------------------------------------------------------------
   // ERC1155
-  const tokenMetadataResult = await sdk.api.getNftsTransfersByWallet({
-    walletAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
-  });
-  console.log(tokenMetadataResult);
+
   // IPFS Store
   const storeArrayMetadataForERC1155 = await sdk.createFolder({
     metadata: [
