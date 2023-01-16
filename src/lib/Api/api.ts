@@ -159,7 +159,7 @@ export default class Api {
   async getNftsTransfersByWallet(opts: GetNftTransfersByWallet): Promise<TransfersDTO> {
     if (!opts.walletAddress || !utils.isAddress(opts.walletAddress)) {
       log.throwMissingArgumentError(Logger.message.invalid_account_address, {
-        location: Logger.location.SDK_GETTRANSFERSBYWALLET,
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
       });
     }
 

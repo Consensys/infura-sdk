@@ -258,7 +258,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     });
     expect(collection.total).toEqual(1);
   });
-  it('', async () => {
+  it('Get transfers by wallet and by blocknumber after transfering a token', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
