@@ -2,9 +2,11 @@ import { config as loadEnv } from 'dotenv';
 import { SDK } from './../src/lib/SDK/sdk';
 import Auth from './../src/lib/Auth/Auth';
 import {
+  GetNftTransfersFromBlockToBlock,
   GetTransfersByBlockHashOptions,
   GetTransfersByBlockNumberOptions,
 } from '../src/lib/Api/api';
+import version from '../src/_version';
 
 loadEnv();
 
@@ -32,7 +34,7 @@ describe('E2E Test: Sdk (read)', () => {
       expect(() =>
         sdk.api.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
       ).rejects.toThrow(
-        `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=1.0.2)`,
+        `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
   });
@@ -227,6 +229,82 @@ describe('E2E Test: Sdk (read)', () => {
           ]),
         });
       }
+    });
+  });
+
+  describe('As an account I should get list of transfers from block to block', () => {
+    const fromBlock = 16026179;
+    const toBlock = 16026190;
+    it('should get list of transfers', async () => {
+      const result = await sdk.api.getTransferFromBlockToBlock({
+        fromBlock,
+        toBlock,
+      });
+
+      expect(result).toMatchObject({
+        total: expect.any(Number),
+        pageNumber: 0,
+        pageSize: expect.any(Number),
+        network: expect.any(String),
+        cursor: expect.any(String),
+        transfers: expect.arrayContaining([
+          expect.objectContaining({
+            tokenAddress: expect.any(String),
+            tokenId: expect.any(String),
+            fromAddress: expect.any(String),
+            toAddress: expect.any(String),
+            contractType: expect.any(String),
+            price: expect.any(String),
+            quantity: expect.any(String),
+            blockNumber: expect.any(String),
+            blockTimestamp: expect.any(String),
+            blockHash: expect.any(String),
+            transactionHash: expect.any(String),
+            transactionType: expect.any(String),
+          }),
+        ]),
+      });
+      const cursor = result.cursor;
+      if (result.cursor) {
+        const resultSecondPage = await sdk.api.getTransferFromBlockToBlock({
+          fromBlock,
+          toBlock,
+          cursor,
+        });
+        expect(resultSecondPage).toMatchObject({
+          total: expect.any(Number),
+          pageNumber: 1,
+          pageSize: expect.any(Number),
+          network: expect.any(String),
+          cursor: expect.any(String),
+          transfers: expect.arrayContaining([
+            expect.objectContaining({
+              tokenAddress: expect.any(String),
+              tokenId: expect.any(String),
+              fromAddress: expect.any(String),
+              toAddress: expect.any(String),
+              contractType: expect.any(String),
+              price: expect.any(String),
+              quantity: expect.any(String),
+              blockNumber: expect.any(String),
+              blockTimestamp: expect.any(String),
+              blockHash: expect.any(String),
+              transactionHash: expect.any(String),
+              transactionType: expect.any(String),
+            }),
+          ]),
+        });
+      }
+    });
+  });
+
+  describe('As an account I should get error with invalid blockNumber', () => {
+    it('should throw if block number not valid', async () => {
+      expect(() =>
+        sdk.api.getTransferFromBlockToBlock({} as GetNftTransfersFromBlockToBlock),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
     });
   });
 });

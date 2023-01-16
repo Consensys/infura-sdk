@@ -2,6 +2,7 @@ import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
 import { MetadataDTO, MetadataInfo, NftDTO, TransfersDTO } from '../SDK/types';
+import { isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
   publicAddress: string;
@@ -31,6 +32,12 @@ export type GetTransfersByBlockHashOptions = {
 
 export type GetNftTransfersByWallet = {
   walletAddress: string;
+  cursor?: string;
+};
+
+export type GetNftTransfersFromBlockToBlock = {
+  fromBlock: number;
+  toBlock: number;
   cursor?: string;
 };
 
@@ -194,6 +201,30 @@ export default class Api {
 
     const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/transfers`;
     const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    return data;
+  }
+
+  /**
+   * Get transfers from block to block
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransferFromBlockToBlock(opts: GetNftTransfersFromBlockToBlock): Promise<TransfersDTO> {
+    if (!opts.fromBlock || !isValidPositiveNumber(opts.fromBlock)) {
+      log.throwMissingArgumentError(Logger.message.invalid_block, {
+        location: Logger.location.SDK_GET_TRANSFERS_FROM_BLOCK_TO_BLOCK,
+      });
+    }
+
+    if (!opts.toBlock || !isValidPositiveNumber(opts.toBlock)) {
+      log.throwMissingArgumentError(Logger.message.invalid_block, {
+        location: Logger.location.SDK_GET_TRANSFERS_FROM_BLOCK_TO_BLOCK,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/transfers`;
+    const { fromBlock, toBlock, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { fromBlock, toBlock, cursor });
     return data;
   }
 }
