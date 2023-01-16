@@ -71,8 +71,8 @@ describe('E2E Test: Sdk (read)', () => {
           cursor: cursor,
         });
         expect(resultSecondPage).toMatchObject({
-          total: expect.any(Number),
-          pageNumber: expect.any(Number),
+          total: result.total,
+          pageNumber: result.pageNumber + 1,
           pageSize: expect.any(Number),
           network: expect.any(String),
           transfers: expect.arrayContaining([
@@ -142,8 +142,8 @@ describe('E2E Test: Sdk (read)', () => {
           cursor: cursor,
         });
         expect(resultSecondPage).toMatchObject({
-          total: expect.any(Number),
-          pageNumber: expect.any(Number),
+          total: result.total,
+          pageNumber: result.pageNumber + 1,
           pageSize: expect.any(Number),
           network: expect.any(String),
           transfers: expect.arrayContaining([
@@ -166,6 +166,7 @@ describe('E2E Test: Sdk (read)', () => {
       }
     });
   });
+
   describe('As an account I should get list of transfers by wallet address', () => {
     const walletAddress = '0xC4505dB8CC490767fA6f4b6f0F2bDd668B357A5D';
     it('should get list of transfers', async () => {
@@ -203,8 +204,8 @@ describe('E2E Test: Sdk (read)', () => {
           cursor: cursor,
         });
         expect(resultSecondPage).toMatchObject({
-          total: expect.any(Number),
-          pageNumber: 1,
+          total: result.total,
+          pageNumber: result.pageNumber + 1,
           pageSize: expect.any(Number),
           network: expect.any(String),
           cursor: expect.any(String),
