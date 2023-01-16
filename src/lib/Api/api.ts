@@ -152,7 +152,10 @@ export default class Api {
     }
 
     const apiUrl = `${this.apiPath}/nfts/block/transfers`;
-    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockNumber });
+    const { data } = await this.httpClient.get(apiUrl, {
+      blockHashNumber: opts.blockNumber,
+      cursor: opts.cursor,
+    });
     return data;
   }
 
@@ -170,7 +173,10 @@ export default class Api {
     }
 
     const apiUrl = `${this.apiPath}/nfts/block/transfers`;
-    const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHash });
+    const { data } = await this.httpClient.get(apiUrl, {
+      blockHashNumber: opts.blockHash,
+      cursor: opts.cursor,
+    });
     return data;
   }
 
