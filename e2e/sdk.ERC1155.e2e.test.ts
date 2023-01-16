@@ -3,8 +3,10 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait from './utils/utils.ts/utils';
+import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
 
 loadEnv();
+let reusableContract: ERC1155Mintable;
 const ownerAddress: string = <string>process.env.WALLET_PUBLIC_ADDRESS;
 const authInfo = {
   privateKey: process.env.WALLET_PRIVATE_KEY,
@@ -230,11 +232,11 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   it('deploy a contract and addIds', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    const newContract = await sdk.deploy(contractInfo);
-    const hash = await newContract.addIds({ ids: [0] });
+    reusableContract = await sdk.deploy(contractInfo);
+    const hash = await reusableContract.addIds({ ids: [0] });
     const receipt1 = await hash.wait();
     expect(receipt1.status).toEqual(1);
-    const mintHash = await newContract.mint({
+    const mintHash = await reusableContract.mint({
       to: ownerAddress,
       id: 0,
       quantity: 1,
@@ -243,7 +245,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         const response = await sdk.api.getNFTsForCollection({
-          contractAddress: newContract.contractAddress,
+          contractAddress: reusableContract.contractAddress,
         });
         return response.total === 1;
       },
@@ -252,8 +254,52 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       'Waiting for NFT collection to be available',
     );
     const collection = await sdk.api.getNFTsForCollection({
-      contractAddress: newContract.contractAddress,
+      contractAddress: reusableContract.contractAddress,
     });
     expect(collection.total).toEqual(1);
+  });
+  it('Get transfers by wallet and by blocknumber after transfering a token', async () => {
+    const acc = new Auth(authInfo);
+    const sdk = new SDK(acc);
+    const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
+    const cont = {
+      template: TEMPLATES.ERC1155Mintable,
+      contractAddress: reusableContract.contractAddress,
+    };
+    const contract: ERC1155Mintable = await sdk.loadContract(cont);
+
+    const txHash = await contract.transfer({
+      from: ownerAddress,
+      to: '0x4aad99513ef287991735e13424189cc9b0fcf82e',
+      tokenId: 0,
+      quantity: 1,
+    });
+    await txHash.wait();
+
+    await wait(
+      async () => {
+        const response = await sdk.api.getNftsTransfersByWallet({
+          walletAddress: ownerAddress,
+        });
+        return response.total > transferList.total;
+      },
+      90000,
+      1000,
+      'Waiting for NFT transfer to be available',
+    );
+    const transferList2 = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
+
+    expect(transferList2.total).toBeGreaterThan(transferList.total); // check the new transfer is returned
+
+    const transfer = transferList2.transfers.filter(
+      (tx: any) => tx.transactionHash === txHash.hash,
+    );
+
+    const transferList3: any = await sdk.api.getTransfersByBlockNumber({
+      blockHashNumber: transfer[0].blockNumber,
+    });
+    expect(
+      transferList3.transfers.filter((tx: any) => tx.transactionHash === txHash.hash)[0],
+    ).toEqual(transfer[0]); // check that the transfer is returned and equal in both endpoints
   });
 });

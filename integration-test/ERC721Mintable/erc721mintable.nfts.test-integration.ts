@@ -90,4 +90,18 @@ describe('E2E Test: Basic NFT (mint)', () => {
     expect(receipt.from.toLowerCase()).toEqual(owner);
     expect(receipt.to.toLowerCase()).toEqual(contractObject.contractAddress.toLowerCase());
   });
+
+  it('Should get all nft transfers given an address', async () => {
+    const walletAddress = '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7';
+    const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress });
+    expect(transferList.transfers.length).toBeGreaterThan(0);
+    expect(transferList.pageNumber).toEqual(0);
+    expect(transferList.cursor).not.toBeNull();
+    const transferListPage2 = await sdk.api.getNftsTransfersByWallet({
+      walletAddress,
+      cursor: transferList.cursor,
+    });
+    expect(transferListPage2.transfers.length).toBeGreaterThan(0);
+    expect(transferListPage2.pageNumber).toEqual(1);
+  });
 });

@@ -24,6 +24,11 @@ export type GetTransfersByBlockNumberOptions = {
   cursor?: string;
 };
 
+export type GetNftTransfersByWallet = {
+  walletAddress: string;
+  cursor?: string;
+};
+
 export default class Api {
   private readonly apiPath: string;
 
@@ -143,6 +148,23 @@ export default class Api {
 
     const apiUrl = `${this.apiPath}/nfts/block/transfers`;
     const { data } = await this.httpClient.get(apiUrl, { blockHashNumber: opts.blockHashNumber });
+    return data;
+  }
+
+  /**
+   * Get transfers by wallet address
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getNftsTransfersByWallet(opts: GetNftTransfersByWallet): Promise<TransfersDTO> {
+    if (!opts.walletAddress || !utils.isAddress(opts.walletAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_account_address, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/transfers`;
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
     return data;
   }
 }

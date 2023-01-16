@@ -85,7 +85,6 @@ describe('Sdk', () => {
     erc721Mocked.mockClear();
     signerMock.mockClear();
   });
-
   describe('getStatus', () => {
     it('should throw when transaction hash argument is not valid', async () => {
       await expect(() => sdk.getStatus({ txHash: 'test' })).rejects.toThrow(
