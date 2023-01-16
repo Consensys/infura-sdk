@@ -296,7 +296,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     );
 
     const transferList3: any = await sdk.api.getTransfersByBlockNumber({
-      blockHashNumber: transfer[0].blockNumber,
+      blockNumber: transfer[0].blockNumber,
     });
     expect(
       transferList3.transfers.filter((tx: any) => tx.transactionHash === txHash.hash)[0],
