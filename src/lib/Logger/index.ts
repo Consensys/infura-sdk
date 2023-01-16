@@ -221,6 +221,7 @@ export class Logger {
     const optCode = !code ? Logger.code.RUNTIME : code;
     const optParams = !params ? {} : params;
     const messageDetails: Array<string> = [];
+
     Object.keys(optParams).forEach(key => {
       const value = optParams[key];
       try {
@@ -232,24 +233,12 @@ export class Logger {
     messageDetails.push(`code=${optCode}`);
     messageDetails.push(`version=${this.version}`);
 
-    const reason = message;
     let errorMsg = message;
 
     if (messageDetails.length) {
       errorMsg += ` (${messageDetails.join(', ')})`;
     }
-
-    const error: any = new Error(errorMsg);
-    error.stack = '';
-    error.reason = reason;
-    error.code = optCode;
-    error.version = this.version;
-
-    Object.keys(optParams).forEach(key => {
-      error[key] = optParams[key];
-    });
-
-    return error;
+    return errorMsg;
   }
 
   throwError(message: string, code?: ErrorCode, params?: any): never {
