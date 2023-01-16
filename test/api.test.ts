@@ -18,7 +18,11 @@ import {
 } from './__mocks__/api';
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
-import Api, { GetNftTransfersByWallet, GetTransfersByBlockNumberOptions } from '../src/lib/Api/api';
+import Api, {
+  GetNftTransfersByWallet,
+  GetTransfersByBlockHashOptions,
+  GetTransfersByBlockNumberOptions,
+} from '../src/lib/Api/api';
 
 loadEnv();
 
@@ -223,7 +227,9 @@ describe('Api', () => {
     });
 
     it('should return transfers', async () => {
-      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
       await api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });

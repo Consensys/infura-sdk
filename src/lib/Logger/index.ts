@@ -107,6 +107,7 @@ export enum ErrorLocation {
   SDK_CREATEFOLDER = '[SDK.createFolder]',
   SDK_GETTRANSFERSBYBLOCKNUMBER = '[SDK.getTransfersByBlockNumber]',
   SDK_GET_TRANSFERS_BY_WALLET = '[SDK.getNftTransfersByWallet]',
+  SDK_GETTRANSFERSBYBLOCKHASH = '[SDK.getTransfersByBlockHash]',
 
   // Metadata
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
