@@ -216,7 +216,7 @@ describe('Api', () => {
       await expect(() =>
         api.getTransferFromBlockToBlock({} as GetNftTransfersFromBlockToBlock),
       ).rejects.toThrow(
-        `Error: missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
 
