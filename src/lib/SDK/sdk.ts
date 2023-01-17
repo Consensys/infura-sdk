@@ -78,7 +78,7 @@ export class SDK {
   async deploy(opts: any): Promise<any> {
     if (!this.infuraSupported()) {
       log.throwArgumentError(
-        Logger.message.chain_not_supported,
+        Logger.message.chain_not_supported_write_operations,
         'chainId',
         this.auth.getChainId(),
         {
@@ -114,7 +114,7 @@ export class SDK {
   async loadContract(opts: LoadContractOptions): Promise<any> {
     if (!this.infuraSupported()) {
       log.throwArgumentError(
-        Logger.message.chain_not_supported,
+        Logger.message.chain_not_supported_write_operations,
         'chainId',
         this.auth.getChainId(),
         {

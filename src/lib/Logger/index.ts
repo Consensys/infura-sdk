@@ -178,6 +178,7 @@ export enum ErrorMessage {
   approvalStatus_must_be_boolean = 'approvalStatus must be boolean.',
   only_privateKey_or_provider_required = 'Only privateKey or provider required',
   chain_not_supported = 'Chain not supported.',
+  chain_not_supported_write_operations = 'Chain not supported for WRITE operations yet.',
   axios_error = 'An Axios error occured',
   ethers_error = 'An Ethers error occured',
 

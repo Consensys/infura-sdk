@@ -231,7 +231,7 @@ describe('Sdk', () => {
           contractAddress: '',
         }),
       ).rejects.toThrow(
-        `Error: Chain not supported. (location=\"[SDK.loadContract]\", argument="chainId", value=56, code=INVALID_ARGUMENT, version=${version})`,
+        `Error: Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=56, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
     it('Should show an error when bsc test chain is provided when calling write functions', async () => {
@@ -249,7 +249,7 @@ describe('Sdk', () => {
           contractAddress: '',
         }),
       ).rejects.toThrow(
-        `Error: Chain not supported. (location=\"[SDK.loadContract]\", argument="chainId", value=97, code=INVALID_ARGUMENT, version=${version})`,
+        `Error: Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=97, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
     it('Should show an error when fantom chain is provided when calling write functions', async () => {
@@ -267,7 +267,7 @@ describe('Sdk', () => {
           contractAddress: '',
         }),
       ).rejects.toThrow(
-        `Error: Chain not supported. (location=\"[SDK.loadContract]\", argument="chainId", value=250, code=INVALID_ARGUMENT, version=${version})`,
+        `Error: Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=250, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
     it('Should show an error when cronos chain is provided when calling write functions', async () => {
@@ -285,7 +285,7 @@ describe('Sdk', () => {
           contractAddress: '',
         }),
       ).rejects.toThrow(
-        `Error: Chain not supported. (location=\"[SDK.loadContract]\", argument="chainId", value=25, code=INVALID_ARGUMENT, version=${version})`,
+        `Error: Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=25, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
     it('Should show an error when cronos testnet chain is provided when calling write functions', async () => {
@@ -303,7 +303,7 @@ describe('Sdk', () => {
           contractAddress: '',
         }),
       ).rejects.toThrow(
-        `Error: Chain not supported. (location=\"[SDK.loadContract]\", argument="chainId", value=338, code=INVALID_ARGUMENT, version=${version})`,
+        `Error: Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=338, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
   });
