@@ -91,7 +91,7 @@ export const tokenMetadataMock = {
   },
 };
 
-export const transferByBlockNumberMock = {
+export const transferByBlockHashNumberMock = {
   data: {
     total: 29,
     pageNumber: 0,

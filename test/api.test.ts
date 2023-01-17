@@ -14,11 +14,15 @@ import {
   collectionNFTsMockWithoutCursor,
   contractMetadataMock,
   tokenMetadataMock,
-  transferByBlockNumberMock,
+  transferByBlockHashNumberMock,
 } from './__mocks__/api';
 import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
-import Api, { GetNftTransfersByWallet, GetTransfersByBlockNumberOptions } from '../src/lib/Api/api';
+import Api, {
+  GetNftTransfersByWallet,
+  GetTransfersByBlockHashOptions,
+  GetTransfersByBlockNumberOptions,
+} from '../src/lib/Api/api';
 
 loadEnv();
 
@@ -178,8 +182,30 @@ describe('Api', () => {
     });
 
     it('should return transfers', async () => {
-      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
-      await api.getTransfersByBlockNumber({ blockHashNumber: '125' });
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
+      await api.getTransfersByBlockNumber({ blockNumber: '125' });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersByBlockHash', () => {
+    it('hould throw when block hash not provided', async () => {
+      await expect(() =>
+        api.getTransfersByBlockHash({} as GetTransfersByBlockHashOptions),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid block hash. (location="[SDK.getTransfersByBlockHash]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
+      await api.getTransfersByBlockHash({
+        blockHash: '0x759d8cb3930463fc0a0b6d6e30b284a1466cb7c590c21767f08a37e34fd583b1',
+      });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -201,7 +227,9 @@ describe('Api', () => {
     });
 
     it('should return transfers', async () => {
-      HttpServiceMock.mockResolvedValueOnce(transferByBlockNumberMock as AxiosResponse<any, any>);
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
       await api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
