@@ -21,7 +21,7 @@ const authInfo: any = {
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
   rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 5,
+  chainId: 80001,
   ipfs,
 };
 
