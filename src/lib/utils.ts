@@ -63,7 +63,7 @@ export const isValidPrice = (str: string) => {
   return !Number.isNaN(str) && !Number.isNaN(parseFloat(str));
 };
 
-export const isValidPriceNumber = (n: number) => {
+export const isValidPositiveNumber = (n: number) => {
   if (n < 0) return false;
   return !Number.isNaN(n);
 };

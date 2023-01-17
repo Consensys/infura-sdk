@@ -21,6 +21,7 @@ import { NFT_API_URL } from '../src/lib/constants';
 import Api, {
   GetNftTransfersByWallet,
   GetTransfersByBlockHashOptions,
+  GetNftTransfersFromBlockToBlock,
   GetTransfersByBlockNumberOptions,
 } from '../src/lib/Api/api';
 
@@ -173,7 +174,7 @@ describe('Api', () => {
   });
 
   describe('getTransfersByBlockNumber', () => {
-    it('hould throw when block number not provided', async () => {
+    it('should throw when block number not provided', async () => {
       await expect(() =>
         api.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
       ).rejects.toThrow(
@@ -206,6 +207,24 @@ describe('Api', () => {
       await api.getTransfersByBlockHash({
         blockHash: '0x759d8cb3930463fc0a0b6d6e30b284a1466cb7c590c21767f08a37e34fd583b1',
       });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersFromBLockToBLock', () => {
+    it('should throw when block number not provided', async () => {
+      await expect(() =>
+        api.getTransferFromBlockToBlock({} as GetNftTransfersFromBlockToBlock),
+      ).rejects.toThrow(
+        `Error: missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
+      await api.getTransferFromBlockToBlock({ fromBlock: 16026179, toBlock: 16026190 });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

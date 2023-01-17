@@ -1,6 +1,6 @@
 import { ethers, utils } from 'ethers';
 import { Logger, log } from '../Logger';
-import { addGasPriceToOptions, isDefined, isValidPriceNumber } from '../utils';
+import { addGasPriceToOptions, isDefined, isValidPositiveNumber } from '../utils';
 import { GAS_LIMIT } from '../constants';
 
 type RoyaltyInfoOptions = {
@@ -99,7 +99,7 @@ export default class HasRoyalty {
       });
     }
 
-    if (!params.sellPrice || !isValidPriceNumber(params.sellPrice)) {
+    if (!params.sellPrice || !isValidPositiveNumber(params.sellPrice)) {
       log.throwMissingArgumentError(Logger.message.no_sell_price_supplied_or_not_valid, {
         location: Logger.location.HASROYALTY_ROYALTYINFO,
       });

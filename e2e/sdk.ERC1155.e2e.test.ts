@@ -308,5 +308,14 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(
       transferList4.transfers.filter((tx: any) => tx.transactionHash === txHash.hash)[0],
     ).toEqual(transfer[0]);
+
+    const transferList5: any = await sdk.api.getTransferFromBlockToBlock({
+      fromBlock: parseInt(transfer[0].blockNumber, 10),
+      toBlock: parseInt(transfer[0].blockNumber, 10),
+    });
+
+    expect(
+      transferList5.transfers.filter((tx: any) => tx.transactionHash === txHash.hash)[0],
+    ).toEqual(transfer[0]);
   });
 });
