@@ -303,7 +303,7 @@ describe('E2E Test: Sdk (read)', () => {
       expect(() =>
         sdk.api.getTransferFromBlockToBlock({} as GetNftTransfersFromBlockToBlock),
       ).rejects.toThrow(
-        `Error: missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
   });
