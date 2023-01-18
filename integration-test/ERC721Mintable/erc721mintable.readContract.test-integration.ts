@@ -69,7 +69,7 @@ describe('E2E Test: Sdk (read)', () => {
         });
 
       expect(nfts).rejects.toThrow(
-        `An Axios error occured (location="[httpService.get]", error={"message":"Request failed with status code 400","name":"AxiosError"`,
+        `An Axios error occured : Bad cursor (location="[httpService.get]", error={"message":"Request failed with status code 400","name":"AxiosError"`,
       );
     });
   });
@@ -106,7 +106,7 @@ describe('E2E Test: Sdk (read)', () => {
         });
 
       expect(nftCollection).rejects.toThrow(
-        `An Axios error occured (location="[httpService.get]", error={"message":"Request failed with status code 400","name":"AxiosError"`,
+        `An Axios error occured : Bad cursor (location="[httpService.get]", error={"message":"Request failed with status code 400","name":"AxiosError"`,
       );
     });
   });

@@ -34,7 +34,7 @@ describe('E2E Test: Sdk (read)', () => {
       expect(() =>
         sdk.api.getTransfersByBlockNumber({} as GetTransfersByBlockNumberOptions),
       ).rejects.toThrow(
-        `Error: missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid block number. (location="[SDK.getTransfersByBlockNumber]", code=MISSING_ARGUMENT, version=1.0.2)`,
       );
     });
   });
@@ -103,7 +103,7 @@ describe('E2E Test: Sdk (read)', () => {
       expect(() =>
         sdk.api.getTransfersByBlockHash({} as GetTransfersByBlockHashOptions),
       ).rejects.toThrow(
-        `Error: missing argument: Invalid block hash. (location="[SDK.getTransfersByBlockHash]", code=MISSING_ARGUMENT, version=1.0.2)`,
+        `missing argument: Invalid block hash. (location="[SDK.getTransfersByBlockHash]", code=MISSING_ARGUMENT, version=1.0.2)`,
       );
     });
   });
@@ -303,7 +303,7 @@ describe('E2E Test: Sdk (read)', () => {
       expect(() =>
         sdk.api.getTransferFromBlockToBlock({} as GetNftTransfersFromBlockToBlock),
       ).rejects.toThrow(
-        `Error: missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid block number (location=\"[SDK.getTransferFromBlockToBlock]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
   });
