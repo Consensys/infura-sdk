@@ -23,6 +23,7 @@ const contractInfo = {
     ids: [],
   },
 };
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 10);
   it('Deploy - Get all nfts by owner address', async () => {

@@ -24,7 +24,7 @@ const authInfo = {
 };
 
 const file = path.join(__dirname, 'infura.jpeg');
-
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - IPFS for ERC712', () => {
   jest.setTimeout(60 * 1000 * 10);
   const ipfsApiClient = new IpfsApiClient();
