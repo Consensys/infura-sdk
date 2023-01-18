@@ -17,6 +17,7 @@ import {
   GetStatusOptions,
   LoadContractOptions,
 } from './types';
+import { Chains } from '../Auth/availableChains';
 
 export const classes = {
   ERC721Mintable,
@@ -54,6 +55,16 @@ export class SDK {
     return this.auth.getSigner();
   }
 
+  infuraSupported() {
+    return (
+      this.auth.getChainId() !== Chains.bsc &&
+      this.auth.getChainId() !== Chains.bsctest &&
+      this.auth.getChainId() !== Chains.cronos &&
+      this.auth.getChainId() !== Chains.cronostestnet &&
+      this.auth.getChainId() !== Chains.fantom
+    );
+  }
+
   /**
    * Deploy Contract on the blockchain
    * @param {object} opts object containing all parameters
@@ -65,6 +76,16 @@ export class SDK {
   async deploy(opts: DeployOptionsUserMintable): Promise<ERC721UserMintable>;
   async deploy(opts: DeployOptionsERC1155UserMintable): Promise<ERC1155Mintable>;
   async deploy(opts: any): Promise<any> {
+    if (!this.infuraSupported()) {
+      log.throwArgumentError(
+        Logger.message.chain_not_supported_write_operations,
+        'chainId',
+        this.auth.getChainId(),
+        {
+          location: Logger.location.SDK_DEPLOY,
+        },
+      );
+    }
     if (!opts.template) {
       log.throwMissingArgumentError(Logger.message.no_template_type_supplied, {
         location: Logger.location.SDK_DEPLOY,
@@ -91,6 +112,16 @@ export class SDK {
    * @returns {Promise<any>} Contract instance
    */
   async loadContract(opts: LoadContractOptions): Promise<any> {
+    if (!this.infuraSupported()) {
+      log.throwArgumentError(
+        Logger.message.chain_not_supported_write_operations,
+        'chainId',
+        this.auth.getChainId(),
+        {
+          location: Logger.location.SDK_LOADCONTRACT,
+        },
+      );
+    }
     if (!opts.template) {
       log.throwMissingArgumentError(Logger.message.no_template_type_supplied, {
         location: Logger.location.SDK_LOADCONTRACT,

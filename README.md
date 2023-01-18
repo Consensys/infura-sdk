@@ -13,10 +13,18 @@ The current alpha version of the SDK defines common ERC721 and ERC1155 read and 
 ### Write
 - Ethereum: Mainnet, Goerli, Sepolia
 - Polygon: Mainnet, Mumbai
+- Arbitrum: Mainnet
+- Avalanche C Chain: Mainnet and testnet
+- Palm: Mainnet and testnet
 ### Read
 - Ethereum: Mainnet, Goerli, Sepolia
 - Polygon: Mainnet, Mumbai
-- BSC: Mainnet
+- Arbitrum: Mainnet
+- BSC: Mainnet and testnet
+- Avalanche C Chain: Mainnet and testnet
+- Palm: Mainnet
+- Cronos: Mainnet and testnet
+- Fantom: Mainnet
 
 You can find method documentation of the Infura SDK at the [infura Docs linked in the sidebar](https://docs.infura.io/infura/infura-custom-apis/nft-sdk).
 ## Initialize a new typescript project

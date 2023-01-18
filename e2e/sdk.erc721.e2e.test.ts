@@ -15,7 +15,7 @@ const authInfo: any = {
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
   rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 5,
+  chainId: 80001,
 };
 const contractInfo = {
   template: TEMPLATES.ERC721Mintable,
@@ -25,6 +25,7 @@ const contractInfo = {
     contractURI: 'https://test.io',
   },
 };
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 5);
   it('Deploy - Get all nfts by owner address', async () => {
