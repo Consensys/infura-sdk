@@ -19,12 +19,12 @@ const authInfo = {
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
   rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 80001,
+  chainId: 5,
   ipfs,
 };
 
 const file = path.join(__dirname, 'infura.jpeg');
-jest.retryTimes(2, { logErrorsBeforeRetry: true });
+
 describe('SDK - IPFS for ERC712', () => {
   jest.setTimeout(60 * 1000 * 10);
   const ipfsApiClient = new IpfsApiClient();

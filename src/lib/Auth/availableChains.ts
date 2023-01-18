@@ -10,15 +10,6 @@ const Chains = {
   polygon: 137,
   mumbai: 80001,
   sepolia: 11155111,
-  bsc: 56,
-  bsctest: 97,
-  avalanche: 43114,
-  avalanchetest: 43113,
-  fantom: 250,
-  cronos: 25,
-  cronostestnet: 338,
-  arbitrum: 42161,
-  palm: 11297108109,
 };
 
 const chainsName: ChainInfo = {
@@ -29,15 +20,6 @@ const chainsName: ChainInfo = {
   137: 'polygon',
   80001: 'mumbai',
   11155111: 'sepolia',
-  56: 'bsc',
-  97: 'bsc test',
-  43114: 'avalance',
-  43113: 'avalanche test',
-  250: 'fantom',
-  25: 'cronos',
-  338: 'cronos test',
-  11297108109: 'palm',
-  42161: 'arbitrum',
 };
 
 const chainUrls = {
@@ -48,10 +30,6 @@ const chainUrls = {
   [Chains.polygon]: 'https://polygon-mainnet.infura.io',
   [Chains.mumbai]: 'https://polygon-mumbai.infura.io',
   [Chains.sepolia]: 'https://sepolia.infura.io',
-  [Chains.avalanche]: 'https://avalanche-mainnet.infura.io',
-  [Chains.avalanchetest]: 'https://avalanche-fuji.infura.io',
-  [Chains.palm]: 'https://palm-mainnet.infura.io',
-  [Chains.arbitrum]: 'https://arbitrum-mainnet.infura.io',
 };
 
 const availableChains = [
@@ -62,15 +40,6 @@ const availableChains = [
   Chains.polygon,
   Chains.mumbai,
   Chains.sepolia,
-  Chains.arbitrum,
-  Chains.avalanche,
-  Chains.avalanchetest,
-  Chains.bsc,
-  Chains.bsctest,
-  Chains.cronos,
-  Chains.cronostestnet,
-  Chains.fantom,
-  Chains.palm,
 ];
 
 const getChainName = (chainId: number) => chainsName[chainId];
