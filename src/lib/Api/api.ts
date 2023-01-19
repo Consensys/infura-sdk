@@ -41,6 +41,12 @@ export type GetNftTransfersFromBlockToBlock = {
   cursor?: string;
 };
 
+export type GetNftTransfersByContractAndToken = {
+  contractAddress: string;
+  tokenId: string;
+  cursor?: string;
+};
+
 export default class Api {
   private readonly apiPath: string;
 
@@ -225,6 +231,30 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/transfers`;
     const { fromBlock, toBlock, cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { fromBlock, toBlock, cursor });
+    return data;
+  }
+
+  /**
+   * Get transfers by tokenId
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByTokenId(opts: GetNftTransfersByContractAndToken): Promise<TransfersDTO> {
+    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_TOKEN_ID,
+      });
+    }
+
+    if (!opts.tokenId) {
+      log.throwMissingArgumentError(Logger.message.no_tokenId_supplied, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_TOKEN_ID,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}/transfers`;
+    const { contractAddress, tokenId, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { contractAddress, tokenId, cursor });
     return data;
   }
 }
