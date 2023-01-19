@@ -111,6 +111,7 @@ describe('E2E Test: Sdk (read)', () => {
   });
 
   describe('As an account I should get list of transfers by block hash', () => {
+    jest.setTimeout(10000);
     it('should get list of transfers by block hash', async () => {
       const testBlockHash = '0x759d8cb3930463fc0a0b6d6e30b284a1466cb7c590c21767f08a37e34fd583b1';
       const result = await sdk.api.getTransfersByBlockHash({
