@@ -86,7 +86,7 @@ describe('SDK - IPFS for ERC1155', () => {
       async () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
 
         return response.metadata !== null;
@@ -97,7 +97,7 @@ describe('SDK - IPFS for ERC1155', () => {
     );
     const response: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: newContract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     expect(response.metadata).toContain(folderUri);
   });
@@ -225,11 +225,11 @@ describe('SDK - IPFS for ERC1155', () => {
       async () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         const response2: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -239,11 +239,11 @@ describe('SDK - IPFS for ERC1155', () => {
     );
     const response: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     const response2: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
@@ -337,11 +337,11 @@ describe('SDK - IPFS for ERC1155', () => {
         });
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null
@@ -353,11 +353,11 @@ describe('SDK - IPFS for ERC1155', () => {
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();

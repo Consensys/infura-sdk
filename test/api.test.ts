@@ -161,7 +161,7 @@ describe('Api', () => {
   describe('getTokenMetadata', () => {
     it('should throw when "contractAddress" is not a valid address', async () => {
       await expect(() =>
-        api.getTokenMetadata({ contractAddress: 'notAValidAddress', tokenId: 1 }),
+        api.getTokenMetadata({ contractAddress: 'notAValidAddress', tokenId: '1' }),
       ).rejects.toThrow(
         `missing argument: Invalid contract address. (location="[SDK.getTokenMetadata]", code=MISSING_ARGUMENT, version=${version})`,
       );
@@ -169,7 +169,7 @@ describe('Api', () => {
 
     it('should return token metadata', async () => {
       HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock as AxiosResponse<any, any>);
-      await api.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: 1 });
+      await api.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: '1' });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

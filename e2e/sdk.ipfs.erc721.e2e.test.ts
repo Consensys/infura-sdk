@@ -100,11 +100,11 @@ describe('SDK - IPFS for ERC712', () => {
       async () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -114,11 +114,11 @@ describe('SDK - IPFS for ERC712', () => {
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
@@ -208,11 +208,11 @@ describe('SDK - IPFS for ERC712', () => {
       async () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -222,11 +222,11 @@ describe('SDK - IPFS for ERC712', () => {
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
@@ -315,11 +315,11 @@ describe('SDK - IPFS for ERC712', () => {
       async () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -329,11 +329,11 @@ describe('SDK - IPFS for ERC712', () => {
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
@@ -391,7 +391,7 @@ describe('SDK - IPFS for ERC712', () => {
       async () => {
         resp = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         return resp.metadata !== null;
       },
@@ -401,7 +401,7 @@ describe('SDK - IPFS for ERC712', () => {
     );
     resp = await sdk.api.getTokenMetadata({
       contractAddress: newContract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     expect(resp.metadata).toEqual(metadata);
   });

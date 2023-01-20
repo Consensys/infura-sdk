@@ -17,7 +17,7 @@ type ContractAddressOptions = {
 
 type GetTokenMetadataOptions = {
   contractAddress: string;
-  tokenId: number;
+  tokenId: string;
 };
 
 export type GetTransfersByBlockNumberOptions = {
@@ -129,7 +129,7 @@ export default class Api {
   /** Get a token metadata
    * @param {object} opts object containing all parameters
    * @param {string} opts.contractAddress address of the contract which holds the token
-   * @param {number} opts.tokenId ID of the token
+   * @param {string} opts.tokenId ID of the token
    * @returns {Promise<object>} Token metadata
    */
   async getTokenMetadata(opts: GetTokenMetadataOptions): Promise<MetadataDTO> {
@@ -139,8 +139,8 @@ export default class Api {
       });
     }
 
-    if (!Number.isFinite(opts.tokenId)) {
-      log.throwArgumentError(Logger.message.tokenId_must_be_integer, 'tokenId', opts.tokenId, {
+    if (!opts.tokenId) {
+      log.throwMissingArgumentError(Logger.message.no_tokenId_supplied, {
         location: Logger.location.SDK_GETTOKENMETADATA,
       });
     }
