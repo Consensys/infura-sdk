@@ -168,7 +168,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       async () => {
         const response: any = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
         return response.metadata !== null;
       },
@@ -179,7 +179,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
 
     const metadataResponse: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: newContract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     expect(metadataResponse.contract.toLowerCase()).toEqual(
       newContract.contractAddress.toLowerCase(),

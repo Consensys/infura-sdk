@@ -17,7 +17,7 @@ type ContractAddressOptions = {
 
 type GetTokenMetadataOptions = {
   contractAddress: string;
-  tokenId: number;
+  tokenId: string;
 };
 
 export type GetTransfersByBlockNumberOptions = {
@@ -38,6 +38,12 @@ export type GetNftTransfersByWallet = {
 export type GetNftTransfersFromBlockToBlock = {
   fromBlock: number;
   toBlock: number;
+  cursor?: string;
+};
+
+export type GetNftTransfersByContractAndToken = {
+  contractAddress: string;
+  tokenId: string;
   cursor?: string;
 };
 
@@ -123,7 +129,7 @@ export default class Api {
   /** Get a token metadata
    * @param {object} opts object containing all parameters
    * @param {string} opts.contractAddress address of the contract which holds the token
-   * @param {number} opts.tokenId ID of the token
+   * @param {string} opts.tokenId ID of the token
    * @returns {Promise<object>} Token metadata
    */
   async getTokenMetadata(opts: GetTokenMetadataOptions): Promise<MetadataDTO> {
@@ -133,8 +139,8 @@ export default class Api {
       });
     }
 
-    if (!Number.isFinite(opts.tokenId)) {
-      log.throwArgumentError(Logger.message.tokenId_must_be_integer, 'tokenId', opts.tokenId, {
+    if (!opts.tokenId) {
+      log.throwMissingArgumentError(Logger.message.no_tokenId_supplied, {
         location: Logger.location.SDK_GETTOKENMETADATA,
       });
     }
@@ -225,6 +231,30 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/transfers`;
     const { fromBlock, toBlock, cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { fromBlock, toBlock, cursor });
+    return data;
+  }
+
+  /**
+   * Get transfers by tokenId
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByTokenId(opts: GetNftTransfersByContractAndToken): Promise<TransfersDTO> {
+    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_TOKEN_ID,
+      });
+    }
+
+    if (!opts.tokenId) {
+      log.throwMissingArgumentError(Logger.message.no_tokenId_supplied, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_TOKEN_ID,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}/transfers`;
+    const { contractAddress, tokenId, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { contractAddress, tokenId, cursor });
     return data;
   }
 }

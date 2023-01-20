@@ -115,12 +115,12 @@ describe('E2E Test: Sdk (read)', () => {
     it('should return token metadata', async () => {
       const tokenMetadata = await sdk.api.getTokenMetadata({
         contractAddress: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-        tokenId: 0,
+        tokenId: '0',
       });
 
       const expectedTokenMetadata = {
         contract: '0x2a66707e4ffe929cf866bc048e54ce28f6b7275f',
-        tokenId: 0,
+        tokenId: '0',
         metadata: null,
       };
 
