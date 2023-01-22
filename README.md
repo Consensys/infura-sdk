@@ -148,12 +148,49 @@ https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC7
 https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC1155Mintable.ts
 
 ## Infura NFT API
-The SDK currently supports the following NFT API endpoints under the sdk class:
+The SDK currently supports the following NFT API endpoints under the `sdk.api` namespace:
 
 - `getContractMetadata()`: Get contract metadata by contract address
 - `getNFTs()`: Get NFTs with metadata currently owned by a given address
 - `getNFTsForCollection()`: Get list of NFTs for the specified contract address
 - `getTokenMetadata()`: Get nft metadata
+- `getTransfersByBlockNumber()`: Gets transfers by block number.
+- `getTransfersByBlockHash()`: Gets transfers by block hash.
+- `getNftsTransfersByWallet()`: Gets transfers of NFTs for a given wallet address.
+- `getTransferFromBlockToBlock()`: Gets transfers from a block to block.
+- `getTransfersByTokenId()`: Gets transfers of an NFT by contract address and token ID.
+## Pagination
+The Infura NFT endpoints return 100 results per page. To get the next page, you can pass in the cursor returned by the previous call.
+
+Here's an example of how to paginate using infura sdk through all bored ape yacht club NFTs:
+```ts
+import { config as loadEnv } from 'dotenv';
+import { SDK, Auth, Metadata, TEMPLATES } from '@infura/sdk';
+
+loadEnv();
+
+const acc = new Auth({
+    privateKey: process.env.WALLET_PRIVATE_KEY,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
+    rpcUrl: process.env.EVM_RPC_URL,
+    chainId: 5,
+  });
+
+const sdk = new SDK(acc);
+
+// Get Nfts by collection
+const nftsFirstPage = await sdk.api.getNFTsForCollection({
+  contractAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
+});
+console.log('NFTs first page:', contractMetadata);
+
+const nftsSecondPage = await sdk.api.getNFTsForCollection({
+  contractAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
+  cursor: nftsFirstPage.cursor,
+});
+console.log('NFTs second page:', contractMetadata);
+```
 
 ## Infura IPFS API
 The SDK currently supports the following IPFS API methods under the sdk class:
@@ -231,17 +268,17 @@ const minted = await mint.wait();
 
 // READ API
 // Get contract metadata
-const contractMetadata = await sdk.getContractMetadata({
+const contractMetadata = await sdk.api.getContractMetadata({
   contractAddress: newContract.contractAddress,
 });
-console.log('contractMetadata', contractMetadata);
+console.log('contractMetadata:', contractMetadata);
 
 // Get the token metadata
-const tokenMetadataResult = await sdk.getTokenMetadata({
+const tokenMetadataResult = await sdk.api.getTokenMetadata({
   contractAddress: newContract.contractAddress,
   tokenId: 0,
 });
-console.log('tokenMetadataResult', tokenMetadataResult);
+console.log('tokenMetadataResult:', tokenMetadataResult);
 ```
 ## ERC721 user mintable template
 
@@ -398,6 +435,6 @@ const newContractERC1155 = await sdk.deploy({
   });
 
   const mintedNFT = await tx.wait();
-  console.log('mintedNFT', mintedNFT);
+  console.log('mintedNFT:', mintedNFT);
 
 ```
