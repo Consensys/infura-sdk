@@ -198,6 +198,7 @@ export enum ErrorMessage {
   unsupported_provider = 'unsupported provider',
   invalid_block_number = 'Invalid block number.',
   invalid_block_hash = 'Invalid block hash.',
+
 }
 
 export class Logger {
