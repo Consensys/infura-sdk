@@ -87,15 +87,15 @@ loadEnv();
 
   // READ API
   // Get contract metadata
-  const contractMetadata = await sdk.getContractMetadata({
+  const contractMetadata = await sdk.api.getContractMetadata({
     contractAddress: newContract.contractAddress,
   });
   console.log('contractMetadata', contractMetadata);
 
   // Get the token metadata
-  const tokenMetadataResult = await sdk.getTokenMetadata({
+  const tokenMetadataResult = await sdk.api.getTokenMetadata({
     contractAddress: newContract.contractAddress,
-    tokenId: 0,
+    tokenId: '0',
   });
   console.log('tokenMetadataResult', tokenMetadataResult);
 
