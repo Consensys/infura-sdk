@@ -2,79 +2,36 @@ import { ethers, utils } from 'ethers';
 import Auth from '../Auth/Auth';
 import HttpService from '../../services/httpService';
 import { NFT_API_URL } from '../constants';
-import ERC721Mintable, {
-  DeployParams as MintableDeploy,
-} from '../ContractTemplates/ERC721Mintable';
-import ERC721UserMintable, {
-  DeployParams as UserMintableDeploy,
-} from '../ContractTemplates/ERC721UserMintable';
+import ERC721Mintable from '../ContractTemplates/ERC721Mintable';
+import ERC721UserMintable from '../ContractTemplates/ERC721UserMintable';
 import { Logger, log } from '../Logger';
-import { Components } from '../../services/nft-api';
 import { metadataFolderSchema, metadataSchema } from './sdk.schema';
 import { isJson } from '../utils';
-import ERC1155Mintable, { DeployERC1155Params } from '../ContractTemplates/ERC1155Mintable';
+import ERC1155Mintable from '../ContractTemplates/ERC1155Mintable';
+import Api from '../Api/api';
+import IPFS from '../../services/ipfsService';
+import {
+  DeployOptionsERC1155UserMintable,
+  DeployOptionsMintable,
+  DeployOptionsUserMintable,
+  GetStatusOptions,
+  LoadContractOptions,
+} from './types';
+import { Chains } from '../Auth/availableChains';
 
-const classes = {
+export const classes = {
   ERC721Mintable,
   ERC721UserMintable,
   ERC1155Mintable,
 };
 
-export type NftDTO = Components['schemas']['NftModel'];
-export type MetadataDTO = Components['schemas']['MetadataModel'];
-export type MetadataInfo = {
-  symbol: string;
-  name: string;
-  tokenType: string;
-};
-
-// TODO: fix type & function overloading in "deploy"
-type DeployOptionsMintable = {
-  template: string;
-  params: MintableDeploy;
-};
-type DeployOptionsUserMintable = {
-  template: string;
-  params: UserMintableDeploy;
-};
-
-type DeployOptionsERC1155UserMintable = {
-  template: string;
-  params: DeployERC1155Params;
-};
-
-type LoadContractOptions = {
-  template: string;
-  contractAddress: string;
-};
-
-type GetTokenMetadataOptions = {
-  contractAddress: string;
-  tokenId: number;
-};
-
-type GetStatusOptions = {
-  txHash: string;
-};
-
-type PublicAddressOptions = {
-  publicAddress: string;
-  includeMetadata?: boolean;
-};
-
-type ContractAddressOptions = {
-  contractAddress: string;
-};
-
 export class SDK {
   /* Private property */
-  private readonly auth;
+  private readonly auth: Auth;
 
-  private readonly apiPath;
+  public readonly api: Api;
 
-  private readonly httpClient;
-
-  private readonly ipfsClient;
+  private readonly ipfsClient: IPFS;
 
   constructor(auth: Auth) {
     if (!(auth instanceof Auth)) {
@@ -84,8 +41,10 @@ export class SDK {
     }
     this.auth = auth;
 
-    this.apiPath = `/networks/${this.auth.getChainId()}`;
-    this.httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
+    const apiPath = `/networks/${this.auth.getChainId()}`;
+    const httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
+
+    this.api = new Api(apiPath, httpClient);
     this.ipfsClient = this.auth.getIpfsClient();
   }
 
@@ -94,6 +53,16 @@ export class SDK {
    */
   getProvider() {
     return this.auth.getSigner();
+  }
+
+  infuraSupported() {
+    return (
+      this.auth.getChainId() !== Chains.bsc &&
+      this.auth.getChainId() !== Chains.bsctest &&
+      this.auth.getChainId() !== Chains.cronos &&
+      this.auth.getChainId() !== Chains.cronostestnet &&
+      this.auth.getChainId() !== Chains.fantom
+    );
   }
 
   /**
@@ -107,6 +76,16 @@ export class SDK {
   async deploy(opts: DeployOptionsUserMintable): Promise<ERC721UserMintable>;
   async deploy(opts: DeployOptionsERC1155UserMintable): Promise<ERC1155Mintable>;
   async deploy(opts: any): Promise<any> {
+    if (!this.infuraSupported()) {
+      log.throwArgumentError(
+        Logger.message.chain_not_supported_write_operations,
+        'chainId',
+        this.auth.getChainId(),
+        {
+          location: Logger.location.SDK_DEPLOY,
+        },
+      );
+    }
     if (!opts.template) {
       log.throwMissingArgumentError(Logger.message.no_template_type_supplied, {
         location: Logger.location.SDK_DEPLOY,
@@ -133,6 +112,16 @@ export class SDK {
    * @returns {Promise<any>} Contract instance
    */
   async loadContract(opts: LoadContractOptions): Promise<any> {
+    if (!this.infuraSupported()) {
+      log.throwArgumentError(
+        Logger.message.chain_not_supported_write_operations,
+        'chainId',
+        this.auth.getChainId(),
+        {
+          location: Logger.location.SDK_LOADCONTRACT,
+        },
+      );
+    }
     if (!opts.template) {
       log.throwMissingArgumentError(Logger.message.no_template_type_supplied, {
         location: Logger.location.SDK_LOADCONTRACT,
@@ -159,100 +148,6 @@ export class SDK {
     const signer = this.auth.getSigner();
     const gasPrice = await signer.getGasPrice();
     return utils.formatUnits(gasPrice, 'gwei');
-  }
-
-  /**
-   * Get contract metadata by contract address
-   * @param {object} opts object containing all parameters
-   * @param {string} opts.contractAddress address of the contract
-   * @returns {Promise<MetadataInfo>} Contract metadata object
-   */
-  async getContractMetadata(opts: ContractAddressOptions): Promise<MetadataInfo> {
-    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
-      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
-        location: Logger.location.SDK_GETCONTRACTMETADATA,
-      });
-    }
-
-    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}`;
-    const {
-      data: { symbol, name, tokenType },
-    } = await this.httpClient.get(apiUrl);
-
-    return { symbol, name, tokenType };
-  }
-
-  /**
-   * Get NFTs by an account address
-   * @param {object} opts object containing all parameters
-   * @param  {string} opts.address Account address
-   * @param  {string} opts.includeMetadata flag to include the metadata object in the results
-   * @returns {Promise<Array>} List of NFTs with metadata if 'includeMetadata' flag is true
-   */
-  async getNFTs(opts: PublicAddressOptions): Promise<NftDTO> {
-    if (!opts.publicAddress || !utils.isAddress(opts.publicAddress)) {
-      log.throwMissingArgumentError(Logger.message.invalid_public_address, {
-        location: Logger.location.SDK_GETNFTS,
-      });
-    }
-
-    const apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
-
-    const { data } = await this.httpClient.get(apiUrl);
-
-    if (!opts.includeMetadata) {
-      return {
-        ...data,
-        assets: data.assets.map((asset: any) => {
-          const { metadata, ...rest } = asset;
-          return rest;
-        }),
-      };
-    }
-
-    return data;
-  }
-
-  /** Get list of NFTs for the specified contract address
-   * @param {object} opts object containing all parameters
-   * @param {string} opts.contractAddress address of the contract to get the list of NFTs
-   * @returns {Promise<object>} List of NFTs with metadata
-   */
-  async getNFTsForCollection(opts: ContractAddressOptions): Promise<NftDTO> {
-    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
-      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
-        location: Logger.location.SDK_GETNFTSFORCOLLECTION,
-      });
-    }
-    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens`;
-
-    const { data } = await this.httpClient.get(apiUrl);
-    return data;
-  }
-
-  /** Get a token metadata
-   * @param {object} opts object containing all parameters
-   * @param {string} opts.contractAddress address of the contract which holds the token
-   * @param {number} opts.tokenId ID of the token
-   * @returns {Promise<object>} Token metadata
-   */
-  async getTokenMetadata(opts: GetTokenMetadataOptions): Promise<MetadataDTO> {
-    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
-      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
-        location: Logger.location.SDK_GETTOKENMETADATA,
-      });
-    }
-
-    if (!Number.isFinite(opts.tokenId)) {
-      log.throwArgumentError(Logger.message.tokenId_must_be_integer, 'tokenId', opts.tokenId, {
-        location: Logger.location.SDK_GETTOKENMETADATA,
-      });
-    }
-
-    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}`;
-
-    const { data } = await this.httpClient.get(apiUrl);
-    return data;
   }
 
   /** Get tx status

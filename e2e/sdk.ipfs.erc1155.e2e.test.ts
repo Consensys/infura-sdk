@@ -1,11 +1,12 @@
 import { config as loadEnv } from 'dotenv';
 import path from 'path';
 import Auth from '../src/lib/Auth/Auth';
-import { MetadataDTO, SDK } from '../src/lib/SDK/sdk';
+import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait from './utils/utils.ts/utils';
 import IpfsApiClient from './utils/utils.ts/ipfsClient';
 import Metadata from '../src/lib/Metadata/Metadata';
+import { MetadataDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
@@ -20,12 +21,12 @@ const authInfo: any = {
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
   rpcUrl: process.env.EVM_RPC_URL,
-  chainId: 5,
+  chainId: 80001,
   ipfs,
 };
 
 const file: string = path.join(__dirname, 'infura.jpeg');
-
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - IPFS for ERC1155', () => {
   jest.setTimeout(60 * 1000 * 10);
   const ipfsApiClient = new IpfsApiClient();
@@ -83,9 +84,9 @@ describe('SDK - IPFS for ERC1155', () => {
     expect(receipt.status).toEqual(1);
     await wait(
       async () => {
-        const response: MetadataDTO = await sdk.getTokenMetadata({
+        const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
 
         return response.metadata !== null;
@@ -94,9 +95,9 @@ describe('SDK - IPFS for ERC1155', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    const response: MetadataDTO = await sdk.getTokenMetadata({
+    const response: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: newContract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
     expect(response.metadata).toContain(folderUri);
   });
@@ -222,13 +223,13 @@ describe('SDK - IPFS for ERC1155', () => {
 
     await wait(
       async () => {
-        const response: MetadataDTO = await sdk.getTokenMetadata({
+        const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
-        const response2: MetadataDTO = await sdk.getTokenMetadata({
+        const response2: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -236,18 +237,18 @@ describe('SDK - IPFS for ERC1155', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    const response: MetadataDTO = await sdk.getTokenMetadata({
+    const response: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
-    const response2: MetadataDTO = await sdk.getTokenMetadata({
+    const response2: MetadataDTO = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
 
-    const contractNftMetadata = await sdk.getNFTsForCollection({
+    const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
     expect(
@@ -275,7 +276,7 @@ describe('SDK - IPFS for ERC1155', () => {
           external_url: 'https://url2',
           image: await sdk.storeFile({ metadata: file }),
           name: 'image2',
-          attributes: [{ value: 2, trait_type: 'a' }],
+          attributes: [{ value: '2', trait_type: 'a' }],
         }),
         Metadata.openSeaTokenLevelStandard({
           description: 'Description 3',
@@ -289,7 +290,7 @@ describe('SDK - IPFS for ERC1155', () => {
           external_url: 'https://url4',
           image: await sdk.storeFile({ metadata: file }),
           name: 'image3',
-          attributes: [{ value: 4, trait_type: 'a' }],
+          attributes: [{ value: '4', trait_type: 'a' }],
         }),
       ],
       isErc1155: true,
@@ -331,16 +332,16 @@ describe('SDK - IPFS for ERC1155', () => {
     let response2: MetadataDTO;
     await wait(
       async () => {
-        const nftCollection = await sdk.getNFTsForCollection({
+        const nftCollection = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
         });
-        response = await sdk.getTokenMetadata({
+        response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 0,
+          tokenId: '0',
         });
-        response2 = await sdk.getTokenMetadata({
+        response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
-          tokenId: 1,
+          tokenId: '1',
         });
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null
@@ -350,18 +351,18 @@ describe('SDK - IPFS for ERC1155', () => {
       1000,
       'Waiting for NFT collection to be available',
     );
-    response = await sdk.getTokenMetadata({
+    response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 0,
+      tokenId: '0',
     });
-    response2 = await sdk.getTokenMetadata({
+    response2 = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
-      tokenId: 1,
+      tokenId: '1',
     });
     expect(response.metadata).not.toBeNull();
     expect(response2.metadata).not.toBeNull();
 
-    const contractNftMetadata = await sdk.getNFTsForCollection({
+    const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
     });
     expect(

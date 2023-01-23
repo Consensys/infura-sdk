@@ -13,10 +13,18 @@ The current alpha version of the SDK defines common ERC721 and ERC1155 read and 
 ### Write
 - Ethereum: Mainnet, Goerli, Sepolia
 - Polygon: Mainnet, Mumbai
+- Arbitrum: Mainnet
+- Avalanche C Chain: Mainnet and testnet
+- Palm: Mainnet and testnet
 ### Read
 - Ethereum: Mainnet, Goerli, Sepolia
 - Polygon: Mainnet, Mumbai
-- BSC: Mainnet
+- Arbitrum: Mainnet
+- BSC: Mainnet and testnet
+- Avalanche C Chain: Mainnet and testnet
+- Palm: Mainnet
+- Cronos: Mainnet and testnet
+- Fantom: Mainnet
 
 You can find method documentation of the Infura SDK at the [infura Docs linked in the sidebar](https://docs.infura.io/infura/infura-custom-apis/nft-sdk).
 ## Initialize a new typescript project
@@ -42,13 +50,13 @@ npm install dotenv
 
 ## Authentication
 
-Authentication requires an active `PROJECT_ID` and `PROJECT_SECRET` from an Ethereum project in Infura. You can find it in your [Infura dashboard](https://infura.io/dashboard) in project settings.
+Authentication requires an active `API_KEY` and `API_KEY_SECRET` from an Ethereum project in Infura. You can find it in your [Infura dashboard](https://infura.io/dashboard) in project settings.
 
 To run the example code, add the following environment variables to a `.env` file:
 
 ```bash
-INFURA_PROJECT_ID=xxx
-INFURA_PROJECT_SECRET=xxx
+INFURA_API_KEY=xxx
+INFURA_API_KEY_SECRET=xxx
 WALLET_PRIVATE_KEY=xxx
 EVM_RPC_URL=https://goerli.infura.io/v3/<API-KEY>
 ```
@@ -70,8 +78,8 @@ loadEnv();
 
 ```ts
 const auth = new Auth({
-  projectId: process.env.INFURA_PROJECT_ID,
-  secretId: process.env.INFURA_PROJECT_SECRET,
+  projectId: process.env.INFURA_API_KEY,
+  secretId: process.env.INFURA_API_KEY_SECRET,
   privateKey: process.env.WALLET_PRIVATE_KEY,
   rpcUrl: process.env.EVM_RPC_URL,
   chainId: 5, // Goerli
@@ -140,12 +148,49 @@ https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC7
 https://github.com/ConsenSys/infura-sdk/blob/main/src/lib/ContractTemplates/ERC1155Mintable.ts
 
 ## Infura NFT API
-The SDK currently supports the following NFT API endpoints under the sdk class:
+The SDK currently supports the following NFT API endpoints under the `sdk.api` namespace:
 
 - `getContractMetadata()`: Get contract metadata by contract address
 - `getNFTs()`: Get NFTs with metadata currently owned by a given address
 - `getNFTsForCollection()`: Get list of NFTs for the specified contract address
 - `getTokenMetadata()`: Get nft metadata
+- `getTransfersByBlockNumber()`: Gets transfers by block number.
+- `getTransfersByBlockHash()`: Gets transfers by block hash.
+- `getNftsTransfersByWallet()`: Gets transfers of NFTs for a given wallet address.
+- `getTransferFromBlockToBlock()`: Gets transfers from a block to block.
+- `getTransfersByTokenId()`: Gets transfers of an NFT by contract address and token ID.
+## Pagination
+The Infura NFT endpoints return 100 results per page. To get the next page, you can pass in the cursor returned by the previous call.
+
+Here's an example of how to paginate using infura sdk through all bored ape yacht club NFTs:
+```ts
+import { config as loadEnv } from 'dotenv';
+import { SDK, Auth, Metadata, TEMPLATES } from '@infura/sdk';
+
+loadEnv();
+
+const acc = new Auth({
+    privateKey: process.env.WALLET_PRIVATE_KEY,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
+    rpcUrl: process.env.EVM_RPC_URL,
+    chainId: 5,
+  });
+
+const sdk = new SDK(acc);
+
+// Get Nfts by collection
+const nftsFirstPage = await sdk.api.getNFTsForCollection({
+  contractAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
+});
+console.log('NFTs first page:', contractMetadata);
+
+const nftsSecondPage = await sdk.api.getNFTsForCollection({
+  contractAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
+  cursor: nftsFirstPage.cursor,
+});
+console.log('NFTs second page:', contractMetadata);
+```
 
 ## Infura IPFS API
 The SDK currently supports the following IPFS API methods under the sdk class:
@@ -165,8 +210,8 @@ loadEnv();
 
 const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: process.env.INFURA_PROJECT_ID,
-    secretId: process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
     chainId: 5,
     ipfs: {
@@ -223,17 +268,17 @@ const minted = await mint.wait();
 
 // READ API
 // Get contract metadata
-const contractMetadata = await sdk.getContractMetadata({
+const contractMetadata = await sdk.api.getContractMetadata({
   contractAddress: newContract.contractAddress,
 });
-console.log('contractMetadata', contractMetadata);
+console.log('contractMetadata:', contractMetadata);
 
 // Get the token metadata
-const tokenMetadataResult = await sdk.getTokenMetadata({
+const tokenMetadataResult = await sdk.api.getTokenMetadata({
   contractAddress: newContract.contractAddress,
   tokenId: 0,
 });
-console.log('tokenMetadataResult', tokenMetadataResult);
+console.log('tokenMetadataResult:', tokenMetadataResult);
 ```
 ## ERC721 user mintable template
 
@@ -247,8 +292,8 @@ loadEnv();
 
 const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: process.env.INFURA_PROJECT_ID,
-    secretId: process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
     chainId: 5,
     ipfs: {
@@ -335,8 +380,8 @@ loadEnv();
 
 const acc = new Auth({
     privateKey: process.env.WALLET_PRIVATE_KEY,
-    projectId: process.env.INFURA_PROJECT_ID,
-    secretId: process.env.INFURA_PROJECT_SECRET,
+    projectId: process.env.INFURA_API_KEY,
+    secretId: process.env.INFURA_API_KEY_SECRET,
     rpcUrl: process.env.EVM_RPC_URL,
     chainId: 5,
     ipfs: {
@@ -390,6 +435,6 @@ const newContractERC1155 = await sdk.deploy({
   });
 
   const mintedNFT = await tx.wait();
-  console.log('mintedNFT', mintedNFT);
+  console.log('mintedNFT:', mintedNFT);
 
 ```

@@ -29,11 +29,15 @@ export default class HttpService {
     });
   }
 
-  async get(uri: string) {
+  async get(uri: string, params?: any) {
     try {
-      return await this.instance.get(uri);
-    } catch (error) {
-      return log.throwError(Logger.message.axios_error, Logger.code.API, {
+      return await this.instance.get(uri, { params });
+    } catch (error: any) {
+      const reason = error?.response?.data?.message;
+      const message = reason
+        ? `${Logger.message.axios_error} : ${reason}`
+        : `${Logger.message.axios_error}`;
+      return log.throwError(message, Logger.code.API, {
         location: Logger.location.HTTPSERVICE_GET,
         error,
       });
@@ -43,8 +47,12 @@ export default class HttpService {
   async post(uri: string, params?: any) {
     try {
       return await this.instance.post(uri, params);
-    } catch (error) {
-      return log.throwError(Logger.message.axios_error, Logger.code.API, {
+    } catch (error: any) {
+      const reason = error?.response?.data?.message;
+      const message = reason
+        ? `${Logger.message.axios_error} : ${reason}`
+        : `${Logger.message.axios_error}`;
+      return log.throwError(message, Logger.code.API, {
         location: Logger.location.HTTPSERVICE_POST,
         error,
       });

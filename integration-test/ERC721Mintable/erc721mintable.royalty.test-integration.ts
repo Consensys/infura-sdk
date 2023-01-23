@@ -12,28 +12,16 @@ let account: Auth;
 let contractObject: ERC721Mintable;
 let publicAddress: string;
 let owner: string;
-let thirdUser: string;
-let privateKeyPublicAddress: string;
 
 describe('E2E Test: Basic NFT (mint)', () => {
   jest.setTimeout(120 * 1000);
 
   beforeAll(async () => {
-    const options = {
-      wallet: {
-        accountKeysPath: 'integration-test/keys.json',
-      },
-      logging: {
-        quiet: true,
-      },
-    };
-
     // grab the first account
     // eslint-disable-next-line global-require
     const { addresses: addr, private_keys: pk } = require('../keys.json');
-    [owner, publicAddress, thirdUser] = Object.keys(addr);
+    [owner, publicAddress] = Object.keys(addr);
     const privateKey = pk[owner];
-    privateKeyPublicAddress = pk[publicAddress];
 
     const rpcUrl = 'http://0.0.0.0:8545';
     const chainId = 5;

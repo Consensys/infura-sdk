@@ -495,7 +495,7 @@ export default class ERC1155Mintable {
     }
 
     try {
-      let options = { gasLimit: GAS_LIMIT };
+      let options = { gasLimit: this.gasLimit };
       options = addGasPriceToOptions(options, params.gas);
       const result = await this.contractDeployed.safeTransferFrom(
         params.from,
@@ -572,7 +572,7 @@ export default class ERC1155Mintable {
     });
 
     try {
-      let options = { gasLimit: GAS_LIMIT };
+      let options = { gasLimit: this.gasLimit };
       options = addGasPriceToOptions(options, params.gas);
       const result = await this.contractDeployed.safeBatchTransferFrom(
         params.from,

@@ -105,6 +105,11 @@ export enum ErrorLocation {
   SDK_STOREFILE = '[SDK.storeFile]',
   SDK_STOREMETADATA = '[SDK.storeMetadata]',
   SDK_CREATEFOLDER = '[SDK.createFolder]',
+  SDK_GETTRANSFERSBYBLOCKNUMBER = '[SDK.getTransfersByBlockNumber]',
+  SDK_GET_TRANSFERS_BY_WALLET = '[SDK.getNftTransfersByWallet]',
+  SDK_GETTRANSFERSBYBLOCKHASH = '[SDK.getTransfersByBlockHash]',
+  SDK_GET_TRANSFERS_FROM_BLOCK_TO_BLOCK = '[SDK.getTransferFromBlockToBlock]',
+  SDK_GET_TRANSFERS_BY_TOKEN_ID = '[SDK.getTransfersByTokenId]',
 
   // Metadata
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
@@ -154,6 +159,7 @@ export enum ErrorMessage {
   invalid_mint_quantity = 'Quantity as integer value greater than 0 required.',
   different_array_lengths = 'IDs and quantities arrays must be of same length',
   invalid_quantity = 'Quantity as integer value greater than 0 required.',
+  invalid_block = 'Invalid block number',
 
   warning_contractURI = 'WARNING: The supplied ContractURI is not a link.',
   warning_contractURI_tips = 'WARNING: ContractURI should be a public link to a valid JSON metadata file',
@@ -175,6 +181,7 @@ export enum ErrorMessage {
   approvalStatus_must_be_boolean = 'approvalStatus must be boolean.',
   only_privateKey_or_provider_required = 'Only privateKey or provider required',
   chain_not_supported = 'Chain not supported.',
+  chain_not_supported_write_operations = 'Chain not supported for WRITE operations yet.',
   axios_error = 'An Axios error occured',
   ethers_error = 'An Ethers error occured',
 
@@ -188,8 +195,10 @@ export enum ErrorMessage {
   data_must_be_string = 'data must be a string',
   data_must_be_valid_json = 'data must be a valid json',
   invalid_ids = 'List of IDs provided cannot be empty',
-
   unsupported_provider = 'unsupported provider',
+  invalid_block_number = 'Invalid block number.',
+  invalid_block_hash = 'Invalid block hash.',
+
 }
 
 export class Logger {
@@ -214,8 +223,8 @@ export class Logger {
   makeError(message: string, code?: ErrorCode, params?: any): string {
     const optCode = !code ? Logger.code.RUNTIME : code;
     const optParams = !params ? {} : params;
-
     const messageDetails: Array<string> = [];
+
     Object.keys(optParams).forEach(key => {
       const value = optParams[key];
       try {
@@ -227,24 +236,12 @@ export class Logger {
     messageDetails.push(`code=${optCode}`);
     messageDetails.push(`version=${this.version}`);
 
-    const reason = message;
     let errorMsg = message;
 
     if (messageDetails.length) {
       errorMsg += ` (${messageDetails.join(', ')})`;
     }
-
-    const error: any = new Error(errorMsg);
-    error.stack = '';
-    error.reason = reason;
-    error.code = optCode;
-    error.version = this.version;
-
-    Object.keys(optParams).forEach(key => {
-      error[key] = optParams[key];
-    });
-
-    return error;
+    return errorMsg;
   }
 
   throwError(message: string, code?: ErrorCode, params?: any): never {

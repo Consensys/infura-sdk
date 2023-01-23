@@ -7,16 +7,10 @@ import Auth from '../src/lib/Auth/Auth';
 import HttpService from '../src/services/httpService';
 import version from '../src/_version';
 
-import {
-  accountNFTsMock,
-  collectionNFTsMock,
-  contractMetadataMock,
-  tokenMetadataMock,
-} from './__mocks__/api';
-import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import { generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { TEMPLATES } from '../src/lib/constants';
 import { SDK } from '../src/lib/SDK/sdk';
-import ERC721Mintable, { DeployParams } from '../src/lib/ContractTemplates/ERC721Mintable';
+import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable';
 import IPFS from '../src/services/ipfsService';
 
 loadEnv();
@@ -91,83 +85,6 @@ describe('Sdk', () => {
     erc721Mocked.mockClear();
     signerMock.mockClear();
   });
-
-  describe('getContractMetadata', () => {
-    it('should throw when "contractAddress" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getContractMetadata({ contractAddress: 'notAValidAddress' }),
-      ).rejects.toThrow(
-        `missing argument: Invalid contract address. (location="[SDK.getContractMetadata]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return contract metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(contractMetadataMock as AxiosResponse<any, any>);
-      const contractMetadata = await sdk.getContractMetadata({
-        contractAddress: '0xE26a682fa90322eC48eB9F3FA66E8961D799177C',
-      });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect(contractMetadata).not.toHaveProperty('contract');
-    });
-  });
-
-  describe('getNFTs', () => {
-    it('should throw when "address" is not a valid address', async () => {
-      await expect(() => sdk.getNFTs({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
-        `missing argument: Invalid public address. (location="[SDK.getNFTs]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return the list of NFTs without metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
-      const accountNFTs = await sdk.getNFTs({ publicAddress: CONTRACT_ADDRESS });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect((accountNFTs as any).assets[0]).not.toHaveProperty('metadata');
-    });
-
-    it('should return the list of NFTs with metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
-      const accountNFTs = await sdk.getNFTs({
-        publicAddress: CONTRACT_ADDRESS,
-        includeMetadata: true,
-      });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-      expect((accountNFTs as any).assets[0]).toHaveProperty('metadata');
-    });
-  });
-
-  describe('getNFTsForCollection', () => {
-    it('should throw when "contractAddress" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getNFTsForCollection({ contractAddress: 'notAValidAddress' }),
-      ).rejects.toThrow(
-        `missing argument: Invalid contract address. (location="[SDK.getNFTsForCollection]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return return collection NFTs list', async () => {
-      HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock as AxiosResponse<any, any>);
-      await sdk.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('getTokenMetadata', () => {
-    it('should throw when "contractAddress" is not a valid address', async () => {
-      await expect(() =>
-        sdk.getTokenMetadata({ contractAddress: 'notAValidAddress', tokenId: 1 }),
-      ).rejects.toThrow(
-        `missing argument: Invalid contract address. (location="[SDK.getTokenMetadata]", code=MISSING_ARGUMENT, version=${version})`,
-      );
-    });
-
-    it('should return token metadata', async () => {
-      HttpServiceMock.mockResolvedValueOnce(tokenMetadataMock as AxiosResponse<any, any>);
-      await sdk.getTokenMetadata({ contractAddress: CONTRACT_ADDRESS, tokenId: 1 });
-      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('getStatus', () => {
     it('should throw when transaction hash argument is not valid', async () => {
       await expect(() => sdk.getStatus({ txHash: 'test' })).rejects.toThrow(
@@ -295,6 +212,98 @@ describe('Sdk', () => {
         });
       expect(store).rejects.toThrow(
         `invalid ipfs setup (location=\"[SDK.createFolder]\", argument=\"ipfs\", value=undefined, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+  });
+  describe('Check that unsopported chains throw the right error', () => {
+    it('Should show an error when bsc chain is provided when calling write functions', async () => {
+      const account = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 56,
+      });
+      sdk = new SDK(account);
+      await expect(() =>
+        sdk.loadContract({
+          template: TEMPLATES.ERC721Mintable,
+          contractAddress: '',
+        }),
+      ).rejects.toThrow(
+        `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=56, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('Should show an error when bsc test chain is provided when calling write functions', async () => {
+      const account = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 97,
+      });
+      sdk = new SDK(account);
+      await expect(() =>
+        sdk.loadContract({
+          template: TEMPLATES.ERC721Mintable,
+          contractAddress: '',
+        }),
+      ).rejects.toThrow(
+        `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=97, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('Should show an error when fantom chain is provided when calling write functions', async () => {
+      const account = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 250,
+      });
+      sdk = new SDK(account);
+      await expect(() =>
+        sdk.loadContract({
+          template: TEMPLATES.ERC721Mintable,
+          contractAddress: '',
+        }),
+      ).rejects.toThrow(
+        `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=250, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('Should show an error when cronos chain is provided when calling write functions', async () => {
+      const account = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 25,
+      });
+      sdk = new SDK(account);
+      await expect(() =>
+        sdk.loadContract({
+          template: TEMPLATES.ERC721Mintable,
+          contractAddress: '',
+        }),
+      ).rejects.toThrow(
+        `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=25, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('Should show an error when cronos testnet chain is provided when calling write functions', async () => {
+      const account = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 338,
+      });
+      sdk = new SDK(account);
+      await expect(() =>
+        sdk.loadContract({
+          template: TEMPLATES.ERC721Mintable,
+          contractAddress: '',
+        }),
+      ).rejects.toThrow(
+        `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=338, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
   });

@@ -1,3 +1,7 @@
+import { config as loadEnv } from 'dotenv';
+
+loadEnv();
+
 export const NFT_API_URL = process.env.NFT_API_URL
   ? process.env.NFT_API_URL
   : 'https://nft.api.infura.io';

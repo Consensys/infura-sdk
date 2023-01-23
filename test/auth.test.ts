@@ -57,7 +57,7 @@ describe('Auth', () => {
           ) as unknown as ethers.providers.ExternalProvider,
         }),
     ).toThrow(
-      `Error: unsupported provider (location=\"[Auth.setProvider]\", error=\"unsupported provider\", argument=\"provider\", value=\"ethers.providers.InfuraProvider\", code=INVALID_ARGUMENT, version=${version})`,
+      `unsupported provider (location=\"[Auth.setProvider]\", error=\"unsupported provider\", argument=\"provider\", value=\"ethers.providers.InfuraProvider\", code=INVALID_ARGUMENT, version=${version})`,
     );
   });
 

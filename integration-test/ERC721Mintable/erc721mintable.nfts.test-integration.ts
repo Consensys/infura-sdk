@@ -12,7 +12,6 @@ let contractObject: ERC721Mintable;
 let publicAddress: string;
 let owner: string;
 let thirdUser: string;
-let privateKeyPublicAddress: string;
 let successfulTx: string;
 
 describe('E2E Test: Basic NFT (mint)', () => {
@@ -24,7 +23,6 @@ describe('E2E Test: Basic NFT (mint)', () => {
     const { addresses: addr, private_keys: pk } = require('../keys.json');
     [owner, publicAddress, thirdUser] = Object.keys(addr);
     const privateKey = pk[owner];
-    privateKeyPublicAddress = pk[publicAddress];
 
     const rpcUrl = 'http://0.0.0.0:8545';
     const chainId = 5;
@@ -91,5 +89,19 @@ describe('E2E Test: Basic NFT (mint)', () => {
     expect(receipt.status).toEqual(1);
     expect(receipt.from.toLowerCase()).toEqual(owner);
     expect(receipt.to.toLowerCase()).toEqual(contractObject.contractAddress.toLowerCase());
+  });
+
+  it('Should get all nft transfers given an address', async () => {
+    const walletAddress = '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7';
+    const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress });
+    expect(transferList.transfers.length).toBeGreaterThan(0);
+    expect(transferList.pageNumber).toEqual(0);
+    expect(transferList.cursor).not.toBeNull();
+    const transferListPage2 = await sdk.api.getNftsTransfersByWallet({
+      walletAddress,
+      cursor: transferList.cursor,
+    });
+    expect(transferListPage2.transfers.length).toBeGreaterThan(0);
+    expect(transferListPage2.pageNumber).toEqual(1);
   });
 });

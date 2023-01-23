@@ -12,7 +12,7 @@ export interface OpenSeaTokenLevelStandard {
 interface Attributes {
   display_type?: string;
   trait_type: string;
-  value: number;
+  value: number | string;
 }
 
 export interface ContractLevelMetadata {
