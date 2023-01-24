@@ -2,6 +2,7 @@ import { config as loadEnv } from 'dotenv';
 import { SDK } from './../src/lib/SDK/sdk';
 import Auth from './../src/lib/Auth/Auth';
 import {
+  GetNftTransfersByContractAddress,
   GetNftTransfersByContractAndToken,
   GetNftTransfersFromBlockToBlock,
   GetTransfersByBlockHashOptions,
@@ -363,6 +364,51 @@ describe('E2E Test: Sdk (read)', () => {
         } as GetNftTransfersByContractAndToken),
       ).rejects.toThrow(
         `missing argument: No tokenId supplied or tokenID is invalid. (location=\"[SDK.getTransfersByTokenId]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+  });
+
+  ///////
+  describe('As an account I should get list of transfers by a contract address', () => {
+    const contractAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
+    it('should get list of transfers', async () => {
+      const result = await sdk.api.getTransfersByContractAddress({
+        contractAddress,
+      });
+
+      expect(result).toMatchObject({
+        total: expect.any(Number),
+        pageNumber: 0,
+        pageSize: expect.any(Number),
+        network: expect.any(String),
+        cursor: expect.any(String),
+        account: contractAddress,
+        transfers: expect.arrayContaining([
+          expect.objectContaining({
+            tokenAddress: expect.any(String),
+            tokenId: '1',
+            fromAddress: expect.any(String),
+            toAddress: expect.any(String),
+            contractType: expect.any(String),
+            price: expect.any(String),
+            quantity: expect.any(String),
+            blockNumber: expect.any(String),
+            blockTimestamp: expect.any(String),
+            blockHash: expect.any(String),
+            transactionHash: expect.any(String),
+            transactionType: expect.any(String),
+          }),
+        ]),
+      });
+    });
+  });
+
+  describe('As an account I should get error with invalid contract address', () => {
+    it('should throw if a contract address not valid', async () => {
+      expect(() =>
+        sdk.api.getTransfersByContractAddress({} as GetNftTransfersByContractAddress),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location=\"[SDK.getTransfersByContractAddress]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
   });

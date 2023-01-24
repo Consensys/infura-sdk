@@ -47,6 +47,11 @@ export type GetNftTransfersByContractAndToken = {
   cursor?: string;
 };
 
+export type GetNftTransfersByContractAddress = {
+  contractAddress: string;
+  cursor?: string;
+};
+
 export default class Api {
   private readonly apiPath: string;
 
@@ -255,6 +260,26 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}/transfers`;
     const { contractAddress, tokenId, cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { contractAddress, tokenId, cursor });
+    return data;
+  }
+
+  /**
+   * Get transfers by contract address
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByContractAddress(
+    opts: GetNftTransfersByContractAddress,
+  ): Promise<TransfersDTO> {
+    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/accounts/${opts.contractAddress}/assets/transfers`;
+    const { contractAddress, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { contractAddress, cursor });
     return data;
   }
 }

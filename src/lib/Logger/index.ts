@@ -110,6 +110,7 @@ export enum ErrorLocation {
   SDK_GETTRANSFERSBYBLOCKHASH = '[SDK.getTransfersByBlockHash]',
   SDK_GET_TRANSFERS_FROM_BLOCK_TO_BLOCK = '[SDK.getTransferFromBlockToBlock]',
   SDK_GET_TRANSFERS_BY_TOKEN_ID = '[SDK.getTransfersByTokenId]',
+  SDK_GET_TRANSFERS_BY_CONTRACT = '[SDK.getTransfersByContractAddress]',
 
   // Metadata
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
@@ -198,7 +199,6 @@ export enum ErrorMessage {
   unsupported_provider = 'unsupported provider',
   invalid_block_number = 'Invalid block number.',
   invalid_block_hash = 'Invalid block hash.',
-
 }
 
 export class Logger {

@@ -254,7 +254,7 @@ describe('Api', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
-  describe('getTransfersByWTokenId', () => {
+  describe('getTransfersByTokenId', () => {
     it('should throw when contract address is not provided', async () => {
       await expect(() =>
         api.getTransfersByTokenId({} as GetNftTransfersByContractAndToken),
@@ -282,6 +282,31 @@ describe('Api', () => {
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
       await api.getTransfersByTokenId({ contractAddress: CONTRACT_ADDRESS, tokenId: '1' });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersByContractAddress', () => {
+    it('should throw when contract address is not provided', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({} as GetNftTransfersByContractAndToken),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getTransfersByContractAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({ contractAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getTransfersByContractAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
+      await api.getTransfersByContractAddress({ contractAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
