@@ -75,8 +75,7 @@
     "ipfs-http-client": "56.0.3",
     "jest-junit": "^14.0.1",
     "jest-sonar-reporter": "^2.0.0",
-    "joi": "^17.7.0",
-    "npm": "^9.3.1"
+    "joi": "^17.7.0"
   },
   "overrides": {
     "eslint-config-airbnb-base": {
