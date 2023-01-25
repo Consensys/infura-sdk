@@ -277,7 +277,7 @@ export default class Api {
       });
     }
 
-    const apiUrl = `${this.apiPath}/accounts/${opts.contractAddress}/assets/transfers`;
+    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/transfers`;
     const { contractAddress, cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { contractAddress, cursor });
     return data;
