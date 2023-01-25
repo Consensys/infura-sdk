@@ -435,7 +435,10 @@ export interface Components {
 
       /** @example 100 */
       pageSize: number;
-
+      /**
+       * @example ETHEREUM
+       * @enum {string}
+       */
       network: 'ETHEREUM' | 'GOERLI' | 'BINANCE' | 'POLYGON';
 
       cursor: string;
