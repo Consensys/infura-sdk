@@ -14,6 +14,7 @@ import {
   collectionNFTsMockWithoutCursor,
   contractMetadataMock,
   lowestTradePriceMock,
+  ownersByContractAddress,
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
@@ -26,6 +27,7 @@ import Api, {
   GetTransfersByBlockNumberOptions,
   GetNftTransfersByContractAndToken,
   GetLowestTradePrice,
+  GetNftOwnersByContractAddress,
 } from '../src/lib/Api/api';
 
 loadEnv();

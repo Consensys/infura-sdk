@@ -111,6 +111,7 @@ export enum ErrorLocation {
   SDK_GET_TRANSFERS_FROM_BLOCK_TO_BLOCK = '[SDK.getTransferFromBlockToBlock]',
   SDK_GET_TRANSFERS_BY_TOKEN_ID = '[SDK.getTransfersByTokenId]',
   SDK_GET_TRANSFERS_BY_CONTRACT = '[SDK.getTransfersByContractAddress]',
+  SDK_GET_OWNERS_BY_TOKEN_ADDRESS = '[SDK.getOwnersByTokenAddress]',
 
   SDK_GET_LOWEST_TRADE_PRICE = '[SDK.getLowestTradePrice]',
   // Metadata

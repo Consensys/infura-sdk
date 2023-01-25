@@ -51,6 +51,10 @@ export type GetNftTransfersByContractAddress = {
   contractAddress: string;
   cursor?: string;
 };
+export type GetNftOwnersByContractAddress = {
+  contractAddress: string;
+  cursor?: string;
+};
 
 export type GetLowestTradePrice = {
   tokenAddress: string;
