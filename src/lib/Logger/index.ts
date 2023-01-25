@@ -110,7 +110,7 @@ export enum ErrorLocation {
   SDK_GETTRANSFERSBYBLOCKHASH = '[SDK.getTransfersByBlockHash]',
   SDK_GET_TRANSFERS_FROM_BLOCK_TO_BLOCK = '[SDK.getTransferFromBlockToBlock]',
   SDK_GET_TRANSFERS_BY_TOKEN_ID = '[SDK.getTransfersByTokenId]',
-
+  SDK_GET_LOWEST_TRADE_PRICE = '[SDK.getLowestTradePrice]',
   // Metadata
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
   METADATA_CONTRACT_CREATION = '[Metadata.contractLevelMetadata]',
@@ -160,6 +160,7 @@ export enum ErrorMessage {
   different_array_lengths = 'IDs and quantities arrays must be of same length',
   invalid_quantity = 'Quantity as integer value greater than 0 required.',
   invalid_block = 'Invalid block number',
+  invalid_token_address = 'Invalid token address',
 
   warning_contractURI = 'WARNING: The supplied ContractURI is not a link.',
   warning_contractURI_tips = 'WARNING: ContractURI should be a public link to a valid JSON metadata file',
@@ -198,7 +199,6 @@ export enum ErrorMessage {
   unsupported_provider = 'unsupported provider',
   invalid_block_number = 'Invalid block number.',
   invalid_block_hash = 'Invalid block hash.',
-
 }
 
 export class Logger {
