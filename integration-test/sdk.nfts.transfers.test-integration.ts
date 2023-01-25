@@ -366,4 +366,26 @@ describe('E2E Test: Sdk (read)', () => {
       );
     });
   });
+
+  describe('As an account I should get lowest trade price for a given collection', () => {
+    const contractAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
+    it('should get the lowest trade price', async () => {
+      const result = await sdk.api.getLowestTradePrice({
+        tokenAddress: contractAddress,
+      });
+
+      expect(result).toMatchObject({
+        transactionHash: expect.any(String),
+        blockTimestamp: expect.any(String),
+        blockHash: expect.any(String),
+        blockNumber: expect.any(String),
+        tokenIds: expect.any(Array),
+        sellerAddress: expect.any(String),
+        buyerAddress: expect.any(String),
+        tokenAddress: expect.any(String),
+        marketplaceAddress: expect.any(String),
+        price: expect.any(String),
+      });
+    });
+  });
 });

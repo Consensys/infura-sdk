@@ -119,6 +119,28 @@ export interface Components {
       account: string;
       transfers: Components['schemas']['TransfersResultsModel'][];
     };
+    TradeModel: {
+      /** @example 0x4cd5a150a0332cdd3525b9bdc387af000866957fead36a8dc242b9d2f683d04a */
+      transactionHash: string;
+      /** @example 2023-01-21T01:15:11.000Z */
+      blockTimestamp: string;
+      /** @example 0x9542de2282024ed349c21ff23839921a26b04a6efdf98e2ba870c4fd9871cce0 */
+      blockHash: string;
+      /** @example 16451830 */
+      blockNumber: string;
+      /** @example ["655"] */
+      tokenIds: string[];
+      /** @example 0xb3dbf4147183492a7bc544e8abed20ad6831fecb */
+      sellerAddress: string;
+      /** @example 0xcd9ab8f11df0a72b65c7adcfbc61b79aab9fe4c6 */
+      buyerAddress: string;
+      /** @example 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d */
+      tokenAddress: string;
+      /** @example 0x00000000006c3852cbef3e08e8df289169ede581 */
+      marketplaceAddress: string;
+      /** @example 66290000000000000000 */
+      price: string;
+    };
   };
 }
 

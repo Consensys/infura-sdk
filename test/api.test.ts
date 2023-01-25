@@ -13,6 +13,7 @@ import {
   collectionNFTsMock,
   collectionNFTsMockWithoutCursor,
   contractMetadataMock,
+  lowestTradePriceMock,
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
@@ -24,6 +25,7 @@ import Api, {
   GetNftTransfersFromBlockToBlock,
   GetTransfersByBlockNumberOptions,
   GetNftTransfersByContractAndToken,
+  GetLowestTradePrice,
 } from '../src/lib/Api/api';
 
 loadEnv();
@@ -282,6 +284,27 @@ describe('Api', () => {
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
       await api.getTransfersByTokenId({ contractAddress: CONTRACT_ADDRESS, tokenId: '1' });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getLowestTrade', () => {
+    it('should throw an error when contract address is not provided', async () => {
+      await expect(() => api.getLowestTradePrice({} as GetLowestTradePrice)).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getLowestTradePrice]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "tokenAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getLowestTradePrice({ tokenAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getLowestTradePrice]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return lowest trade', async () => {
+      HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
+      await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
