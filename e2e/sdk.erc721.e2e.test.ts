@@ -213,7 +213,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
   });
-  it.only('Load new contract and get Metadata', async () => {
+  it('Load new contract and get Metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const newContract = await sdk.deploy(contractInfo);
