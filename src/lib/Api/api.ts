@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
-import { MetadataDTO, MetadataInfo, NftDTO, TransfersDTO } from '../SDK/types';
+import { MetadataDTO, MetadataInfo, NftDTO, TradeDTO, TransfersDTO } from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
@@ -50,6 +50,10 @@ export type GetNftTransfersByContractAndToken = {
 export type GetNftTransfersByContractAddress = {
   contractAddress: string;
   cursor?: string;
+};
+
+export type GetLowestTradePrice = {
+  tokenAddress: string;
 };
 
 export default class Api {
@@ -280,6 +284,24 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/transfers`;
     const { contractAddress, cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { contractAddress, cursor });
+    return data;
+  }
+
+  /**
+   * Get lowest trade for a given token
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Trade information
+   */
+  async getLowestTradePrice(opts: GetLowestTradePrice): Promise<TradeDTO> {
+    if (!opts.tokenAddress || !utils.isAddress(opts.tokenAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_token_address, {
+        location: Logger.location.SDK_GET_LOWEST_TRADE_PRICE,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress}/tradePrice`;
+    const { tokenAddress } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { tokenAddress });
     return data;
   }
 }
