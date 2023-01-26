@@ -7,6 +7,7 @@ export type NftDTO = Components['schemas']['NftModel'];
 export type MetadataDTO = Components['schemas']['MetadataModel'];
 export type TransfersDTO = Components['schemas']['TransfersModel'];
 export type TradeDTO = Components['schemas']['TradeModel'];
+export type OwnersDTO = Components['schemas']['OwnersModel'];
 
 export type MetadataInfo = {
   symbol: string;

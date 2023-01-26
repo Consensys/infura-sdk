@@ -64,6 +64,7 @@ describe('E2E Test: Sdk (read)', () => {
         pageNumber: expect.any(Number),
         pageSize: expect.any(Number),
         network: expect.any(String),
+        cursor: expect.any(String),
         owners: expect.arrayContaining([
           expect.objectContaining({
             tokenAddress: expect.any(String),
@@ -91,6 +92,7 @@ describe('E2E Test: Sdk (read)', () => {
         pageNumber: firstPage + 1,
         pageSize: result.pageSize,
         network: expect.any(String),
+        cursor: expect.any(String),
         owners: expect.arrayContaining([
           expect.objectContaining({
             tokenAddress: expect.any(String),

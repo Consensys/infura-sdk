@@ -3,7 +3,7 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait, { existingContractAddress } from './utils/utils.ts/utils';
-import { MetadataDTO } from '../src/lib/SDK/types';
+import { MetadataDTO, OwnersDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
@@ -213,7 +213,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
   });
-  it('Load new contract and get Metadata', async () => {
+  it.only('Load new contract and get Metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const newContract = await sdk.deploy(contractInfo);
@@ -241,5 +241,32 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(meta.symbol).toEqual(contractInfo.params.symbol);
     expect(meta.name).toEqual(contractInfo.params.name);
     expect(meta.tokenType).toEqual('ERC721');
+
+    // Check owners
+    const result: OwnersDTO = await sdk.api.getOwnersbyContractAddress({
+      contractAddress: newContract.contractAddress,
+    });
+    expect(result).toMatchObject({
+      total: expect.any(Number),
+      pageNumber: expect.any(Number),
+      pageSize: expect.any(Number),
+      network: expect.any(String),
+      owners: expect.arrayContaining([
+        expect.objectContaining({
+          tokenAddress: newContract.contractAddress.toLowerCase(),
+          tokenId: expect.any(String),
+          amount: '1',
+          ownerOf: ownerAddress.toLowerCase(),
+          tokenHash: expect.any(String),
+          blockNumberMinted: expect.any(String),
+          blockNumber: expect.any(String),
+          contractType: expect.any(String),
+          name: contractInfo.params.name,
+          symbol: contractInfo.params.symbol,
+          metadata: null,
+          minterAddress: null,
+        }),
+      ]),
+    });
   });
 });

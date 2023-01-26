@@ -1,7 +1,8 @@
 import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
-import { MetadataDTO, MetadataInfo, NftDTO, TradeDTO, TransfersDTO } from '../SDK/types';
+
+import { MetadataDTO, MetadataInfo, NftDTO, OwnersDTO, TransfersDTO } from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
