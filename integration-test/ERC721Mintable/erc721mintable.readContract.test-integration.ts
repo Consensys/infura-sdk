@@ -127,4 +127,30 @@ describe('E2E Test: Sdk (read)', () => {
       expect(tokenMetadata).toStrictEqual(expectedTokenMetadata);
     });
   });
+
+  describe('As an account I should get list of collections that i have created', () => {
+    const walletAddress = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045';
+    it('should get list of collections', async () => {
+      const result = await sdk.api.getCollectionsByWallet({
+        walletAddress,
+      });
+
+      expect(result).toMatchObject({
+        total: expect.any(Number),
+        pageNumber: 1,
+        pageSize: expect.any(Number),
+        network: expect.any(String),
+        cursor: null,
+        account: walletAddress,
+        collections: expect.arrayContaining([
+          expect.objectContaining({
+            contract: expect.any(String),
+            tokenType: expect.any(String),
+            name: expect.any(String),
+            symbol: expect.any(String),
+          }),
+        ]),
+      });
+    });
+  });
 });

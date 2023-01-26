@@ -269,4 +269,44 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       ]),
     });
   });
+
+  it('Deploy - Get collections by wallet', async () => {
+    // skipped because we are caching the response from Moralis before metadata is available
+    // and NFT api is returning null
+    const acc = new Auth(authInfo);
+    const sdk = new SDK(acc);
+    const newContract = await sdk.deploy(contractInfo);
+
+    const mintHash1 = await newContract.mint({
+      publicAddress: ownerAddress,
+      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+    });
+    const receipt1 = await mintHash1.wait();
+    expect(receipt1.status).toEqual(1);
+    await wait(
+      async () => {
+        const response: any = await sdk.api.getCollectionsByWallet({
+          walletAddress: '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7',
+        });
+        return response.collections !== null;
+      },
+      600000,
+      1000,
+      'Waiting for NFT metadata to be available',
+    );
+
+    const metadataResponse: MetadataDTO = await sdk.api.getTokenMetadata({
+      contractAddress: newContract.contractAddress,
+      tokenId: '0',
+    });
+    expect(metadataResponse.contract.toLowerCase()).toEqual(
+      newContract.contractAddress.toLowerCase(),
+    );
+    expect(metadataResponse.metadata.name).toEqual('Astro Soccer');
+    expect(metadataResponse.metadata.description).toEqual(
+      "The world's most adorable and sensitive pup.",
+    );
+    expect(metadataResponse.metadata.image).toContain('https://ipfs.io/ipfs/');
+    expect(metadataResponse.metadata.attributes).not.toBeNull();
+  }, 600000);
 });

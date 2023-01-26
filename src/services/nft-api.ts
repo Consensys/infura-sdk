@@ -546,6 +546,7 @@ export interface Operations {
        */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
       };
     };
@@ -638,6 +639,47 @@ export interface Operations {
       };
     };
   };
+  /** Gets NFT collections owned by a given wallet address. */
+  NftsController_getCollectionsByWalletAddress: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Wallet address of the owner of Nfts in collection */
+        walletAddress: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['CollectionByWalletModel'];
+        };
+      };
+    };
+  };
+  /** Gets all NFTs owned by a given wallet address. */
+  NftsController_getNftsForAddress: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Wallet address */
+        walletAddress: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['NftModel'];
+        };
+      };
+    };
+  };
+  /** Gets NFT data for the given NFT token ID and contract address. */
   NftsController_getNftMetadata: {
     /**
      * Gets NFT metadata
@@ -652,6 +694,7 @@ export interface Operations {
       /** @example 7421 */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
         tokenId: string;
       };
