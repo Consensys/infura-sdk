@@ -2,7 +2,7 @@ import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
 
-import { MetadataDTO, MetadataInfo, NftDTO, OwnersDTO, TransfersDTO } from '../SDK/types';
+import { MetadataDTO, MetadataInfo, NftDTO, OwnersDTO, TradeDTO, TransfersDTO } from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
@@ -307,6 +307,24 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress}/tradePrice`;
     const { tokenAddress } = opts;
     const { data } = await this.httpClient.get(apiUrl, { tokenAddress });
+    return data;
+  }
+
+  /**
+   * Get nft owners by contract address
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} OwnersDTO
+   */
+
+  async getOwnersbyContractAddress(opts: GetNftOwnersByContractAddress): Promise<OwnersDTO> {
+    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
+        location: Logger.location.SDK_GET_OWNERS_BY_TOKEN_ADDRESS,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/owners`;
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
     return data;
   }
 }

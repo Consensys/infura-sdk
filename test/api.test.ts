@@ -334,4 +334,26 @@ describe('Api', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
+  describe('getOwnersByContractAddress', () => {
+    it('should throw when contract address is not provided', async () => {
+      await expect(() =>
+        api.getOwnersbyContractAddress({} as GetNftOwnersByContractAddress),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getOwnersByTokenAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getOwnersbyContractAddress({ contractAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getOwnersByTokenAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return owners', async () => {
+      HttpServiceMock.mockResolvedValueOnce(ownersByContractAddress as AxiosResponse<any, any>);
+      await api.getOwnersbyContractAddress({ contractAddress: CONTRACT_ADDRESS });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
 });
