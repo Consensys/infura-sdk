@@ -389,6 +389,62 @@ export interface Components {
       /** @example 68100000000000000000 */
       price: string;
     };
+    OwnersResultModel: {
+      /** @example 0x082903f4e94c5e10a2b116a4284940a36afaed63 */
+      tokenAddress: string;
+
+      /** @example 3784 */
+      tokenId: string;
+
+      /** @example 1 */
+      amount: string;
+
+      /** @example 0x8252df1d8b29057d1afe3062bf5a64d503152bc8 */
+      ownerOf: string;
+
+      /** @example 003d3b164bf215e95871a094416622d2 */
+      tokenHash: string;
+
+      /** @example 12347180 */
+      blockNumberMinted: string;
+
+      /** @example 15839662 */
+      blockNumber: string;
+
+      /** @example ERC1155 */
+      contractType: string;
+
+      /** @example BoredApeYachtClub */
+      name: string;
+
+      /** @example BAYC */
+      symbol: string;
+
+      /** @example  '{"image":"ipfs://QmQTquMHyYcBaXCS7bZccESzF2CoACtox9TmhRq38XJ6ey","attributes":[{"trait_type":"Eyes","value":"Sunglasses"},{"trait_type":"Background","value":"Aquamarine"},{"trait_type":"Hat","value":"Seaman\'s Hat"},{"trait_type":"Mouth","value":"Rage"},{"trait_type":"Fur","value":"Pink"},{"trait_type":"Clothes","value":"Bandolier"}]}' */
+      metadata: string;
+
+      /** @example 0x3b66c992860abd1ec94b917e222dca78ad55032f */
+      minterAddress: string;
+    };
+    OwnersModel: {
+      /** @example 100 */
+      total: number;
+
+      /** @example 1 */
+      pageNumber: number;
+
+      /** @example 100 */
+      pageSize: number;
+      /**
+       * @example ETHEREUM
+       * @enum {string}
+       */
+      network: 'ETHEREUM' | 'GOERLI' | 'BINANCE' | 'POLYGON';
+
+      cursor: string;
+
+      owners: Components['schemas']['OwnersResultModel'][];
+    };
   };
   responses: never;
   parameters: never;

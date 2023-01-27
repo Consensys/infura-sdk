@@ -132,6 +132,33 @@ export const transferByBlockHashNumberMock = {
   },
 };
 
+export const ownersByContractAddress = {
+  data: {
+    total: 29,
+    pageNumber: 0,
+    pageSize: 100,
+    network: 'ETHEREUM',
+    cursor: null,
+    owners: [
+      {
+        tokenAddress: '0x1a92f7381b9f03921564a437210bb9396471050c',
+        tokenId: '590',
+        amount: '1',
+        ownerOf: '0x42436ffd4fecf3cbc1c306b40a1813897729ce07',
+        tokenHash: '4c41e33826b190dae1f81b9bf183056a',
+        blockNumberMinted: '12743348',
+        blockNumber: '16450813',
+        contractType: 'ERC721',
+        name: 'Cool Cats',
+        symbol: 'COOL',
+        metadata:
+          '{"description":"Cool Cats is a collection of 9,999 randomly generated and stylistically curated NFTs that exist on the Ethereum Blockchain. Cool Cat holders can participate in exclusive events such as NFT claims, raffles, community giveaways, and more. Remember, all cats are cool, but some are cooler than others. Visit [www.coolcatsnft.com](https://www.coolcatsnft.com/) to learn more.","image":"https://ipfs.io/ipfs/Qmdr9BVAQHKrUWwXsuDKscheDJKNt3rvRcQiQnvTzfwbZr","name":"Cool Cat #590","attributes":[{"trait_type":"body","value":"blue cat skin"},{"trait_type":"hats","value":"visor green"},{"trait_type":"shirt","value":"tanktop white"},{"trait_type":"face","value":"glossy"},{"trait_type":"tier","value":"wild_1"}],"points":{"Body":0,"Shirt":1,"Hats":3,"Face":1},"ipfs_image":"https://ipfs.io/ipfs/Qmdr9BVAQHKrUWwXsuDKscheDJKNt3rvRcQiQnvTzfwbZr","google_image":"https://drive.google.com/uc?id=1JvY5SXPxhXo8jYqmA9mA29t-bZSQegrp"}',
+        minterAddress: '0x3fa9db8d720679e8e5213f6c5d88fab766058e20',
+      },
+    ],
+  },
+};
+
 export const ethBalanceMock = {
   data: {
     account: ACCOUNT_ADDRESS,

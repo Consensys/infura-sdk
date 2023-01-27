@@ -11,7 +11,7 @@
     "test:coverage": "jest --coverage",
     "build": "rm -rf dist/ && tsc",
     "prepublishOnly": "npm run build",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write '{src,integration-test}/**/*.{ts,js,json}'",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "fetchAPITypes": "npx openapi-typescript https://docs.api.infura.io/nft/swagger.json --output src/services/nft-api.ts",
