@@ -135,7 +135,10 @@ describe('E2E Test: Sdk (read)', () => {
 
     it('should throw if token id not valid', async () => {
       expect(() =>
-        sdk.api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: '0x258', tokenId: '' }),
+        sdk.api.getOwnersbyTokenAddressAndTokenId({
+          tokenAddress: '0x1A92f7381B9F03921564a437210bB9396471050C',
+          tokenId: '',
+        }),
       ).rejects.toThrow(
         `missing argument: No tokenId supplied or tokenID is invalid. (location=\"[SDK.getOwnersbyTokenAddressAndTokenId]\", code=MISSING_ARGUMENT, version=${version})`,
       );
