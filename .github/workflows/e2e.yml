@@ -2,7 +2,11 @@
 name: e2e SDK tests
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Integration tests"]
+    branches: [dev]
+    types: 
+      - completed
   push:
     branches:
       - dev
