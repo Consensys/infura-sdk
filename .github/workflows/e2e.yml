@@ -4,7 +4,6 @@ name: e2e SDK tests
 on:
   workflow_run:
     workflows: ["Integration tests"]
-    branches: [dev]
     types: 
       - completed
 
