@@ -2,6 +2,8 @@ import { config as loadEnv } from 'dotenv';
 import { SDK } from '../../src/lib/SDK/sdk';
 import Auth from '../../src/lib/Auth/Auth';
 import { NftDTO } from '../../src/lib/SDK/types';
+import { GetCollectionsByWallet } from '../../src/lib/Api/api';
+import version from '../../src/_version';
 
 loadEnv();
 
@@ -151,6 +153,25 @@ describe('E2E Test: Sdk (read)', () => {
           }),
         ]),
       });
+    });
+
+    it('should throw when "walletAddress" is not a valid address', async () => {
+      expect(
+        async () =>
+          await sdk.api.getCollectionsByWallet({
+            walletAddress: 'notAValidAddress',
+          }),
+      ).rejects.toThrow(
+        `missing argument: Invalid account address. (location=\"[SDK.getCollectionsByWallet]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw when wallet address is not provided', async () => {
+      expect(
+        async () => await sdk.api.getCollectionsByWallet({} as GetCollectionsByWallet),
+      ).rejects.toThrow(
+        `missing argument: Invalid account address. (location=\"[SDK.getCollectionsByWallet]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
     });
   });
 });

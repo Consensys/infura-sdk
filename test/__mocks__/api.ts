@@ -154,6 +154,10 @@ export const ownersByContractAddress = {
         metadata:
           '{"description":"Cool Cats is a collection of 9,999 randomly generated and stylistically curated NFTs that exist on the Ethereum Blockchain. Cool Cat holders can participate in exclusive events such as NFT claims, raffles, community giveaways, and more. Remember, all cats are cool, but some are cooler than others. Visit [www.coolcatsnft.com](https://www.coolcatsnft.com/) to learn more.","image":"https://ipfs.io/ipfs/Qmdr9BVAQHKrUWwXsuDKscheDJKNt3rvRcQiQnvTzfwbZr","name":"Cool Cat #590","attributes":[{"trait_type":"body","value":"blue cat skin"},{"trait_type":"hats","value":"visor green"},{"trait_type":"shirt","value":"tanktop white"},{"trait_type":"face","value":"glossy"},{"trait_type":"tier","value":"wild_1"}],"points":{"Body":0,"Shirt":1,"Hats":3,"Face":1},"ipfs_image":"https://ipfs.io/ipfs/Qmdr9BVAQHKrUWwXsuDKscheDJKNt3rvRcQiQnvTzfwbZr","google_image":"https://drive.google.com/uc?id=1JvY5SXPxhXo8jYqmA9mA29t-bZSQegrp"}',
         minterAddress: '0x3fa9db8d720679e8e5213f6c5d88fab766058e20',
+      },
+    ],
+  },
+};
 export const collectionsByWalletMock = {
   data: {
     total: 564,
