@@ -31,7 +31,6 @@ import Api, {
   GetNftOwnersByContractAddress,
   GetNftOwnersByTokenAddressAndTokenId,
   GetCollectionsByWallet,
-  GetNftOwnersByTokenAddressAndTokenId,
 } from '../src/lib/Api/api';
 
 loadEnv();
