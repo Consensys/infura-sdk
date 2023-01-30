@@ -135,6 +135,73 @@ describe('E2E Test: Sdk (read)', () => {
 
     it('should throw if token id not valid', async () => {
       expect(() =>
+        sdk.api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: '0x258', tokenId: '' }),
+      ).rejects.toThrow(
+        `missing argument: No tokenId supplied or tokenID is invalid. (location=\"[SDK.getOwnersbyTokenAddressAndTokenId]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw if cursor is bad', async () => {
+      await expect(
+        sdk.api.getOwnersbyTokenAddressAndTokenId({
+          tokenAddress: '0x1A92f7381B9F03921564a437210bB9396471050C',
+          tokenId: '1',
+          cursor: 'dd',
+        }),
+      ).rejects.toThrow('An Axios error occured : Bad cursor');
+    });
+
+    it('should return list of owners by contract address and tokenId', async () => {
+      const result = await sdk.api.getOwnersbyTokenAddressAndTokenId({
+        tokenAddress: '0x1A92f7381B9F03921564a437210bB9396471050C',
+        tokenId: '1',
+      });
+
+      expect(result).toMatchObject({
+        total: expect.any(Number),
+        pageNumber: expect.any(Number),
+        pageSize: expect.any(Number),
+        network: expect.any(String),
+        cursor: null,
+        owners: expect.arrayContaining([
+          expect.objectContaining({
+            tokenAddress: expect.any(String),
+            tokenId: expect.any(String),
+            amount: expect.any(String),
+            ownerOf: expect.any(String),
+            tokenHash: expect.any(String),
+            blockNumberMinted: expect.any(String),
+            blockNumber: expect.any(String),
+            contractType: expect.any(String),
+            name: expect.any(String),
+            symbol: expect.any(String),
+            metadata: expect.any(String),
+            minterAddress: expect.any(String),
+          }),
+        ]),
+      });
+    });
+  });
+
+  describe('As an account I should get the owners for a token address and token id', () => {
+    it('should throw if token address missing', async () => {
+      expect(() =>
+        sdk.api.getOwnersbyTokenAddressAndTokenId({} as GetNftOwnersByTokenAddressAndTokenId),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location=\"[SDK.getOwnersbyTokenAddressAndTokenId]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw if token address not valid', async () => {
+      expect(() =>
+        sdk.api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: '0x258', tokenId: '1' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location=\"[SDK.getOwnersbyTokenAddressAndTokenId]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw if token id not valid', async () => {
+      expect(() =>
         sdk.api.getOwnersbyTokenAddressAndTokenId({
           tokenAddress: '0x1A92f7381B9F03921564a437210bB9396471050C',
           tokenId: '',

@@ -115,6 +115,7 @@ export enum ErrorLocation {
   SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID = '[SDK.getOwnersbyTokenAddressAndTokenId]',
   SDK_GET_COLLECTION_BY_WALLET = '[SDK.getCollectionsByWallet]',
 
+  SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID = '[SDK.getOwnersbyTokenAddressAndTokenId]',
   SDK_GET_LOWEST_TRADE_PRICE = '[SDK.getLowestTradePrice]',
 
   // Metadata
