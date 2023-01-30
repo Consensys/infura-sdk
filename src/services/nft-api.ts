@@ -5,98 +5,58 @@
 
 export interface Paths {
   '/networks/{chainId}/nfts/transfers': {
-    /**
-     * Gets all transfers from block to block
-     * @description Gets transfers from a block to block.
-     */
+    /** Gets transfers from a block to block. */
     get: Operations['NftsController_getTransfersfromBlockToBlock'];
   };
   '/networks/{chainId}/nfts/block/transfers': {
-    /**
-     * Gets all transfers By block number or hash
-     * @description Gets transfers by block number or block hash.
-     */
+    /** Gets transfers by block number or block hash. */
     get: Operations['NftsController_getTransfersByBlockNumberOrHash'];
   };
   '/networks/{chainId}/nfts/search': {
-    /**
-     * Search for Nfts given a string
-     * @description Search for Nfts given a string
-     */
+    /** Search for Nfts given a string */
     get: Operations['NftsController_searchNfts'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}': {
-    /**
-     * Gets collection level metadata
-     * @description Gets the contract level metadata for a given contract address.
-     */
+    /** Gets the contract level metadata for a given contract address. */
     get: Operations['NftsController_getCollectionMetadata'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/tokens': {
-    /**
-     * Gets all NFTs with metadata in a specific collection
-     * @description Gets all NFTs for a given contract address (including metadata).
-     */
+    /** Gets all NFTs for a given contract address (including metadata). */
     get: Operations['NftsController_getNftsForCollection'];
   };
   '/networks/{chainId}/accounts/{walletAddress}/assets/collections': {
-    /**
-     * Gets collections by wallet address
-     * @description Gets NFT collections owned by a given wallet address.
-     */
+    /** Gets NFT collections owned by a given wallet address. */
     get: Operations['NftsController_getCollectionsByWalletAddress'];
   };
   '/networks/{chainId}/accounts/{walletAddress}/assets/nfts': {
-    /**
-     * Gets all NFTs with metadata currently owned by a given wallet address
-     * @description Gets all NFTs owned by a given wallet address.
-     */
+    /** Gets all NFTs owned by a given wallet address. */
     get: Operations['NftsController_getNftsForAddress'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/tokens/{tokenId}': {
-    /**
-     * Gets NFT metadata
-     * @description Gets NFT data for the given NFT token ID and contract address.
-     */
+    /** Gets NFT data for the given NFT token ID and contract address. */
     get: Operations['NftsController_getNftMetadata'];
   };
   '/networks/{chainId}/accounts/{walletAddress}/assets/transfers': {
-    /**
-     * Gets all NFT transfers by wallet address
-     * @description Gets transfers of NFTs for a given wallet address
-     */
+    /** Gets transfers of NFTs for a given wallet address */
     get: Operations['NftsController_getTransferForAddress'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/tokens/{tokenId}/transfers': {
-    /**
-     * Gets all transfers for an NFT
-     * @description Gets transfers of an NFT by contract address and token ID.
-     */
+    /** Gets transfers of an NFT by contract address and token ID. */
     get: Operations['NftsController_getTransfersByTokenId'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/transfers': {
-    /**
-     * Gets all transfers By contract address
-     * @description Gets transfers by contract address.
-     */
+    /** Gets transfers by contract address. */
     get: Operations['NftsController_getTransfersByTokenAddress'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/owners': {
-    /**
-     * Gets NFT owners by contract address
-     * @description  Gets NFT owners given a token address
-     */
+    /** Gets NFT owners given a token address */
     get: Operations['NftsController_getOwnersByContract'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/{tokenId}/owners': {
-    /**
-     * Gets NFT owners by contract address and tokenId
-     * @description Gets NFT owners for a specific token address and a tokenId
-     */
+    /** Gets NFT owners for a specific token address and a tokenId */
     get: Operations['NftsController_getOwnersByTokenId'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/tradePrice': {
-    /** Gets the lowest ETH based price for the contract. */
     get: Operations['NftsController_getTradePrice'];
   };
 }
@@ -158,7 +118,7 @@ export interface Components {
       cursor: string;
       /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
       account: string;
-      transfers: readonly Components['schemas']['TransfersResultsModel'][];
+      transfers: Components['schemas']['TransfersResultsModel'][];
     };
     SearchNftResult: {
       /** @example 3784 */
@@ -207,7 +167,7 @@ export interface Components {
         | 'PALM'
         | 'ARBITRUM';
       cursor: string;
-      nfts: readonly Components['schemas']['SearchNftResult'][];
+      nfts: Components['schemas']['SearchNftResult'][];
     };
     CollectionModel: {
       /** @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e */
@@ -228,7 +188,7 @@ export interface Components {
       supply: string;
       /** @example ERC721 */
       type: string;
-      metadata?: Record<string, never>;
+      metadata?: { [key: string]: unknown };
     };
     NftModel: {
       /** @example 1 */
@@ -261,7 +221,7 @@ export interface Components {
       /** @example NFT */
       type: string;
       cursor: string;
-      assets: readonly Components['schemas']['AssetsModel'][];
+      assets: Components['schemas']['AssetsModel'][];
     };
     CollectionByWalletModel: {
       /** @example 1 */
@@ -292,7 +252,7 @@ export interface Components {
       total: number;
       /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
       account: string;
-      collections: readonly Components['schemas']['CollectionModel'][];
+      collections: Components['schemas']['CollectionModel'][];
     };
     MetadataModel: {
       /** @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e */
@@ -306,7 +266,7 @@ export interface Components {
        *   "attributes": []
        * }
        */
-      metadata: Record<string, never>;
+      metadata: { [key: string]: unknown };
     };
     OwnersResultModel: {
       /** @example 0x082903f4e94c5e10a2b116a4284940a36afaed63 */
@@ -361,7 +321,7 @@ export interface Components {
         | 'PALM'
         | 'ARBITRUM';
       cursor: string;
-      owners: readonly Components['schemas']['OwnersResultModel'][];
+      owners: Components['schemas']['OwnersResultModel'][];
     };
     TradePriceModel: {
       /** @example 0x0c930abb13c9b283bf73cdb979c8cb936bdf6189177d6f95beb892f66dc817fc */
@@ -377,7 +337,7 @@ export interface Components {
        *   "7567"
        * ]
        */
-      tokenIds: readonly string[];
+      tokenIds: string[];
       /** @example 0xd279e2dd092835061fc6758d051bd78873ec7622 */
       sellerAddress: string;
       /** @example 0x00000003dff73965674dbcc9dfcec53e1789ed50 */
@@ -389,90 +349,21 @@ export interface Components {
       /** @example 68100000000000000000 */
       price: string;
     };
-    OwnersResultModel: {
-      /** @example 0x082903f4e94c5e10a2b116a4284940a36afaed63 */
-      tokenAddress: string;
-
-      /** @example 3784 */
-      tokenId: string;
-
-      /** @example 1 */
-      amount: string;
-
-      /** @example 0x8252df1d8b29057d1afe3062bf5a64d503152bc8 */
-      ownerOf: string;
-
-      /** @example 003d3b164bf215e95871a094416622d2 */
-      tokenHash: string;
-
-      /** @example 12347180 */
-      blockNumberMinted: string;
-
-      /** @example 15839662 */
-      blockNumber: string;
-
-      /** @example ERC1155 */
-      contractType: string;
-
-      /** @example BoredApeYachtClub */
-      name: string;
-
-      /** @example BAYC */
-      symbol: string;
-
-      /** @example  '{"image":"ipfs://QmQTquMHyYcBaXCS7bZccESzF2CoACtox9TmhRq38XJ6ey","attributes":[{"trait_type":"Eyes","value":"Sunglasses"},{"trait_type":"Background","value":"Aquamarine"},{"trait_type":"Hat","value":"Seaman\'s Hat"},{"trait_type":"Mouth","value":"Rage"},{"trait_type":"Fur","value":"Pink"},{"trait_type":"Clothes","value":"Bandolier"}]}' */
-      metadata: string;
-
-      /** @example 0x3b66c992860abd1ec94b917e222dca78ad55032f */
-      minterAddress: string;
-    };
-    OwnersModel: {
-      /** @example 100 */
-      total: number;
-
-      /** @example 1 */
-      pageNumber: number;
-
-      /** @example 100 */
-      pageSize: number;
-      /**
-       * @example ETHEREUM
-       * @enum {string}
-       */
-      network: 'ETHEREUM' | 'GOERLI' | 'BINANCE' | 'POLYGON';
-
-      cursor: string;
-
-      owners: Components['schemas']['OwnersResultModel'][];
-    };
   };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
 }
 
-export type External = Record<string, never>;
-
 export interface Operations {
+  /** Gets transfers from a block to block. */
   NftsController_getTransfersfromBlockToBlock: {
-    /**
-     * Gets all transfers from block to block
-     * @description Gets transfers from a block to block.
-     */
     parameters: {
-      /** @example 16026179 */
-      /** @example 16026190 */
+      path: {
+        chainId: string;
+      };
       query: {
         fromBlock: number;
         toBlock: number;
         cursor?: string;
       };
-      /** @example 1 */
-      path: {
-        chainId: string;
-      };
     };
     responses: {
       200: {
@@ -482,21 +373,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets transfers by block number or block hash. */
   NftsController_getTransfersByBlockNumberOrHash: {
-    /**
-     * Gets all transfers By block number or hash
-     * @description Gets transfers by block number or block hash.
-     */
     parameters: {
-      /** @example 16026179 */
+      path: {
+        chainId: string;
+      };
       query: {
         blockHashNumber: string;
         cursor?: string;
       };
-      /** @example 1 */
-      path: {
-        chainId: string;
-      };
     };
     responses: {
       200: {
@@ -506,23 +392,16 @@ export interface Operations {
       };
     };
   };
+  /** Search for Nfts given a string */
   NftsController_searchNfts: {
-    /**
-     * Search for Nfts given a string
-     * @description Search for Nfts given a string
-     */
     parameters: {
-      /**
-       * @description Query to search with
-       * @example C352B5
-       */
-      query: {
-        query: string;
-        cursor?: string;
-      };
-      /** @example 1 */
       path: {
         chainId: string;
+      };
+      query: {
+        /** Query to search with */
+        query: string;
+        cursor?: string;
       };
     };
     responses: {
@@ -533,19 +412,12 @@ export interface Operations {
       };
     };
   };
+  /** Gets the contract level metadata for a given contract address. */
   NftsController_getCollectionMetadata: {
-    /**
-     * Gets collection level metadata
-     * @description Gets the contract level metadata for a given contract address.
-     */
     parameters: {
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e
-       */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
       };
     };
@@ -557,23 +429,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets all NFTs for a given contract address (including metadata). */
   NftsController_getNftsForCollection: {
-    /**
-     * Gets all NFTs with metadata in a specific collection
-     * @description Gets all NFTs for a given contract address (including metadata).
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0x1A92f7381B9F03921564a437210bB9396471050C
-       */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -584,23 +449,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets NFT collections owned by a given wallet address. */
   NftsController_getCollectionsByWalletAddress: {
-    /**
-     * Gets collections by wallet address
-     * @description Gets NFT collections owned by a given wallet address.
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Wallet address of the owner of Nfts in collection
-       * @example 0xd8da6bf26964af9d7eed9e03e53415d37aa96045
-       */
       path: {
         chainId: string;
+        /** Wallet address of the owner of Nfts in collection */
         walletAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -611,23 +469,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets all NFTs owned by a given wallet address. */
   NftsController_getNftsForAddress: {
-    /**
-     * Gets all NFTs with metadata currently owned by a given wallet address
-     * @description Gets all NFTs owned by a given wallet address.
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Wallet address
-       * @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07
-       */
       path: {
         chainId: string;
+        /** Wallet address */
         walletAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -638,20 +489,12 @@ export interface Operations {
       };
     };
   };
+  /** Gets NFT data for the given NFT token ID and contract address. */
   NftsController_getNftMetadata: {
-    /**
-     * Gets NFT metadata
-     * @description Gets NFT data for the given NFT token ID and contract address.
-     */
     parameters: {
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e
-       */
-      /** @example 7421 */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
         tokenId: string;
       };
@@ -664,23 +507,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets transfers of NFTs for a given wallet address */
   NftsController_getTransferForAddress: {
-    /**
-     * Gets all NFT transfers by wallet address
-     * @description Gets transfers of NFTs for a given wallet address
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Wallet address of the sender/recipient of the transfers
-       * @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07
-       */
       path: {
         chainId: string;
+        /** Wallet address of the sender/recipient of the transfers */
         walletAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -691,26 +527,18 @@ export interface Operations {
       };
     };
   };
+  /** Gets transfers of an NFT by contract address and token ID. */
   NftsController_getTransfersByTokenId: {
-    /**
-     * Gets all transfers for an NFT
-     * @description Gets transfers of an NFT by contract address and token ID.
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0x1A92f7381B9F03921564a437210bB9396471050C
-       */
-      /** @example 7421 */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
         tokenId: string;
       };
+      query: {
+        cursor?: string;
+      };
     };
     responses: {
       200: {
@@ -720,23 +548,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets transfers by contract address. */
   NftsController_getTransfersByTokenAddress: {
-    /**
-     * Gets all transfers By contract address
-     * @description Gets transfers by contract address.
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0x1A92f7381B9F03921564a437210bB9396471050C
-       */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -747,23 +568,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets NFT owners given a token address */
   NftsController_getOwnersByContract: {
-    /**
-     * Gets NFT owners by contract address
-     * @description  Gets NFT owners given a token address
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0x1A92f7381B9F03921564a437210bB9396471050C
-       */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -774,22 +588,16 @@ export interface Operations {
       };
     };
   };
+  /** Gets NFT owners for a specific token address and a tokenId */
   NftsController_getOwnersByTokenId: {
-    /**
-     * Gets NFT owners by contract address and tokenId
-     * @description Gets NFT owners for a specific token address and a tokenId
-     */
     parameters: {
-      query?: {
-        cursor?: string;
-      };
-      /** @example 1 */
-      /** @example 0x1A92f7381B9F03921564a437210bB9396471050C */
-      /** @example 0 */
       path: {
         chainId: string;
         tokenAddress: string;
         tokenId: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -801,15 +609,10 @@ export interface Operations {
     };
   };
   NftsController_getTradePrice: {
-    /** Gets the lowest ETH based price for the contract. */
     parameters: {
-      /** @example 1 */
-      /**
-       * @description Contract address
-       * @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e
-       */
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
       };
     };
@@ -822,3 +625,5 @@ export interface Operations {
     };
   };
 }
+
+export interface External {}

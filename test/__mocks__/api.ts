@@ -158,6 +158,25 @@ export const ownersByContractAddress = {
     ],
   },
 };
+export const collectionsByWalletMock = {
+  data: {
+    total: 564,
+    pageNumber: 1,
+    pageSize: 100,
+    network: 'ETHEREUM',
+    cursor:
+      'eyJhbGciOiJIUzI1NiJ9.ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpkWE4wYjIxUVlYSmhiWE1pT25zaWQyRnNiR1YwUVdSa2NtVnpjeUk2SWpCNFpEaGtZVFppWmpJMk9UWTBZV1k1WkRkbFpXUTVaVEF6WlRVek5ERTFaRE0zWVdFNU5qQTBOU0o5TENKclpYbHpJanBiSWpFMk5USXpNRE0yTXpFdU5UTTJJbDBzSW5kb1pYSmxJanA3SW05M2JtVnlYMjltSWpvaU1IaGtPR1JoTm1KbU1qWTVOalJoWmpsa04yVmxaRGxsTURObE5UTTBNVFZrTXpkaFlUazJNRFExSW4wc0lteHBiV2wwSWpveE1EQXNJbTltWm5ObGRDSTZNQ3dpYjNKa1pYSWlPbHRkTENKa2FYTmhZbXhsWDNSdmRHRnNJanBtWVd4elpTd2lkRzkwWVd3aU9qVTJOQ3dpY0dGblpTSTZNU3dpZEdGcGJFOW1abk5sZENJNk1Td2lhV0YwSWpveE5qYzBOek15TVRJMGZRLm9aeVN2S1pSbFJGTkVhV0pkSlBFTW1MaWplZzhISjJFZHJJTDNJXzVFSFE.cVc3JDHNZq5sltem2tvRVisfgQkAzsQmhRyhKD6N9Rg',
+    account: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+    collections: [
+      {
+        contract: '0xff8852a5f77c20094f0fabc7b225b417e0797907',
+        tokenType: 'ERC721',
+        name: 'VictoriasSecret',
+        symbol: 'VS',
+      },
+    ],
+  },
+};
 
 export const ethBalanceMock = {
   data: {

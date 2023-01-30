@@ -3,7 +3,7 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait, { existingContractAddress } from './utils/utils.ts/utils';
-import { MetadataDTO, OwnersDTO } from '../src/lib/SDK/types';
+import { CollectionsDTO, MetadataDTO, OwnersDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
@@ -67,6 +67,12 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
     expect(response2.total).toBeGreaterThan(response.total);
     expect(response2.assets[0].metadata).toEqual(undefined);
+
+    const responseGetCollectionByWallet: CollectionsDTO = await sdk.api.getCollectionsByWallet({
+      walletAddress: '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7',
+    });
+
+    expect(responseGetCollectionByWallet.collections).not.toBeNull();
 
     await wait(async () => {
       const nfts = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });

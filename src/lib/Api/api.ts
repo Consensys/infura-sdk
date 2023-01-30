@@ -1,8 +1,15 @@
 import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
-
-import { MetadataDTO, MetadataInfo, NftDTO, OwnersDTO, TradeDTO, TransfersDTO } from '../SDK/types';
+import {
+  CollectionsDTO,
+  MetadataDTO,
+  MetadataInfo,
+  NftDTO,
+  TransfersDTO,
+  TradeDTO,
+  OwnersDTO,
+} from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
@@ -65,6 +72,11 @@ export type GetNftOwnersByTokenAddressAndTokenId = {
 
 export type GetLowestTradePrice = {
   tokenAddress: string;
+};
+
+export type GetCollectionsByWallet = {
+  walletAddress: string;
+  cursor?: string;
 };
 
 export default class Api {
@@ -357,6 +369,23 @@ export default class Api {
 
     const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress.toLowerCase()}/${opts.tokenId}/owners`;
     const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    return data;
+  }
+
+  /* Get NFT collections owned by a given wallet address.
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getCollectionsByWallet(opts: GetCollectionsByWallet): Promise<CollectionsDTO> {
+    if (!opts.walletAddress || !utils.isAddress(opts.walletAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_account_address, {
+        location: Logger.location.SDK_GET_COLLECTION_BY_WALLET,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/collections`;
+    const { cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { cursor });
     return data;
   }
 }
