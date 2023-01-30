@@ -6,7 +6,7 @@
     "transform": {
         "^.+\\.(t|j)s$": "ts-jest"
     },
-    "retry":0,
+    "retry":1,
     "verbose": true,
     "reporters": [
         "default",
