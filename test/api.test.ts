@@ -12,13 +12,14 @@ import {
   accountNFTsMockWithoutCursor,
   collectionNFTsMock,
   collectionNFTsMockWithoutCursor,
+  collectionsByWalletMock,
   contractMetadataMock,
   lowestTradePriceMock,
   ownersByContractAddress,
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
-import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import { CONTRACT_ADDRESS, ACCOUNT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
 import Api, {
   GetNftTransfersByWallet,
@@ -28,6 +29,7 @@ import Api, {
   GetNftTransfersByContractAndToken,
   GetLowestTradePrice,
   GetNftOwnersByContractAddress,
+  GetCollectionsByWallet,
 } from '../src/lib/Api/api';
 
 loadEnv();
@@ -331,6 +333,26 @@ describe('Api', () => {
     it('should return lowest trade', async () => {
       HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
       await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS });
+    });
+  });
+
+  describe('getCollectionsByWallet', () => {
+    it('should throw when wallet address is not provided', async () => {
+      await expect(() => api.getCollectionsByWallet({} as GetCollectionsByWallet)).rejects.toThrow(
+        `missing argument: Invalid account address. (location=\"[SDK.getCollectionsByWallet]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "walletAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getCollectionsByWallet({ walletAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid account address. (location=\"[SDK.getCollectionsByWallet]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return collections', async () => {
+      HttpServiceMock.mockResolvedValueOnce(collectionsByWalletMock as AxiosResponse<any, any>);
+      await api.getCollectionsByWallet({ walletAddress: ACCOUNT_ADDRESS });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
