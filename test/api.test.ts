@@ -28,6 +28,7 @@ import Api, {
   GetNftTransfersByContractAndToken,
   GetLowestTradePrice,
   GetNftOwnersByContractAddress,
+  GetNftOwnersByTokenAddressAndTokenId,
 } from '../src/lib/Api/api';
 
 loadEnv();
@@ -353,6 +354,40 @@ describe('Api', () => {
     it('should return owners', async () => {
       HttpServiceMock.mockResolvedValueOnce(ownersByContractAddress as AxiosResponse<any, any>);
       await api.getOwnersbyContractAddress({ contractAddress: CONTRACT_ADDRESS });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getOwnersByTokenAddressAndTokenId', () => {
+    it('should throw when token address is not provided', async () => {
+      await expect(() =>
+        api.getOwnersbyTokenAddressAndTokenId({} as GetNftOwnersByTokenAddressAndTokenId),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getOwnersbyTokenAddressAndTokenId]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "tokenAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: 'notAValidAddress', tokenId: '1' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getOwnersbyTokenAddressAndTokenId]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw when "tokenId" is not valid', async () => {
+      await expect(() =>
+        api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: CONTRACT_ADDRESS, tokenId: '' }),
+      ).rejects.toThrow(
+        `missing argument: No tokenId supplied or tokenID is invalid. (location="[SDK.getOwnersbyTokenAddressAndTokenId]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return owners', async () => {
+      HttpServiceMock.mockResolvedValueOnce(ownersByContractAddress as AxiosResponse<any, any>);
+      await api.getOwnersbyTokenAddressAndTokenId({
+        tokenAddress: CONTRACT_ADDRESS,
+        tokenId: '348',
+      });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

@@ -57,6 +57,12 @@ export type GetNftOwnersByContractAddress = {
   cursor?: string;
 };
 
+export type GetNftOwnersByTokenAddressAndTokenId = {
+  tokenAddress: string;
+  tokenId: string;
+  cursor?: string;
+};
+
 export type GetLowestTradePrice = {
   tokenAddress: string;
 };
@@ -324,6 +330,32 @@ export default class Api {
     }
 
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/owners`;
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    return data;
+  }
+
+  /**
+   * Get nft owners by token address and token id
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} OwnersDTO
+   */
+
+  async getOwnersbyTokenAddressAndTokenId(
+    opts: GetNftOwnersByTokenAddressAndTokenId,
+  ): Promise<OwnersDTO> {
+    if (!opts.tokenAddress || !utils.isAddress(opts.tokenAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_token_address, {
+        location: Logger.location.SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID,
+      });
+    }
+
+    if (!opts.tokenId) {
+      log.throwMissingArgumentError(Logger.message.no_tokenId_supplied, {
+        location: Logger.location.SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress.toLowerCase()}/${opts.tokenId}/owners`;
     const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
     return data;
   }
