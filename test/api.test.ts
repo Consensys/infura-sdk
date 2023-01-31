@@ -16,6 +16,7 @@ import {
   contractMetadataMock,
   lowestTradePriceMock,
   ownersByContractAddress,
+  searchNfts,
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
@@ -31,6 +32,7 @@ import Api, {
   GetNftOwnersByContractAddress,
   GetNftOwnersByTokenAddressAndTokenId,
   GetCollectionsByWallet,
+  SearchNftsByString,
 } from '../src/lib/Api/api';
 
 loadEnv();
@@ -410,6 +412,24 @@ describe('Api', () => {
         tokenAddress: CONTRACT_ADDRESS,
         tokenId: '348',
       });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('searchNfts', () => {
+    it('should throw when query is not provided', async () => {
+      await expect(() => api.searchNfts({} as SearchNftsByString)).rejects.toThrow(
+        `missing argument: Invalid search string. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "query" is less than 3 characters', async () => {
+      await expect(() => api.searchNfts({ query: 'a' })).rejects.toThrow(
+        `missing argument: Invalid search string. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return nfts', async () => {
+      HttpServiceMock.mockResolvedValueOnce(searchNfts as AxiosResponse<any, any>);
+      await api.searchNfts({ query: 'Cool Cats' });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

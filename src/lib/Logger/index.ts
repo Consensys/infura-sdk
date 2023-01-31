@@ -114,6 +114,8 @@ export enum ErrorLocation {
   SDK_GET_OWNERS_BY_TOKEN_ADDRESS = '[SDK.getOwnersByTokenAddress]',
   SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID = '[SDK.getOwnersbyTokenAddressAndTokenId]',
   SDK_GET_COLLECTION_BY_WALLET = '[SDK.getCollectionsByWallet]',
+  SDK_GET_SEARCH_NFT = '[SDK.searchNfts]',
+
   SDK_GET_LOWEST_TRADE_PRICE = '[SDK.getLowestTradePrice]',
 
   // Metadata
@@ -166,6 +168,7 @@ export enum ErrorMessage {
   invalid_quantity = 'Quantity as integer value greater than 0 required.',
   invalid_block = 'Invalid block number',
   invalid_token_address = 'Invalid token address',
+  invalid_search_string = 'Invalid search string.',
 
   warning_contractURI = 'WARNING: The supplied ContractURI is not a link.',
   warning_contractURI_tips = 'WARNING: ContractURI should be a public link to a valid JSON metadata file',
