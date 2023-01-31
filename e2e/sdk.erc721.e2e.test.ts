@@ -157,6 +157,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(response.symbol).toEqual(contractInfo.params.symbol);
     expect(response.tokenType).toEqual('ERC721');
   }, 240000);
+
   it('Deploy - Get NFT metadata', async () => {
     // skipped because we are caching the response from Moralis before metadata is available
     // and NFT api is returning null
@@ -219,6 +220,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
   });
+
   it('Load new contract and get Metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
@@ -248,11 +250,71 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(meta.name).toEqual(contractInfo.params.name);
     expect(meta.tokenType).toEqual('ERC721');
 
+    await wait(
+      async () => {
+        const response = await sdk.api.getOwnersbyContractAddress({
+          contractAddress: newContract.contractAddress,
+        });
+
+        return (
+          response.owners.length !== 0 &&
+          response.owners[0].metadata !== null &&
+          response.owners[0].minterAddress !== null
+        );
+      },
+      300000,
+      1000,
+      'Waiting for owners to be updated',
+    );
     // Check owners
     const result: OwnersDTO = await sdk.api.getOwnersbyContractAddress({
       contractAddress: newContract.contractAddress,
     });
     expect(result).toMatchObject({
+      total: expect.any(Number),
+      pageNumber: expect.any(Number),
+      pageSize: expect.any(Number),
+      network: expect.any(String),
+      owners: [
+        {
+          tokenAddress: newContract.contractAddress.toLowerCase(),
+          tokenId: expect.any(String),
+          amount: '1',
+          ownerOf: ownerAddress.toLowerCase(),
+          tokenHash: expect.any(String),
+          blockNumberMinted: expect.any(String),
+          blockNumber: expect.any(String),
+          contractType: expect.any(String),
+          name: contractInfo.params.name,
+          symbol: contractInfo.params.symbol,
+          metadata: expect.any(String),
+          minterAddress: expect.any(String),
+        },
+      ],
+    });
+    // Check owners by token address and tokenId
+    const result2: OwnersDTO = await sdk.api.getOwnersbyTokenAddressAndTokenId({
+      tokenAddress: newContract.contractAddress,
+      tokenId: '0',
+    });
+    await wait(
+      async () => {
+        const response = await sdk.api.getOwnersbyTokenAddressAndTokenId({
+          tokenAddress: newContract.contractAddress,
+          tokenId: '0',
+        });
+
+        return (
+          response.owners.length !== 0 &&
+          response.owners[0].metadata !== null &&
+          response.owners[0].metadata !== null
+        );
+      },
+      300000,
+      1000,
+      'Waiting for owners to be updated',
+    );
+    expect(result2).toMatchObject({
       total: expect.any(Number),
       pageNumber: expect.any(Number),
       pageSize: expect.any(Number),
@@ -264,13 +326,13 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
           amount: '1',
           ownerOf: ownerAddress.toLowerCase(),
           tokenHash: expect.any(String),
-          blockNumberMinted: expect.any(String),
           blockNumber: expect.any(String),
+          blockNumberMinted: expect.any(String),
           contractType: expect.any(String),
           name: contractInfo.params.name,
           symbol: contractInfo.params.symbol,
-          metadata: null,
-          minterAddress: null,
+          metadata: expect.any(String),
+          minterAddress: expect.any(String),
         }),
       ]),
     });
