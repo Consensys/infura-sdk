@@ -342,6 +342,9 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const resultSearch: SearchNftDTO = await sdk.api.searchNfts({
       query: contractInfo.params.name,
     });
+    // check if there is any result that matches a substr from contractInfo.params.name
+    const match = resultSearch.nfts.some(element => element.metadata.includes('test'));
+    expect(match).toBeTruthy();
 
     expect(resultSearch).toMatchObject({
       total: expect.any(Number),
