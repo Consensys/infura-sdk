@@ -418,12 +418,12 @@ describe('Api', () => {
   describe('searchNfts', () => {
     it('should throw when query is not provided', async () => {
       await expect(() => api.searchNfts({} as SearchNftsByString)).rejects.toThrow(
-        `missing argument: Invalid search string. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid search query. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
     it('should throw when "query" is less than 3 characters', async () => {
       await expect(() => api.searchNfts({ query: 'a' })).rejects.toThrow(
-        `missing argument: Invalid search string. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid search query. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
 

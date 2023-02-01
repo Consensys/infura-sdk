@@ -28,13 +28,13 @@ describe('E2E Test: Sdk (read)', () => {
   describe('As an account I should get error with invalid search query', () => {
     it('should throw if search query not provided', async () => {
       expect(() => sdk.api.searchNfts({} as SearchNftsByString)).rejects.toThrow(
-        `missing argument: Invalid search string. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid search query. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
 
     it('should throw if search query is less than 3 characters', async () => {
       expect(() => sdk.api.searchNfts({ query: 'x' })).rejects.toThrow(
-        `missing argument: Invalid search string. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+        `missing argument: Invalid search query. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
       );
     });
 

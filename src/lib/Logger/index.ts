@@ -168,7 +168,7 @@ export enum ErrorMessage {
   invalid_quantity = 'Quantity as integer value greater than 0 required.',
   invalid_block = 'Invalid block number',
   invalid_token_address = 'Invalid token address',
-  invalid_search_string = 'Invalid search string.',
+  invalid_search_string = 'Invalid search query.',
 
   warning_contractURI = 'WARNING: The supplied ContractURI is not a link.',
   warning_contractURI_tips = 'WARNING: ContractURI should be a public link to a valid JSON metadata file',
