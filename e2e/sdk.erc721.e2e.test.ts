@@ -3,7 +3,7 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait, { existingContractAddress } from './utils/utils.ts/utils';
-import { CollectionsDTO, MetadataDTO, OwnersDTO } from '../src/lib/SDK/types';
+import { CollectionsDTO, MetadataDTO, OwnersDTO, SearchNftDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
@@ -333,6 +333,34 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
           symbol: contractInfo.params.symbol,
           metadata: expect.any(String),
           minterAddress: expect.any(String),
+        }),
+      ]),
+    });
+
+    // test search nfts
+
+    const resultSearch: SearchNftDTO = await sdk.api.searchNfts({
+      query: contractInfo.params.name,
+    });
+    // check if there is any result that matches a substr from contractInfo.params.name
+    const match = resultSearch.nfts.some(element => element.metadata.includes('test'));
+    expect(match).toBeTruthy();
+
+    expect(resultSearch).toMatchObject({
+      total: expect.any(Number),
+      pageNumber: expect.any(Number),
+      pageSize: expect.any(Number),
+      network: expect.any(String),
+      nfts: expect.arrayContaining([
+        expect.objectContaining({
+          tokenId: expect.any(String),
+          tokenAddress: expect.any(String),
+          metadata: expect.any(String),
+          contractType: expect.any(String),
+          tokenHash: expect.any(String),
+          minterAddress: expect.any(String),
+          blockNumberMinted: expect.any(String),
+          createdAt: expect.any(String),
         }),
       ]),
     });

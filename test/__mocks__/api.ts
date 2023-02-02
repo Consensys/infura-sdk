@@ -158,6 +158,29 @@ export const ownersByContractAddress = {
     ],
   },
 };
+export const searchNfts = {
+  data: {
+    total: 29,
+    pageNumber: 0,
+    pageSize: 100,
+    network: 'ETHEREUM',
+    cursor: null,
+    nfts: [
+      {
+        tokenId: '496',
+        tokenAddress: '0xfd4842133c99877bad9d67b49c6e0c0729ce93a2',
+        metadata:
+          '{"description":"A unique, cool and diverse collection of animated cats!","image":"https://gateway.pinata.cloud/ipfs/QmRmvW4L8P9JBJoHMe5ExpZ1fFsq3kEa2R6sdMWsKUKLYo/496.png","name":"iCat #496","tokenId":"496"}',
+        contractType: 'ERC721',
+        tokenHash: 'ffe14e0ba17c7fc43a06e2548a869893',
+        minterAddress: null,
+        blockNumberMinted: '15071403',
+        transactionMinted: '0x2726a7da965acb04ca10f33d1e45bc2bc79cefe1aa6ee1a86ab21b08ba527fdf',
+        createdAt: '2022-07-03T19:15:01.518Z',
+      },
+    ],
+  },
+};
 export const collectionsByWalletMock = {
   data: {
     total: 564,

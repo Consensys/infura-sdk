@@ -9,6 +9,7 @@ import {
   TransfersDTO,
   TradeDTO,
   OwnersDTO,
+  SearchNftDTO,
 } from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
 
@@ -76,6 +77,11 @@ export type GetLowestTradePrice = {
 
 export type GetCollectionsByWallet = {
   walletAddress: string;
+  cursor?: string;
+};
+
+export type SearchNftsByString = {
+  query: string;
   cursor?: string;
 };
 
@@ -386,6 +392,24 @@ export default class Api {
     const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/collections`;
     const { cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { cursor });
+    return data;
+  }
+
+  /**
+   * search Nfts that match a specific query string
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Nfts  list
+   */
+  async searchNfts(opts: SearchNftsByString): Promise<SearchNftDTO> {
+    if (!opts.query || opts.query.trim().length < 3) {
+      log.throwMissingArgumentError(Logger.message.invalid_search_string, {
+        location: Logger.location.SDK_GET_SEARCH_NFT,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/search`;
+    const { cursor, query } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { query, cursor });
     return data;
   }
 }

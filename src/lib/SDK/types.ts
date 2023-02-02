@@ -9,6 +9,7 @@ export type TransfersDTO = Components['schemas']['TransfersModel'];
 export type OwnersDTO = Components['schemas']['OwnersModel'];
 export type TradeDTO = Components['schemas']['TradePriceModel'];
 export type CollectionsDTO = Components['schemas']['CollectionByWalletModel'];
+export type SearchNftDTO = Components['schemas']['SearchNftModel'];
 
 export type MetadataInfo = {
   symbol: string;
