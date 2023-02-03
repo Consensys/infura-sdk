@@ -183,13 +183,13 @@ const sdk = new SDK(acc);
 const nftsFirstPage = await sdk.api.getNFTsForCollection({
   contractAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
 });
-console.log('NFTs first page:', contractMetadata);
+console.log('NFTs first page:', nftsFirstPage);
 
 const nftsSecondPage = await sdk.api.getNFTsForCollection({
   contractAddress: '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D',
   cursor: nftsFirstPage.cursor,
 });
-console.log('NFTs second page:', contractMetadata);
+console.log('NFTs second page:', nftsSecondPage);
 ```
 
 ## Infura IPFS API
