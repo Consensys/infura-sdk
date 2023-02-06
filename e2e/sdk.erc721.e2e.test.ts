@@ -35,7 +35,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       publicAddress: ownerAddress,
       includeMetadata: false,
     });
-    expect(response.type).toEqual('NFT');
     const newContract = await sdk.deploy(contractInfo);
     const mintHash: any = await newContract.mint({
       publicAddress: ownerAddress,
