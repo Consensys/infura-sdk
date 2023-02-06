@@ -30,7 +30,6 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
     const response = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
-    expect(response.type).toEqual('NFT');
 
     const newContract = await sdk.deploy(contractInfo);
     const mintHash = await newContract.mint({

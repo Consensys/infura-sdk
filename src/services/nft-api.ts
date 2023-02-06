@@ -219,7 +219,6 @@ export interface Components {
       /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
       account: string;
       /** @example NFT */
-      type: string;
       cursor: string;
       assets: Components['schemas']['AssetsModel'][];
     };
