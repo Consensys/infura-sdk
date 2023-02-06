@@ -4,77 +4,65 @@
  */
 
 export interface Paths {
+  '/networks/{chainId}/nfts/transfers': {
+    /** Gets transfers from a block to block. */
+    get: Operations['NftsController_getTransfersfromBlockToBlock'];
+  };
+  '/networks/{chainId}/nfts/block/transfers': {
+    /** Gets transfers by block number or block hash. */
+    get: Operations['NftsController_getTransfersByBlockNumberOrHash'];
+  };
+  '/networks/{chainId}/nfts/search': {
+    /** Search for Nfts given a string */
+    get: Operations['NftsController_searchNfts'];
+  };
   '/networks/{chainId}/nfts/{tokenAddress}': {
+    /** Gets the contract level metadata for a given contract address. */
     get: Operations['NftsController_getCollectionMetadata'];
   };
-  '/networks/{chainId}/accounts/{address}/assets/nfts': {
+  '/networks/{chainId}/nfts/{tokenAddress}/tokens': {
+    /** Gets all NFTs for a given contract address (including metadata). */
+    get: Operations['NftsController_getNftsForCollection'];
+  };
+  '/networks/{chainId}/accounts/{walletAddress}/assets/collections': {
+    /** Gets NFT collections owned by a given wallet address. */
+    get: Operations['NftsController_getCollectionsByWalletAddress'];
+  };
+  '/networks/{chainId}/accounts/{walletAddress}/assets/nfts': {
+    /** Gets all NFTs owned by a given wallet address. */
     get: Operations['NftsController_getNftsForAddress'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/tokens/{tokenId}': {
+    /** Gets NFT data for the given NFT token ID and contract address. */
     get: Operations['NftsController_getNftMetadata'];
   };
-  '/networks/{chainId}/nfts/{address}/tokens': {
-    get: Operations['NftsController_getNftsForCollection'];
-  };
-  '/networks/{chainId}/accounts/{address}/assets/transfers': {
+  '/networks/{chainId}/accounts/{walletAddress}/assets/transfers': {
+    /** Gets transfers of NFTs for a given wallet address */
     get: Operations['NftsController_getTransferForAddress'];
+  };
+  '/networks/{chainId}/nfts/{tokenAddress}/tokens/{tokenId}/transfers': {
+    /** Gets transfers of an NFT by contract address and token ID. */
+    get: Operations['NftsController_getTransfersByTokenId'];
+  };
+  '/networks/{chainId}/nfts/{tokenAddress}/transfers': {
+    /** Gets transfers by contract address. */
+    get: Operations['NftsController_getTransfersByTokenAddress'];
+  };
+  '/networks/{chainId}/nfts/{tokenAddress}/owners': {
+    /** Gets NFT owners given a token address */
+    get: Operations['NftsController_getOwnersByContract'];
+  };
+  '/networks/{chainId}/nfts/{tokenAddress}/{tokenId}/owners': {
+    /** Gets NFT owners for a specific token address and a tokenId */
+    get: Operations['NftsController_getOwnersByTokenId'];
+  };
+  '/networks/{chainId}/nfts/{tokenAddress}/tradePrice': {
+    get: Operations['NftsController_getTradePrice'];
   };
 }
 
 export interface Components {
   schemas: {
-    CollectionModel: {
-      /** @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e */
-      contract: string;
-      /** @example My Crypto NFT Project */
-      name: string;
-      /** @example CNSYS */
-      symbol: string;
-      /** @example ERC-721 */
-      tokenType: string;
-    };
-    AssetsModel: {
-      /** @example 0x8e04b34166612e73e8f8b7d7a5ddb6ea2895b4b5 */
-      contract: string;
-      /** @example 3545 */
-      tokenId: string;
-      /** @example 1 */
-      supply: string;
-      /** @example ERC721 */
-      type: string;
-      metadata?: { [key: string]: unknown };
-    };
-    NftModel: {
-      /** @example 1 */
-      pageNumber: number;
-      /**
-       * @example ETHEREUM
-       * @enum {string}
-       */
-      network: 'ETHEREUM' | 'GOERLI' | 'BINANCE' | 'POLYGON';
-      /** @example 1 */
-      total: number;
-      /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
-      account: string;
-      /** @example NFT */
-      type: string;
-      cursor: string;
-      assets: Components['schemas']['AssetsModel'][];
-    };
-    MetadataModel: {
-      /** @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e */
-      contract: string;
-      /** @example 1 */
-      tokenId: number;
-      /**
-       * @example {
-       *   "name": "Washington #7421",
-       *   "description": "WeMint Cash First Edition: Washington #7421",
-       *   "attributes": []
-       * }
-       */
-      metadata: { [key: string]: unknown };
-    };
     TransfersResultsModel: {
       /** @example 0x082903f4e94c5e10a2b116a4284940a36afaed63 */
       tokenAddress: string;
@@ -102,7 +90,7 @@ export interface Components {
       transactionType: string;
     };
     TransfersModel: {
-      /** @example 1200 */
+      /** @example 1 */
       total: number;
       /** @example 1 */
       pageNumber: number;
@@ -112,21 +100,323 @@ export interface Components {
        * @example ETHEREUM
        * @enum {string}
        */
-      network: 'ETHEREUM' | 'GOERLI' | 'BINANCE' | 'POLYGON';
+      network:
+        | 'ETHEREUM'
+        | 'GOERLI'
+        | 'SEPOLIA'
+        | 'BSC'
+        | 'POLYGON'
+        | 'MUMBAI'
+        | 'BSC TESTNET'
+        | 'AVALANCHE'
+        | 'AVALANCHE TESTNET'
+        | 'FANTOM'
+        | 'CRONOS'
+        | 'CRONOS TESTNET'
+        | 'PALM'
+        | 'ARBITRUM';
       cursor: string;
-
       /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
       account: string;
       transfers: Components['schemas']['TransfersResultsModel'][];
+    };
+    SearchNftResult: {
+      /** @example 3784 */
+      tokenId: string;
+      /** @example 0x082903f4e94c5e10a2b116a4284940a36afaed63 */
+      tokenAddress: string;
+      /** @example {"image":"ipfs://QmQTquMHyYcBaXCS7bZccESzF2CoACtox9TmhRq38XJ6ey","attributes":[{"trait_type":"Eyes","value":"Sunglasses"},{"trait_type":"Background","value":"Aquamarine"},{"trait_type":"Hat","value":"Seaman's Hat"},{"trait_type":"Mouth","value":"Rage"},{"trait_type":"Fur","value":"Pink"},{"trait_type":"Clothes","value":"Bandolier"}]} */
+      metadata: string;
+      /** @example ERC1155 */
+      contractType: string;
+      /** @example 003d3b164bf215e95871a094416622d2 */
+      tokenHash: string;
+      /** @example 0x3b66c992860abd1ec94b917e222dca78ad55032f */
+      minterAddress: string;
+      /** @example 12347180 */
+      blockNumberMinted: string;
+      /** @example 0x3b2da3a735babcb4fa12ca2f5f1a799f2344ce9042ea03716e554502c65aea0e */
+      transactionMinted: string;
+      /** @example 2017-12-04T09:14:19.000Z */
+      createdAt: string;
+    };
+    SearchNftModel: {
+      /** @example 1 */
+      total: number;
+      /** @example 1 */
+      pageNumber: number;
+      /** @example 100 */
+      pageSize: number;
+      /**
+       * @example ETHEREUM
+       * @enum {string}
+       */
+      network:
+        | 'ETHEREUM'
+        | 'GOERLI'
+        | 'SEPOLIA'
+        | 'BSC'
+        | 'POLYGON'
+        | 'MUMBAI'
+        | 'BSC TESTNET'
+        | 'AVALANCHE'
+        | 'AVALANCHE TESTNET'
+        | 'FANTOM'
+        | 'CRONOS'
+        | 'CRONOS TESTNET'
+        | 'PALM'
+        | 'ARBITRUM';
+      cursor: string;
+      nfts: Components['schemas']['SearchNftResult'][];
+    };
+    CollectionModel: {
+      /** @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e */
+      contract: string;
+      /** @example My Crypto NFT Project */
+      name: string;
+      /** @example CNSYS */
+      symbol: string;
+      /** @example ERC-721 */
+      tokenType: string;
+    };
+    AssetsModel: {
+      /** @example 0x8e04b34166612e73e8f8b7d7a5ddb6ea2895b4b5 */
+      contract: string;
+      /** @example 3545 */
+      tokenId: string;
+      /** @example 1 */
+      supply: string;
+      /** @example ERC721 */
+      type: string;
+      metadata?: { [key: string]: unknown };
+    };
+    NftModel: {
+      /** @example 1 */
+      pageNumber: number;
+      /** @example 100 */
+      pageSize: number;
+      /**
+       * @example ETHEREUM
+       * @enum {string}
+       */
+      network:
+        | 'ETHEREUM'
+        | 'GOERLI'
+        | 'SEPOLIA'
+        | 'BSC'
+        | 'POLYGON'
+        | 'MUMBAI'
+        | 'BSC TESTNET'
+        | 'AVALANCHE'
+        | 'AVALANCHE TESTNET'
+        | 'FANTOM'
+        | 'CRONOS'
+        | 'CRONOS TESTNET'
+        | 'PALM'
+        | 'ARBITRUM';
+      /** @example 1 */
+      total: number;
+      /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
+      account: string;
+      /** @example NFT */
+      cursor: string;
+      assets: Components['schemas']['AssetsModel'][];
+    };
+    CollectionByWalletModel: {
+      /** @example 1 */
+      pageNumber: number;
+      /** @example 100 */
+      pageSize: number;
+      /**
+       * @example ETHEREUM
+       * @enum {string}
+       */
+      network:
+        | 'ETHEREUM'
+        | 'GOERLI'
+        | 'SEPOLIA'
+        | 'BSC'
+        | 'POLYGON'
+        | 'MUMBAI'
+        | 'BSC TESTNET'
+        | 'AVALANCHE'
+        | 'AVALANCHE TESTNET'
+        | 'FANTOM'
+        | 'CRONOS'
+        | 'CRONOS TESTNET'
+        | 'PALM'
+        | 'ARBITRUM';
+      cursor: string;
+      /** @example 1 */
+      total: number;
+      /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
+      account: string;
+      collections: Components['schemas']['CollectionModel'][];
+    };
+    MetadataModel: {
+      /** @example 0xa9cb55d05d3351dcd02dd5dc4614e764ce3e1d6e */
+      contract: string;
+      /** @example 1 */
+      tokenId: string;
+      /**
+       * @example {
+       *   "name": "Washington #7421",
+       *   "description": "WeMint Cash First Edition: Washington #7421",
+       *   "attributes": []
+       * }
+       */
+      metadata: { [key: string]: unknown };
+    };
+    OwnersResultModel: {
+      /** @example 0x082903f4e94c5e10a2b116a4284940a36afaed63 */
+      tokenAddress: string;
+      /** @example 3784 */
+      tokenId: string;
+      /** @example 1 */
+      amount: string;
+      /** @example 0x8252df1d8b29057d1afe3062bf5a64d503152bc8 */
+      ownerOf: string;
+      /** @example 003d3b164bf215e95871a094416622d2 */
+      tokenHash: string;
+      /** @example 12347180 */
+      blockNumberMinted: string;
+      /** @example 15839662 */
+      blockNumber: string;
+      /** @example ERC1155 */
+      contractType: string;
+      /** @example BoredApeYachtClub */
+      name: string;
+      /** @example BAYC */
+      symbol: string;
+      /** @example {"image":"ipfs://QmQTquMHyYcBaXCS7bZccESzF2CoACtox9TmhRq38XJ6ey","attributes":[{"trait_type":"Eyes","value":"Sunglasses"},{"trait_type":"Background","value":"Aquamarine"},{"trait_type":"Hat","value":"Seaman's Hat"},{"trait_type":"Mouth","value":"Rage"},{"trait_type":"Fur","value":"Pink"},{"trait_type":"Clothes","value":"Bandolier"}]} */
+      metadata: string;
+      /** @example 0x3b66c992860abd1ec94b917e222dca78ad55032f */
+      minterAddress: string;
+    };
+    OwnersModel: {
+      /** @example 1 */
+      total: number;
+      /** @example 1 */
+      pageNumber: number;
+      /** @example 100 */
+      pageSize: number;
+      /**
+       * @example ETHEREUM
+       * @enum {string}
+       */
+      network:
+        | 'ETHEREUM'
+        | 'GOERLI'
+        | 'SEPOLIA'
+        | 'BSC'
+        | 'POLYGON'
+        | 'MUMBAI'
+        | 'BSC TESTNET'
+        | 'AVALANCHE'
+        | 'AVALANCHE TESTNET'
+        | 'FANTOM'
+        | 'CRONOS'
+        | 'CRONOS TESTNET'
+        | 'PALM'
+        | 'ARBITRUM';
+      cursor: string;
+      owners: Components['schemas']['OwnersResultModel'][];
+    };
+    TradePriceModel: {
+      /** @example 0x0c930abb13c9b283bf73cdb979c8cb936bdf6189177d6f95beb892f66dc817fc */
+      transactionHash: string;
+      /** @example 2022-11-01T02:46:23.000Z */
+      blockTimestamp: string;
+      /** @example 0x002096fc3b09e3b3c00fdb1d5c08cf20b442e5a99d15bdedc73ba3a2558ea132 */
+      blockHash: string;
+      /** @example 15872306 */
+      blockNumber: string;
+      /**
+       * @example [
+       *   "7567"
+       * ]
+       */
+      tokenIds: string[];
+      /** @example 0xd279e2dd092835061fc6758d051bd78873ec7622 */
+      sellerAddress: string;
+      /** @example 0x00000003dff73965674dbcc9dfcec53e1789ed50 */
+      buyerAddress: string;
+      /** @example 0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d */
+      tokenAddress: string;
+      /** @example 0x00000000006c3852cbef3e08e8df289169ede581 */
+      marketplaceAddress: string;
+      /** @example 68100000000000000000 */
+      price: string;
     };
   };
 }
 
 export interface Operations {
+  /** Gets transfers from a block to block. */
+  NftsController_getTransfersfromBlockToBlock: {
+    parameters: {
+      path: {
+        chainId: string;
+      };
+      query: {
+        fromBlock: number;
+        toBlock: number;
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['TransfersModel'];
+        };
+      };
+    };
+  };
+  /** Gets transfers by block number or block hash. */
+  NftsController_getTransfersByBlockNumberOrHash: {
+    parameters: {
+      path: {
+        chainId: string;
+      };
+      query: {
+        blockHashNumber: string;
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['TransfersModel'];
+        };
+      };
+    };
+  };
+  /** Search for Nfts given a string */
+  NftsController_searchNfts: {
+    parameters: {
+      path: {
+        chainId: string;
+      };
+      query: {
+        /** Query to search with */
+        query: string;
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['SearchNftModel'];
+        };
+      };
+    };
+  };
+  /** Gets the contract level metadata for a given contract address. */
   NftsController_getCollectionMetadata: {
     parameters: {
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
       };
     };
@@ -138,11 +428,16 @@ export interface Operations {
       };
     };
   };
-  NftsController_getNftsForAddress: {
+  /** Gets all NFTs for a given contract address (including metadata). */
+  NftsController_getNftsForCollection: {
     parameters: {
       path: {
         chainId: string;
-        address: string;
+        /** Contract address */
+        tokenAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
@@ -153,10 +448,52 @@ export interface Operations {
       };
     };
   };
+  /** Gets NFT collections owned by a given wallet address. */
+  NftsController_getCollectionsByWalletAddress: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Wallet address of the owner of Nfts in collection */
+        walletAddress: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['CollectionByWalletModel'];
+        };
+      };
+    };
+  };
+  /** Gets all NFTs owned by a given wallet address. */
+  NftsController_getNftsForAddress: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Wallet address */
+        walletAddress: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['NftModel'];
+        };
+      };
+    };
+  };
+  /** Gets NFT data for the given NFT token ID and contract address. */
   NftsController_getNftMetadata: {
     parameters: {
       path: {
         chainId: string;
+        /** Contract address */
         tokenAddress: string;
         tokenId: string;
       };
@@ -169,32 +506,119 @@ export interface Operations {
       };
     };
   };
-  NftsController_getNftsForCollection: {
-    parameters: {
-      path: {
-        chainId: string;
-        address: string;
-      };
-    };
-    responses: {
-      200: {
-        content: {
-          'application/json': Components['schemas']['NftModel'];
-        };
-      };
-    };
-  };
+  /** Gets transfers of NFTs for a given wallet address */
   NftsController_getTransferForAddress: {
     parameters: {
       path: {
         chainId: string;
-        address: string;
+        /** Wallet address of the sender/recipient of the transfers */
+        walletAddress: string;
+      };
+      query: {
+        cursor?: string;
       };
     };
     responses: {
       200: {
         content: {
           'application/json': Components['schemas']['TransfersModel'];
+        };
+      };
+    };
+  };
+  /** Gets transfers of an NFT by contract address and token ID. */
+  NftsController_getTransfersByTokenId: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Contract address */
+        tokenAddress: string;
+        tokenId: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['TransfersModel'];
+        };
+      };
+    };
+  };
+  /** Gets transfers by contract address. */
+  NftsController_getTransfersByTokenAddress: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Contract address */
+        tokenAddress: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['TransfersModel'];
+        };
+      };
+    };
+  };
+  /** Gets NFT owners given a token address */
+  NftsController_getOwnersByContract: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Contract address */
+        tokenAddress: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['OwnersModel'];
+        };
+      };
+    };
+  };
+  /** Gets NFT owners for a specific token address and a tokenId */
+  NftsController_getOwnersByTokenId: {
+    parameters: {
+      path: {
+        chainId: string;
+        tokenAddress: string;
+        tokenId: string;
+      };
+      query: {
+        cursor?: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['OwnersModel'];
+        };
+      };
+    };
+  };
+  NftsController_getTradePrice: {
+    parameters: {
+      path: {
+        chainId: string;
+        /** Contract address */
+        tokenAddress: string;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          'application/json': Components['schemas']['TradePriceModel'];
         };
       };
     };

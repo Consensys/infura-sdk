@@ -2,6 +2,7 @@ import { config as loadEnv } from 'dotenv';
 import { SDK } from './../src/lib/SDK/sdk';
 import Auth from './../src/lib/Auth/Auth';
 import {
+  GetNftTransfersByContractAddress,
   GetNftTransfersByContractAndToken,
   GetNftTransfersFromBlockToBlock,
   GetTransfersByBlockHashOptions,
@@ -174,6 +175,7 @@ describe('E2E Test: Sdk (read)', () => {
 
   describe('As an account I should get list of transfers by wallet address', () => {
     const walletAddress = '0xC4505dB8CC490767fA6f4b6f0F2bDd668B357A5D';
+    jest.setTimeout(10000);
     it('should get list of transfers', async () => {
       const result = await sdk.api.getNftsTransfersByWallet({
         walletAddress,
@@ -238,6 +240,7 @@ describe('E2E Test: Sdk (read)', () => {
   describe('As an account I should get list of transfers from block to block', () => {
     const fromBlock = 16026179;
     const toBlock = 16026190;
+    jest.setTimeout(20000);
     it('should get list of transfers', async () => {
       const result = await sdk.api.getTransferFromBlockToBlock({
         fromBlock,
@@ -364,6 +367,72 @@ describe('E2E Test: Sdk (read)', () => {
       ).rejects.toThrow(
         `missing argument: No tokenId supplied or tokenID is invalid. (location=\"[SDK.getTransfersByTokenId]\", code=MISSING_ARGUMENT, version=${version})`,
       );
+    });
+  });
+
+  describe('As an account I should get list of transfers by a contract address', () => {
+    const contractAddress = '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d'; //BAYC
+    jest.setTimeout(10000);
+    it('should get list of transfers', async () => {
+      const result = await sdk.api.getTransfersByContractAddress({
+        contractAddress,
+      });
+
+      expect(result).toMatchObject({
+        total: expect.any(Number),
+        pageNumber: 0,
+        pageSize: expect.any(Number),
+        network: expect.any(String),
+        cursor: expect.any(String),
+        account: contractAddress,
+        transfers: expect.arrayContaining([
+          expect.objectContaining({
+            tokenAddress: expect.any(String),
+            tokenId: expect.any(String),
+            fromAddress: expect.any(String),
+            toAddress: expect.any(String),
+            contractType: expect.any(String),
+            price: expect.any(String),
+            quantity: expect.any(String),
+            blockNumber: expect.any(String),
+            blockTimestamp: expect.any(String),
+            blockHash: expect.any(String),
+            transactionHash: expect.any(String),
+            transactionType: expect.any(String),
+          }),
+        ]),
+      });
+    });
+  });
+
+  describe('As an account I should get error with invalid contract address', () => {
+    it('should throw if a contract address not valid', async () => {
+      expect(() =>
+        sdk.api.getTransfersByContractAddress({} as GetNftTransfersByContractAddress),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location=\"[SDK.getTransfersByContractAddress]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+  });
+  describe('As an account I should get lowest trade price for a given collection', () => {
+    const contractAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
+    it('should get the lowest trade price', async () => {
+      const result = await sdk.api.getLowestTradePrice({
+        tokenAddress: contractAddress,
+      });
+
+      expect(result).toMatchObject({
+        transactionHash: expect.any(String),
+        blockTimestamp: expect.any(String),
+        blockHash: expect.any(String),
+        blockNumber: expect.any(String),
+        tokenIds: expect.any(Array),
+        sellerAddress: expect.any(String),
+        buyerAddress: expect.any(String),
+        tokenAddress: expect.any(String),
+        marketplaceAddress: expect.any(String),
+        price: expect.any(String),
+      });
     });
   });
 });

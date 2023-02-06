@@ -12,11 +12,15 @@ import {
   accountNFTsMockWithoutCursor,
   collectionNFTsMock,
   collectionNFTsMockWithoutCursor,
+  collectionsByWalletMock,
   contractMetadataMock,
+  lowestTradePriceMock,
+  ownersByContractAddress,
+  searchNfts,
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
-import { CONTRACT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import { CONTRACT_ADDRESS, ACCOUNT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
 import Api, {
   GetNftTransfersByWallet,
@@ -24,6 +28,11 @@ import Api, {
   GetNftTransfersFromBlockToBlock,
   GetTransfersByBlockNumberOptions,
   GetNftTransfersByContractAndToken,
+  GetLowestTradePrice,
+  GetNftOwnersByContractAddress,
+  GetNftOwnersByTokenAddressAndTokenId,
+  GetCollectionsByWallet,
+  SearchNftsByString,
 } from '../src/lib/Api/api';
 
 loadEnv();
@@ -254,7 +263,7 @@ describe('Api', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
-  describe('getTransfersByWTokenId', () => {
+  describe('getTransfersByTokenId', () => {
     it('should throw when contract address is not provided', async () => {
       await expect(() =>
         api.getTransfersByTokenId({} as GetNftTransfersByContractAndToken),
@@ -282,6 +291,145 @@ describe('Api', () => {
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
       await api.getTransfersByTokenId({ contractAddress: CONTRACT_ADDRESS, tokenId: '1' });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getTransfersByContractAddress', () => {
+    it('should throw when contract address is not provided', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({} as GetNftTransfersByContractAndToken),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getTransfersByContractAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({ contractAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getTransfersByContractAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return transfers', async () => {
+      HttpServiceMock.mockResolvedValueOnce(
+        transferByBlockHashNumberMock as AxiosResponse<any, any>,
+      );
+      await api.getTransfersByContractAddress({ contractAddress: CONTRACT_ADDRESS });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('getLowestTrade', () => {
+    it('should throw an error when contract address is not provided', async () => {
+      await expect(() => api.getLowestTradePrice({} as GetLowestTradePrice)).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getLowestTradePrice]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "tokenAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getLowestTradePrice({ tokenAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getLowestTradePrice]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return lowest trade', async () => {
+      HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
+      await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS });
+    });
+  });
+
+  describe('getCollectionsByWallet', () => {
+    it('should throw when wallet address is not provided', async () => {
+      await expect(() => api.getCollectionsByWallet({} as GetCollectionsByWallet)).rejects.toThrow(
+        `missing argument: Invalid account address. (location=\"[SDK.getCollectionsByWallet]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "walletAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getCollectionsByWallet({ walletAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid account address. (location=\"[SDK.getCollectionsByWallet]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return collections', async () => {
+      HttpServiceMock.mockResolvedValueOnce(collectionsByWalletMock as AxiosResponse<any, any>);
+      await api.getCollectionsByWallet({ walletAddress: ACCOUNT_ADDRESS });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('getOwnersByContractAddress', () => {
+    it('should throw when contract address is not provided', async () => {
+      await expect(() =>
+        api.getOwnersbyContractAddress({} as GetNftOwnersByContractAddress),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getOwnersByTokenAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "contractAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getOwnersbyContractAddress({ contractAddress: 'notAValidAddress' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid contract address. (location="[SDK.getOwnersByTokenAddress]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return owners', async () => {
+      HttpServiceMock.mockResolvedValueOnce(ownersByContractAddress as AxiosResponse<any, any>);
+      await api.getOwnersbyContractAddress({ contractAddress: CONTRACT_ADDRESS });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getOwnersByTokenAddressAndTokenId', () => {
+    it('should throw when token address is not provided', async () => {
+      await expect(() =>
+        api.getOwnersbyTokenAddressAndTokenId({} as GetNftOwnersByTokenAddressAndTokenId),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getOwnersbyTokenAddressAndTokenId]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "tokenAddress" is not a valid address', async () => {
+      await expect(() =>
+        api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: 'notAValidAddress', tokenId: '1' }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getOwnersbyTokenAddressAndTokenId]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw when "tokenId" is not valid', async () => {
+      await expect(() =>
+        api.getOwnersbyTokenAddressAndTokenId({ tokenAddress: CONTRACT_ADDRESS, tokenId: '' }),
+      ).rejects.toThrow(
+        `missing argument: No tokenId supplied or tokenID is invalid. (location="[SDK.getOwnersbyTokenAddressAndTokenId]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return owners', async () => {
+      HttpServiceMock.mockResolvedValueOnce(ownersByContractAddress as AxiosResponse<any, any>);
+      await api.getOwnersbyTokenAddressAndTokenId({
+        tokenAddress: CONTRACT_ADDRESS,
+        tokenId: '348',
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+  });
+  describe('searchNfts', () => {
+    it('should throw when query is not provided', async () => {
+      await expect(() => api.searchNfts({} as SearchNftsByString)).rejects.toThrow(
+        `missing argument: Invalid search query. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should throw when "query" is less than 3 characters', async () => {
+      await expect(() => api.searchNfts({ query: 'a' })).rejects.toThrow(
+        `missing argument: Invalid search query. (location=\"[SDK.searchNfts]\", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should return nfts', async () => {
+      HttpServiceMock.mockResolvedValueOnce(searchNfts as AxiosResponse<any, any>);
+      await api.searchNfts({ query: 'Cool Cats' });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });

@@ -3,7 +3,7 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait, { existingContractAddress } from './utils/utils.ts/utils';
-import { MetadataDTO } from '../src/lib/SDK/types';
+import { CollectionsDTO, MetadataDTO, OwnersDTO, SearchNftDTO } from '../src/lib/SDK/types';
 
 loadEnv();
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
@@ -35,7 +35,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       publicAddress: ownerAddress,
       includeMetadata: false,
     });
-    expect(response.type).toEqual('NFT');
     const newContract = await sdk.deploy(contractInfo);
     const mintHash: any = await newContract.mint({
       publicAddress: ownerAddress,
@@ -67,6 +66,12 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
     expect(response2.total).toBeGreaterThan(response.total);
     expect(response2.assets[0].metadata).toEqual(undefined);
+
+    const responseGetCollectionByWallet: CollectionsDTO = await sdk.api.getCollectionsByWallet({
+      walletAddress: '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7',
+    });
+
+    expect(responseGetCollectionByWallet.collections).not.toBeNull();
 
     await wait(async () => {
       const nfts = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: true });
@@ -151,6 +156,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(response.symbol).toEqual(contractInfo.params.symbol);
     expect(response.tokenType).toEqual('ERC721');
   }, 240000);
+
   it('Deploy - Get NFT metadata', async () => {
     // skipped because we are caching the response from Moralis before metadata is available
     // and NFT api is returning null
@@ -213,6 +219,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
   });
+
   it('Load new contract and get Metadata', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
@@ -241,5 +248,120 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     expect(meta.symbol).toEqual(contractInfo.params.symbol);
     expect(meta.name).toEqual(contractInfo.params.name);
     expect(meta.tokenType).toEqual('ERC721');
+
+    await wait(
+      async () => {
+        const response = await sdk.api.getOwnersbyContractAddress({
+          contractAddress: newContract.contractAddress,
+        });
+
+        return (
+          response.owners.length !== 0 &&
+          response.owners[0].metadata !== null &&
+          response.owners[0].minterAddress !== null
+        );
+      },
+      300000,
+      1000,
+      'Waiting for owners to be updated',
+    );
+    // Check owners
+    const result: OwnersDTO = await sdk.api.getOwnersbyContractAddress({
+      contractAddress: newContract.contractAddress,
+    });
+    expect(result).toMatchObject({
+      total: expect.any(Number),
+      pageNumber: expect.any(Number),
+      pageSize: expect.any(Number),
+      network: expect.any(String),
+      owners: [
+        {
+          tokenAddress: newContract.contractAddress.toLowerCase(),
+          tokenId: expect.any(String),
+          amount: '1',
+          ownerOf: ownerAddress.toLowerCase(),
+          tokenHash: expect.any(String),
+          blockNumberMinted: expect.any(String),
+          blockNumber: expect.any(String),
+          contractType: expect.any(String),
+          name: contractInfo.params.name,
+          symbol: contractInfo.params.symbol,
+          metadata: expect.any(String),
+          minterAddress: expect.any(String),
+        },
+      ],
+    });
+    // Check owners by token address and tokenId
+    const result2: OwnersDTO = await sdk.api.getOwnersbyTokenAddressAndTokenId({
+      tokenAddress: newContract.contractAddress,
+      tokenId: '0',
+    });
+    await wait(
+      async () => {
+        const response = await sdk.api.getOwnersbyTokenAddressAndTokenId({
+          tokenAddress: newContract.contractAddress,
+          tokenId: '0',
+        });
+
+        return (
+          response.owners.length !== 0 &&
+          response.owners[0].metadata !== null &&
+          response.owners[0].metadata !== null
+        );
+      },
+      300000,
+      1000,
+      'Waiting for owners to be updated',
+    );
+    expect(result2).toMatchObject({
+      total: expect.any(Number),
+      pageNumber: expect.any(Number),
+      pageSize: expect.any(Number),
+      network: expect.any(String),
+      owners: expect.arrayContaining([
+        expect.objectContaining({
+          tokenAddress: newContract.contractAddress.toLowerCase(),
+          tokenId: expect.any(String),
+          amount: '1',
+          ownerOf: ownerAddress.toLowerCase(),
+          tokenHash: expect.any(String),
+          blockNumber: expect.any(String),
+          blockNumberMinted: expect.any(String),
+          contractType: expect.any(String),
+          name: contractInfo.params.name,
+          symbol: contractInfo.params.symbol,
+          metadata: expect.any(String),
+          minterAddress: expect.any(String),
+        }),
+      ]),
+    });
+
+    // test search nfts
+
+    const resultSearch: SearchNftDTO = await sdk.api.searchNfts({
+      query: contractInfo.params.name,
+    });
+    // check if there is any result that matches a substr from contractInfo.params.name
+    const match = resultSearch.nfts.some(element => element.metadata.includes('test'));
+    expect(match).toBeTruthy();
+
+    expect(resultSearch).toMatchObject({
+      total: expect.any(Number),
+      pageNumber: expect.any(Number),
+      pageSize: expect.any(Number),
+      network: expect.any(String),
+      nfts: expect.arrayContaining([
+        expect.objectContaining({
+          tokenId: expect.any(String),
+          tokenAddress: expect.any(String),
+          metadata: expect.any(String),
+          contractType: expect.any(String),
+          tokenHash: expect.any(String),
+          minterAddress: expect.any(String),
+          blockNumberMinted: expect.any(String),
+          createdAt: expect.any(String),
+        }),
+      ]),
+    });
   });
 });

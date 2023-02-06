@@ -1,7 +1,16 @@
 import { utils } from 'ethers';
 import { log, Logger } from '../Logger';
 import HttpService from '../../services/httpService';
-import { MetadataDTO, MetadataInfo, NftDTO, TransfersDTO } from '../SDK/types';
+import {
+  CollectionsDTO,
+  MetadataDTO,
+  MetadataInfo,
+  NftDTO,
+  TransfersDTO,
+  TradeDTO,
+  OwnersDTO,
+  SearchNftDTO,
+} from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
@@ -44,6 +53,35 @@ export type GetNftTransfersFromBlockToBlock = {
 export type GetNftTransfersByContractAndToken = {
   contractAddress: string;
   tokenId: string;
+  cursor?: string;
+};
+
+export type GetNftTransfersByContractAddress = {
+  contractAddress: string;
+  cursor?: string;
+};
+export type GetNftOwnersByContractAddress = {
+  contractAddress: string;
+  cursor?: string;
+};
+
+export type GetNftOwnersByTokenAddressAndTokenId = {
+  tokenAddress: string;
+  tokenId: string;
+  cursor?: string;
+};
+
+export type GetLowestTradePrice = {
+  tokenAddress: string;
+};
+
+export type GetCollectionsByWallet = {
+  walletAddress: string;
+  cursor?: string;
+};
+
+export type SearchNftsByString = {
+  query: string;
   cursor?: string;
 };
 
@@ -255,6 +293,123 @@ export default class Api {
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}/transfers`;
     const { contractAddress, tokenId, cursor } = opts;
     const { data } = await this.httpClient.get(apiUrl, { contractAddress, tokenId, cursor });
+    return data;
+  }
+
+  /**
+   * Get transfers by contract address
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getTransfersByContractAddress(
+    opts: GetNftTransfersByContractAddress,
+  ): Promise<TransfersDTO> {
+    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/transfers`;
+    const { contractAddress, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { contractAddress, cursor });
+    return data;
+  }
+
+  /**
+   * Get lowest trade for a given token
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Trade information
+   */
+  async getLowestTradePrice(opts: GetLowestTradePrice): Promise<TradeDTO> {
+    if (!opts.tokenAddress || !utils.isAddress(opts.tokenAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_token_address, {
+        location: Logger.location.SDK_GET_LOWEST_TRADE_PRICE,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress}/tradePrice`;
+    const { tokenAddress } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { tokenAddress });
+    return data;
+  }
+
+  /**
+   * Get nft owners by contract address
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} OwnersDTO
+   */
+
+  async getOwnersbyContractAddress(opts: GetNftOwnersByContractAddress): Promise<OwnersDTO> {
+    if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
+        location: Logger.location.SDK_GET_OWNERS_BY_TOKEN_ADDRESS,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/owners`;
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    return data;
+  }
+
+  /**
+   * Get nft owners by token address and token id
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} OwnersDTO
+   */
+
+  async getOwnersbyTokenAddressAndTokenId(
+    opts: GetNftOwnersByTokenAddressAndTokenId,
+  ): Promise<OwnersDTO> {
+    if (!opts.tokenAddress || !utils.isAddress(opts.tokenAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_token_address, {
+        location: Logger.location.SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID,
+      });
+    }
+
+    if (!opts.tokenId) {
+      log.throwMissingArgumentError(Logger.message.no_tokenId_supplied, {
+        location: Logger.location.SDK_GET_OWNERS_BY_TOKEN_ADDRESS_AND_TOKEN_ID,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress.toLowerCase()}/${opts.tokenId}/owners`;
+    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    return data;
+  }
+
+  /* Get NFT collections owned by a given wallet address.
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Transfers list
+   */
+  async getCollectionsByWallet(opts: GetCollectionsByWallet): Promise<CollectionsDTO> {
+    if (!opts.walletAddress || !utils.isAddress(opts.walletAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_account_address, {
+        location: Logger.location.SDK_GET_COLLECTION_BY_WALLET,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/collections`;
+    const { cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { cursor });
+    return data;
+  }
+
+  /**
+   * search Nfts that match a specific query string
+   * @param {object} opts object containing all parameters
+   * @returns {Promise<object>} Nfts  list
+   */
+  async searchNfts(opts: SearchNftsByString): Promise<SearchNftDTO> {
+    if (!opts.query || opts.query.trim().length < 3) {
+      log.throwMissingArgumentError(Logger.message.invalid_search_string, {
+        location: Logger.location.SDK_GET_SEARCH_NFT,
+      });
+    }
+
+    const apiUrl = `${this.apiPath}/nfts/search`;
+    const { cursor, query } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { query, cursor });
     return data;
   }
 }

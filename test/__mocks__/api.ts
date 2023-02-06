@@ -91,6 +91,21 @@ export const tokenMetadataMock = {
   },
 };
 
+export const lowestTradePriceMock = {
+  data: {
+    transactionHash: '0x4cd5a150a0332cdd3525b9bdc387af000866957fead36a8dc242b9d2f683d04a',
+    blockTimestamp: '2023-01-21T01:15:11.000Z',
+    blockHash: '0x9542de2282024ed349c21ff23839921a26b04a6efdf98e2ba870c4fd9871cce0',
+    blockNumber: '16451830',
+    tokenIds: ['655'],
+    sellerAddress: '0xb3dbf4147183492a7bc544e8abed20ad6831fecb',
+    buyerAddress: '0xcd9ab8f11df0a72b65c7adcfbc61b79aab9fe4c6',
+    tokenAddress: '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d',
+    marketplaceAddress: '0x00000000006c3852cbef3e08e8df289169ede581',
+    price: '66290000000000000000',
+  },
+};
+
 export const transferByBlockHashNumberMock = {
   data: {
     total: 29,
@@ -112,6 +127,75 @@ export const transferByBlockHashNumberMock = {
         blockHash: '0x759d8cb3930463fc0a0b6d6e30b284a1466cb7c590c21767f08a37e34fd583b1',
         transactionHash: '0x07ad919a19c1d24533639c91ae5b5e99979b7f40858d94bcd91605b218874f06',
         transactionType: 'Single',
+      },
+    ],
+  },
+};
+
+export const ownersByContractAddress = {
+  data: {
+    total: 29,
+    pageNumber: 0,
+    pageSize: 100,
+    network: 'ETHEREUM',
+    cursor: null,
+    owners: [
+      {
+        tokenAddress: '0x1a92f7381b9f03921564a437210bb9396471050c',
+        tokenId: '590',
+        amount: '1',
+        ownerOf: '0x42436ffd4fecf3cbc1c306b40a1813897729ce07',
+        tokenHash: '4c41e33826b190dae1f81b9bf183056a',
+        blockNumberMinted: '12743348',
+        blockNumber: '16450813',
+        contractType: 'ERC721',
+        name: 'Cool Cats',
+        symbol: 'COOL',
+        metadata:
+          '{"description":"Cool Cats is a collection of 9,999 randomly generated and stylistically curated NFTs that exist on the Ethereum Blockchain. Cool Cat holders can participate in exclusive events such as NFT claims, raffles, community giveaways, and more. Remember, all cats are cool, but some are cooler than others. Visit [www.coolcatsnft.com](https://www.coolcatsnft.com/) to learn more.","image":"https://ipfs.io/ipfs/Qmdr9BVAQHKrUWwXsuDKscheDJKNt3rvRcQiQnvTzfwbZr","name":"Cool Cat #590","attributes":[{"trait_type":"body","value":"blue cat skin"},{"trait_type":"hats","value":"visor green"},{"trait_type":"shirt","value":"tanktop white"},{"trait_type":"face","value":"glossy"},{"trait_type":"tier","value":"wild_1"}],"points":{"Body":0,"Shirt":1,"Hats":3,"Face":1},"ipfs_image":"https://ipfs.io/ipfs/Qmdr9BVAQHKrUWwXsuDKscheDJKNt3rvRcQiQnvTzfwbZr","google_image":"https://drive.google.com/uc?id=1JvY5SXPxhXo8jYqmA9mA29t-bZSQegrp"}',
+        minterAddress: '0x3fa9db8d720679e8e5213f6c5d88fab766058e20',
+      },
+    ],
+  },
+};
+export const searchNfts = {
+  data: {
+    total: 29,
+    pageNumber: 0,
+    pageSize: 100,
+    network: 'ETHEREUM',
+    cursor: null,
+    nfts: [
+      {
+        tokenId: '496',
+        tokenAddress: '0xfd4842133c99877bad9d67b49c6e0c0729ce93a2',
+        metadata:
+          '{"description":"A unique, cool and diverse collection of animated cats!","image":"https://gateway.pinata.cloud/ipfs/QmRmvW4L8P9JBJoHMe5ExpZ1fFsq3kEa2R6sdMWsKUKLYo/496.png","name":"iCat #496","tokenId":"496"}',
+        contractType: 'ERC721',
+        tokenHash: 'ffe14e0ba17c7fc43a06e2548a869893',
+        minterAddress: null,
+        blockNumberMinted: '15071403',
+        transactionMinted: '0x2726a7da965acb04ca10f33d1e45bc2bc79cefe1aa6ee1a86ab21b08ba527fdf',
+        createdAt: '2022-07-03T19:15:01.518Z',
+      },
+    ],
+  },
+};
+export const collectionsByWalletMock = {
+  data: {
+    total: 564,
+    pageNumber: 1,
+    pageSize: 100,
+    network: 'ETHEREUM',
+    cursor:
+      'eyJhbGciOiJIUzI1NiJ9.ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpkWE4wYjIxUVlYSmhiWE1pT25zaWQyRnNiR1YwUVdSa2NtVnpjeUk2SWpCNFpEaGtZVFppWmpJMk9UWTBZV1k1WkRkbFpXUTVaVEF6WlRVek5ERTFaRE0zWVdFNU5qQTBOU0o5TENKclpYbHpJanBiSWpFMk5USXpNRE0yTXpFdU5UTTJJbDBzSW5kb1pYSmxJanA3SW05M2JtVnlYMjltSWpvaU1IaGtPR1JoTm1KbU1qWTVOalJoWmpsa04yVmxaRGxsTURObE5UTTBNVFZrTXpkaFlUazJNRFExSW4wc0lteHBiV2wwSWpveE1EQXNJbTltWm5ObGRDSTZNQ3dpYjNKa1pYSWlPbHRkTENKa2FYTmhZbXhsWDNSdmRHRnNJanBtWVd4elpTd2lkRzkwWVd3aU9qVTJOQ3dpY0dGblpTSTZNU3dpZEdGcGJFOW1abk5sZENJNk1Td2lhV0YwSWpveE5qYzBOek15TVRJMGZRLm9aeVN2S1pSbFJGTkVhV0pkSlBFTW1MaWplZzhISjJFZHJJTDNJXzVFSFE.cVc3JDHNZq5sltem2tvRVisfgQkAzsQmhRyhKD6N9Rg',
+    account: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
+    collections: [
+      {
+        contract: '0xff8852a5f77c20094f0fabc7b225b417e0797907',
+        tokenType: 'ERC721',
+        name: 'VictoriasSecret',
+        symbol: 'VS',
       },
     ],
   },
