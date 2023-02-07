@@ -159,6 +159,13 @@ The SDK currently supports the following NFT API endpoints under the `sdk.api` n
 - `getNftsTransfersByWallet()`: Gets transfers of NFTs for a given wallet address.
 - `getTransferFromBlockToBlock()`: Gets transfers from a block to block.
 - `getTransfersByTokenId()`: Gets transfers of an NFT by contract address and token ID.
+- `getTransfersByContractAddress()`: Get transfers by contract address.
+- `getLowestTradePrice()`: Get the lowest ETH based price for contract.
+- `getOwnersbyContractAddress()`: Get NFT owners given a token address.
+- `getOwnersbyTokenAddressAndTokenId()`: Gets NFT owners for a specific token address and a tokenId.
+- `getCollectionsByWallet()`: Get NFT collections owned by a given wallet address..
+- `searchNfts()`: Search for Nfts given a string.
+
 ## Pagination
 The Infura NFT endpoints return 100 results per page. To get the next page, you can pass in the cursor returned by the previous call.
 
