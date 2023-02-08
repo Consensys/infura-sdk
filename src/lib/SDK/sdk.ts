@@ -57,8 +57,6 @@ export class SDK {
 
   infuraSupported() {
     return (
-      this.auth.getChainId() !== Chains.bsc &&
-      this.auth.getChainId() !== Chains.bsctest &&
       this.auth.getChainId() !== Chains.cronos &&
       this.auth.getChainId() !== Chains.cronostestnet &&
       this.auth.getChainId() !== Chains.fantom
