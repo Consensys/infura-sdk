@@ -27,6 +27,7 @@ type ContractAddressOptions = {
 type GetTokenMetadataOptions = {
   contractAddress: string;
   tokenId: string;
+  resyncMetadata?: boolean;
 };
 
 export type GetTransfersByBlockNumberOptions = {
@@ -185,7 +186,9 @@ export default class Api {
 
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}`;
 
-    const { data } = await this.httpClient.get(apiUrl);
+    const { data } = await this.httpClient.get(apiUrl, {
+      resyncMetadata: !!opts.resyncMetadata,
+    });
     return data;
   }
 
