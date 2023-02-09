@@ -25,7 +25,7 @@ const contractInfo = {
     contractURI: 'https://test.io',
   },
 };
-// jest.retryTimes(2, { logErrorsBeforeRetry: true });
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 5);
   it('Deploy - Get all nfts by owner address', async () => {
@@ -35,7 +35,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       publicAddress: ownerAddress,
       includeMetadata: false,
     });
-    console.log(`total is ${response.total}`);
     const newContract = await sdk.deploy(contractInfo);
     const mintHash: any = await newContract.mint({
       publicAddress: ownerAddress,
