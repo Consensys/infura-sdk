@@ -226,10 +226,12 @@ describe('SDK - IPFS for ERC1155', () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         const response2: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return response.metadata !== null && response2.metadata !== null;
       },
