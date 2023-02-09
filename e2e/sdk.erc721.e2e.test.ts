@@ -50,8 +50,6 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
         const newContractCollection = await resp.assets.filter(
           asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
         )[0];
-        console.log(resp.total);
-        console.log(newContractCollection?.metadata);
         return (
           resp.total > response.total &&
           newContractCollection !== null &&
