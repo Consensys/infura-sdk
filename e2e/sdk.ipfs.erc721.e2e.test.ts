@@ -392,6 +392,7 @@ describe('SDK - IPFS for ERC712', () => {
         resp = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         return resp.metadata !== null;
       },
