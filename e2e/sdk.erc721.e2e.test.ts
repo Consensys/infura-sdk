@@ -175,6 +175,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
         const response: any = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         return response.metadata !== null;
       },

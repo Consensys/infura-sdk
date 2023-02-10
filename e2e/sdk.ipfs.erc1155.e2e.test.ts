@@ -87,6 +87,7 @@ describe('SDK - IPFS for ERC1155', () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
 
         return response.metadata !== null;
@@ -226,10 +227,12 @@ describe('SDK - IPFS for ERC1155', () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         const response2: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -338,10 +341,12 @@ describe('SDK - IPFS for ERC1155', () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null

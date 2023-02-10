@@ -7,6 +7,7 @@ import version from '../../src/_version';
 
 loadEnv();
 
+jest.retryTimes(2);
 describe('E2E Test: Sdk (read)', () => {
   jest.setTimeout(120 * 1000);
   let sdk: SDK;

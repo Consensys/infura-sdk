@@ -101,10 +101,12 @@ describe('SDK - IPFS for ERC712', () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -209,10 +211,12 @@ describe('SDK - IPFS for ERC712', () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -316,10 +320,12 @@ describe('SDK - IPFS for ERC712', () => {
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -392,6 +398,7 @@ describe('SDK - IPFS for ERC712', () => {
         resp = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         return resp.metadata !== null;
       },
