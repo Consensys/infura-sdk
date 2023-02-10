@@ -17,8 +17,7 @@ describe('Auth', () => {
       () =>
         new Auth({
           privateKey: generateTestPrivateKeyOrHash(),
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
+          apiKey: <string>process.env.INFURA_PROJECT_ID,
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
           provider: ethers.providers.Provider as ethers.providers.ExternalProvider,
@@ -32,8 +31,7 @@ describe('Auth', () => {
     expect(
       () =>
         new Auth({
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
+          apiKey: <string>process.env.INFURA_PROJECT_ID,
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
           provider: new FakeProvider(),
@@ -47,8 +45,7 @@ describe('Auth', () => {
     expect(
       () =>
         new Auth({
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
+          apiKey: <string>process.env.INFURA_PROJECT_ID,
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 5,
           provider: new ethers.providers.InfuraProvider(
@@ -66,8 +63,7 @@ describe('Auth', () => {
       () =>
         new Auth({
           privateKey: 'privateKey',
-          projectId: process.env.INFURA_PROJECT_ID,
-          secretId: process.env.INFURA_PROJECT_SECRET,
+          apiKey: <string>process.env.INFURA_PROJECT_ID,
           rpcUrl: process.env.EVM_RPC_URL,
           chainId: 6,
         }),
@@ -92,8 +88,7 @@ describe('Auth', () => {
       const privateKey = generateTestPrivateKeyOrHash();
       const account = new Auth({
         privateKey,
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
@@ -107,8 +102,7 @@ describe('Auth', () => {
 
     it('should return the signer using passed provider', async () => {
       const account = new Auth({
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
         provider: ganacheProvider,
@@ -125,17 +119,12 @@ describe('Auth', () => {
     it('should return the apiAuth key', () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
 
-      expect(account.getApiAuth()).toStrictEqual(
-        Buffer.from(
-          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-        ).toString('base64'),
-      );
+      expect(account.getApiAuth()).toStrictEqual(`${process.env.INFURA_PROJECT_ID}`);
     });
   });
 
@@ -143,8 +132,7 @@ describe('Auth', () => {
     it('should return the chainId', () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
@@ -157,8 +145,7 @@ describe('Auth', () => {
     it('should return the rpcUrl', () => {
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
@@ -175,8 +162,7 @@ describe('Auth', () => {
 
       const account = new Auth({
         privateKey: 'privateKey',
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         chainId: 5,
       });
 
@@ -188,16 +174,13 @@ describe('Auth', () => {
     it('should return the chainId', () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
 
       expect(account.getApiAuthHeader()).toStrictEqual({
-        Authorization: `Basic ${Buffer.from(
-          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
-        ).toString('base64')}`,
+        Authorization: `Basic ${process.env.INFURA_PROJECT_ID}`,
       });
     });
   });

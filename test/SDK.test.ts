@@ -43,8 +43,7 @@ describe('Sdk', () => {
   beforeAll(() => {
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
-      projectId: process.env.INFURA_PROJECT_ID,
-      secretId: process.env.INFURA_PROJECT_SECRET,
+      apiKey: <string>process.env.INFURA_PROJECT_ID,
       rpcUrl: process.env.EVM_RPC_URL,
       chainId: 5,
       ipfs: {
@@ -55,8 +54,7 @@ describe('Sdk', () => {
 
     const account2 = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
-      projectId: process.env.INFURA_PROJECT_ID,
-      secretId: process.env.INFURA_PROJECT_SECRET,
+      apiKey: <string>process.env.INFURA_PROJECT_ID,
       rpcUrl: process.env.EVM_RPC_URL,
       chainId: 5,
     });
@@ -219,8 +217,7 @@ describe('Sdk', () => {
     it('Should show an error when bsc chain is provided when calling write functions', async () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 56,
       });
@@ -237,8 +234,7 @@ describe('Sdk', () => {
     it('Should show an error when bsc test chain is provided when calling write functions', async () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 97,
       });
@@ -255,8 +251,7 @@ describe('Sdk', () => {
     it('Should show an error when fantom chain is provided when calling write functions', async () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 250,
       });
@@ -273,8 +268,7 @@ describe('Sdk', () => {
     it('Should show an error when cronos chain is provided when calling write functions', async () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 25,
       });
@@ -291,8 +285,7 @@ describe('Sdk', () => {
     it('Should show an error when cronos testnet chain is provided when calling write functions', async () => {
       const account = new Auth({
         privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
+        apiKey: <string>process.env.INFURA_PROJECT_ID,
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 338,
       });

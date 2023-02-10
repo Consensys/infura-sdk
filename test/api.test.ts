@@ -47,10 +47,10 @@ describe('Api', () => {
 
   let api: Api;
   beforeAll(() => {
+    console.log(<string>process.env.INFURA_PROJECT_ID);
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
-      projectId: process.env.INFURA_PROJECT_ID,
-      secretId: process.env.INFURA_PROJECT_SECRET,
+      apiKey: <string>process.env.INFURA_PROJECT_ID,
       rpcUrl: process.env.EVM_RPC_URL,
       chainId: 5,
       ipfs: {

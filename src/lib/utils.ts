@@ -4,7 +4,7 @@ import { Logger, log } from './Logger';
 
 type FormatRpcUrlOptions = {
   chainId: number;
-  projectId: string;
+  apiKey: string;
 };
 
 export const isBoolean = (val: boolean | object): boolean =>
@@ -19,8 +19,8 @@ export const isDefined = (variable: string | number | undefined): boolean =>
 
 export const isURI = (URI: string): boolean => !!URI.match(/^(ipfs|http|https):\/\//gi);
 
-export const formatRpcUrl = ({ chainId, projectId }: FormatRpcUrlOptions) =>
-  `${chainUrls[chainId]}/v3/${projectId}`;
+export const formatRpcUrl = ({ chainId, apiKey }: FormatRpcUrlOptions) =>
+  `${chainUrls[chainId]}/v3/${apiKey}`;
 
 export const isJson = (param: string) => {
   if (typeof param !== 'string') return false;

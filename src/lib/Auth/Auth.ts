@@ -18,8 +18,7 @@ type IPFSType = {
 };
 type AuthOptions = {
   privateKey?: string | undefined;
-  projectId: string | undefined;
-  secretId: string | undefined;
+  apiKey: string;
   rpcUrl?: string | undefined;
   chainId: number | undefined;
   provider?: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc;
@@ -29,9 +28,7 @@ type AuthOptions = {
 export default class Auth {
   private privateKey;
 
-  private projectId;
-
-  private secretId;
+  private apiKey: string;
 
   private rpcUrl;
 
@@ -42,7 +39,7 @@ export default class Auth {
   private ipfs: IPFS;
 
   constructor(opts: AuthOptions) {
-    if (!opts.privateKey && !opts.provider) {
+    if (!opts.apiKey && !opts.provider) {
       log.throwMissingArgumentError(Logger.message.no_pk_or_provider, {
         location: Logger.location.AUTH_CONSTRUCTOR,
       });
@@ -67,15 +64,14 @@ export default class Auth {
     }
 
     this.privateKey = opts.privateKey;
-    this.projectId = opts.projectId;
-    this.secretId = opts.secretId;
+    this.apiKey = opts.apiKey;
     this.chainId = opts.chainId;
     this.rpcUrl = opts.rpcUrl;
 
     if (!isValidString(this.rpcUrl)) {
       this.rpcUrl = formatRpcUrl({
         chainId: <number>this.chainId,
-        projectId: <string>this.projectId,
+        apiKey: <string>this.apiKey,
       });
     }
 
@@ -99,12 +95,8 @@ export default class Auth {
 
   getApiAuthHeader() {
     return {
-      Authorization: `Basic ${this.base64encode()}`,
+      Authorization: `Basic ${this.getApiAuth()}`,
     };
-  }
-
-  private base64encode() {
-    return Buffer.from(`${this.projectId}:${this.secretId}`).toString('base64');
   }
 
   getIpfsClient() {
@@ -112,7 +104,7 @@ export default class Auth {
   }
 
   getApiAuth() {
-    return this.base64encode();
+    return this.apiKey;
   }
 
   getSigner(): ethers.Wallet | ethers.providers.JsonRpcSigner {
