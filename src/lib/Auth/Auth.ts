@@ -18,7 +18,9 @@ type IPFSType = {
 };
 type AuthOptions = {
   privateKey?: string | undefined;
-  apiKey: string;
+  projectId?: string | undefined;
+  secretId?: string | undefined;
+  apiKey?: string | undefined;
   rpcUrl?: string | undefined;
   chainId: number | undefined;
   provider?: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc;
@@ -28,7 +30,11 @@ type AuthOptions = {
 export default class Auth {
   private privateKey;
 
-  private apiKey: string;
+  private apiKey;
+
+  private projectId;
+
+  private secretId;
 
   private rpcUrl;
 
@@ -39,8 +45,13 @@ export default class Auth {
   private ipfs: IPFS;
 
   constructor(opts: AuthOptions) {
-    if (!opts.apiKey && !opts.provider) {
+    if (!opts.privateKey && !opts.provider) {
       log.throwMissingArgumentError(Logger.message.no_pk_or_provider, {
+        location: Logger.location.AUTH_CONSTRUCTOR,
+      });
+    }
+    if (!(opts.projectId && opts.secretId) && !opts.apiKey) {
+      log.throwMissingArgumentError(Logger.message.no_api_key_nor_projectId_supplied, {
         location: Logger.location.AUTH_CONSTRUCTOR,
       });
     }
@@ -64,6 +75,8 @@ export default class Auth {
     }
 
     this.privateKey = opts.privateKey;
+    this.projectId = opts.projectId;
+    this.secretId = opts.secretId;
     this.apiKey = opts.apiKey;
     this.chainId = opts.chainId;
     this.rpcUrl = opts.rpcUrl;
@@ -71,7 +84,7 @@ export default class Auth {
     if (!isValidString(this.rpcUrl)) {
       this.rpcUrl = formatRpcUrl({
         chainId: <number>this.chainId,
-        apiKey: <string>this.apiKey,
+        projectId: this.projectId ?? <string>this.apiKey,
       });
     }
 
@@ -94,17 +107,30 @@ export default class Auth {
   }
 
   getApiAuthHeader() {
+    if (this.apiKey !== null)
+      return {
+        apikey: `${this.getApiAuth()}`,
+      };
     return {
       Authorization: `Basic ${this.getApiAuth()}`,
     };
+  }
+
+  private base64encode() {
+    return Buffer.from(`${this.projectId}:${this.secretId}`).toString('base64');
   }
 
   getIpfsClient() {
     return this.ipfs;
   }
 
-  getApiAuth() {
+  getApiKeyAuth() {
     return this.apiKey;
+  }
+
+  getApiAuth() {
+    if (this.apiKey) return this.apiKey;
+    return this.base64encode();
   }
 
   getSigner(): ethers.Wallet | ethers.providers.JsonRpcSigner {

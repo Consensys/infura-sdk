@@ -47,7 +47,6 @@ describe('Api', () => {
 
   let api: Api;
   beforeAll(() => {
-    console.log(<string>process.env.INFURA_PROJECT_ID);
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
       apiKey: <string>process.env.INFURA_PROJECT_ID,

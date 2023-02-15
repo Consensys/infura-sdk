@@ -12,6 +12,47 @@ loadEnv();
 class FakeProvider {}
 
 describe('Auth', () => {
+  it('should throw an error when no apikey nor projectId', () => {
+    expect(
+      () =>
+        new Auth({
+          privateKey: generateTestPrivateKeyOrHash(),
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          provider: ethers.providers.Provider as ethers.providers.ExternalProvider,
+        }),
+    ).toThrow(
+      `ApiKey missing or projectId and secretKey not supplied! (location="[Auth.constructor]", code=MISSING_ARGUMENT, version=${version})`,
+    );
+  });
+  it('should throw an error when no apikey nor projectId but secretKey provided ', () => {
+    expect(
+      () =>
+        new Auth({
+          privateKey: generateTestPrivateKeyOrHash(),
+          secretId: process.env.INFURA_PROJECT_SECRET,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          provider: ethers.providers.Provider as ethers.providers.ExternalProvider,
+        }),
+    ).toThrow(
+      `ApiKey missing or projectId and secretKey not supplied! (location="[Auth.constructor]", code=MISSING_ARGUMENT, version=${version})`,
+    );
+  });
+  it('should throw an error when no apikey nor projectId but secretKey provided ', () => {
+    expect(
+      () =>
+        new Auth({
+          privateKey: generateTestPrivateKeyOrHash(),
+          projectId: process.env.INFURA_PROJECT_ID,
+          rpcUrl: process.env.EVM_RPC_URL,
+          chainId: 5,
+          provider: ethers.providers.Provider as ethers.providers.ExternalProvider,
+        }),
+    ).toThrow(
+      `ApiKey missing or projectId and secretKey not supplied! (location="[Auth.constructor]", code=MISSING_ARGUMENT, version=${version})`,
+    );
+  });
   it('should throw when passing both privateKey and provider', () => {
     expect(
       () =>
@@ -113,6 +154,20 @@ describe('Auth', () => {
 
       expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
     });
+    it('should return the signer using passed provider', async () => {
+      const account = new Auth({
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+        provider: ganacheProvider,
+      });
+
+      const signer = await new ethers.providers.Web3Provider(ganacheProvider).getSigner();
+      const authSigner = await account.getSigner();
+
+      expect(JSON.stringify(authSigner)).toStrictEqual(JSON.stringify(signer));
+    });
   });
 
   describe('getApiAuth', () => {
@@ -123,8 +178,23 @@ describe('Auth', () => {
         rpcUrl: process.env.EVM_RPC_URL,
         chainId: 5,
       });
-
+      console.log(account);
       expect(account.getApiAuth()).toStrictEqual(`${process.env.INFURA_PROJECT_ID}`);
+    });
+    it('should return the apiAuth key', () => {
+      const account = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+      });
+      console.log(account);
+      expect(account.getApiAuth()).toStrictEqual(
+        `${Buffer.from(
+          `${process.env.INFURA_PROJECT_ID}:${process.env.INFURA_PROJECT_SECRET}`,
+        ).toString('base64')}`,
+      );
     });
   });
 
@@ -180,7 +250,7 @@ describe('Auth', () => {
       });
 
       expect(account.getApiAuthHeader()).toStrictEqual({
-        Authorization: `Basic ${process.env.INFURA_PROJECT_ID}`,
+        apikey: `${process.env.INFURA_PROJECT_ID}`,
       });
     });
   });

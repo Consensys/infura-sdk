@@ -15,7 +15,8 @@ describe('E2E Test: Sdk (read)', () => {
   beforeAll(() => {
     const auth = new Auth({
       privateKey: process.env.WALLET_PRIVATE_KEY,
-      apiKey: <string>process.env.INFURA_PROJECT_ID,
+      projectId: process.env.INFURA_PROJECT_ID,
+      secretId: process.env.INFURA_PROJECT_SECRET,
       rpcUrl: process.env.EVM_RPC_URL,
       chainId: 5,
     });

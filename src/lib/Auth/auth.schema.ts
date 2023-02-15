@@ -2,7 +2,9 @@ import Joi from 'joi';
 
 export default Joi.object({
   privateKey: Joi.string().optional(),
-  apiKey: Joi.string().required(),
+  projectId: Joi.string().optional(),
+  secretId: Joi.string().optional(),
+  apiKey: Joi.string().optional(),
   rpcUrl: Joi.string()
     .uri({
       scheme: [/https?/],

@@ -128,6 +128,7 @@ export enum ErrorMessage {
   invalid_auth_instance = 'Invalid Auth instance.',
 
   no_pk_or_provider = 'PrivateKey or provider missing!',
+  no_api_key_nor_projectId_supplied = 'ApiKey missing or projectId and secretKey not supplied!',
   no_parameters_supplied = 'No parameters supplied.',
   no_template_type_supplied = 'No template type supplied.',
   no_tokenId_supplied = 'No tokenId supplied or tokenID is invalid.',
