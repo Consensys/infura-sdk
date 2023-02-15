@@ -107,7 +107,7 @@ export default class Auth {
   }
 
   getApiAuthHeader() {
-    if (this.apiKey !== null)
+    if (this.apiKey)
       return {
         apikey: `${this.getApiAuth()}`,
       };
