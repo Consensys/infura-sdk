@@ -3,6 +3,7 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait, { existingContractAddress } from './utils/utils.ts/utils';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CollectionsDTO, MetadataDTO, OwnersDTO, SearchNftDTO } from '../src/lib/SDK/types';
 
 loadEnv();
@@ -14,7 +15,6 @@ const authInfo: any = {
   privateKey: process.env.WALLET_PRIVATE_KEY,
   projectId: process.env.INFURA_PROJECT_ID,
   secretId: process.env.INFURA_PROJECT_SECRET,
-  rpcUrl: process.env.EVM_RPC_URL,
   chainId: 80001,
 };
 const contractInfo = {
@@ -25,7 +25,7 @@ const contractInfo = {
     contractURI: 'https://test.io',
   },
 };
-jest.retryTimes(2, { logErrorsBeforeRetry: true });
+// jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 5);
   it('Deploy - Get all nfts by owner address', async () => {
@@ -35,21 +35,23 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       publicAddress: ownerAddress,
       includeMetadata: false,
     });
+
     const newContract = await sdk.deploy(contractInfo);
+    console.log('Va a mintear');
     const mintHash: any = await newContract.mint({
       publicAddress: ownerAddress,
       tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
     });
     const receipt: any = await mintHash.wait();
-
     expect(receipt.status).toEqual(1);
-
+    console.log('va a esperar');
     await wait(
       async () => {
         const resp = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
         const newContractCollection = await resp.assets.filter(
           asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
         )[0];
+        console.log(newContractCollection);
         return (
           resp.total > response.total &&
           newContractCollection !== null &&
@@ -213,12 +215,42 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
   it('Load old contract', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
+    const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
+
     const cont = {
       template: TEMPLATES.ERC721Mintable,
       contractAddress: existingContractAddress,
     };
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
+    const mintHash: any = await contract.mint({
+      publicAddress: ownerAddress,
+      tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
+    });
+    const receipt: any = await mintHash.wait();
+    expect(receipt.status).toEqual(1);
+
+    const txHash = await contract.baseERC721.transfer({
+      from: ownerAddress,
+      to: '0x4aad99513ef287991735e13424189cc9b0fcf82e',
+      tokenId: 0,
+    });
+    await txHash.wait();
+
+    await wait(
+      async () => {
+        const response = await sdk.api.getNftsTransfersByWallet({
+          walletAddress: ownerAddress,
+        });
+        return response.total > transferList.total;
+      },
+      90000,
+      1000,
+      'Waiting for NFT transfer to be available',
+    );
+    const transferList2 = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
+
+    expect(transferList2.total).toBeGreaterThan(transferList.total); // check the new transfer is returned
   });
 
   it('Load new contract and get Metadata', async () => {

@@ -6,6 +6,7 @@ import { GAS_LIMIT, DEFAULT_ADMIN_ROLE, DEFAULT_MINTER_ROLE } from '../constants
 import HasRoyalty from '../ContractComponents/hasRoyalty';
 import HasAccessControl from '../ContractComponents/hasAccessControl';
 import BaseERC721 from '../ContractComponents/baseERC721';
+import preparePolygonTransaction from './utils';
 
 export type DeployParams = {
   name: string;
@@ -118,8 +119,16 @@ export default class ERC721Mintable {
         smartContractArtifact.bytecode,
         this.signer,
       );
+      // const options = addGasPriceToOptions({}, params.gas);
+      //   console.log('🚀 ~ file: ERC721Mintable.ts:123 ~ ERC721Mintable ~ deploy ~ options', options);
+      console.log(await this.signer.getChainId());
+      const chainId = await this.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      if (chainId === 137)
+        options = await preparePolygonTransaction(await this.signer.getAddress());
+      else options = addGasPriceToOptions({}, params.gas);
 
-      const options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
         params.name,
         params.symbol,
@@ -134,6 +143,7 @@ export default class ERC721Mintable {
       this.baseERC721.setContract(this.contractDeployed);
       return this;
     } catch (error) {
+      console.log('🚀 ~ file: ERC721Mintable.ts:168 ~ ERC721Mintable ~ deploy ~ error', error);
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
         location: Logger.location.ERC721MINTABLE_DEPLOY,
         error,
@@ -180,8 +190,11 @@ export default class ERC721Mintable {
     }
 
     try {
-      let options = { gasLimit: this.gasLimit };
-      options = addGasPriceToOptions(options, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      if (chainId === 137)
+        options = await preparePolygonTransaction(await this.signer.getAddress());
+      else options = addGasPriceToOptions({ gasLimit: this.gasLimit }, params.gas);
       return this.contractDeployed.mintWithTokenURI(params.publicAddress, params.tokenURI, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
