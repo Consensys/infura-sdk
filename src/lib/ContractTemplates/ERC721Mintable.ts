@@ -119,9 +119,7 @@ export default class ERC721Mintable {
         smartContractArtifact.bytecode,
         this.signer,
       );
-      // const options = addGasPriceToOptions({}, params.gas);
-      //   console.log('🚀 ~ file: ERC721Mintable.ts:123 ~ ERC721Mintable ~ deploy ~ options', options);
-      console.log(await this.signer.getChainId());
+
       const chainId = await this.signer.getChainId();
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error

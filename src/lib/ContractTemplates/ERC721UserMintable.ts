@@ -6,6 +6,7 @@ import BaseERC721 from '../ContractComponents/baseERC721';
 import { addGasPriceToOptions, isURI, isValidPrice } from '../utils';
 import { GAS_LIMIT } from '../constants';
 import { Logger, log } from '../Logger';
+import preparePolygonTransaction from './utils';
 
 export type DeployParams = {
   name: string;
@@ -164,7 +165,12 @@ export default class ERC721UserMintable {
 
       const priceInWei = utils.parseEther(params.price);
 
-      const options = addGasPriceToOptions({}, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      if (chainId === 137)
+        options = await preparePolygonTransaction(await this.signer.getAddress());
+      else options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
         params.name,
         params.symbol,
