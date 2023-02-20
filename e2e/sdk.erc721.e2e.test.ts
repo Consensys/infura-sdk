@@ -2,11 +2,12 @@ import { config as loadEnv } from 'dotenv';
 import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
-import wait, { existingContractAddress } from './utils/utils.ts/utils';
+import wait from './utils/utils.ts/utils';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CollectionsDTO, MetadataDTO, OwnersDTO, SearchNftDTO } from '../src/lib/SDK/types';
 
 loadEnv();
+let reusableContractAddress: string;
 const ownerAddress = process.env.WALLET_PUBLIC_ADDRESS
   ? process.env.WALLET_PUBLIC_ADDRESS
   : '0x3bE0Ec232d2D9B3912dE6f1ff941CB499db4eCe7';
@@ -37,21 +38,19 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
 
     const newContract = await sdk.deploy(contractInfo);
-    console.log('Va a mintear');
+
     const mintHash: any = await newContract.mint({
       publicAddress: ownerAddress,
       tokenURI: 'https://ipfs.io/ipfs/QmRfModHffFedTkHSW1ZEn8f19MdPztn9WV3kY1yjaKvBy',
     });
     const receipt: any = await mintHash.wait();
     expect(receipt.status).toEqual(1);
-    console.log('va a esperar');
     await wait(
       async () => {
         const resp = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
         const newContractCollection = await resp.assets.filter(
           asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
         )[0];
-        console.log(newContractCollection);
         return (
           resp.total > response.total &&
           newContractCollection !== null &&
@@ -204,22 +203,25 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
   it('Load existing contract', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    const newContract = await sdk.deploy(contractInfo);
+    const contract = await sdk.deploy(contractInfo);
     const loadedContract = await sdk.loadContract({
       template: TEMPLATES.ERC721Mintable,
-      contractAddress: newContract.contractAddress,
+      contractAddress: contract.contractAddress,
     });
-    expect(loadedContract.contractAddress).toEqual(newContract.contractAddress);
+    reusableContractAddress = contract.contractAddress;
+    expect(loadedContract.contractAddress).toEqual(reusableContractAddress);
   });
 
   it('Load old contract', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
-    const transferList = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
-
+    const receiver = '0x4aad99513ef287991735e13424189cc9b0fcf82e';
+    const transferList = await sdk.api.getNftsTransfersByWallet({
+      walletAddress: ownerAddress,
+    });
     const cont = {
       template: TEMPLATES.ERC721Mintable,
-      contractAddress: existingContractAddress,
+      contractAddress: reusableContractAddress,
     };
     const contract = await sdk.loadContract(cont);
     expect(contract.contractAddress).toEqual(cont.contractAddress);
@@ -232,10 +234,11 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
 
     const txHash = await contract.baseERC721.transfer({
       from: ownerAddress,
-      to: '0x4aad99513ef287991735e13424189cc9b0fcf82e',
+      to: receiver,
       tokenId: 0,
     });
-    await txHash.wait();
+    const tx: any = await txHash.wait();
+    expect(tx.status).toEqual(1);
 
     await wait(
       async () => {
@@ -248,9 +251,16 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       1000,
       'Waiting for NFT transfer to be available',
     );
-    const transferList2 = await sdk.api.getNftsTransfersByWallet({ walletAddress: ownerAddress });
 
-    expect(transferList2.total).toBeGreaterThan(transferList.total); // check the new transfer is returned
+    const nftOwner = await sdk.api.getOwnersbyTokenAddressAndTokenId({
+      tokenAddress: reusableContractAddress,
+      tokenId: '0',
+    });
+    expect(nftOwner.owners[0].tokenAddress.toUpperCase()).toEqual(
+      reusableContractAddress.toUpperCase(),
+    );
+    expect(nftOwner.owners[0].tokenId).toEqual('0');
+    expect(nftOwner.owners[0].ownerOf.toUpperCase()).toEqual(receiver.toUpperCase());
   });
 
   it('Load new contract and get Metadata', async () => {
