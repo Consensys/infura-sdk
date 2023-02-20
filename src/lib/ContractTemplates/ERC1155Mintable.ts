@@ -156,7 +156,7 @@ export default class ERC1155Mintable {
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
       if (chainId === 137)
-        options = await preparePolygonTransaction(await this.signer.getAddress());
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
         params.baseURI,
@@ -254,7 +254,7 @@ export default class ERC1155Mintable {
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
       if (chainId === 137)
-        options = await preparePolygonTransaction(await this.signer.getAddress());
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({}, params.gas);
       const result = await this.contractDeployed.mint(
         params.to,
