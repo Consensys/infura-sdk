@@ -6,7 +6,7 @@ import version from '../src/_version';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
 
 let eRC721UserMintable: ERC721UserMintable;
-let signer: string;
+let signer: Object;
 const address = '0x0';
 
 jest.mock('ethers');
@@ -54,7 +54,9 @@ describe('SDK', () => {
   jest.spyOn(console, 'warn').mockImplementation();
 
   beforeAll(() => {
-    signer = 'signer';
+    signer = {
+      getChainId: () => 80001,
+    };
   });
 
   afterEach(() => {

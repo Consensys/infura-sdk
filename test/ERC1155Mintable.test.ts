@@ -5,7 +5,7 @@ import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
 import version from '../src/_version';
 
 let erc1155Mintable: ERC1155Mintable;
-let signer: string;
+let signer: Object;
 const address = '0x0';
 
 jest.mock('ethers');
@@ -46,7 +46,9 @@ describe('ERC1155Mintable SDK', () => {
   jest.spyOn(console, 'warn').mockImplementation();
 
   beforeAll(() => {
-    signer = 'signer';
+    signer = {
+      getChainId: () => 80001,
+    };
   });
 
   afterEach(() => {
