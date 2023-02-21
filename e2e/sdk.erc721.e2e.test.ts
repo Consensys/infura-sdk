@@ -3,7 +3,6 @@ import Auth from '../src/lib/Auth/Auth';
 import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait from './utils/utils.ts/utils';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CollectionsDTO, MetadataDTO, OwnersDTO, SearchNftDTO } from '../src/lib/SDK/types';
 
 loadEnv();
@@ -26,7 +25,7 @@ const contractInfo = {
     contractURI: 'https://test.io',
   },
 };
-// jest.retryTimes(2, { logErrorsBeforeRetry: true });
+jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - contract interaction (deploy, load and mint)', () => {
   jest.setTimeout(60 * 1000 * 5);
   it('Deploy - Get all nfts by owner address', async () => {
