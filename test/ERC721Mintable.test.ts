@@ -25,6 +25,9 @@ describe('SDK', () => {
           setRoyalties: jest.fn(),
           royaltyInfo: jest.fn(),
           renounceOwnership: jest.fn(),
+          signer: {
+            getChainId: () => 80001,
+          },
         }),
       } as unknown as Promise<Contract>),
   );
@@ -249,7 +252,7 @@ describe('SDK', () => {
       tokenId: 1,
     });
 
-    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    expect(await contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[SetContractURI] - should return an Error if contract is not deployed', () => {
