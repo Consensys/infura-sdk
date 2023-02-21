@@ -90,6 +90,7 @@ export default class BaseERC721 {
           await this.contractDeployed.signer.getTransactionCount(),
         );
       else options = addGasPriceToOptions({ gasLimit: GAS_LIMIT }, params.gas);
+
       return this.contractDeployed['safeTransferFrom(address,address,uint256)'](
         params.from,
         params.to,

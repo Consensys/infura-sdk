@@ -36,6 +36,9 @@ describe('SDK', () => {
           price: jest.fn(),
           setPrice: jest.fn(),
           withdraw: jest.fn(),
+          signer: {
+            getChainId: () => 80001,
+          },
         }),
       } as unknown as Promise<Contract>),
   );
