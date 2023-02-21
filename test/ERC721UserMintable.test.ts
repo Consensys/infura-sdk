@@ -531,7 +531,7 @@ describe('SDK', () => {
       tokenId: 1,
     });
 
-    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    expect(await contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[SetBaseURI] - should return an Error if contract is not deployed', () => {
