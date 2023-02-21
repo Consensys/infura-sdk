@@ -126,7 +126,6 @@ export default class ERC721Mintable {
       if (chainId === 137)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({}, params.gas);
-
       const contract = await factory.deploy(
         params.name,
         params.symbol,
@@ -189,7 +188,6 @@ export default class ERC721Mintable {
     try {
       const chainId = await this.signer.getChainId();
       let options;
-
       if (chainId === 137)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({ gasLimit: this.gasLimit }, params.gas);

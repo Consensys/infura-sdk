@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { Logger, log } from '../Logger';
 import { GAS_LIMIT } from '../constants';
 import { addGasPriceToOptions, isBoolean, isURI } from '../utils';
+import preparePolygonTransaction from '../ContractTemplates/utils';
 
 type TransferOptions = {
   from: string;
@@ -81,8 +82,14 @@ export default class BaseERC721 {
     }
 
     try {
-      let options = { gasLimit: GAS_LIMIT };
-      options = addGasPriceToOptions(options, params.gas);
+      const chainId = await this.contractDeployed.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      if (chainId === 137)
+        options = await preparePolygonTransaction(
+          await this.contractDeployed.signer.getTransactionCount(),
+        );
+      else options = addGasPriceToOptions({ gasLimit: GAS_LIMIT }, params.gas);
       return this.contractDeployed['safeTransferFrom(address,address,uint256)'](
         params.from,
         params.to,

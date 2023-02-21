@@ -506,8 +506,13 @@ export default class ERC1155Mintable {
     }
 
     try {
-      let options = { gasLimit: this.gasLimit };
-      options = addGasPriceToOptions(options, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      console.log(chainId);
+      if (chainId === 137)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({ gasLimit: this.gasLimit }, params.gas);
+      console.log(options);
       const result = await this.contractDeployed.safeTransferFrom(
         params.from,
         params.to,
