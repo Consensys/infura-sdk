@@ -4,7 +4,6 @@ import HasRoyalty from '../ContractComponents/hasRoyalty';
 import HasAccessControl from '../ContractComponents/hasAccessControl';
 import BaseERC721 from '../ContractComponents/baseERC721';
 import { addGasPriceToOptions, isURI, isValidPrice } from '../utils';
-import { GAS_LIMIT } from '../constants';
 import { Logger, log } from '../Logger';
 import preparePolygonTransaction from './utils';
 
@@ -49,8 +48,6 @@ type SetBaseURIOptions = {
 };
 
 export default class ERC721UserMintable {
-  private readonly gasLimit = GAS_LIMIT;
-
   contractAddress: string;
 
   royalty: HasRoyalty;
@@ -269,10 +266,15 @@ export default class ERC721UserMintable {
     const parsedCost = ethers.utils.parseEther(params.cost);
 
     try {
-      return this.contractDeployed.mint(params.quantity, {
-        value: parsedCost,
-        gasLimit: this.gasLimit,
-      });
+      const chainId = await this.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      if (chainId === 137)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({ value: parsedCost }, undefined);
+
+      // return this.contractDeployed.mint(params.quantity, options);
+      return this.contractDeployed.mint(params.quantity, { value: parsedCost, ...options });
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
         location: Logger.location.ERC721USERMINTABLE_MINT,
