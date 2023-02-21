@@ -460,7 +460,7 @@ describe('SDK', () => {
     };
 
     expect(approval).not.toThrow();
-    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    expect(await contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[addAdmin] - should return an Error if contract is not deployed', () => {
