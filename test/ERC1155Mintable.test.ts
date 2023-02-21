@@ -731,7 +731,7 @@ describe('ERC1155Mintable SDK', () => {
     };
 
     expect(approval).not.toThrow();
-    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    expect(await contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[SetApprovalForAll] - should return an Error if there is a network error', async () => {
