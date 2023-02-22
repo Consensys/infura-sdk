@@ -44,6 +44,9 @@ describe('SDK', () => {
 
   afterEach(() => {
     contractFactoryMock.mockClear();
+    signer = {
+      getChainId: () => 80001,
+    };
   });
 
   it('should create "ERC721Mintable" instance', () => {
@@ -89,6 +92,16 @@ describe('SDK', () => {
   it('[Deploy] - should return a contract', async () => {
     eRC721Mintable = new ERC721Mintable(signer as unknown as ethers.Wallet);
 
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet', async () => {
+    eRC721Mintable = new ERC721Mintable(signer as unknown as ethers.Wallet);
+    signer = {
+      getChainId: () => 137,
+    };
     await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
 
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
