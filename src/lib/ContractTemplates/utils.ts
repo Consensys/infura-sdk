@@ -8,7 +8,6 @@ export default async function preparePolygonTransaction(nonce: number) {
       method: 'get',
       url: 'https://gasstation-mainnet.matic.network/v2',
     });
-    console.log('WORKED 2');
     const gas = data.fast;
 
     // convert priority fee and max fee from GWEI to WEI
@@ -16,7 +15,6 @@ export default async function preparePolygonTransaction(nonce: number) {
     const max = Math.trunc(gas.maxFee * 10 ** 9);
     const maxFeePerGas = max.toString();
     const maxPriorityFeePerGas = priority.toString();
-    console.log('WORKED');
     return {
       nonce,
       maxFeePerGas,
