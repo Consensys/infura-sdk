@@ -165,6 +165,7 @@ export default class ERC721UserMintable {
       const chainId = await this.signer.getChainId();
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      /* istanbul ignore next */
       if (chainId === 137)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({}, params.gas);
@@ -269,6 +270,7 @@ export default class ERC721UserMintable {
       const chainId = await this.signer.getChainId();
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      /* istanbul ignore next */
       if (chainId === 137)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({ value: parsedCost }, undefined);
