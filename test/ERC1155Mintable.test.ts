@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { BigNumber, Contract, ContractFactory, ethers } from 'ethers';
 import { ACCOUNT_ADDRESS, ACCOUNT_ADDRESS_2, CONTRACT_ADDRESS } from './__mocks__/utils';
 import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
+import * as templateUtils from '../src/lib/ContractTemplates/utils';
 import version from '../src/_version';
 
 let erc1155Mintable: ERC1155Mintable;
@@ -48,6 +49,7 @@ describe('ERC1155Mintable SDK', () => {
   beforeAll(() => {
     signer = {
       getChainId: () => 80001,
+      getTransactionCount: () => 1,
     };
   });
 
@@ -55,6 +57,7 @@ describe('ERC1155Mintable SDK', () => {
     contractFactoryMock.mockClear();
     signer = {
       getChainId: () => 80001,
+      getTransactionCount: () => 1,
     };
   });
 
@@ -192,11 +195,37 @@ describe('ERC1155Mintable SDK', () => {
 
   it('[Deploy] - should deploy when polygon mainnet', async () => {
     erc1155Mintable = new ERC1155Mintable(signer as unknown as ethers.Wallet);
+    jest.spyOn(signer, 'getChainId' as any).mockResolvedValue(137);
+    jest.spyOn(signer, 'getTransactionCount' as any).mockResolvedValue(1);
+    jest.spyOn(templateUtils as any, 'default').mockResolvedValueOnce({
+      nonce: 1,
+      maxFeePerGas: '0.001',
+      maxPriorityFeePerGas: '0.001',
+      gasLimit: '6000000',
+    });
     const baseURI = faker.internet.url();
     const contractURI = faker.internet.url();
-    signer = {
-      getChainId: () => 137,
-    };
+
+    await erc1155Mintable.deploy({
+      baseURI,
+      contractURI,
+      ids: [],
+      gas: '250',
+    });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet when axios failed', async () => {
+    erc1155Mintable = new ERC1155Mintable(signer as unknown as ethers.Wallet);
+    jest.spyOn(signer, 'getChainId' as any).mockResolvedValue(137);
+    jest.spyOn(signer, 'getTransactionCount' as any).mockResolvedValue(1);
+    jest.spyOn(templateUtils as any, 'default').mockResolvedValue({
+      gas: '6000000',
+    });
+    const baseURI = faker.internet.url();
+    const contractURI = faker.internet.url();
+
     await erc1155Mintable.deploy({
       baseURI,
       contractURI,

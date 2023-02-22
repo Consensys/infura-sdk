@@ -4,6 +4,7 @@ import { BigNumber, Contract, ContractFactory, ethers, utils } from 'ethers';
 import ERC721UserMintable from '../src/lib/ContractTemplates/ERC721UserMintable';
 import version from '../src/_version';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
+import * as templateUtils from '../src/lib/ContractTemplates/utils';
 
 let eRC721UserMintable: ERC721UserMintable;
 let signer: Object;
@@ -59,6 +60,7 @@ describe('SDK', () => {
   beforeAll(() => {
     signer = {
       getChainId: () => 80001,
+      getTransactionCount: () => 1,
     };
   });
 
@@ -66,6 +68,7 @@ describe('SDK', () => {
     contractFactoryMock.mockClear();
     signer = {
       getChainId: () => 80001,
+      getTransactionCount: () => 1,
     };
   });
 
@@ -256,9 +259,37 @@ describe('SDK', () => {
 
   it('[Deploy] - should deploy when polygon mainnet', async () => {
     eRC721UserMintable = new ERC721UserMintable(signer as unknown as ethers.Wallet);
-    signer = {
-      getChainId: () => 137,
-    };
+    jest.spyOn(signer, 'getChainId' as any).mockResolvedValue(137);
+    jest.spyOn(signer, 'getTransactionCount' as any).mockResolvedValue(1);
+    jest.spyOn(templateUtils as any, 'default').mockResolvedValueOnce({
+      nonce: 1,
+      maxFeePerGas: '0.001',
+      maxPriorityFeePerGas: '0.001',
+      gasLimit: '6000000',
+    });
+
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'symbol',
+      baseURI: 'URI',
+      contractURI: 'contractURI',
+      maxSupply: 10,
+      price: '1',
+      maxTokenRequest: 1,
+      gas: '250',
+    });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet when axios failed', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer as unknown as ethers.Wallet);
+    jest.spyOn(signer, 'getChainId' as any).mockResolvedValue(137);
+    jest.spyOn(signer, 'getTransactionCount' as any).mockResolvedValue(1);
+    jest.spyOn(templateUtils as any, 'default').mockResolvedValue({
+      gas: '6000000',
+    });
+
     await eRC721UserMintable.deploy({
       name: 'name',
       symbol: 'symbol',
