@@ -64,6 +64,9 @@ describe('SDK', () => {
 
   afterEach(() => {
     contractFactoryMock.mockClear();
+    signer = {
+      getChainId: () => 80001,
+    };
   });
 
   it('should create "ERC721UserMintable" instance', () => {
@@ -249,6 +252,25 @@ describe('SDK', () => {
         gasPrice,
       },
     );
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet', async () => {
+    eRC721UserMintable = new ERC721UserMintable(signer as unknown as ethers.Wallet);
+    signer = {
+      getChainId: () => 137,
+    };
+    await eRC721UserMintable.deploy({
+      name: 'name',
+      symbol: 'symbol',
+      baseURI: 'URI',
+      contractURI: 'contractURI',
+      maxSupply: 10,
+      price: '1',
+      maxTokenRequest: 1,
+      gas: '250',
+    });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
   });
 
   it('[Mint] - should return an Error if contract is not deployed', () => {

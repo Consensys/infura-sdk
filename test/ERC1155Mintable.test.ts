@@ -53,6 +53,9 @@ describe('ERC1155Mintable SDK', () => {
 
   afterEach(() => {
     contractFactoryMock.mockClear();
+    signer = {
+      getChainId: () => 80001,
+    };
   });
 
   it('should create "ERC1155Mintable" instance', () => {
@@ -185,6 +188,23 @@ describe('ERC1155Mintable SDK', () => {
     expect(ContractFactory.prototype.deploy).toHaveBeenCalledWith(baseURI, contractURI, [], {
       gasPrice,
     });
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet', async () => {
+    erc1155Mintable = new ERC1155Mintable(signer as unknown as ethers.Wallet);
+    const baseURI = faker.internet.url();
+    const contractURI = faker.internet.url();
+    signer = {
+      getChainId: () => 137,
+    };
+    await erc1155Mintable.deploy({
+      baseURI,
+      contractURI,
+      ids: [],
+      gas: '250',
+    });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
   });
 
   it('[Mint] - should return an Error if contract is not deployed', () => {
