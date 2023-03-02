@@ -81,7 +81,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(receipt2.status).toEqual(1);
     const mintHash3 = await contract.mint({
       to: ownerAddress,
-      id: 3,
+      id: 1,
       quantity: 3,
     });
     const receipt3 = await mintHash3.wait();
@@ -93,6 +93,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
         response = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
         });
+        console.log('Checking nft for the collection to be 3 ', response);
         return response.total === 3;
       },
       600000,
@@ -122,7 +123,8 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         response = await sdk.api.getContractMetadata({ contractAddress: contract.contractAddress });
-        return response !== null;
+        console.log('Checking if contract metadata has value ', response);
+        return response.tokenType === 'ERC1155';
       },
       120000,
       1000,
