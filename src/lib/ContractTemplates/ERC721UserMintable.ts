@@ -6,6 +6,7 @@ import BaseERC721 from '../ContractComponents/baseERC721';
 import { addGasPriceToOptions, isURI, isValidPrice } from '../utils';
 import { Logger, log } from '../Logger';
 import preparePolygonTransaction from './utils';
+import { Chains } from '../Auth/availableChains';
 
 export type DeployParams = {
   name: string;
@@ -166,7 +167,7 @@ export default class ERC721UserMintable {
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
       /* istanbul ignore next */
-      if (chainId === 137)
+      if (chainId === Chains.polygon)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
@@ -271,7 +272,7 @@ export default class ERC721UserMintable {
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
       /* istanbul ignore next */
-      if (chainId === 137)
+      if (chainId === Chains.polygon)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({ value: parsedCost }, undefined);
 

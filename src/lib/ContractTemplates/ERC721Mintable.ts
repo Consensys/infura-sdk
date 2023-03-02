@@ -7,6 +7,7 @@ import HasRoyalty from '../ContractComponents/hasRoyalty';
 import HasAccessControl from '../ContractComponents/hasAccessControl';
 import BaseERC721 from '../ContractComponents/baseERC721';
 import preparePolygonTransaction from './utils';
+import { Chains } from '../Auth/availableChains';
 
 export type DeployParams = {
   name: string;
@@ -124,7 +125,7 @@ export default class ERC721Mintable {
       let options;
       // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
       /* istanbul ignore next */
-      if (chainId === 137)
+      if (chainId === Chains.polygon)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
@@ -190,7 +191,7 @@ export default class ERC721Mintable {
       const chainId = await this.signer.getChainId();
       let options;
       /* istanbul ignore next */
-      if (chainId === 137)
+      if (chainId === Chains.polygon)
         options = await preparePolygonTransaction(await this.signer.getTransactionCount());
       else options = addGasPriceToOptions({ gasLimit: this.gasLimit }, params.gas);
       return this.contractDeployed.mintWithTokenURI(params.publicAddress, params.tokenURI, options);
