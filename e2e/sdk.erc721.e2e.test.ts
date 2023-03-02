@@ -27,7 +27,7 @@ const contractInfo = {
 };
 jest.retryTimes(2, { logErrorsBeforeRetry: true });
 describe('SDK - contract interaction (deploy, load and mint)', () => {
-  jest.setTimeout(60 * 1000 * 5);
+  jest.setTimeout(60 * 1000 * 11);
   it('Deploy - Get all nfts by owner address', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
@@ -116,6 +116,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
         response = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
         });
+        console.log(response);
         return response.total === 3;
       },
       600000,
