@@ -354,7 +354,7 @@ describe('SDK - IPFS for ERC1155', () => {
       },
       300000,
       1000,
-      'Waiting for NFT collection to be available',
+      'Waiting for NFTs to have non null metadata',
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
