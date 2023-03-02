@@ -321,7 +321,7 @@ describe('E2E Test: Sdk (read)', () => {
         contractAddress,
         tokenId: '1',
       });
-
+      console.log(result);
       expect(result).toMatchObject({
         total: expect.any(Number),
         pageNumber: 0,
@@ -377,7 +377,7 @@ describe('E2E Test: Sdk (read)', () => {
       const result = await sdk.api.getTransfersByContractAddress({
         contractAddress,
       });
-
+      console.log(result);
       expect(result).toMatchObject({
         total: expect.any(Number),
         pageNumber: 0,
