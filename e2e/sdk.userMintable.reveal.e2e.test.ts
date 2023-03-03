@@ -41,7 +41,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       }),
       external_link: 'https://myawesomewebsite.net',
     });
-
+    // eslint-disable-next-line no-console
     console.log('collectionMetadata ----', collectionMetadata);
     storeMetadata = await sdk.storeMetadata({ metadata: collectionMetadata });
     unrevealedMetadata = await sdk.createFolder({
@@ -107,7 +107,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
         maxTokenRequest: 1,
       },
     });
-
+    // eslint-disable-next-line no-console
     console.log('Contract ERC721 UserMintable', erc721UserMintable.contractAddress);
 
     const tx = await erc721UserMintable.toggleSale();
@@ -120,6 +120,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
 
     await tx1Minted.wait();
+    // eslint-disable-next-line no-console
     console.log('mintedNFT 1');
     const tx2Minted = await erc721UserMintable.mint({
       quantity: 1,
@@ -163,17 +164,18 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       'Friendly OpenSea Creature that enjoys long swims in the ocean.',
     );
     expect(token1.metadata.attributes[0]).toEqual({ trait_type: 'type', value: 'unrevealed' });
-
+    // eslint-disable-next-line no-console
     console.log('Calling reveal');
     // Reveal metadata
     const txResponse = await erc721UserMintable.reveal({ baseURI: revealedMetadata });
     await txResponse.wait();
-
+    // eslint-disable-next-line no-console
     console.log('Calling getTokenMetadata1');
     token0 = await sdk.api.getTokenMetadata({
       contractAddress: erc721UserMintable.contractAddress.toLowerCase(),
       tokenId: '0',
     });
+    // eslint-disable-next-line no-console
     console.log('Calling getTokenMetadata2');
     token1 = await sdk.api.getTokenMetadata({
       contractAddress: erc721UserMintable.contractAddress.toLowerCase(),
@@ -181,6 +183,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
     });
     expect(token0.metadata.attributes[0]).toEqual({ trait_type: 'type', value: 'unrevealed' });
     expect(token1.metadata.attributes[0]).toEqual({ trait_type: 'type', value: 'unrevealed' });
+    // eslint-disable-next-line no-console
     console.log('Calling getTokenMetadata0 with resync');
     token0 = await sdk.api.getTokenMetadata({
       contractAddress: erc721UserMintable.contractAddress.toLowerCase(),
@@ -188,13 +191,15 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       resyncMetadata: true,
     });
     expect(token0.metadata.attributes[0]).toEqual({ trait_type: 'type', value: 'revealed' });
+    // eslint-disable-next-line no-console
     console.log('Calling getTokenMetadata1 with resync false');
     token1 = await sdk.api.getTokenMetadata({
       contractAddress: erc721UserMintable.contractAddress.toLowerCase(),
       tokenId: '1',
     });
-
+    // eslint-disable-next-line no-console
     console.log(token0);
+    // eslint-disable-next-line no-console
     console.log(token1);
     expect(token1.metadata.attributes[0]).toEqual({ trait_type: 'type', value: 'unrevealed' });
     token1 = await sdk.api.getTokenMetadata({
@@ -220,7 +225,9 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
 
         const token0Metadata: any = token0Minted.metadata;
         const token1Metadata: any = token1Minted.metadata;
+        // eslint-disable-next-line no-console
         console.log(token0Metadata);
+        // eslint-disable-next-line no-console
         console.log(token1Metadata);
 
         return (
@@ -248,7 +255,9 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
 
     const token0Metadata: any = token0Minted.metadata;
     const token1Metadata: any = token1Minted.metadata;
+    // eslint-disable-next-line no-console
     console.log(token0Metadata);
+    // eslint-disable-next-line no-console
     console.log(token1Metadata);
 
     expect(token0Metadata.attributes[0]).toEqual({ trait_type: 'type', value: 'revealed' });
