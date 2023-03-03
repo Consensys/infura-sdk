@@ -4,6 +4,7 @@ import { SDK } from '../src/lib/SDK/sdk';
 import { TEMPLATES } from '../src/lib/constants';
 import wait from './utils/utils.ts/utils';
 import ERC1155Mintable from '../src/lib/ContractTemplates/ERC1155Mintable';
+import { sleep } from '../src/lib/utils';
 
 loadEnv();
 let reusableContract: ERC1155Mintable;
@@ -93,7 +94,10 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
         response = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
         });
-        console.log('Checking nft for the collection to be 3 ', response);
+        console.log(
+          `Checking nft for the collection to be 3 for collection ${contract.contractAddress}on Deploy - Get all nfts from a collection`,
+          response.total,
+        );
         return response.total === 3;
       },
       600000,
@@ -149,11 +153,13 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     });
     const receipt1 = await mintHash1.wait();
     expect(receipt1.status).toEqual(1);
+    await sleep(10000);
     await wait(
       async () => {
         const response = await sdk.api.getNFTsForCollection({
           contractAddress: newContract.contractAddress,
         });
+        console.log('response from mint batch  wait ', response);
         return response.total === 3 && response.assets.length === 3;
       },
       90000,
@@ -166,16 +172,19 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     });
     expect(response.assets.length).toEqual(3);
     const token0 = response.assets.filter(ele => ele.tokenId === '0')[0];
+    console.log('Token0 on mint batch ', token0);
     expect(token0.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token0.tokenId).toEqual('0');
     expect(token0.supply).toEqual('1');
     expect(token0.type).toEqual('ERC1155');
     const token1 = response.assets.filter(ele => ele.tokenId === '1')[0];
+    console.log('Token1 on mint batch ', token1);
     expect(token1.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token1.tokenId).toEqual('1');
     expect(token1.supply).toEqual('2');
     expect(token1.type).toEqual('ERC1155');
     const token2 = response.assets.filter(ele => ele.tokenId === '2')[0];
+    console.log('Token3 on mint batch ', token3);
     expect(token2.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token2.tokenId).toEqual('2');
     expect(token2.supply).toEqual('3');
@@ -243,11 +252,13 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       quantity: 1,
     });
     await mintHash.wait();
+    await sleep(10000);
     await wait(
       async () => {
         const response = await sdk.api.getNFTsForCollection({
           contractAddress: reusableContract.contractAddress,
         });
+        console.log('total when adding addIds ', response);
         return response.total === 1;
       },
       90000,
