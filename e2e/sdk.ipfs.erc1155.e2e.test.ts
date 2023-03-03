@@ -326,7 +326,7 @@ describe('SDK - IPFS for ERC1155', () => {
     expect(receipt2.status).toEqual(1);
     const mintHash3 = await contract.mint({
       to: ownerAddress,
-      id: 2,
+      id: 3,
       quantity: 1,
     });
     const receipt3 = await mintHash3.wait();
@@ -348,13 +348,17 @@ describe('SDK - IPFS for ERC1155', () => {
           tokenId: '1',
           resyncMetadata: true,
         });
+        console.log(contract.contractAddress);
+        console.log(nftCollection.total);
+        console.log(response.metadata);
+        console.log(response2.metadata);
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null
         );
       },
       300000,
       1000,
-      'Waiting for NFT collection to be available',
+      'Waiting for NFTs to have non null metadata',
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,

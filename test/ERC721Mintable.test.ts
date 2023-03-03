@@ -2,9 +2,10 @@ import { Contract, ContractFactory, ethers } from 'ethers';
 import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable';
 import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, ACCOUNT_ADDRESS_2 } from './__mocks__/utils';
 import version from '../src/_version';
+import * as templateUtils from '../src/lib/ContractTemplates/utils';
 
 let eRC721Mintable: ERC721Mintable;
-let signer: string;
+let signer: Object;
 
 jest.mock('ethers');
 
@@ -25,6 +26,9 @@ describe('SDK', () => {
           setRoyalties: jest.fn(),
           royaltyInfo: jest.fn(),
           renounceOwnership: jest.fn(),
+          signer: {
+            getChainId: () => 80001,
+          },
         }),
       } as unknown as Promise<Contract>),
   );
@@ -34,11 +38,18 @@ describe('SDK', () => {
   jest.spyOn(console, 'warn').mockImplementation();
 
   beforeAll(() => {
-    signer = 'signer';
+    signer = {
+      getChainId: () => 80001,
+      getTransactionCount: () => 1,
+    };
   });
 
   afterEach(() => {
     contractFactoryMock.mockClear();
+    signer = {
+      getChainId: () => 80001,
+      getTransactionCount: () => 1,
+    };
   });
 
   it('should create "ERC721Mintable" instance', () => {
@@ -83,6 +94,35 @@ describe('SDK', () => {
 
   it('[Deploy] - should return a contract', async () => {
     eRC721Mintable = new ERC721Mintable(signer as unknown as ethers.Wallet);
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet', async () => {
+    eRC721Mintable = new ERC721Mintable(signer as unknown as ethers.Wallet);
+    jest.spyOn(signer, 'getChainId' as any).mockResolvedValue(137);
+    jest.spyOn(signer, 'getTransactionCount' as any).mockResolvedValue(1);
+    jest.spyOn(templateUtils as any, 'default').mockResolvedValueOnce({
+      nonce: 1,
+      maxFeePerGas: '0.001',
+      maxPriorityFeePerGas: '0.001',
+      gasLimit: '6000000',
+    });
+
+    await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
+
+    expect(ContractFactory.prototype.deploy).toHaveBeenCalledTimes(1);
+  });
+
+  it('[Deploy] - should deploy when polygon mainnet when axios failed', async () => {
+    eRC721Mintable = new ERC721Mintable(signer as unknown as ethers.Wallet);
+    jest.spyOn(signer, 'getChainId' as any).mockResolvedValue(137);
+    jest.spyOn(signer, 'getTransactionCount' as any).mockResolvedValue(1);
+    jest.spyOn(templateUtils as any, 'default').mockResolvedValue({
+      gas: '6000000',
+    });
 
     await eRC721Mintable.deploy({ name: 'name', symbol: 'symbol', contractURI: 'URI' });
 
@@ -247,7 +287,7 @@ describe('SDK', () => {
       tokenId: 1,
     });
 
-    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    expect(await contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[SetContractURI] - should return an Error if contract is not deployed', () => {
@@ -458,7 +498,7 @@ describe('SDK', () => {
     };
 
     expect(approval).not.toThrow();
-    expect(contractFactoryMock).toHaveBeenCalledTimes(1);
+    expect(await contractFactoryMock).toHaveBeenCalledTimes(1);
   });
 
   it('[addAdmin] - should return an Error if contract is not deployed', () => {

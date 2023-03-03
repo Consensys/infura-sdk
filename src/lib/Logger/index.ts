@@ -122,6 +122,9 @@ export enum ErrorLocation {
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
   METADATA_CONTRACT_CREATION = '[Metadata.contractLevelMetadata]',
   METADATA_FREE_CREATION = '[Metadata.freeLevelMetadata]',
+
+  // Utils
+  UTILS_PREPARE_POLYGON_TX = '[Utils.preparePolygonTransaction]',
 }
 
 export enum ErrorMessage {
