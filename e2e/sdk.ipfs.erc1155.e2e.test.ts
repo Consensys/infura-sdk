@@ -348,9 +348,13 @@ describe('SDK - IPFS for ERC1155', () => {
           tokenId: '1',
           resyncMetadata: true,
         });
+        // eslint-disable-next-line no-console
         console.log(contract.contractAddress);
+        // eslint-disable-next-line no-console
         console.log(nftCollection.total);
+        // eslint-disable-next-line no-console
         console.log(response.metadata);
+        // eslint-disable-next-line no-console
         console.log(response2.metadata);
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null

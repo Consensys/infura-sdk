@@ -94,6 +94,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
         response = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
         });
+        // eslint-disable-next-line no-console
         console.log(
           `Checking nft for the collection to be 3 for collection ${contract.contractAddress}on Deploy - Get all nfts from a collection`,
           response.total,
@@ -127,6 +128,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     await wait(
       async () => {
         response = await sdk.api.getContractMetadata({ contractAddress: contract.contractAddress });
+        // eslint-disable-next-line no-console
         console.log('Checking if contract metadata has value ', response);
         return response.tokenType === 'ERC1155';
       },
@@ -159,6 +161,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
         const response = await sdk.api.getNFTsForCollection({
           contractAddress: newContract.contractAddress,
         });
+        // eslint-disable-next-line no-console
         console.log('response from mint batch  wait ', response);
         return response.total === 3 && response.assets.length === 3;
       },
@@ -172,18 +175,21 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     });
     expect(response.assets.length).toEqual(3);
     const token0 = response.assets.filter(ele => ele.tokenId === '0')[0];
+    // eslint-disable-next-line no-console
     console.log('Token0 on mint batch ', token0);
     expect(token0.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token0.tokenId).toEqual('0');
     expect(token0.supply).toEqual('1');
     expect(token0.type).toEqual('ERC1155');
     const token1 = response.assets.filter(ele => ele.tokenId === '1')[0];
+    // eslint-disable-next-line no-console
     console.log('Token1 on mint batch ', token1);
     expect(token1.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token1.tokenId).toEqual('1');
     expect(token1.supply).toEqual('2');
     expect(token1.type).toEqual('ERC1155');
     const token2 = response.assets.filter(ele => ele.tokenId === '2')[0];
+    // eslint-disable-next-line no-console
     console.log('Token2 on mint batch ', token2);
     expect(token2.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token2.tokenId).toEqual('2');
@@ -258,6 +264,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
         const response = await sdk.api.getNFTsForCollection({
           contractAddress: reusableContract.contractAddress,
         });
+        // eslint-disable-next-line no-console
         console.log('total when adding addIds ', response);
         return response.total === 1;
       },
