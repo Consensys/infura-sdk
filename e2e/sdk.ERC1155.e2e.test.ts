@@ -184,7 +184,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     expect(token1.supply).toEqual('2');
     expect(token1.type).toEqual('ERC1155');
     const token2 = response.assets.filter(ele => ele.tokenId === '2')[0];
-    console.log('Token3 on mint batch ', token3);
+    console.log('Token2 on mint batch ', token2);
     expect(token2.contract.toLowerCase()).toEqual(newContract.contractAddress.toLowerCase());
     expect(token2.tokenId).toEqual('2');
     expect(token2.supply).toEqual('3');
