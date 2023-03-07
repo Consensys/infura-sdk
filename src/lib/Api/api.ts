@@ -24,6 +24,8 @@ type ContractAddressOptions = {
   cursor?: string;
 };
 
+type GetNftsForCollectionOptions = ContractAddressOptions & { resync?: boolean };
+
 type GetTokenMetadataOptions = {
   contractAddress: string;
   tokenId: string;
@@ -160,7 +162,7 @@ export default class Api {
    * @param {string} opts.contractAddress address of the contract to get the list of NFTs
    * @returns {Promise<object>} List of NFTs with metadata
    */
-  async getNFTsForCollection(opts: ContractAddressOptions): Promise<NftDTO> {
+  async getNFTsForCollection(opts: GetNftsForCollectionOptions): Promise<NftDTO> {
     if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
       log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
         location: Logger.location.SDK_GETNFTSFORCOLLECTION,
@@ -168,7 +170,10 @@ export default class Api {
     }
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens`;
 
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      cursor: opts.cursor,
+      resync: opts.resync,
+    });
     return data;
   }
 
