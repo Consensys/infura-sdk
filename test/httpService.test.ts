@@ -1,4 +1,4 @@
-import { ApiVersion } from '../src/lib/SDK/sdk';
+import { ApiVersion } from '../src/lib/utils';
 import HttpService from '../src/services/httpService';
 import version from '../src/_version';
 

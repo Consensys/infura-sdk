@@ -11,8 +11,7 @@ import {
   OwnersDTO,
   SearchNftDTO,
 } from '../SDK/types';
-import { isValidPositiveNumber } from '../utils';
-import { ApiVersion } from '../Auth/Auth';
+import { ApiVersion, isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
   publicAddress: string;

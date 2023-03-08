@@ -1,14 +1,12 @@
 import { ethers, utils } from 'ethers';
 import Auth from '../Auth/Auth';
-import HttpService from '../../services/httpService';
 import { NFT_API_URL } from '../constants';
 import ERC721Mintable from '../ContractTemplates/ERC721Mintable';
 import ERC721UserMintable from '../ContractTemplates/ERC721UserMintable';
 import { Logger, log } from '../Logger';
 import { metadataFolderSchema, metadataSchema } from './sdk.schema';
-import { isJson } from '../utils';
+import { ApiVersion, isJson } from '../utils';
 import ERC1155Mintable from '../ContractTemplates/ERC1155Mintable';
-import Api from '../Api/api';
 import IPFS from '../../services/ipfsService';
 import {
   DeployOptionsERC1155UserMintable,
@@ -18,16 +16,14 @@ import {
   LoadContractOptions,
 } from './types';
 import { Chains } from '../Auth/availableChains';
+import Api from '../Api/api';
+import HttpService from '../../services/httpService';
 
 export const classes = {
   ERC721Mintable,
   ERC721UserMintable,
   ERC1155Mintable,
 };
-
-export enum ApiVersion {
-  V1 = '1',
-}
 
 export class SDK {
   /* Private property */

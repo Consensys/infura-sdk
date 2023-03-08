@@ -34,7 +34,7 @@ import Api, {
   GetCollectionsByWallet,
   SearchNftsByString,
 } from '../src/lib/Api/api';
-import { ApiVersion } from '../src/lib/SDK/sdk';
+import { ApiVersion } from '../src/lib/utils';
 
 loadEnv();
 
