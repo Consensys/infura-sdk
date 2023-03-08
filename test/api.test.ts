@@ -154,6 +154,12 @@ describe('Api', () => {
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
 
+    it('should return return collection NFTs list with resync: true', async () => {
+      HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock as AxiosResponse<any, any>);
+      await api.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS, resync: true });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+
     it('should return the collection NFT list without cursor', async () => {
       HttpServiceMock.mockResolvedValueOnce(
         collectionNFTsMockWithoutCursor as AxiosResponse<any, any>,

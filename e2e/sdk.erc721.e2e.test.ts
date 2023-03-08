@@ -122,10 +122,11 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
       async () => {
         response = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
+          resync: true,
         });
         // eslint-disable-next-line no-console
         console.log(
-          'Waiting for total to be 3 on Deploy - Get all nfts from a collection erc721',
+          `Waiting for total to be 3 on Deploy - Get all nfts from a collection erc721 ${contract.contractAddress}`,
           response.total,
         );
         return response.total === 3;
