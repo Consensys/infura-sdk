@@ -165,7 +165,7 @@ export default class Api {
 
     const { data } = await this.httpClient.get(apiUrl, {
       cursor: opts.cursor,
-      resync: opts.resync,
+      resync: !!opts.resync,
     });
     return data;
   }
