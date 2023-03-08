@@ -34,6 +34,7 @@ import Api, {
   GetCollectionsByWallet,
   SearchNftsByString,
 } from '../src/lib/Api/api';
+import { ApiVersion } from '../src/lib/SDK/sdk';
 
 loadEnv();
 
@@ -60,8 +61,8 @@ describe('Api', () => {
     });
 
     const apiPath = '/networks/5';
-    const httpClient = new HttpService(NFT_API_URL, account.getApiAuth());
-    api = new Api(apiPath, httpClient);
+    const httpClient = new HttpService(NFT_API_URL, account.getApiAuth(), ApiVersion.V1);
+    api = new Api(apiPath, httpClient, ApiVersion.V1);
 
     signerMock = jest.spyOn(account, 'getSigner').mockImplementation(
       () =>
@@ -82,6 +83,9 @@ describe('Api', () => {
   });
 
   describe('getContractMetadata', () => {
+    it('should take version 1 when "apiVersion" is not defined', async () => {
+      expect(api.getApiVersion()).toEqual('1');
+    });
     it('should throw when "contractAddress" is not a valid address', async () => {
       await expect(() =>
         api.getContractMetadata({ contractAddress: 'notAValidAddress' }),
