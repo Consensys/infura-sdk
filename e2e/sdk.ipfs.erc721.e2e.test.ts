@@ -127,6 +127,7 @@ describe('SDK - IPFS for ERC712', () => {
 
     const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
+      resync: true,
     });
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '0')[0].metadata,
@@ -237,6 +238,7 @@ describe('SDK - IPFS for ERC712', () => {
 
     const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
+      resync: true,
     });
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '1')[0].metadata,
@@ -346,6 +348,7 @@ describe('SDK - IPFS for ERC712', () => {
 
     const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
+      resync: true,
     });
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '1')[0].metadata,

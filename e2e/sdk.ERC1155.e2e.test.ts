@@ -93,6 +93,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       async () => {
         response = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
+          resync: true,
         });
         // eslint-disable-next-line no-console
         console.log(
@@ -160,6 +161,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       async () => {
         const response = await sdk.api.getNFTsForCollection({
           contractAddress: newContract.contractAddress,
+          resync: true,
         });
         // eslint-disable-next-line no-console
         console.log('response from mint batch  wait ', response);
@@ -172,6 +174,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
 
     const response = await sdk.api.getNFTsForCollection({
       contractAddress: newContract.contractAddress,
+      resync: true,
     });
     expect(response.assets.length).toEqual(3);
     const token0 = response.assets.filter(ele => ele.tokenId === '0')[0];
@@ -263,6 +266,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
       async () => {
         const response = await sdk.api.getNFTsForCollection({
           contractAddress: reusableContract.contractAddress,
+          resync: true,
         });
         // eslint-disable-next-line no-console
         console.log('total when adding addIds ', response);
@@ -274,6 +278,7 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     );
     const collection = await sdk.api.getNFTsForCollection({
       contractAddress: reusableContract.contractAddress,
+      resync: true,
     });
     expect(collection.total).toEqual(1);
   });
