@@ -25,6 +25,7 @@ export default class HttpService {
       headers: {
         Authorization: `Basic ${apiKey}`,
         'X-Infura-User-Agent': 'infura/sdk-ts 1.0.0',
+        'X-Csi-Version': '1',
       },
     });
   }
