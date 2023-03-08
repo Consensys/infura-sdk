@@ -5,8 +5,8 @@
  */
 
 import axios, { AxiosInstance } from 'axios';
-import { ApiVersion } from '../lib/Auth/Auth';
 import { Logger, log } from '../lib/Logger';
+import { ApiVersion } from '../lib/utils';
 
 export default class HttpService {
   private instance: AxiosInstance;
