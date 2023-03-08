@@ -12,6 +12,7 @@ import {
   SearchNftDTO,
 } from '../SDK/types';
 import { isValidPositiveNumber } from '../utils';
+import { ApiVersion } from '../Auth/Auth';
 
 type PublicAddressOptions = {
   publicAddress: string;
@@ -91,9 +92,16 @@ export default class Api {
 
   private readonly httpClient: HttpService;
 
-  constructor(apiPath: string, httpClient: HttpService) {
+  private readonly apiVersion: string;
+
+  constructor(apiPath: string, httpClient: HttpService, apiVersion: ApiVersion) {
     this.apiPath = apiPath;
     this.httpClient = httpClient;
+    this.apiVersion = apiVersion;
+  }
+
+  getApiVersion() {
+    return this.apiVersion;
   }
 
   /**

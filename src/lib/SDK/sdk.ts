@@ -25,6 +25,10 @@ export const classes = {
   ERC1155Mintable,
 };
 
+export enum ApiVersion {
+  V1 = '1',
+}
+
 export class SDK {
   /* Private property */
   private readonly auth: Auth;
@@ -33,18 +37,17 @@ export class SDK {
 
   private readonly ipfsClient: IPFS;
 
-  constructor(auth: Auth) {
+  constructor(auth: Auth, apiVersion = ApiVersion.V1) {
     if (!(auth instanceof Auth)) {
       log.throwArgumentError(Logger.message.invalid_auth_instance, 'auth', auth, {
         location: Logger.location.SDK_CONSTRUCTOR,
       });
     }
     this.auth = auth;
-
     const apiPath = `/networks/${this.auth.getChainId()}`;
-    const httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
+    const httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth(), apiVersion);
 
-    this.api = new Api(apiPath, httpClient);
+    this.api = new Api(apiPath, httpClient, apiVersion);
     this.ipfsClient = this.auth.getIpfsClient();
   }
 
