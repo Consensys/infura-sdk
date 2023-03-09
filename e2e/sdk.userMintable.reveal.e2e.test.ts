@@ -142,7 +142,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
           newContractCollection.metadata !== null
         );
       },
-      120000,
+      300000,
       1000,
       'Waiting for NFT collection to be available for an user',
     );
@@ -235,7 +235,7 @@ describe('SDK - contract interaction (deploy, load and mint)', () => {
           token1Metadata.attributes[0].value === 'revealed'
         );
       },
-      120000,
+      300000,
       1000,
       'Waiting for NFT collection to be available for an user',
     );
