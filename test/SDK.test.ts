@@ -87,7 +87,7 @@ describe('Sdk', () => {
     signerMock.mockClear();
   });
   describe('getApiVersion', () => {
-    it('should throw when transaction hash argument is not valid', async () => {
+    it('should check the api version to be 1', async () => {
       const apiVersion = await sdk.api.getApiVersion();
       expect(apiVersion).toBe('1');
     });
