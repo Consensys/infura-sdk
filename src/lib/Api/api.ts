@@ -11,7 +11,7 @@ import {
   OwnersDTO,
   SearchNftDTO,
 } from '../SDK/types';
-import { isValidPositiveNumber } from '../utils';
+import { ApiVersion, isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
   publicAddress: string;
@@ -93,9 +93,16 @@ export default class Api {
 
   private readonly httpClient: HttpService;
 
-  constructor(apiPath: string, httpClient: HttpService) {
+  private readonly apiVersion: string;
+
+  constructor(apiPath: string, httpClient: HttpService, apiVersion: ApiVersion) {
     this.apiPath = apiPath;
     this.httpClient = httpClient;
+    this.apiVersion = apiVersion;
+  }
+
+  getApiVersion() {
+    return this.apiVersion;
   }
 
   /**

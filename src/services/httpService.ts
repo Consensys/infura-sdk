@@ -6,11 +6,12 @@
 
 import axios, { AxiosInstance } from 'axios';
 import { Logger, log } from '../lib/Logger';
+import { ApiVersion } from '../lib/utils';
 
 export default class HttpService {
   private instance: AxiosInstance;
 
-  constructor(baseURL: string, apiKey: string) {
+  constructor(baseURL: string, apiKey: string, apiVersion: ApiVersion) {
     if (!baseURL)
       log.throwMissingArgumentError(Logger.message.no_base_url, {
         location: Logger.location.HTTPSERVICE_CONSTRUCTOR,
@@ -25,6 +26,7 @@ export default class HttpService {
       headers: {
         Authorization: `Basic ${apiKey}`,
         'X-Infura-User-Agent': 'infura/sdk-ts 1.0.0',
+        'X-Csi-Version': apiVersion.toString(),
       },
     });
   }

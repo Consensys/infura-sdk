@@ -12,6 +12,7 @@ import { TEMPLATES } from '../src/lib/constants';
 import { SDK } from '../src/lib/SDK/sdk';
 import ERC721Mintable from '../src/lib/ContractTemplates/ERC721Mintable';
 import IPFS from '../src/services/ipfsService';
+import { ApiVersion } from '../src/lib/utils';
 
 loadEnv();
 
@@ -40,6 +41,7 @@ describe('Sdk', () => {
 
   let sdk: SDK;
   let sdkWithoutIpfs: SDK;
+  let account2: Auth;
   beforeAll(() => {
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
@@ -53,7 +55,7 @@ describe('Sdk', () => {
       },
     });
 
-    const account2 = new Auth({
+    account2 = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
       projectId: process.env.INFURA_PROJECT_ID,
       secretId: process.env.INFURA_PROJECT_SECRET,
@@ -85,6 +87,35 @@ describe('Sdk', () => {
     erc721Mocked.mockClear();
     signerMock.mockClear();
   });
+  describe('getApiVersion', () => {
+    it('should check the api version to be 1', async () => {
+      const apiVersion = await sdk.api.getApiVersion();
+      expect(apiVersion).toBe('1');
+    });
+    it('should check the api version to be 1', async () => {
+      const defaultSdk = new SDK(account2, ApiVersion.V1);
+      const apiVersion = await defaultSdk.api.getApiVersion();
+      expect(apiVersion).toBe('1');
+    });
+    it('should throw when transaction hash argument is not valid', async () => {
+      const accountAuth = new Auth({
+        privateKey: generateTestPrivateKeyOrHash(),
+        projectId: process.env.INFURA_PROJECT_ID,
+        secretId: process.env.INFURA_PROJECT_SECRET,
+        rpcUrl: process.env.EVM_RPC_URL,
+        chainId: 5,
+      });
+      const sdkV2 = new SDK(accountAuth, ApiVersion.V1);
+      const apiVersion = await sdkV2.api.getApiVersion();
+      expect(apiVersion).toBe('1');
+    });
+
+    it('should return transaction status and details', async () => {
+      await sdk.getStatus({ txHash: generateTestPrivateKeyOrHash() });
+      expect(signerMock).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('getStatus', () => {
     it('should throw when transaction hash argument is not valid', async () => {
       await expect(() => sdk.getStatus({ txHash: 'test' })).rejects.toThrow(

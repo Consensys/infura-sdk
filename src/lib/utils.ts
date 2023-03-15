@@ -7,6 +7,10 @@ type FormatRpcUrlOptions = {
   projectId: string;
 };
 
+export enum ApiVersion {
+  V1 = '1',
+}
+
 export const isBoolean = (val: boolean | object): boolean =>
   typeof val === 'boolean' ||
   (typeof val === 'object' && val !== null && typeof val.valueOf() === 'boolean');
