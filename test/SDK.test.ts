@@ -41,6 +41,7 @@ describe('Sdk', () => {
 
   let sdk: SDK;
   let sdkWithoutIpfs: SDK;
+  let account2: Auth;
   beforeAll(() => {
     const account = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
@@ -54,7 +55,7 @@ describe('Sdk', () => {
       },
     });
 
-    const account2 = new Auth({
+    account2 = new Auth({
       privateKey: generateTestPrivateKeyOrHash(),
       projectId: process.env.INFURA_PROJECT_ID,
       secretId: process.env.INFURA_PROJECT_SECRET,
@@ -89,6 +90,11 @@ describe('Sdk', () => {
   describe('getApiVersion', () => {
     it('should check the api version to be 1', async () => {
       const apiVersion = await sdk.api.getApiVersion();
+      expect(apiVersion).toBe('1');
+    });
+    it('should check the api version to be 1', async () => {
+      const defaultSdk = new SDK(account2, ApiVersion.V1);
+      const apiVersion = await defaultSdk.api.getApiVersion();
       expect(apiVersion).toBe('1');
     });
     it('should throw when transaction hash argument is not valid', async () => {
