@@ -34,6 +34,11 @@ export class SDK {
   private readonly ipfsClient: IPFS;
 
   constructor(auth: Auth, apiVersion = ApiVersion.V1) {
+    if (!Object.values<string>(ApiVersion).includes(apiVersion)) {
+      log.throwArgumentError(Logger.message.invalid_api_version, 'apiVersion', apiVersion, {
+        location: Logger.location.SDK_CONSTRUCTOR,
+      });
+    }
     if (!(auth instanceof Auth)) {
       log.throwArgumentError(Logger.message.invalid_auth_instance, 'auth', auth, {
         location: Logger.location.SDK_CONSTRUCTOR,

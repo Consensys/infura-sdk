@@ -129,7 +129,7 @@ export enum ErrorLocation {
 
 export enum ErrorMessage {
   invalid_auth_instance = 'Invalid Auth instance.',
-
+  invalid_api_version = 'Invalid Api version.',
   no_pk_or_provider = 'PrivateKey or provider missing!',
   no_parameters_supplied = 'No parameters supplied.',
   no_template_type_supplied = 'No template type supplied.',
