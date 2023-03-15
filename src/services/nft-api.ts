@@ -57,6 +57,7 @@ export interface Paths {
     get: Operations['NftsController_getOwnersByTokenId'];
   };
   '/networks/{chainId}/nfts/{tokenAddress}/tradePrice': {
+    /** Get the lowest ETH based price for a scpecific token address */
     get: Operations['NftsController_getTradePrice'];
   };
 }
@@ -116,8 +117,6 @@ export interface Components {
         | 'PALM'
         | 'ARBITRUM';
       cursor: string;
-      /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
-      account: string;
       transfers: Components['schemas']['TransfersResultsModel'][];
     };
     SearchNftResult: {
@@ -176,7 +175,7 @@ export interface Components {
       name: string;
       /** @example CNSYS */
       symbol: string;
-      /** @example ERC-721 */
+      /** @example ERC721 */
       tokenType: string;
     };
     AssetsModel: {
@@ -218,7 +217,6 @@ export interface Components {
       total: number;
       /** @example 0x0a267cf51ef038fc00e71801f5a524aec06e4f07 */
       account: string;
-      /** @example NFT */
       cursor: string;
       assets: Components['schemas']['AssetsModel'][];
     };
@@ -355,12 +353,20 @@ export interface Operations {
   /** Gets transfers from a block to block. */
   NftsController_getTransfersfromBlockToBlock: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
       };
       query: {
+        /** The minimum block number to get transfers from */
         fromBlock: number;
+        /** The maximum block number to get transfers from */
         toBlock: number;
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -375,11 +381,18 @@ export interface Operations {
   /** Gets transfers by block number or block hash. */
   NftsController_getTransfersByBlockNumberOrHash: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
       };
       query: {
+        /** The block hash or block number to get transfers from */
         blockHashNumber: string;
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -394,12 +407,18 @@ export interface Operations {
   /** Search for Nfts given a string */
   NftsController_searchNfts: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
       };
       query: {
-        /** Query to search with */
+        /** The string query to search */
         query: string;
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -414,9 +433,14 @@ export interface Operations {
   /** Gets the contract level metadata for a given contract address. */
   NftsController_getCollectionMetadata: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
       };
     };
@@ -431,13 +455,21 @@ export interface Operations {
   /** Gets all NFTs for a given contract address (including metadata). */
   NftsController_getNftsForCollection: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
+        /** A boolean to force clear the cache */
+        resync?: boolean;
       };
     };
     responses: {
@@ -451,12 +483,18 @@ export interface Operations {
   /** Gets NFT collections owned by a given wallet address. */
   NftsController_getCollectionsByWalletAddress: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Wallet address of the owner of Nfts in collection */
+        /** The wallet address of the owner of the NFTs */
         walletAddress: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -471,12 +509,18 @@ export interface Operations {
   /** Gets all NFTs owned by a given wallet address. */
   NftsController_getNftsForAddress: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Wallet address */
+        /** The wallet address of the owner of the NFTs */
         walletAddress: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -491,11 +535,21 @@ export interface Operations {
   /** Gets NFT data for the given NFT token ID and contract address. */
   NftsController_getNftMetadata: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
+        /** The token id to get metadata for */
         tokenId: string;
+      };
+      query: {
+        /** A boolean to force resync the token's metadata */
+        resyncMetadata?: boolean;
       };
     };
     responses: {
@@ -509,12 +563,18 @@ export interface Operations {
   /** Gets transfers of NFTs for a given wallet address */
   NftsController_getTransferForAddress: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Wallet address of the sender/recipient of the transfers */
+        /** The wallet address of the sender or recipient of the transfers */
         walletAddress: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -529,13 +589,20 @@ export interface Operations {
   /** Gets transfers of an NFT by contract address and token ID. */
   NftsController_getTransfersByTokenId: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
+        /** The token id to get transfers for */
         tokenId: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -550,12 +617,18 @@ export interface Operations {
   /** Gets transfers by contract address. */
   NftsController_getTransfersByTokenAddress: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -570,12 +643,18 @@ export interface Operations {
   /** Gets NFT owners given a token address */
   NftsController_getOwnersByContract: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -590,12 +669,20 @@ export interface Operations {
   /** Gets NFT owners for a specific token address and a tokenId */
   NftsController_getOwnersByTokenId: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
+        /** The contract address of the NFT collection */
         tokenAddress: string;
+        /** The token id to get owners for */
         tokenId: string;
       };
       query: {
+        /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
     };
@@ -607,11 +694,17 @@ export interface Operations {
       };
     };
   };
+  /** Get the lowest ETH based price for a scpecific token address */
   NftsController_getTradePrice: {
     parameters: {
+      header: {
+        /** NFT Api version */
+        'X-Csi-Version'?: string;
+      };
       path: {
+        /** The id of the chain to query */
         chainId: string;
-        /** Contract address */
+        /** The contract address of the NFT collection */
         tokenAddress: string;
       };
     };
