@@ -7,6 +7,7 @@
 
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, Metadata, TEMPLATES } from './src/index';
+import { ApiVersion } from './src/lib/utils';
 
 loadEnv();
 
@@ -23,7 +24,7 @@ loadEnv();
     },
   });
 
-  const sdk = new SDK(acc);
+  const sdk = new SDK(acc, ApiVersion.V1);
 
   /**
    * METADATA
