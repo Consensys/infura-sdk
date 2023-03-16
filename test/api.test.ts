@@ -347,6 +347,11 @@ describe('Api', () => {
       HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
       await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS });
     });
+
+    it('should return lowest trade with days', async () => {
+      HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
+      await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS, days: 10 });
+    });
   });
 
   describe('getCollectionsByWallet', () => {
