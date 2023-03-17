@@ -707,6 +707,10 @@ export interface Operations {
         /** The contract address of the NFT collection */
         tokenAddress: string;
       };
+      query: {
+        /** The number of days to get lowest price for (defaults to 30) */
+        days?: number;
+      };
     };
     responses: {
       200: {
