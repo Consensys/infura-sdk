@@ -76,6 +76,7 @@ export type GetNftOwnersByTokenAddressAndTokenId = {
 
 export type GetLowestTradePrice = {
   tokenAddress: string;
+  days?: number;
 };
 
 export type GetCollectionsByWallet = {
@@ -344,8 +345,8 @@ export default class Api {
     }
 
     const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress}/tradePrice`;
-    const { tokenAddress } = opts;
-    const { data } = await this.httpClient.get(apiUrl, { tokenAddress });
+    const { tokenAddress, days } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { tokenAddress, days });
     return data;
   }
 
