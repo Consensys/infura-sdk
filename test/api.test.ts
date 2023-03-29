@@ -290,7 +290,11 @@ describe('Api', () => {
       HttpServiceMock.mockResolvedValueOnce(
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
-      await api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS });
+      await api.getNftsTransfersByWallet({
+        walletAddress: CONTRACT_ADDRESS,
+        fromBlock: 1,
+        toBlock: 2,
+      });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -371,7 +375,11 @@ describe('Api', () => {
       HttpServiceMock.mockResolvedValueOnce(
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
-      await api.getTransfersByContractAddress({ contractAddress: CONTRACT_ADDRESS });
+      await api.getTransfersByContractAddress({
+        contractAddress: CONTRACT_ADDRESS,
+        fromBlock: 1,
+        toBlock: 2,
+      });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
