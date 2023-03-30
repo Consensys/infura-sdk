@@ -210,6 +210,7 @@ export enum ErrorMessage {
   unsupported_provider = 'unsupported provider',
   invalid_block_number = 'Invalid block number.',
   invalid_block_hash = 'Invalid block hash.',
+  invalid_block_range = 'fromBlock must be less than or equal to toBlock',
 }
 
 export class Logger {

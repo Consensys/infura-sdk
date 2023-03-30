@@ -44,6 +44,8 @@ export type GetTransfersByBlockHashOptions = {
 
 export type GetNftTransfersByWallet = {
   walletAddress: string;
+  fromBlock?: number;
+  toBlock?: number;
   cursor?: string;
 };
 
@@ -61,6 +63,8 @@ export type GetNftTransfersByContractAndToken = {
 
 export type GetNftTransfersByContractAddress = {
   contractAddress: string;
+  fromBlock?: number;
+  toBlock?: number;
   cursor?: string;
 };
 export type GetNftOwnersByContractAddress = {
@@ -258,9 +262,30 @@ export default class Api {
         location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
       });
     }
+    if (opts.fromBlock != null && !isValidPositiveNumber(opts.fromBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'fromBlock', opts.fromBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+      });
+    }
+    if (opts.toBlock != null && !isValidPositiveNumber(opts.toBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'toBlock', opts.toBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+      });
+    }
+    if (opts.fromBlock != null && opts.toBlock != null && opts.fromBlock > opts.toBlock) {
+      log.throwError(Logger.message.invalid_block_range, Logger.code.INVALID_ARGUMENT, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+        fromBlock: opts.fromBlock,
+        toBlock: opts.toBlock,
+      });
+    }
 
     const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/transfers`;
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      fromBlock: opts.fromBlock,
+      toBlock: opts.toBlock,
+      cursor: opts.cursor,
+    });
     return data;
   }
 
@@ -325,10 +350,32 @@ export default class Api {
         location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
       });
     }
+    if (opts.fromBlock != null && !isValidPositiveNumber(opts.fromBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'fromBlock', opts.fromBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+      });
+    }
+    if (opts.toBlock != null && !isValidPositiveNumber(opts.toBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'toBlock', opts.toBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+      });
+    }
+    if (opts.fromBlock != null && opts.toBlock != null && opts.fromBlock > opts.toBlock) {
+      log.throwError(Logger.message.invalid_block_range, Logger.code.INVALID_ARGUMENT, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+        fromBlock: opts.fromBlock,
+        toBlock: opts.toBlock,
+      });
+    }
 
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/transfers`;
-    const { contractAddress, cursor } = opts;
-    const { data } = await this.httpClient.get(apiUrl, { contractAddress, cursor });
+    const { contractAddress, fromBlock, toBlock, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, {
+      contractAddress,
+      fromBlock,
+      toBlock,
+      cursor,
+    });
     return data;
   }
 
