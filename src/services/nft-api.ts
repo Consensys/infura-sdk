@@ -574,6 +574,10 @@ export interface Operations {
         walletAddress: string;
       };
       query: {
+        /** The minimum block number to get transfers from */
+        fromBlock?: number;
+        /** The maximum block number to get transfers from */
+        toBlock?: number;
         /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
@@ -628,6 +632,10 @@ export interface Operations {
         tokenAddress: string;
       };
       query: {
+        /** The minimum block number to get transfers from */
+        fromBlock?: number;
+        /** The maximum block number to get transfers from */
+        toBlock?: number;
         /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
       };
