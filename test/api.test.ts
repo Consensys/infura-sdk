@@ -106,9 +106,27 @@ describe('Api', () => {
 
   describe('getNFTs', () => {
     it('should throw when "address" is not a valid address', async () => {
+      await expect(() =>
+        api.getNFTs({ publicAddress: CONTRACT_ADDRESS, tokenAddresses: ['foo'] }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location="[SDK.getNFTs]", code=MISSING_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw when "tokenAddress" is not a valid address', async () => {
       await expect(() => api.getNFTs({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
         `missing argument: Invalid public address. (location="[SDK.getNFTs]", code=MISSING_ARGUMENT, version=${version})`,
       );
+    });
+
+    it('should return the list of NFTs with filter addresses', async () => {
+      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
+      const accountNFTs = await api.getNFTs({
+        publicAddress: CONTRACT_ADDRESS,
+        tokenAddresses: [CONTRACT_ADDRESS],
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect((accountNFTs as any).assets[0].contract).toBe(`ETHEREUM:${CONTRACT_ADDRESS}`);
     });
 
     it('should return the list of NFTs without metadata', async () => {

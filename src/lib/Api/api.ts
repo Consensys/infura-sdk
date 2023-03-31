@@ -17,6 +17,7 @@ type PublicAddressOptions = {
   publicAddress: string;
   includeMetadata?: boolean;
   cursor?: string;
+  tokenAddresses?: string[];
 };
 
 type ContractAddressOptions = {
@@ -145,9 +146,22 @@ export default class Api {
       });
     }
 
+    if (opts.tokenAddresses) {
+      opts.tokenAddresses.forEach(item => {
+        if (!utils.isAddress(item)) {
+          log.throwMissingArgumentError(Logger.message.invalid_token_address, {
+            location: Logger.location.SDK_GETNFTS,
+          });
+        }
+      });
+    }
+
     const apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
 
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      cursor: opts.cursor,
+      tokenAddresses: opts.tokenAddresses,
+    });
 
     if (!opts.includeMetadata) {
       return {

@@ -61,6 +61,66 @@ describe('SDK - ERC1155 - contract interaction (deploy, load and mint)', () => {
     );
     expect(createdToken.metadata).not.toBeNull();
   });
+
+  it('Deploy - Get all nfts by owner address with filter', async () => {
+    const acc = new Auth(authInfo);
+    const sdk = new SDK(acc);
+    const response = await sdk.api.getNFTs({
+      publicAddress: ownerAddress,
+      includeMetadata: false,
+      tokenAddresses: ['0x3ed3894bccacb3de8cf1cd0bda5192f5fa1492ce'],
+    });
+    response.assets.forEach((asset: any) => {
+      expect(asset).not.toHaveProperty('metadata');
+      expect(asset).toHaveProperty('contract');
+      expect(asset.contract).toEqual('0x3ed3894bccacb3de8cf1cd0bda5192f5fa1492ce');
+      expect(asset).toHaveProperty('tokenId');
+      expect(asset).toHaveProperty('supply');
+      expect(asset).toHaveProperty('type');
+    });
+
+    const newContract = await sdk.deploy(contractInfo);
+    const mintHash = await newContract.mint({
+      to: ownerAddress,
+      id: 0,
+      quantity: 3,
+    });
+    const receipt = await mintHash.wait();
+    expect(receipt.status).toEqual(1);
+
+    await wait(
+      async () => {
+        const resp = await sdk.api.getNFTs({ publicAddress: ownerAddress, includeMetadata: false });
+        return resp.total > response.total;
+      },
+      120000,
+      1000,
+      'Waiting for new nft to be available',
+    );
+    const response2 = await sdk.api.getNFTs({
+      publicAddress: ownerAddress,
+      includeMetadata: false,
+    });
+    expect(response2.total).toBeGreaterThan(response.total);
+    expect(response2.assets[0].metadata).toEqual(undefined);
+    const response3 = await sdk.api.getNFTs({
+      publicAddress: ownerAddress,
+      includeMetadata: true,
+      tokenAddresses: [newContract.contractAddress],
+    });
+    const createdToken: any = await response3.assets.filter(
+      asset => asset.contract.toLowerCase() === newContract.contractAddress.toLowerCase(),
+    );
+    expect(createdToken.metadata).not.toBeNull();
+
+    response3.assets.forEach((asset: any) => {
+      expect(asset).toHaveProperty('contract');
+      expect(asset.contract).toEqual(newContract.contractAddress);
+      expect(asset).toHaveProperty('tokenId');
+      expect(asset).toHaveProperty('supply');
+      expect(asset).toHaveProperty('type');
+    });
+  });
   it('Deploy - Get all nfts from a collection', async () => {
     const acc = new Auth(authInfo);
     const sdk = new SDK(acc);
