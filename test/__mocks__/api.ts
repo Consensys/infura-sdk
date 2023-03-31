@@ -1,4 +1,4 @@
-import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS } from './utils';
+import { ACCOUNT_ADDRESS, CONTRACT_ADDRESS, CONTRACT_ADDRESS_2 } from './utils';
 
 export const contractMetadataMock = {
   data: {
@@ -33,6 +33,28 @@ const assetMock = {
   },
 };
 
+const assetMock2 = {
+  contract: `ETHEREUM:${CONTRACT_ADDRESS_2}`,
+  tokenId: '3127',
+  supply: '1',
+  type: 'ERC721',
+  metadata: {
+    description:
+      'Cool Cats is a collection of 9,999 randomly generated and stylistically curated NFTs that exist on the Ethereum Blockchain. Cool Cat holders can participate in exclusive events such as NFT claims, raffles, community giveaways, and more. Remember, all cats are cool, but some are cooler than others. Visit [www.coolcatsnft.com](https://www.coolcatsnft.com/) to learn more.',
+    image: 'https://ipfs.io/ipfs/Qme3m21bnTtV8b7urMJsvL62HVSZ3jVLtuUE735rTbzdyF',
+    name: 'Cool Cat #3127',
+    attributes: [
+      { trait_type: 'body', value: 'blue cat skin' },
+      { trait_type: 'hats', value: 'candle' },
+      { trait_type: 'shirt', value: 'shirt yellow' },
+      { trait_type: 'face', value: 'tired' },
+      { trait_type: 'tier', value: 'cool_1' },
+    ],
+    ipfs_image: 'https://ipfs.io/ipfs/Qme3m21bnTtV8b7urMJsvL62HVSZ3jVLtuUE735rTbzdyF',
+    google_image: 'https://drive.google.com/uc?id=1Bljw6UdC-8lgiAXo4Xfq8n28zXIEvzpJ',
+  },
+};
+
 export const accountNFTsMock = {
   data: {
     pageNumber: 1,
@@ -40,7 +62,7 @@ export const accountNFTsMock = {
     total: 1,
     account: ACCOUNT_ADDRESS,
     type: 'NFT',
-    assets: [assetMock],
+    assets: [assetMock, assetMock2],
     cursor: 'cursorTest',
   },
 };

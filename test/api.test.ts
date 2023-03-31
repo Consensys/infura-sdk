@@ -20,7 +20,12 @@ import {
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
-import { CONTRACT_ADDRESS, ACCOUNT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import {
+  CONTRACT_ADDRESS,
+  ACCOUNT_ADDRESS,
+  generateTestPrivateKeyOrHash,
+  CONTRACT_ADDRESS_2,
+} from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
 import Api, {
   GetNftTransfersByWallet,
@@ -123,10 +128,11 @@ describe('Api', () => {
       HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
       const accountNFTs = await api.getNFTs({
         publicAddress: CONTRACT_ADDRESS,
-        tokenAddresses: [CONTRACT_ADDRESS],
+        tokenAddresses: [CONTRACT_ADDRESS, CONTRACT_ADDRESS_2],
       });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
       expect((accountNFTs as any).assets[0].contract).toBe(`ETHEREUM:${CONTRACT_ADDRESS}`);
+      expect((accountNFTs as any).assets[1].contract).toBe(`ETHEREUM:${CONTRACT_ADDRESS_2}`);
     });
 
     it('should return the list of NFTs without metadata', async () => {
