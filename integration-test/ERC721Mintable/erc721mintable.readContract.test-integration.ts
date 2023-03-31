@@ -64,6 +64,38 @@ describe('E2E Test: Sdk (read)', () => {
       expect(nftPage2.cursor).not.toBeNull();
       expect(nftPage2.pageNumber).toEqual(2);
     });
+
+    it('should return filtered list of NFTs by address', async () => {
+      const nfts: any = await sdk.api.getNFTs({
+        publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
+        tokenAddresses: ['0x8cf4237954b32fe05af80c589fdb815a2d95b4f1'],
+      });
+      expect(nfts.account).toEqual(process.env.WALLET_PUBLIC_ADDRESS);
+      expect(nfts.total).not.toBeNaN();
+      expect(nfts.pageNumber).toEqual(1);
+
+      // Checking that each element has the right data
+      nfts.assets.forEach((asset: any) => {
+        expect(asset).not.toHaveProperty('metadata');
+        expect(asset).toHaveProperty('contract');
+        expect(asset.contract).toEqual('0x8cf4237954b32fe05af80c589fdb815a2d95b4f1');
+        expect(asset).toHaveProperty('tokenId');
+        expect(asset).toHaveProperty('supply');
+        expect(asset).toHaveProperty('type');
+      });
+    });
+
+    it('should return error when tokenAddress is not valid', async () => {
+      await expect(
+        sdk.api.getNFTs({
+          publicAddress: <string>process.env.WALLET_PUBLIC_ADDRESS,
+          tokenAddresses: ['foo'],
+        }),
+      ).rejects.toThrow(
+        `missing argument: Invalid token address (location=\"[SDK.getNFTs]\", code=MISSING_ARGUMENT, version=${version}`,
+      );
+    });
+
     it('should return an error when using wrong cursor', async () => {
       const nfts = async () =>
         await sdk.api.getNFTs({
