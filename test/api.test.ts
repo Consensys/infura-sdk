@@ -371,6 +371,17 @@ describe('Api', () => {
         `fromBlock must be less than or equal to toBlock (location="[SDK.getTransfersByContractAddress]", fromBlock=2, toBlock=1, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
+    it('should validate block range <= 1,000,000', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({
+          contractAddress: CONTRACT_ADDRESS,
+          fromBlock: 1,
+          toBlock: 2000000,
+        }),
+      ).rejects.toThrow(
+        `Block range must be less than or equal to 1,000,000 blocks (location=\"[SDK.getTransfersByContractAddress]\", fromBlock=1, toBlock=2000000, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
     it('should return transfers', async () => {
       HttpServiceMock.mockResolvedValueOnce(
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
