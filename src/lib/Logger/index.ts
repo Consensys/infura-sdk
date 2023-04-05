@@ -211,6 +211,7 @@ export enum ErrorMessage {
   invalid_block_number = 'Invalid block number.',
   invalid_block_hash = 'Invalid block hash.',
   invalid_block_range = 'fromBlock must be less than or equal to toBlock',
+  block_range_too_large = 'Block range must be less than or equal to 1,000,000 blocks',
 }
 
 export class Logger {

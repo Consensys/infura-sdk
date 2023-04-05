@@ -360,12 +360,21 @@ export default class Api {
         location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
       });
     }
-    if (opts.fromBlock != null && opts.toBlock != null && opts.fromBlock > opts.toBlock) {
-      log.throwError(Logger.message.invalid_block_range, Logger.code.INVALID_ARGUMENT, {
-        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
-        fromBlock: opts.fromBlock,
-        toBlock: opts.toBlock,
-      });
+    if (opts.fromBlock != null && opts.toBlock != null) {
+      if (opts.fromBlock > opts.toBlock) {
+        log.throwError(Logger.message.invalid_block_range, Logger.code.INVALID_ARGUMENT, {
+          location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+          fromBlock: opts.fromBlock,
+          toBlock: opts.toBlock,
+        });
+      }
+      if (opts.toBlock - opts.fromBlock > 1000000) {
+        log.throwError(Logger.message.block_range_too_large, Logger.code.INVALID_ARGUMENT, {
+          location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+          fromBlock: opts.fromBlock,
+          toBlock: opts.toBlock,
+        });
+      }
     }
 
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/transfers`;
