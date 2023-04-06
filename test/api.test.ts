@@ -114,7 +114,7 @@ describe('Api', () => {
       await expect(() =>
         api.getNFTs({ publicAddress: CONTRACT_ADDRESS, tokenAddresses: ['foo'] }),
       ).rejects.toThrow(
-        `missing argument: Invalid token address (location="[SDK.getNFTs]", code=MISSING_ARGUMENT, version=${version})`,
+        `Invalid token address (location="[SDK.getNFTs]", argument="tokenAddresses", value="foo", code=INVALID_ARGUMENT, version=${version})`,
       );
     });
 
