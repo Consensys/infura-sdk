@@ -17,6 +17,7 @@ type PublicAddressOptions = {
   publicAddress: string;
   includeMetadata?: boolean;
   cursor?: string;
+  tokenAddresses?: string[];
 };
 
 type ContractAddressOptions = {
@@ -139,15 +140,43 @@ export default class Api {
    * @returns {Promise<Array>} List of NFTs with metadata if 'includeMetadata' flag is true
    */
   async getNFTs(opts: PublicAddressOptions): Promise<NftDTO> {
-    if (!opts.publicAddress || !utils.isAddress(opts.publicAddress)) {
+    if (!opts.publicAddress) {
       log.throwMissingArgumentError(Logger.message.invalid_public_address, {
         location: Logger.location.SDK_GETNFTS,
       });
     }
 
+    if (!utils.isAddress(opts.publicAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_public_address, {
+        location: Logger.location.SDK_GETNFTS,
+      });
+
+      log.throwArgumentError(
+        Logger.message.invalid_token_address,
+        'publicAddress',
+        opts.publicAddress,
+        {
+          location: Logger.location.SDK_GETNFTS,
+        },
+      );
+    }
+
+    if (opts.tokenAddresses) {
+      opts.tokenAddresses.forEach(item => {
+        if (!utils.isAddress(item)) {
+          log.throwArgumentError(Logger.message.invalid_token_address, 'tokenAddresses', item, {
+            location: Logger.location.SDK_GETNFTS,
+          });
+        }
+      });
+    }
+
     const apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
 
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      cursor: opts.cursor,
+      tokenAddresses: opts.tokenAddresses,
+    });
 
     if (!opts.includeMetadata) {
       return {
