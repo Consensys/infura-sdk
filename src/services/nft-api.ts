@@ -522,6 +522,8 @@ export interface Operations {
       query: {
         /** The cursor returned in the previous response (to query the next page) */
         cursor?: string;
+        /** A comma separated array of NFT token addresses to filter for */
+        tokenAddresses?: string[];
       };
     };
     responses: {
