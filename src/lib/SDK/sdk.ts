@@ -1,14 +1,12 @@
 import { ethers, utils } from 'ethers';
 import Auth from '../Auth/Auth';
-import HttpService from '../../services/httpService';
 import { NFT_API_URL } from '../constants';
 import ERC721Mintable from '../ContractTemplates/ERC721Mintable';
 import ERC721UserMintable from '../ContractTemplates/ERC721UserMintable';
 import { Logger, log } from '../Logger';
 import { metadataFolderSchema, metadataSchema } from './sdk.schema';
-import { isJson } from '../utils';
+import { ApiVersion, isJson } from '../utils';
 import ERC1155Mintable from '../ContractTemplates/ERC1155Mintable';
-import Api from '../Api/api';
 import IPFS from '../../services/ipfsService';
 import {
   DeployOptionsERC1155UserMintable,
@@ -18,6 +16,8 @@ import {
   LoadContractOptions,
 } from './types';
 import { Chains } from '../Auth/availableChains';
+import Api from '../Api/api';
+import HttpService from '../../services/httpService';
 
 export const classes = {
   ERC721Mintable,
@@ -33,18 +33,22 @@ export class SDK {
 
   private readonly ipfsClient: IPFS;
 
-  constructor(auth: Auth) {
+  constructor(auth: Auth, apiVersion = ApiVersion.V1) {
+    if (!Object.values<string>(ApiVersion).includes(apiVersion)) {
+      log.throwArgumentError(Logger.message.invalid_api_version, 'apiVersion', apiVersion, {
+        location: Logger.location.SDK_CONSTRUCTOR,
+      });
+    }
     if (!(auth instanceof Auth)) {
       log.throwArgumentError(Logger.message.invalid_auth_instance, 'auth', auth, {
         location: Logger.location.SDK_CONSTRUCTOR,
       });
     }
     this.auth = auth;
-
     const apiPath = `/networks/${this.auth.getChainId()}`;
-    const httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth());
+    const httpClient = new HttpService(NFT_API_URL, this.auth.getApiAuth(), apiVersion);
 
-    this.api = new Api(apiPath, httpClient);
+    this.api = new Api(apiPath, httpClient, apiVersion);
     this.ipfsClient = this.auth.getIpfsClient();
   }
 

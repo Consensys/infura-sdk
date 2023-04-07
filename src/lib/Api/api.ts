@@ -11,12 +11,13 @@ import {
   OwnersDTO,
   SearchNftDTO,
 } from '../SDK/types';
-import { isValidPositiveNumber } from '../utils';
+import { ApiVersion, isValidPositiveNumber } from '../utils';
 
 type PublicAddressOptions = {
   publicAddress: string;
   includeMetadata?: boolean;
   cursor?: string;
+  tokenAddresses?: string[];
 };
 
 type ContractAddressOptions = {
@@ -24,9 +25,12 @@ type ContractAddressOptions = {
   cursor?: string;
 };
 
+type GetNftsForCollectionOptions = ContractAddressOptions & { resync?: boolean };
+
 type GetTokenMetadataOptions = {
   contractAddress: string;
   tokenId: string;
+  resyncMetadata?: boolean;
 };
 
 export type GetTransfersByBlockNumberOptions = {
@@ -41,6 +45,8 @@ export type GetTransfersByBlockHashOptions = {
 
 export type GetNftTransfersByWallet = {
   walletAddress: string;
+  fromBlock?: number;
+  toBlock?: number;
   cursor?: string;
 };
 
@@ -58,6 +64,8 @@ export type GetNftTransfersByContractAndToken = {
 
 export type GetNftTransfersByContractAddress = {
   contractAddress: string;
+  fromBlock?: number;
+  toBlock?: number;
   cursor?: string;
 };
 export type GetNftOwnersByContractAddress = {
@@ -73,6 +81,7 @@ export type GetNftOwnersByTokenAddressAndTokenId = {
 
 export type GetLowestTradePrice = {
   tokenAddress: string;
+  days?: number;
 };
 
 export type GetCollectionsByWallet = {
@@ -90,9 +99,16 @@ export default class Api {
 
   private readonly httpClient: HttpService;
 
-  constructor(apiPath: string, httpClient: HttpService) {
+  private readonly apiVersion: string;
+
+  constructor(apiPath: string, httpClient: HttpService, apiVersion: ApiVersion) {
     this.apiPath = apiPath;
     this.httpClient = httpClient;
+    this.apiVersion = apiVersion;
+  }
+
+  getApiVersion() {
+    return this.apiVersion;
   }
 
   /**
@@ -124,15 +140,43 @@ export default class Api {
    * @returns {Promise<Array>} List of NFTs with metadata if 'includeMetadata' flag is true
    */
   async getNFTs(opts: PublicAddressOptions): Promise<NftDTO> {
-    if (!opts.publicAddress || !utils.isAddress(opts.publicAddress)) {
+    if (!opts.publicAddress) {
       log.throwMissingArgumentError(Logger.message.invalid_public_address, {
         location: Logger.location.SDK_GETNFTS,
       });
     }
 
+    if (!utils.isAddress(opts.publicAddress)) {
+      log.throwMissingArgumentError(Logger.message.invalid_public_address, {
+        location: Logger.location.SDK_GETNFTS,
+      });
+
+      log.throwArgumentError(
+        Logger.message.invalid_token_address,
+        'publicAddress',
+        opts.publicAddress,
+        {
+          location: Logger.location.SDK_GETNFTS,
+        },
+      );
+    }
+
+    if (opts.tokenAddresses) {
+      opts.tokenAddresses.forEach(item => {
+        if (!utils.isAddress(item)) {
+          log.throwArgumentError(Logger.message.invalid_token_address, 'tokenAddresses', item, {
+            location: Logger.location.SDK_GETNFTS,
+          });
+        }
+      });
+    }
+
     const apiUrl = `${this.apiPath}/accounts/${opts.publicAddress}/assets/nfts`;
 
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      cursor: opts.cursor,
+      tokenAddresses: opts.tokenAddresses,
+    });
 
     if (!opts.includeMetadata) {
       return {
@@ -152,7 +196,7 @@ export default class Api {
    * @param {string} opts.contractAddress address of the contract to get the list of NFTs
    * @returns {Promise<object>} List of NFTs with metadata
    */
-  async getNFTsForCollection(opts: ContractAddressOptions): Promise<NftDTO> {
+  async getNFTsForCollection(opts: GetNftsForCollectionOptions): Promise<NftDTO> {
     if (!opts.contractAddress || !utils.isAddress(opts.contractAddress)) {
       log.throwMissingArgumentError(Logger.message.invalid_contract_address, {
         location: Logger.location.SDK_GETNFTSFORCOLLECTION,
@@ -160,7 +204,10 @@ export default class Api {
     }
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens`;
 
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      cursor: opts.cursor,
+      resync: !!opts.resync,
+    });
     return data;
   }
 
@@ -185,7 +232,9 @@ export default class Api {
 
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/tokens/${opts.tokenId}`;
 
-    const { data } = await this.httpClient.get(apiUrl);
+    const { data } = await this.httpClient.get(apiUrl, {
+      resyncMetadata: !!opts.resyncMetadata,
+    });
     return data;
   }
 
@@ -242,9 +291,30 @@ export default class Api {
         location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
       });
     }
+    if (opts.fromBlock != null && !isValidPositiveNumber(opts.fromBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'fromBlock', opts.fromBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+      });
+    }
+    if (opts.toBlock != null && !isValidPositiveNumber(opts.toBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'toBlock', opts.toBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+      });
+    }
+    if (opts.fromBlock != null && opts.toBlock != null && opts.fromBlock > opts.toBlock) {
+      log.throwError(Logger.message.invalid_block_range, Logger.code.INVALID_ARGUMENT, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_WALLET,
+        fromBlock: opts.fromBlock,
+        toBlock: opts.toBlock,
+      });
+    }
 
     const apiUrl = `${this.apiPath}/accounts/${opts.walletAddress}/assets/transfers`;
-    const { data } = await this.httpClient.get(apiUrl, { cursor: opts.cursor });
+    const { data } = await this.httpClient.get(apiUrl, {
+      fromBlock: opts.fromBlock,
+      toBlock: opts.toBlock,
+      cursor: opts.cursor,
+    });
     return data;
   }
 
@@ -309,10 +379,41 @@ export default class Api {
         location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
       });
     }
+    if (opts.fromBlock != null && !isValidPositiveNumber(opts.fromBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'fromBlock', opts.fromBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+      });
+    }
+    if (opts.toBlock != null && !isValidPositiveNumber(opts.toBlock)) {
+      log.throwArgumentError(Logger.message.invalid_block_number, 'toBlock', opts.toBlock, {
+        location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+      });
+    }
+    if (opts.fromBlock != null && opts.toBlock != null) {
+      if (opts.fromBlock > opts.toBlock) {
+        log.throwError(Logger.message.invalid_block_range, Logger.code.INVALID_ARGUMENT, {
+          location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+          fromBlock: opts.fromBlock,
+          toBlock: opts.toBlock,
+        });
+      }
+      if (opts.toBlock - opts.fromBlock > 1000000) {
+        log.throwError(Logger.message.block_range_too_large, Logger.code.INVALID_ARGUMENT, {
+          location: Logger.location.SDK_GET_TRANSFERS_BY_CONTRACT,
+          fromBlock: opts.fromBlock,
+          toBlock: opts.toBlock,
+        });
+      }
+    }
 
     const apiUrl = `${this.apiPath}/nfts/${opts.contractAddress}/transfers`;
-    const { contractAddress, cursor } = opts;
-    const { data } = await this.httpClient.get(apiUrl, { contractAddress, cursor });
+    const { contractAddress, fromBlock, toBlock, cursor } = opts;
+    const { data } = await this.httpClient.get(apiUrl, {
+      contractAddress,
+      fromBlock,
+      toBlock,
+      cursor,
+    });
     return data;
   }
 
@@ -329,8 +430,8 @@ export default class Api {
     }
 
     const apiUrl = `${this.apiPath}/nfts/${opts.tokenAddress}/tradePrice`;
-    const { tokenAddress } = opts;
-    const { data } = await this.httpClient.get(apiUrl, { tokenAddress });
+    const { tokenAddress, days } = opts;
+    const { data } = await this.httpClient.get(apiUrl, { tokenAddress, days });
     return data;
   }
 

@@ -20,7 +20,12 @@ import {
   tokenMetadataMock,
   transferByBlockHashNumberMock,
 } from './__mocks__/api';
-import { CONTRACT_ADDRESS, ACCOUNT_ADDRESS, generateTestPrivateKeyOrHash } from './__mocks__/utils';
+import {
+  CONTRACT_ADDRESS,
+  ACCOUNT_ADDRESS,
+  generateTestPrivateKeyOrHash,
+  CONTRACT_ADDRESS_2,
+} from './__mocks__/utils';
 import { NFT_API_URL } from '../src/lib/constants';
 import Api, {
   GetNftTransfersByWallet,
@@ -34,6 +39,7 @@ import Api, {
   GetCollectionsByWallet,
   SearchNftsByString,
 } from '../src/lib/Api/api';
+import { ApiVersion } from '../src/lib/utils';
 
 loadEnv();
 
@@ -60,8 +66,8 @@ describe('Api', () => {
     });
 
     const apiPath = '/networks/5';
-    const httpClient = new HttpService(NFT_API_URL, account.getApiAuth());
-    api = new Api(apiPath, httpClient);
+    const httpClient = new HttpService(NFT_API_URL, account.getApiAuth(), ApiVersion.V1);
+    api = new Api(apiPath, httpClient, ApiVersion.V1);
 
     signerMock = jest.spyOn(account, 'getSigner').mockImplementation(
       () =>
@@ -82,6 +88,9 @@ describe('Api', () => {
   });
 
   describe('getContractMetadata', () => {
+    it('should take version 1 when "apiVersion" is not defined', async () => {
+      expect(api.getApiVersion()).toEqual('1');
+    });
     it('should throw when "contractAddress" is not a valid address', async () => {
       await expect(() =>
         api.getContractMetadata({ contractAddress: 'notAValidAddress' }),
@@ -102,9 +111,28 @@ describe('Api', () => {
 
   describe('getNFTs', () => {
     it('should throw when "address" is not a valid address', async () => {
+      await expect(() =>
+        api.getNFTs({ publicAddress: CONTRACT_ADDRESS, tokenAddresses: ['foo'] }),
+      ).rejects.toThrow(
+        `Invalid token address (location="[SDK.getNFTs]", argument="tokenAddresses", value="foo", code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+
+    it('should throw when "tokenAddress" is not a valid address', async () => {
       await expect(() => api.getNFTs({ publicAddress: 'notAValidAddress' })).rejects.toThrow(
         `missing argument: Invalid public address. (location="[SDK.getNFTs]", code=MISSING_ARGUMENT, version=${version})`,
       );
+    });
+
+    it('should return the list of NFTs with filter addresses', async () => {
+      HttpServiceMock.mockResolvedValueOnce(accountNFTsMock as AxiosResponse<any, any>);
+      const accountNFTs = await api.getNFTs({
+        publicAddress: CONTRACT_ADDRESS,
+        tokenAddresses: [CONTRACT_ADDRESS, CONTRACT_ADDRESS_2],
+      });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+      expect((accountNFTs as any).assets[0].contract).toBe(`ETHEREUM:${CONTRACT_ADDRESS}`);
+      expect((accountNFTs as any).assets[1].contract).toBe(`ETHEREUM:${CONTRACT_ADDRESS_2}`);
     });
 
     it('should return the list of NFTs without metadata', async () => {
@@ -151,6 +179,12 @@ describe('Api', () => {
     it('should return return collection NFTs list', async () => {
       HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock as AxiosResponse<any, any>);
       await api.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS });
+      expect(HttpServiceMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return return collection NFTs list with resync: true', async () => {
+      HttpServiceMock.mockResolvedValueOnce(collectionNFTsMock as AxiosResponse<any, any>);
+      await api.getNFTsForCollection({ contractAddress: CONTRACT_ADDRESS, resync: true });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
 
@@ -255,11 +289,36 @@ describe('Api', () => {
       );
     });
 
+    it('should validate fromBlock', async () => {
+      await expect(() =>
+        api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS, fromBlock: -1 }),
+      ).rejects.toThrow(
+        `Invalid block number. (location="[SDK.getNftTransfersByWallet]", argument="fromBlock", value=-1, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should validate toBlock', async () => {
+      await expect(() =>
+        api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS, toBlock: -1 }),
+      ).rejects.toThrow(
+        `Invalid block number. (location="[SDK.getNftTransfersByWallet]", argument="toBlock", value=-1, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should validate fromBlock <= toBlock', async () => {
+      await expect(() =>
+        api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS, fromBlock: 2, toBlock: 1 }),
+      ).rejects.toThrow(
+        `fromBlock must be less than or equal to toBlock (location="[SDK.getNftTransfersByWallet]", fromBlock=2, toBlock=1, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
     it('should return transfers', async () => {
       HttpServiceMock.mockResolvedValueOnce(
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
-      await api.getNftsTransfersByWallet({ walletAddress: CONTRACT_ADDRESS });
+      await api.getNftsTransfersByWallet({
+        walletAddress: CONTRACT_ADDRESS,
+        fromBlock: 1,
+        toBlock: 2,
+      });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -311,11 +370,51 @@ describe('Api', () => {
       );
     });
 
+    it('should validate fromBlock', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({ contractAddress: CONTRACT_ADDRESS, fromBlock: -1 }),
+      ).rejects.toThrow(
+        `Invalid block number. (location="[SDK.getTransfersByContractAddress]", argument="fromBlock", value=-1, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should validate toBlock', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({ contractAddress: CONTRACT_ADDRESS, toBlock: -1 }),
+      ).rejects.toThrow(
+        `Invalid block number. (location="[SDK.getTransfersByContractAddress]", argument="toBlock", value=-1, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should validate fromBlock <= toBlock', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({
+          contractAddress: CONTRACT_ADDRESS,
+          fromBlock: 2,
+          toBlock: 1,
+        }),
+      ).rejects.toThrow(
+        `fromBlock must be less than or equal to toBlock (location="[SDK.getTransfersByContractAddress]", fromBlock=2, toBlock=1, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
+    it('should validate block range <= 1,000,000', async () => {
+      await expect(() =>
+        api.getTransfersByContractAddress({
+          contractAddress: CONTRACT_ADDRESS,
+          fromBlock: 1,
+          toBlock: 2000000,
+        }),
+      ).rejects.toThrow(
+        `Block range must be less than or equal to 1,000,000 blocks (location=\"[SDK.getTransfersByContractAddress]\", fromBlock=1, toBlock=2000000, code=INVALID_ARGUMENT, version=${version})`,
+      );
+    });
     it('should return transfers', async () => {
       HttpServiceMock.mockResolvedValueOnce(
         transferByBlockHashNumberMock as AxiosResponse<any, any>,
       );
-      await api.getTransfersByContractAddress({ contractAddress: CONTRACT_ADDRESS });
+      await api.getTransfersByContractAddress({
+        contractAddress: CONTRACT_ADDRESS,
+        fromBlock: 1,
+        toBlock: 2,
+      });
       expect(HttpServiceMock).toHaveBeenCalledTimes(1);
     });
   });
@@ -336,6 +435,11 @@ describe('Api', () => {
     it('should return lowest trade', async () => {
       HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
       await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS });
+    });
+
+    it('should return lowest trade with days', async () => {
+      HttpServiceMock.mockResolvedValueOnce(lowestTradePriceMock as AxiosResponse<any, any>);
+      await api.getLowestTradePrice({ tokenAddress: CONTRACT_ADDRESS, days: 10 });
     });
   });
 

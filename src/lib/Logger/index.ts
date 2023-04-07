@@ -122,11 +122,14 @@ export enum ErrorLocation {
   METADATA_TOKEN_CREATION = '[Metadata.tokenLevelMetadata]',
   METADATA_CONTRACT_CREATION = '[Metadata.contractLevelMetadata]',
   METADATA_FREE_CREATION = '[Metadata.freeLevelMetadata]',
+
+  // Utils
+  UTILS_PREPARE_POLYGON_TX = '[Utils.preparePolygonTransaction]',
 }
 
 export enum ErrorMessage {
   invalid_auth_instance = 'Invalid Auth instance.',
-
+  invalid_api_version = 'Invalid Api version.',
   no_pk_or_provider = 'PrivateKey or provider missing!',
   no_parameters_supplied = 'No parameters supplied.',
   no_template_type_supplied = 'No template type supplied.',
@@ -207,6 +210,8 @@ export enum ErrorMessage {
   unsupported_provider = 'unsupported provider',
   invalid_block_number = 'Invalid block number.',
   invalid_block_hash = 'Invalid block hash.',
+  invalid_block_range = 'fromBlock must be less than or equal to toBlock',
+  block_range_too_large = 'Block range must be less than or equal to 1,000,000 blocks',
 }
 
 export class Logger {

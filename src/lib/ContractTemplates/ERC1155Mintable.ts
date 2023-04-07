@@ -5,6 +5,8 @@ import HasAccessControl from '../ContractComponents/hasAccessControl';
 import { addGasPriceToOptions, isBoolean, isURI } from '../utils';
 import { GAS_LIMIT } from '../constants';
 import { log, Logger } from '../Logger';
+import preparePolygonTransaction from './utils';
+import { Chains } from '../Auth/availableChains';
 
 export type DeployERC1155Params = {
   baseURI: string;
@@ -151,7 +153,13 @@ export default class ERC1155Mintable {
         this.signer,
       );
 
-      const options = addGasPriceToOptions({}, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      /* istanbul ignore next */
+      if (chainId === Chains.polygon)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
         params.baseURI,
         params.contractURI,
@@ -244,7 +252,13 @@ export default class ERC1155Mintable {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      /* istanbul ignore next */
+      if (chainId === Chains.polygon)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({}, params.gas);
       const result = await this.contractDeployed.mint(
         params.to,
         params.id,
@@ -495,8 +509,12 @@ export default class ERC1155Mintable {
     }
 
     try {
-      let options = { gasLimit: this.gasLimit };
-      options = addGasPriceToOptions(options, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      /* istanbul ignore next */
+      if (chainId === Chains.polygon)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({ gasLimit: this.gasLimit }, params.gas);
       const result = await this.contractDeployed.safeTransferFrom(
         params.from,
         params.to,

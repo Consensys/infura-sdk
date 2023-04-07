@@ -6,6 +6,8 @@ import { GAS_LIMIT, DEFAULT_ADMIN_ROLE, DEFAULT_MINTER_ROLE } from '../constants
 import HasRoyalty from '../ContractComponents/hasRoyalty';
 import HasAccessControl from '../ContractComponents/hasAccessControl';
 import BaseERC721 from '../ContractComponents/baseERC721';
+import preparePolygonTransaction from './utils';
+import { Chains } from '../Auth/availableChains';
 
 export type DeployParams = {
   name: string;
@@ -119,7 +121,13 @@ export default class ERC721Mintable {
         this.signer,
       );
 
-      const options = addGasPriceToOptions({}, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      // If Polygon mainnet, set up options propperly to avoid underpriced transaction error
+      /* istanbul ignore next */
+      if (chainId === Chains.polygon)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({}, params.gas);
       const contract = await factory.deploy(
         params.name,
         params.symbol,
@@ -180,8 +188,12 @@ export default class ERC721Mintable {
     }
 
     try {
-      let options = { gasLimit: this.gasLimit };
-      options = addGasPriceToOptions(options, params.gas);
+      const chainId = await this.signer.getChainId();
+      let options;
+      /* istanbul ignore next */
+      if (chainId === Chains.polygon)
+        options = await preparePolygonTransaction(await this.signer.getTransactionCount());
+      else options = addGasPriceToOptions({ gasLimit: this.gasLimit }, params.gas);
       return this.contractDeployed.mintWithTokenURI(params.publicAddress, params.tokenURI, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {

@@ -87,6 +87,7 @@ describe('SDK - IPFS for ERC1155', () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: newContract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
 
         return response.metadata !== null;
@@ -226,10 +227,12 @@ describe('SDK - IPFS for ERC1155', () => {
         const response: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         const response2: MetadataDTO = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
         return response.metadata !== null && response2.metadata !== null;
       },
@@ -250,6 +253,7 @@ describe('SDK - IPFS for ERC1155', () => {
 
     const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
+      resync: true,
     });
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '1')[0].metadata,
@@ -323,7 +327,7 @@ describe('SDK - IPFS for ERC1155', () => {
     expect(receipt2.status).toEqual(1);
     const mintHash3 = await contract.mint({
       to: ownerAddress,
-      id: 2,
+      id: 3,
       quantity: 1,
     });
     const receipt3 = await mintHash3.wait();
@@ -334,22 +338,33 @@ describe('SDK - IPFS for ERC1155', () => {
       async () => {
         const nftCollection = await sdk.api.getNFTsForCollection({
           contractAddress: contract.contractAddress,
+          resync: true,
         });
         response = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '0',
+          resyncMetadata: true,
         });
         response2 = await sdk.api.getTokenMetadata({
           contractAddress: contract.contractAddress,
           tokenId: '1',
+          resyncMetadata: true,
         });
+        // eslint-disable-next-line no-console
+        console.log(contract.contractAddress);
+        // eslint-disable-next-line no-console
+        console.log(nftCollection.total);
+        // eslint-disable-next-line no-console
+        console.log(response.metadata);
+        // eslint-disable-next-line no-console
+        console.log(response2.metadata);
         return (
           nftCollection.total === 3 && response.metadata !== null && response2.metadata !== null
         );
       },
       300000,
       1000,
-      'Waiting for NFT collection to be available',
+      'Waiting for NFTs to have non null metadata',
     );
     response = await sdk.api.getTokenMetadata({
       contractAddress: contract.contractAddress,
@@ -364,6 +379,7 @@ describe('SDK - IPFS for ERC1155', () => {
 
     const contractNftMetadata = await sdk.api.getNFTsForCollection({
       contractAddress: contract.contractAddress,
+      resync: true,
     });
     expect(
       contractNftMetadata.assets.filter(asset => asset.tokenId === '1')[0].metadata,
