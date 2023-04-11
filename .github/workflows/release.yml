@@ -1,11 +1,18 @@
 ---
 # Heavily inspired by ganache's release workflow: https://github.com/trufflesuite/ganache/blob/develop/.github/workflows/release.yml
-name: Release
+name: Release SDK
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 jobs:
   release:
@@ -29,42 +36,43 @@ jobs:
       - name: Download latest API doc
         run: npm run fetchAPITypes
 
-      #- name: Create changelog
-      #  run: npm run generate:changelog
-
-      # Release kind: 
-      # More than 3 feature == minor (inc Y in "X.Y.Z")
-      # Otherwise, "patch" (inc Z in "X.Y.Z")
-      # TODO: implement "major" kind (inc X in "X.Y.Z")
-      #- name: Set release kind (minor, patch) based on number of features
-      #  run: ./scripts/releaseKind.sh
+      - name: post fetch API Types
+        run: npm run postfetchAPITypes
 
       # Will increase package.json without running commit hooks, without creating a git tag
-      #- name: Bump version in package.json
-      #  run: npm version "$KIND" --commit-hooks=false --git-tag-version=false
+      - name: Bump version in package.json
+        run: npm version "${{ github.event.inputs.release_type }}" --commit-hooks=false --git-tag-version=false
 
-      #- name: Update files (sonar-project.properties, _version.js, ...)
-      #  run: echo "update files"
 
-      #- name: Update documentation (gitbook infura, ...)
-      #  run: echo "update documentation"
+      - name: Get package version
+        id: get-version
+        run: echo "PACKAGE_VERSION=$(node -p "'v' + require('./package.json').version")" >> "$GITHUB_ENV"
 
-      #- name: Setup git info / add & commit / create tag
-      #  run: ./scripts/releaseGit.sh
+      - name: Set SonarQube project version
+        run: sed -i 's/^sonar.projectVersion=.*$/sonar.projectVersion=${{ env.PACKAGE_VERSION }}/g' sonar-project.properties
 
-      #- name: Release 🚀
-      #  run: npx semantic-release --debug
-      #  env:
-      #    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #    NPM_TOKEN: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
-      #    NPM_CONFIG_REGISTRY: 'https://registry.nft.consensys-solutions.net'
+      - name: Update documentation (gitbook infura, ...)
+        run: echo "update documentation"
 
-      #- name: Release NPM
-      #  uses: JS-DevTools/npm-publish@v1
-      #  with:
-      #    token: ${{ secrets.PRIVATE_REGISTRY_TOKEN }}
-      #    registry: https://registry.nft.consensys-solutions.net
-      #    access: 'public'
+      - name: Grant execute permissions to shell script
+        run: chmod +x ./scripts/releaseGit.sh
+
+      - name: Setup git info / add & commit / create tag
+        run: ./scripts/releaseGit.sh ${{ env.PACKAGE_VERSION }}
+
+      # - name: Release 🚀
+      #   run: npx semantic-release --debug
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #     NPM_CONFIG_REGISTRY: 'https://registry.npmjs.org'
+
+      # - name: Release NPM
+      #   uses: JS-DevTools/npm-publish@v1
+      #   with:
+      #     token: ${{ secrets.NPM_TOKEN }}
+      #     registry: https://registry.npmjs.org
+      #     access: 'public'
       
       #- name: Merge changes back to dev
       #  run: ./scripts/merge-dev.sh
