@@ -1,3 +1,3 @@
-const version = '1.0.2';
+const { version } = require('../package.json');
 
 export default version;
