@@ -1,9 +1,10 @@
 {
   "name": "@infura/sdk",
-  "version": "2.3.0",
+  "version": "2.3.4",
   "description": "Infura SDK: easily manage, interact with and read smart contract on Mainnet, testnet and local",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
+  "homepage": "https://github.com/ConsenSys/infura-sdk#readme",
   "scripts": {
     "test": "jest",
     "test:e2e": "jest e2e/*  --config ./e2e/config/jest.config.json --runInBand  ",
