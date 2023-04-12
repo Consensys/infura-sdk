@@ -36,6 +36,9 @@ jobs:
       - name: Download latest API doc
         run: npm run fetchAPITypes
 
+      - name: post fetch API Types
+        run: npm run postfetchAPITypes
+
       # Will increase package.json without running commit hooks, without creating a git tag
       - name: Bump version in package.json
         run: npm version "${{ github.event.inputs.release_type }}" --commit-hooks=false --git-tag-version=false
