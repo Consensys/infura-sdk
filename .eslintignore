@@ -4,3 +4,5 @@ test
 integration-test
 dist
 jest.config.js
+package.json
+package-lock.json
