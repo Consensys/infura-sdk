@@ -41,7 +41,7 @@ jobs:
 
       # Will increase package.json without running commit hooks, without creating a git tag
       - name: Bump version in package.json
-        run: npm version "${{ github.event.inputs.release_type }}" --commit-hooks=false --git-tag-version=false
+        run: npm version "${{ github.event.inputs.release_type }}" --commit-hooks=false --git-tag-version=true
 
 
       - name: Get package version
