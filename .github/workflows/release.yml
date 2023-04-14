@@ -74,5 +74,5 @@ jobs:
           registry: https://registry.npmjs.org
           access: 'public'
       
-      - name: Merge changes back to dev
-       run: ./scripts/merge-dev.sh
+      # - name: Merge changes back to dev
+      # run: ./scripts/merge-dev.sh
