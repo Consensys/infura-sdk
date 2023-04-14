@@ -46,7 +46,7 @@ jobs:
 
       - name: Get package version
         id: get-version
-        run: echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> "$GITHUB_ENV"
+        run: echo "PACKAGE_VERSION=$(node -p "'v' + require('./package.json').version")" >> "$GITHUB_ENV"
 
       - name: Set SonarQube project version
         run: sed -i 's/^sonar.projectVersion=.*$/sonar.projectVersion=${{ env.PACKAGE_VERSION }}/g' sonar-project.properties
