@@ -60,19 +60,19 @@ jobs:
       - name: Setup git info / add & commit / create tag
         run: ./scripts/releaseGit.sh ${{ env.PACKAGE_VERSION }}
 
-      # - name: Release 🚀
-      #   run: npx semantic-release --debug
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #     NPM_CONFIG_REGISTRY: 'https://registry.npmjs.org'
+      - name: Release 🚀
+        run: npx semantic-release --debug
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_REGISTRY: 'https://registry.npmjs.org'
 
-      # - name: Release NPM
-      #   uses: JS-DevTools/npm-publish@v1
-      #   with:
-      #     token: ${{ secrets.NPM_TOKEN }}
-      #     registry: https://registry.npmjs.org
-      #     access: 'public'
+      - name: Release NPM
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          registry: https://registry.npmjs.org
+          access: 'public'
       
-      #- name: Merge changes back to dev
-      #  run: ./scripts/merge-dev.sh
+      # - name: Merge changes back to dev
+      # run: ./scripts/merge-dev.sh
