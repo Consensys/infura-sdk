@@ -8,7 +8,7 @@ git config --local user.name "GitHub Action"
 git add .
 
 # Commit changes with provided message
-git commit -m "chore(release): release v"$1""
+git commit -m "chore(release): release v$1"
 
 # Create a new tag
 git tag $1
