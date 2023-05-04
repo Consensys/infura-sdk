@@ -1,44 +1,13 @@
 import { config as loadEnv } from 'dotenv';
-import { faker } from '@faker-js/faker';
+// import { faker } from '@faker-js/faker';
 import path from 'path';
 
 import IPFS from '../src/services/ipfsService';
+import IpfsServerClient from '../e2e/utils/utils.ts/ipfsServerClient';
 
 const file = path.join(__dirname, 'ipfs-test/consensys.png');
 
 loadEnv();
-
-const myAsyncIterable = {
-  async *[Symbol.asyncIterator]() {
-    yield {
-      cid: {
-        toString: mockedCall,
-      },
-    };
-  },
-};
-
-const mockedCall = jest.fn().mockImplementation(() => 'test');
-const mockedRemoveCall = jest.fn().mockImplementation(() => 'test');
-const mockedAddAllCall = jest.fn().mockImplementation(() => myAsyncIterable);
-
-jest.mock('ipfs-http-client', () => ({
-  globSource: () => [],
-  urlSource: () => [],
-  create: jest.fn(() => ({
-    add: jest.fn(() => ({
-      cid: {
-        toString: mockedCall,
-      },
-    })),
-
-    addAll: mockedAddAllCall,
-
-    pin: {
-      rm: mockedRemoveCall,
-    },
-  })),
-}));
 
 const unexistingFile = path.join(__dirname, 'infura-fake.png');
 
@@ -46,6 +15,14 @@ describe('ipfs', () => {
   let ipfs: IPFS;
   const projectId = process.env.INFURA_IPFS_PROJECT_ID;
   const apiKeySecret = process.env.INFURA_IPFS_PROJECT_SECRET;
+
+  const IpfsServerClientMockAdd = jest
+    .spyOn(IpfsServerClient.prototype, 'add')
+    .mockImplementation(async () => 'test');
+
+  const IpfsServerClientMockAddAll = jest
+    .spyOn(IpfsServerClient.prototype, 'addAll')
+    .mockImplementation(async () => 'test');
 
   beforeAll(async () => {
     ipfs = new IPFS({ projectId, apiKeySecret });
@@ -68,7 +45,7 @@ describe('ipfs', () => {
       source: file,
     });
 
-    expect(mockedCall).toHaveBeenCalledTimes(1);
+    expect(IpfsServerClientMockAdd).toHaveBeenCalledTimes(1);
   });
 
   it('should upload remote file', async () => {
@@ -76,7 +53,7 @@ describe('ipfs', () => {
       source: 'https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png',
     });
 
-    expect(mockedCall).toHaveBeenCalledTimes(1);
+    expect(IpfsServerClientMockAdd).toHaveBeenCalledTimes(1);
   });
 
   it('should upload an array', async () => {
@@ -92,7 +69,7 @@ describe('ipfs', () => {
       isErc1155: true,
     });
 
-    expect(mockedCall).toHaveBeenCalledTimes(1);
+    expect(IpfsServerClientMockAddAll).toHaveBeenCalledTimes(1);
   });
 
   it('should upload content', async () => {
@@ -100,15 +77,7 @@ describe('ipfs', () => {
       source: 'test',
     });
 
-    expect(mockedCall).toHaveBeenCalledTimes(1);
-  });
-
-  it('should unpin file', async () => {
-    await ipfs.unPinFile({
-      hash: faker.datatype.string(),
-    });
-
-    expect(mockedRemoveCall).toHaveBeenCalledTimes(1);
+    expect(IpfsServerClientMockAdd).toHaveBeenCalledTimes(1);
   });
 
   it('should not upload unexisting file', async () => {

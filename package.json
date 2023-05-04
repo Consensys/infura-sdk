@@ -72,10 +72,11 @@
     "axios": "^0.27.2",
     "dotenv": "^16.0.1",
     "ethers": "^5.6.9",
-    "ipfs-http-client": "56.0.3",
+    "form-data": "^4.0.0",
     "jest-junit": "^14.0.1",
     "jest-sonar-reporter": "^2.0.0",
     "joi": "^17.7.0",
+    "path": "^0.12.7",
     "semantic-release": "^21.0.1"
   },
   "overrides": {

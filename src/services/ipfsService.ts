@@ -7,13 +7,13 @@
 /* eslint-disable */
 
 import fs from 'fs';
-import { create as ipfsClient, urlSource } from 'ipfs-http-client';
 import { Logger, log } from '../lib/Logger/index';
 
 import { isURI } from '../lib/utils';
-import { ImportCandidateStream } from './types';
+import IpfsServerClient from '../../e2e/utils/utils.ts/ipfsServerClient';
+import axios from 'axios';
 export default class IPFS {
-  ipfsClient;
+  ipfsServerClient;
 
   constructor({
     projectId,
@@ -39,11 +39,10 @@ export default class IPFS {
       );
     }
 
-    this.ipfsClient = ipfsClient({
-      url: 'https://ipfs.infura.io:5001',
-      headers: {
-        authorization: `Basic ${Buffer.from(`${projectId}:${apiKeySecret}`).toString('base64')}`,
-      },
+    this.ipfsServerClient = new IpfsServerClient({
+      baseURL: 'https://ipfs.infura.io:5001/api/v0/',
+      projectId: projectId || '',
+      apiKeySecret: apiKeySecret || '',
     });
   }
 
@@ -52,7 +51,7 @@ export default class IPFS {
    * @returns {Promise<string>} Ipfs hash of the stored data
    */
   async uploadContent({ source }: { source: string }) {
-    return `ipfs://${(await this.ipfsClient.add(source)).cid.toString()}`;
+    return `ipfs://${await this.ipfsServerClient.add(source)}`;
   }
 
   /** Upload file on ipfs
@@ -62,8 +61,8 @@ export default class IPFS {
   async uploadFile({ source }: { source: string }) {
     try {
       if (isURI(source)) {
-        const inputSrc = urlSource(source);
-        return `ipfs://${(await this.ipfsClient.add(inputSrc)).cid.toString()}`;
+        const response = await axios.get(source, { responseType: 'stream' });
+        return `ipfs://${await this.ipfsServerClient.add(response.data)}`;
       }
 
       if (!fs.existsSync(source)) {
@@ -72,7 +71,7 @@ export default class IPFS {
 
       const inputSrc = fs.createReadStream(source);
 
-      return `ipfs://${(await this.ipfsClient.add(inputSrc)).cid.toString()}`;
+      return `ipfs://${await this.ipfsServerClient.add(inputSrc)}`;
     } catch (error) {
       return log.throwArgumentError(Logger.message.an_error_occured_with_ipfs_api, 'file', source, {
         location: Logger.location.IPFSSERVICE_UPLOADFILE,
@@ -92,41 +91,18 @@ export default class IPFS {
       });
     }
     try {
-      const uploadedDirectory = [];
       const files = sources.map((source, index) => {
         return {
           path: isErc1155 ? `${index}.json` : `${index}`,
           content: source,
         };
-      }) as ImportCandidateStream;
-
-      for await (const file of this.ipfsClient.addAll(files, {
-        wrapWithDirectory: true,
-      })) {
-        uploadedDirectory.push(file);
-      }
-      const item = [...uploadedDirectory].pop();
-      return `ipfs://${item?.cid.toString()}/`;
+      });
+      return `ipfs://${await this.ipfsServerClient.addAll(files)}/`;
     } catch (error) {
       return log.throwError(Logger.message.an_error_occured_with_ipfs_api, Logger.code.IPFS, {
         location: Logger.location.IPFSSERVICE_UPLOADDIRECTORY,
         error,
       });
     }
-  }
-
-  async unPinFile({ hash }: { hash: string }) {
-    try {
-      return await this.ipfsClient.pin.rm(hash);
-    } catch (error) {
-      return log.throwError(Logger.message.an_error_occured_with_ipfs_api, Logger.code.IPFS, {
-        location: Logger.location.IPFSSERVICE_UNPINFILE,
-        error,
-      });
-    }
-  }
-
-  async closeConnection() {
-    this.ipfsClient.stop();
   }
 }

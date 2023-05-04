@@ -37,6 +37,13 @@ export enum ErrorLocation {
   IPFSSERVICE_UPLOADDIRECTORY = '[IPFS.uploadDirectory]',
   IPFSSERVICE_UNPINFILE = '[IPFS.unPinFile]',
 
+  // IPFS SERVER CLIENT
+  IPFS_SERVER_CONSTRUCTOR = '[IPFS.constructor]',
+  IPFS_SERVER_UPLOADFILE = '[IPFS.uploadFile]',
+  IPFS_SERVER_UPLOADOBJECT = '[IPFS.uploadObject]',
+  IPFS_SERVER_UPLOADDIRECTORY = '[IPFS.uploadDirectory]',
+  IPFS_SERVER_UNPINFILE = '[IPFS.unPinFile]',
+
   // ERC721Mintable
   ERC721MINTABLE_DEPLOY = '[ERC721Mintable.deploy]',
   ERC721MINTABLE_ADDGASPRICETOOPTIONS = '[ERC721Mintable.addGasPriceToOptions]',
