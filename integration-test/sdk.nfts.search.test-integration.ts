@@ -8,7 +8,6 @@ loadEnv();
 
 describe('E2E Test: Sdk (read)', () => {
   let sdk: SDK;
-  jest.setTimeout(120 * 1000);
 
   beforeAll(() => {
     const auth = new Auth({

@@ -40,7 +40,6 @@ export enum ErrorLocation {
   // IPFS SERVER CLIENT
   IPFS_SERVER_CONSTRUCTOR = '[IPFS.constructor]',
   IPFS_SERVER_UPLOADFILE = '[IPFS.uploadFile]',
-  IPFS_SERVER_UPLOADOBJECT = '[IPFS.uploadObject]',
   IPFS_SERVER_UPLOADDIRECTORY = '[IPFS.uploadDirectory]',
   IPFS_SERVER_UNPINFILE = '[IPFS.unPinFile]',
 

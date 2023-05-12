@@ -83,7 +83,7 @@ export default class IpfsServerClient {
       return lastItem.Hash;
     } catch (error) {
       return log.throwArgumentError(Logger.message.an_error_occured_with_ipfs_api, 'file', files, {
-        location: Logger.location.IPFSSERVICE_UPLOADFILE,
+        location: Logger.location.IPFS_SERVER_UPLOADDIRECTORY,
         error: `${error}`,
       });
     }

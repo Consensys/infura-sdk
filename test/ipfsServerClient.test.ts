@@ -63,7 +63,7 @@ describe('IpfsServerClient', () => {
     const instance = new IpfsServerClient({ baseURL: BASEURL, projectId, apiKeySecret });
     const res = async () => await instance.addAll([{ path: 'test', content: 'test' }]);
     expect(res).rejects.toThrow(
-      `An error occured with infura ipfs api (location=\"[IPFS.uploadFile]\", error=\"Error: test\", argument=\"file\", value=[{\"path\":\"test\",\"content\":\"test\"}], code=INVALID_ARGUMENT, version=${version})`,
+      `An error occured with infura ipfs api (location=\"[IPFS.uploadDirectory]\", error=\"Error: test\", argument=\"file\", value=[{\"path\":\"test\",\"content\":\"test\"}], code=INVALID_ARGUMENT, version=${version})`,
     );
   });
 
