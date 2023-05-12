@@ -8,6 +8,7 @@ loadEnv();
 
 describe('E2E Test: Sdk (read)', () => {
   let sdk: SDK;
+
   beforeAll(() => {
     const auth = new Auth({
       privateKey: process.env.WALLET_PRIVATE_KEY,
