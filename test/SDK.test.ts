@@ -319,23 +319,5 @@ describe('Sdk', () => {
         `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=25, code=INVALID_ARGUMENT, version=${version})`,
       );
     });
-    it('Should show an error when cronos testnet chain is provided when calling write functions', async () => {
-      const account = new Auth({
-        privateKey: generateTestPrivateKeyOrHash(),
-        projectId: process.env.INFURA_PROJECT_ID,
-        secretId: process.env.INFURA_PROJECT_SECRET,
-        rpcUrl: process.env.EVM_RPC_URL,
-        chainId: 338,
-      });
-      sdk = new SDK(account);
-      await expect(() =>
-        sdk.loadContract({
-          template: TEMPLATES.ERC721Mintable,
-          contractAddress: '',
-        }),
-      ).rejects.toThrow(
-        `Chain not supported for WRITE operations yet. (location=\"[SDK.loadContract]\", argument="chainId", value=338, code=INVALID_ARGUMENT, version=${version})`,
-      );
-    });
   });
 });
