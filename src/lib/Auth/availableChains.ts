@@ -29,7 +29,7 @@ const chainsName: ChainInfo = {
   11155111: 'sepolia',
   56: 'bsc',
   97: 'bsc test',
-  43114: 'avalance',
+  43114: 'avalanche',
   250: 'fantom',
   25: 'cronos',
   11297108109: 'palm',
