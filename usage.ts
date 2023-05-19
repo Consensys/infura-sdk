@@ -7,7 +7,7 @@
 
 import { config as loadEnv } from 'dotenv';
 import { SDK, Auth, Metadata, TEMPLATES } from './src/index';
-import { ApiVersion } from './src/lib/utils';
+import { ApiVersion, sleep } from './src/lib/utils';
 
 loadEnv();
 
@@ -85,6 +85,8 @@ loadEnv();
 
   const minted = await mint.wait();
   console.log(minted);
+
+  await sleep(10000);
 
   // READ API
   // Get contract metadata
