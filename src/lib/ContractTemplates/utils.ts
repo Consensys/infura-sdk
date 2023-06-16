@@ -6,7 +6,7 @@ export default async function preparePolygonTransaction(nonce: number) {
   try {
     const { data } = await axios({
       method: 'get',
-      url: 'https://gasstation-mainnet.matic.network/v2',
+      url: 'https://gasstation.polygon.technology/v2',
     });
     const gas = data.fast;
 
