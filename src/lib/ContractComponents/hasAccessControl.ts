@@ -6,10 +6,14 @@ import { DEFAULT_ADMIN_ROLE, DEFAULT_MINTER_ROLE } from '../constants';
 type SingleAddressOptions = {
   publicAddress: string;
   gas?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
 };
 
 type RenounceOptions = {
   gas?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
 };
 
 export default class HasAccessControl {
@@ -48,7 +52,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.grantRole(DEFAULT_MINTER_ROLE, params.publicAddress, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
@@ -86,7 +95,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.renounceRole(DEFAULT_MINTER_ROLE, params.publicAddress, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
@@ -122,7 +136,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.revokeRole(DEFAULT_MINTER_ROLE, params.publicAddress, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
@@ -193,7 +212,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.grantRole(DEFAULT_ADMIN_ROLE, params.publicAddress, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
@@ -230,7 +254,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.revokeRole(DEFAULT_ADMIN_ROLE, params.publicAddress, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
@@ -267,7 +296,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.renounceRole(DEFAULT_ADMIN_ROLE, params.publicAddress, options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
@@ -329,7 +363,12 @@ export default class HasAccessControl {
     }
 
     try {
-      const options = addGasPriceToOptions({}, params.gas);
+      const options = addGasPriceToOptions(
+        {},
+        params.gas,
+        params.maxFeePerGas,
+        params.maxPriorityFeePerGas,
+      );
       return this.contractDeployed.renounceOwnership(options);
     } catch (error) {
       return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
