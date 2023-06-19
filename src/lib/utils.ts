@@ -39,25 +39,35 @@ export const isJson = (param: string) => {
 // eslint-disable-next-line no-promise-executor-return
 export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const addGasPriceToOptions = (options: any, gas: string | undefined) => {
+export const addGasPriceToOptions = (
+  options: any,
+  gas: string | undefined,
+  maxFeePerGas?: string | undefined,
+  maxPriorityFeePerGas?: string | undefined,
+) => {
   const newOptions = options;
-  if (gas) {
-    if (typeof parseFloat(gas) !== 'number') {
-      log.throwArgumentError(Logger.message.invalid_gas_price_supplied, 'gas', gas, {
-        // TODO: update location
-        location: Logger.location.ERC721MINTABLE_ADDGASPRICETOOPTIONS,
-      });
-    }
-    try {
+
+  try {
+    if (gas) {
+      if (typeof parseFloat(gas) !== 'number') {
+        log.throwArgumentError(Logger.message.invalid_gas_price_supplied, 'gas', gas, {
+          // TODO: update location
+          location: Logger.location.ERC721MINTABLE_ADDGASPRICETOOPTIONS,
+        });
+      }
       newOptions.gasPrice = ethers.utils.parseUnits(gas, 'gwei');
-    } catch (error) {
-      return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
-        // TODO: update location
-        location: Logger.location.ERC721MINTABLE_ADDGASPRICETOOPTIONS,
-        error,
-      });
+    } else if (maxFeePerGas || maxPriorityFeePerGas) {
+      newOptions.maxFeePerGas = maxFeePerGas;
+      newOptions.maxPriorityFeePerGas = maxPriorityFeePerGas;
     }
+  } catch (error) {
+    return log.throwError(Logger.message.ethers_error, Logger.code.NETWORK, {
+      // TODO: update location
+      location: Logger.location.ERC721MINTABLE_ADDGASPRICETOOPTIONS,
+      error,
+    });
   }
+
   return newOptions;
 };
 

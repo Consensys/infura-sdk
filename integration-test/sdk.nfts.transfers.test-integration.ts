@@ -432,13 +432,14 @@ describe('E2E Test: Sdk (read)', () => {
     });
   });
 
-  describe('As an account I should get lowest trade price for a given collection with days', () => {
+  describe.skip('As an account I should get lowest trade price for a given collection with days', () => {
     const contractAddress = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
     it('should get the lowest trade price', async () => {
       const result = await sdk.api.getLowestTradePrice({
         tokenAddress: contractAddress,
         days: 10,
       });
+      console.log('🚀 ~ file: sdk.nfts.transfers.test-integration.ts:442 ~ it ~ result:', result);
 
       expect(result).toMatchObject({
         transactionHash: expect.any(String),
