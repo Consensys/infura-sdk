@@ -1,3 +1,4 @@
+# DEPRECATED
 # Infura NFT SDK - TypeScript
 
 The Infura NFT SDK is a TypeScript library that wraps REST calls to Ethereum nodes.
