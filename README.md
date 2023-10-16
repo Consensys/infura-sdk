@@ -69,7 +69,7 @@ Create an `index.ts` file, import the libraries, and load the environment variab
 
 ```ts
 import { config as loadEnv } from 'dotenv';
-import { SDK, Auth, TEMPLATES } from '@infura/sdk-ts';
+import { SDK, Auth, TEMPLATES } from '@infura/sdk';
 
 loadEnv();
 ```
